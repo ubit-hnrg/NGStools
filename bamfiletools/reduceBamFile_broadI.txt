@@ -1,0 +1,10 @@
+# example using 'variant' script from the broad institute
+# this requier boost instalation (and take several minutes)
+
+
+
+variant file.bam -l file.bcf -o reduced.bam -bv
+
+# -b option for output in bam format
+
+

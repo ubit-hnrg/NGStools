@@ -1,0 +1,7 @@
+python /home/bitgenia/repos/TBI/NGS/pipeline/lanes/lanes.py --fastq_folder=/home/bitgenia/samples/laura/TSO20180510/TSO20180510-77514437/FASTQ_Generat
+ion_2018-05-21_22_39_09Z-97393297/
+
+mkdir /home/bitgenia/samples/laura/TSO20180510/processed/
+~/repos/TBI/NGS/pipeline/lanes/wesPipeline_lanes_hnrgAddapted.bash d EB311 /home/bitgenia/samples/laura/TSO20180510/TSO20180510-77514437/FASTQ_Generation_2018-05-21_22_39_09Z-97393297/lanes_samplepath/EB311_R1.txt /home/bitgenia/samples/laura/TSO20180510/TSO20180510-77514437/FASTQ_Generation_2018-05-21_22_39_09Z-97393297/lanes_samplepath/EB311_R2.txt /home/bitgenia/samples/laura/TSO20180510/processed/ domain=61 bed=26
+
+~/repos/TBI/NGS/pipeline/lanes/wesPipeline_lanes_hnrgAddapted.bash d EB311 /home/bitgenia/samples/laura/TSO20180510/TSO20180510-77514437/FASTQ_Generation_2018-05-21_22_39_09Z-97393297/lanes_samplepath/EB311_R1.txt /home/bitgenia/samples/laura/TSO20180510/TSO20180510-77514437/FASTQ_Generation_2018-05-21_22_39_09Z-97393297/lanes_samplepath/EB311_R2.txt /home/bitgenia/samples/laura/TSO20180510/processed/ domain=61 bed=26
