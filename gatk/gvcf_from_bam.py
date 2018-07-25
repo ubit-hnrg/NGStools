@@ -10,6 +10,7 @@ def get_args():
     parser.add_argument('-R','--ReferenceFile',required=False, default = '/home/ariel/Projects/BIA/VCFs/data/hgref/human_g1k_v37_decoy.fasta')
     parser.add_argument('-l', '--logfile',required = False, default = None)
     parser.add_argument('-m', '--mode',required = False, default = 'vcf',help = ' Either "vcf" or "gvcf" ')
+    parser.add_argument('-M', '--memory',required = False, default = '4g',help = 'memory to be used in gatk docker')
 
     # parse args
     args = parser.parse_args()
@@ -36,7 +37,7 @@ def popen_with_logging(cmd,logfile = 'out.log'):
 
 
 
-def gatk_docker_get_cmd(input_file, output_dir, ReferenceFile, image = 'broadinstitute/gatk',mode = 'vcf'):
+def gatk_docker_get_cmd(input_file, output_dir, ReferenceFile, image = 'broadinstitute/gatk',mode = 'vcf',memory ='4g'):
 
     # output file extension
     if mode == 'vcf':
@@ -77,7 +78,7 @@ def gatk_docker_get_cmd(input_file, output_dir, ReferenceFile, image = 'broadins
     '-v',mount_ref_file,
     '-v',mount_ref_dir,
     '-t',image,
-    'gatk','--java-options',"-Xmx4g",'HaplotypeCaller',
+    'gatk','--java-options',"-Xmx%s"memory,'HaplotypeCaller',
     '-R',docker_ReferenceFile,
     '-I',docker_input_file,
     '-O',docker_dir_output + basename_input_file + extension]
@@ -91,7 +92,7 @@ def gatk_docker_get_cmd(input_file, output_dir, ReferenceFile, image = 'broadins
 
 def main():
     args = get_args()
-    input_files, output_dir, ReferenceFile, logfile, mode = args.input_files, args.output_dir, args.ReferenceFile, args.logfile, args.mode
+    input_files, output_dir, ReferenceFile, logfile, mode, memory = args.input_files, args.output_dir, args.ReferenceFile, args.logfile, args.mode, args.memory
     
     create_output_dirs(output_dir) # no es necesario porque el monatje al docker te lo crea si no existe
     inputfiles = glob.glob(input_files)
