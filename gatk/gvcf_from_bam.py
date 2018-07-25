@@ -33,8 +33,6 @@ def popen_with_logging(cmd,logfile = 'out.log'):
             time.sleep(0.5)
         # Read the remaining
         sys.stdout.write(reader.read())
-    writer.close()
-    reader.close()
     return None
 
 
