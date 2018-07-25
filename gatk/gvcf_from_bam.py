@@ -78,7 +78,7 @@ def gatk_docker_get_cmd(input_file, output_dir, ReferenceFile, image = 'broadins
     '-v',mount_ref_file,
     '-v',mount_ref_dir,
     '-t',image,
-    'gatk','--java-options',"-Xmx%s"memory,'HaplotypeCaller',
+    'gatk','--java-options',"-Xmx%s"%memory,'HaplotypeCaller',
     '-R',docker_ReferenceFile,
     '-I',docker_input_file,
     '-O',docker_dir_output + basename_input_file + extension]
@@ -105,7 +105,7 @@ def main():
         print 'runing %s\n'%basename_input_file
 
         #create docker call
-        cmd = gatk_docker_get_cmd(input_file=ifile, output_dir = output_dir, ReferenceFile = ReferenceFile, image = 'broadinstitute/gatk',mode = mode)
+        cmd = gatk_docker_get_cmd(input_file=ifile, output_dir = output_dir, ReferenceFile = ReferenceFile, image = 'broadinstitute/gatk',mode = mode,memory=memory)
     
         #call docker
         if logfile is None:
