@@ -8,7 +8,7 @@ def get_args():
     parser.add_argument('-i','--input_files',required=True)
     parser.add_argument('-o','--output_dir',required=True) 
     parser.add_argument('-R','--ReferenceFile',required=False, default = '/home/ariel/Projects/BIA/VCFs/data/hgref/human_g1k_v37_decoy.fasta')
-    parser.add_argument('-l', '--logfile',required = False, default = None)
+    parser.add_argument('-l', '--logfile',required = False, default = './log.out')
     parser.add_argument('-m', '--mode',required = False, default = 'vcf',help = ' Either "vcf" or "gvcf" ')
     parser.add_argument('-M', '--memory',required = False, default = '4g',help = 'memory to be used in gatk docker')
 
@@ -33,6 +33,8 @@ def popen_with_logging(cmd,logfile = 'out.log'):
             time.sleep(0.5)
         # Read the remaining
         sys.stdout.write(reader.read())
+    writer.close()
+    reader.close()
     return None
 
 
@@ -108,9 +110,9 @@ def main():
         cmd = gatk_docker_get_cmd(input_file=ifile, output_dir = output_dir, ReferenceFile = ReferenceFile, image = 'broadinstitute/gatk',mode = mode,memory=memory)
     
         #call docker
-        if logfile is None:
-            logfile = output_dir + basename_input_file +'.log.out'
-        popen_with_logging(cmd,logfile=logfile)
+        if logfile is not './log.out':
+            logFILE = output_dir + basename_input_file +'.log.out'
+        popen_with_logging(cmd,logfile=logFILE)
 
 
 
