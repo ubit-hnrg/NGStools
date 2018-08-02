@@ -41,7 +41,7 @@ def popen_with_logging(cmd,logfile = 'out.log'):
     return None
 
 
-def GenomicsDBImport_cmd(sample_file, outpath,sample_path, image = 'broadinstitute/gatk',dbname = 'mydb',chrom = '12'):
+def GenomicsDBImport_cmd(sample_file, outpath,sample_path, memory = '4g',image = 'broadinstitute/gatk',dbname = 'mydb',chrom = '12'):
 
     #Create Docker local paths
     docker_input_dir = '/gatk/inputdata/'
@@ -61,7 +61,7 @@ def GenomicsDBImport_cmd(sample_file, outpath,sample_path, image = 'broadinstitu
     '-v',mount_sample_file]
 
     task = ['-t',image,
-    'gatk','--java-options','"-Xmx4g -Xms4g"',
+    'gatk','--java-options','"-Xmx%sg -Xms%sg"'%(memory,memory),
     'GenomicsDBImport',
     '--genomicsdb-workspace-path',docker_db_path + dbname,
     '--batch-size','50',
@@ -73,7 +73,7 @@ def GenomicsDBImport_cmd(sample_file, outpath,sample_path, image = 'broadinstitu
     
     return cmd
 
-def genotype_gvcf_cmd(ReferenceFile,outpath,dbname,sample_file, image = 'broadinstitute/gatk' ):
+def genotype_gvcf_cmd(ReferenceFile,outpath,dbname,sample_file,memory = '4g' image = 'broadinstitute/gatk' ):
 
     ReferenceDir = os.path.dirname(ReferenceFile)
     ReferenceFile_basename = os.path.basename(ReferenceFile)
@@ -96,7 +96,7 @@ def genotype_gvcf_cmd(ReferenceFile,outpath,dbname,sample_file, image = 'broadin
     '-v',mount_ref_dir]
 
     task = ['-t',image,
-        'gatk','--java-options','-Xmx4g',
+        'gatk','--java-options','-Xmx%s'%memory,
         'GenotypeGVCFs',
         '-R', docker_ReferenceFile,
         '-V', 'gendb://'+docker_db_path,
@@ -112,7 +112,7 @@ def write_and_logging(mje,writer,stdout = True):
 
 def main():
     args = get_args()
-    sample_file, outpath, logfile, sample_path , ReferenceFile = args.sample_file, args.outpath, args.logfile,args.sample_path,args.ReferenceFile
+    sample_file, outpath, logfile, sample_path , ReferenceFile,memory = args.sample_file, args.outpath, args.logfile,args.sample_path,args.ReferenceFile,args.memory
 
     create_output_dirs(outpath) # no es necesario porque el monatje al docker te lo crea si no existe
     CHRMS = [str(i) for i in np.arange(22)+1] +['X','Y']
@@ -132,7 +132,7 @@ def main():
 
         #create docker call for GenomicDBImport
         dbname = 'dbi'+'_chr'+chrm
-        cmd = GenomicsDBImport_cmd(sample_file=sample_file,sample_path = sample_path, dbname=dbname ,outpath = outpath,image = 'broadinstitute/gatk',chrom=chrm)
+        cmd = GenomicsDBImport_cmd(sample_file=sample_file,sample_path = sample_path, dbname=dbname ,outpath = outpath,image = 'broadinstitute/gatk',chrom=chrm,memory=memory)
         write_and_logging(mje = '\n'+' '.join(cmd) + '\n', writer = writer1,stdout=False)        
 
         #call genomicDBImport via docker
@@ -141,7 +141,7 @@ def main():
         
 
         # call Genotype via docker
-        cmd2 = genotype_gvcf_cmd(ReferenceFile=ReferenceFile,outpath = outpath ,dbname = dbname ,sample_file = sample_file)
+        cmd2 = genotype_gvcf_cmd(ReferenceFile=ReferenceFile,outpath = outpath ,dbname = dbname ,sample_file = sample_file,memory=memory)
         if logfile is not './log.out':
             logFILE = outpath + basename_sample_file +'.log.out'
 
