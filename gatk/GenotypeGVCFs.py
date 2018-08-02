@@ -61,7 +61,7 @@ def GenomicsDBImport_cmd(sample_file, outpath,sample_path, memory = '4g',image =
     '-v',mount_sample_file]
 
     task = ['-t',image,
-    'gatk','--java-options','"-Xmx%sg -Xms%sg"'%(memory,memory),
+    'gatk','--java-options','"-Xmx%s -Xms%s"'%(memory,memory),
     'GenomicsDBImport',
     '--genomicsdb-workspace-path',docker_db_path + dbname,
     '--batch-size','50',
