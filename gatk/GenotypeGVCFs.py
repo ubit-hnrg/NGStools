@@ -73,7 +73,7 @@ def GenomicsDBImport_cmd(sample_file, outpath,sample_path, memory = '4g',image =
     
     return cmd
 
-def genotype_gvcf_cmd(ReferenceFile,outpath,dbname,sample_file,memory = '4g' image = 'broadinstitute/gatk' ):
+def genotype_gvcf_cmd(ReferenceFile,outpath,dbname,sample_file,memory = '4g',image = 'broadinstitute/gatk'):
 
     ReferenceDir = os.path.dirname(ReferenceFile)
     ReferenceFile_basename = os.path.basename(ReferenceFile)
