@@ -1,10 +1,11 @@
 #!/usr/bin/python
 
-from pyensembl import EnsemblRelease as ensbl
-import pandas as pd
-import numpy as np
 import argparse
 import os
+import pip
+from pyensembl import EnsemblRelease as ensbl
+import numpy as np
+import pandas as pd
 import mygene
 
 
