@@ -161,7 +161,9 @@ def get_locis(genelist,ref,outpath,entrez = False,write_bedfile = True):
     locis.rename(columns = {'contig':'chrom'},inplace = True)
     locis['score'] = 0 ## this is only for completness, in order to recognize strand as the right next field
     locis = locis[['chrom','start','end','name','score','strand']]
-    
+    if ref == 19:
+        locis['chrom'] = locis.chrom.apply(lambda x: 'chr'+str(x))
+
     # write file
     bedfile = outpath+'gene_loci.bed'
     if write_bedfile:
