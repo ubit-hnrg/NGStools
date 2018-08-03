@@ -357,6 +357,8 @@ def get_exons(genelist,ref,outpath,entrez = False, write_bedfile = True):
 
     print '\n'
     exonbed = pd.concat(exonbed)
+    if ref == 19:
+        exonbed.chrom = exonbed.chrom.apply(lambda x: 'chrm'+str(x))
     
     # write file
     exonbedfile = outpath+'exons_loci.bed'
