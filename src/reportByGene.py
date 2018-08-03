@@ -201,9 +201,15 @@ def serie_counting(x):
     return pd.Series({'bp_at_10dp':(x>10).sum(),'bp_at_20dp':(x>20).sum(),'bp_at_30dp':(x>30).sum()})
 
 def run_bedtools_coverage(bam,bed,outpath,exonbed = False):
-    
+    if exonbed :
+        resolution = 'exon'
+    else:
+        resolution = 'gene'
+
     outcoveragefile = outpath +os.path.basename(bed)+'.tsv'
-    exon_file_report= outpath +os.path.basename(bed)+'_exon_report'+'.tsv'
+    absolute_file_report =  outpath +os.path.basename(bed)+'_absolute_report'+'.tsv'
+    relative_file_report= outpath +os.path.basename(bed)+'_relative_report'+'.tsv'
+
     print outcoveragefile
     call = 'coverageBed -a %s -b %s > %s'%(bed,bam,outcoveragefile)
     status = os.system(call)
@@ -222,13 +228,13 @@ def run_bedtools_coverage(bam,bed,outpath,exonbed = False):
     ## in the following I atempt to compute the coverage at different minimal dp levels, namely: at dp= 10, 20, 30
     
     #compute dp per base x gene
-    file_by_position = outpath + 'coverage_by_position.txt'
+    file_by_position = outpath + resolution +'_coverage_by_position.txt'
     call2 = 'coverageBed -a %s -b %s -d > %s'%(bed,bam,file_by_position)
     os.system(call2)
     
     bypos = pd.read_csv(file_by_position,sep = '\t',header = None)
 
-    grouping = bypos.groupby([3])[7].apply(lambda x: serie_counting(x))
+    grouping = bypos.groupby([3])[7].apply(lambda x: serie_counting(x))  
     
     res  = grouping.unstack(); 
     #reset index and rename it
@@ -243,20 +249,31 @@ def run_bedtools_coverage(bam,bed,outpath,exonbed = False):
     ### relativise results
     abscols = ['bp_at_10dp','bp_at_20dp','bp_at_30dp']
 
+
+
     
     if not exonbed:
+        coverage.to_csv(absolute_file_report,index = False, sep = '\t')
         relatives = np.round((coverage[abscols].transpose() /coverage['len_gen_bp'].values).transpose(),7)
         coverage[abscols] = relatives
-    coverage.to_csv(outcoveragefile,index = False, sep = '\t')
+        coverage.to_csv(relative_file_report,index = False, sep = '\t')
+
 
     if exonbed:    
-        exome_report = coverage.groupby(['score'])[['coverage_dp1','len_gen_bp','bp_at_10dp','bp_at_20dp','bp_at_30dp']].sum()
-        rel = exome_report.apply(lambda x:x/float(x['len_gen_bp']),axis = 1)#.drop([u'len_gen_bp'],axis = 1)
-
+        exome_report = coverage.groupby(['name'])[['coverage_dp1','len_gen_bp','bp_at_10dp','bp_at_20dp','bp_at_30dp']].sum()
+        rel = exome_report.apply(lambda x:x/float(x['len_gen_bp']),axis = 1).drop([u'len_gen_bp'],axis = 1)
         exon_coverage = exome_report[['len_gen_bp']].join(rel)
         exon_coverage.reset_index(inplace = True)
-        exon_coverage.rename(columns = {'score':'name'},inplace = True)
-        exon_coverage.to_csv(exon_file_report,index =False , sep = '\t')
+        exome_report.reset_index(inplace = True)
+        #exon_coverage.rename(columns = {'score':'name'},inplace = True)
+
+        abs_coverage = coverage.copy()
+        abs_coverage[exome_report.columns] = exome_report
+        abs_coverage.to_csv(absolute_file_report,index =False , sep = '\t')
+
+        rel_coverage = coverage.copy()
+        rel_coverage[exon_coverage.columns] = exon_coverage
+        rel_coverage.to_csv(relative_file_report,index =False , sep = '\t')
 
     
     
