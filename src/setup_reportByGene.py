@@ -1,5 +1,5 @@
 import subprocess
-requirements = ['pandas','numpy','pyensembl','mygene']
+requirements = ['pandas','pyensembl','mygene']
 
 for package  in requirements:
 	process = subprocess.Popen(['pip','install',package],stdout=subprocess.PIPE)
