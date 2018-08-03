@@ -251,7 +251,8 @@ def run_bedtools_coverage(bam,bed,outpath,exonbed = False):
 
     if exonbed:    
         exome_report = coverage.groupby(['score'])[['coverage_dp1','len_gen_bp','bp_at_10dp','bp_at_20dp','bp_at_30dp']].sum()
-        rel = exome_report.apply(lambda x:x/float(x['len_gen_bp']),axis = 1).drop([u'len_gen_bp'],axis = 1)
+        rel = exome_report.apply(lambda x:x/float(x['len_gen_bp']),axis = 1)#.drop([u'len_gen_bp'],axis = 1)
+
         exon_coverage = exome_report[['len_gen_bp']].join(rel)
         exon_coverage.reset_index(inplace = True)
         exon_coverage.rename(columns = {'score':'name'},inplace = True)
