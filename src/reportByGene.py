@@ -434,7 +434,7 @@ def main(test = False):
     genelist = get_genelist(genelistfile,entrez=entrez,writer = wlogfile)
     gene_loci , bedfile , locicolumns = get_locis(genelist,ref = ref,outpath=outpath,entrez=entrez,writer = wlogfile)
     exon_loci , exon_bedfile , exon_columns = get_exons(genelist,ref = ref,outpath=outpath,entrez = entrez,writer = wlogfile)
-    
+
     
     reduced_bamfile = run_samtools_view(bamfile,bedfile,split=split,outpath = outpath)
     
@@ -445,6 +445,7 @@ def main(test = False):
     
     exome_coverage = pd.read_table(coverage_by_exon)
     os.system('rm %s'%exon_bedfile)
+    wlogfile.close()
     #os.system('rm %s'%gene_loci)
     #os.system('rm %s'%exon_loci)
 
