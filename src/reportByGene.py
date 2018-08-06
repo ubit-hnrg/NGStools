@@ -87,13 +87,13 @@ def get_genelist(genelistfile,entrez,writer = None):
     genes = pd.read_csv(genelistfile,header = None)
     if not entrez:
         genelist = genes.iloc[:,0].tolist()
-        mje =  'genes read from file:\n'
+        mje =  'read genes from file:\n'
         write_and_logging(mje,writer = writer)
         write_and_logging(' '.join(genelist),writer = writer)
         #print '\n'
     if entrez:
         genelist = genes.iloc[:,1].tolist()
-        mje =  'genes read from file:'
+        mje =  'read genes from file:'
         write_and_logging(mje,writer = writer)
         write_and_logging(' '.join(genelist),writer = writer)
         #print '\n'
@@ -439,7 +439,7 @@ def main(test = False):
     reduced_bamfile = run_samtools_view(bamfile,bedfile,split=split,outpath = outpath)
     
     #compute coverage by gen along the bamfile
-    #coverage_file = run_bedtools_coverage(reduced_bamfile,bedfile,outpath)
+    coverage_file = run_bedtools_coverage(reduced_bamfile,bedfile,outpath)
     coverage_by_exon = run_bedtools_coverage(reduced_bamfile,exon_bedfile,outpath,exonbed= True)
     
     
