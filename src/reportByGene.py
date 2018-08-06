@@ -83,18 +83,18 @@ def check_ref(ref,outpath):
 
     
     
-def get_genelist(genelistfile,entrez):
+def get_genelist(genelistfile,entrez,writer = None):
     genes = pd.read_csv(genelistfile,header = None)
     if not entrez:
         genelist = genes.iloc[:,0].tolist()
         mje =  'genes read from file:'
-        write_and_logging(mje)
+        write_and_logging(mje,writer = writer)
         write_and_logging(' '.join(genelist))
         #print '\n'
     if entrez:
         genelist = genes.iloc[:,1].tolist()
         mje =  'genes read from file:'
-        write_and_logging(mje)
+        write_and_logging(mje,writer = writer)
         write_and_logging(' '.join(genelist))
         #print '\n'
     return genelist
@@ -109,7 +109,7 @@ def test_mode():
     return(ref,genelistfile,bamfile,outpath,split)
     
     
-def get_locis(genelist,ref,outpath,entrez = False,write_bedfile = True):
+def get_locis(genelist,ref,outpath,entrez = False,write_bedfile = True,writer =None):
     analyzed_genes = []
     try:
         if (ref == 37)|(ref == 19):
@@ -140,7 +140,7 @@ def get_locis(genelist,ref,outpath,entrez = False,write_bedfile = True):
                 gids = gene_query['hits']
                 if(len(gids)==0):
                     mje = 'warning, gene %s was not found and ignored'%gene 
-                    write_and_logging(mje)
+                    write_and_logging(mje,writer = writer)
                     continue
                 else:
                     j=0
@@ -157,14 +157,14 @@ def get_locis(genelist,ref,outpath,entrez = False,write_bedfile = True):
                     # check if there was a match 
                     if i == j:
                         mje = 'warning, gene %s was not found and ignored'%gene 
-                        write_and_logging(mje)
+                        write_and_logging(mje,writer = writer)
                         continue
                         
                     if len(gids)>1:
                         mje = 'warning: more than one mathch with %s'%gene
-                        write_and_logging(mje)
+                        write_and_logging(mje,writer = writer)
                         mje = 'gen id: %s (ensmbl id %s ) was assumed'%(gid,ensblID)
-                        write_and_logging(mje)
+                        write_and_logging(mje,writer = writer)
                 loc =  data.locus_of_gene_id(ensblID)
                 locis.append(loc[0].to_dict())
                 analyzed_genes.append(gene)
@@ -178,7 +178,7 @@ def get_locis(genelist,ref,outpath,entrez = False,write_bedfile = True):
                 analyzed_genes.append(gene)
             except:
                 mje = 'warning, gene %s was not found and ignored'%gene 
-                write_and_logging(mje)
+                write_and_logging(mje,writer = writer)
                 continue
                 
     
@@ -235,8 +235,8 @@ def run_bedtools_coverage(bam,bed,outpath,exonbed = False):
     else:
         resolution = 'gene'
 
-    outcoveragefile = outpath +os.path.basename(bed)+'.tsv'
-    absolute_file_report =  outpath +os.path.basename(bed)+'_absolute_report'+'.tsv'
+    outcoveragefile = outpath +'.'+os.path.basename(bed)+'.tsv' # lo dejo como archivo oculto
+    absolute_file_report =  outpath + '.' + os.path.basename(bed)+'_absolute_report'+'.tsv'  # lo dejo como archivo oculto
     relative_file_report= outpath +os.path.basename(bed)+'_relative_report'+'.tsv'
 
     print outcoveragefile
@@ -309,7 +309,7 @@ def run_bedtools_coverage(bam,bed,outpath,exonbed = False):
     return outcoveragefile
 
 
-def get_exons(genelist,ref,outpath,entrez = False, write_bedfile = True):
+def get_exons(genelist,ref,outpath,entrez = False, write_bedfile = True,writer = None):
     analyzed_genes = []
     try:
         if (ref == 37)|(ref == 19):
@@ -349,7 +349,7 @@ def get_exons(genelist,ref,outpath,entrez = False, write_bedfile = True):
                 gids = gene_query['hits']
                 if(len(gids)==0):
                     mje = 'warning, gene %s was not found and ignored'%gene 
-                    write_and_logging(mje)
+                    write_and_logging(mje,writer = writer)
                     continue
                 else:
                     j=0
@@ -366,14 +366,14 @@ def get_exons(genelist,ref,outpath,entrez = False, write_bedfile = True):
                     # check if there was a match 
                     if i == j:
                         mje = 'warning, gene %s was not found and ignored'%gene 
-                        write_and_logging(mje)
+                        write_and_logging(mje,writer = writer)
                         continue
                         
                     if len(gids)>1:
                         mje =  'warning: more than one mathch with %s'%gene
-                        write_and_logging(mje)
+                        write_and_logging(mje,writer = writer)
                         mje = 'gen id: %s (ensmbl id %s ) was assumed'%(gid,ensblID)
-                        write_and_logging(mje)
+                        write_and_logging(mje,writer = writer)
                 exons = data.exon_ids_of_gene_id(ensblID)
                 exonLocus = [data.locus_of_exon_id(e) for e in exons]
                 exonLoci = [ex.to_dict() for ex in exonLocus]
@@ -403,7 +403,7 @@ def get_exons(genelist,ref,outpath,entrez = False, write_bedfile = True):
                 analyzed_genes.append(gene)
             except ValueError:
                 mje = 'warning, gene %s was not found and ignored'%gene 
-                write_and_logging(mje)
+                write_and_logging(mje,writer = writer)
                 continue
                 
 
@@ -429,10 +429,12 @@ def main(test = False):
     #check params
     check_ref(ref=ref,outpath = outpath)
 
-    genelist = get_genelist(genelistfile,entrez=entrez)
-    gene_loci , bedfile , locicolumns = get_locis(genelist,ref = ref,outpath=outpath,entrez=entrez)
-    exon_loci , exon_bedfile , exon_columns = get_exons(genelist,ref = ref,outpath=outpath,entrez = entrez)
+    wlogfile = io.open(logfile, 'wb')
 
+    genelist = get_genelist(genelistfile,entrez=entrez,writer = wlogfile)
+    gene_loci , bedfile , locicolumns = get_locis(genelist,ref = ref,outpath=outpath,entrez=entrez,writer = wlogfile)
+    exon_loci , exon_bedfile , exon_columns = get_exons(genelist,ref = ref,outpath=outpath,entrez = entrez,writer = wlogfile)
+    
     
     reduced_bamfile = run_samtools_view(bamfile,bedfile,split=split,outpath = outpath)
     
@@ -443,8 +445,8 @@ def main(test = False):
     
     exome_coverage = pd.read_table(coverage_by_exon)
     os.system('rm %s'%exon_bedfile)
-    os.system('rm %s'%gene_loci)
-    os.system('rm %s'%exon_loci)
+    #os.system('rm %s'%gene_loci)
+    #os.system('rm %s'%exon_loci)
 
 
 
