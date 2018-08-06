@@ -89,13 +89,13 @@ def get_genelist(genelistfile,entrez):
         genelist = genes.iloc[:,0].tolist()
         mje =  'genes read from file:'
         write_and_logging(mje)
-        write_and_logging(genelist)
+        write_and_logging(' '.join(genelist))
         #print '\n'
     if entrez:
         genelist = genes.iloc[:,1].tolist()
         mje =  'genes read from file:'
         write_and_logging(mje)
-        write_and_logging(genelist)
+        write_and_logging(' '.join(genelist))
         #print '\n'
     return genelist
     
