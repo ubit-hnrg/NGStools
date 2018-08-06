@@ -82,7 +82,6 @@ def check_ref(ref,outpath):
         os.system('mkdir %s'%outpath)    
 
     
-    
 def get_genelist(genelistfile,entrez,writer = None):
     genes = pd.read_csv(genelistfile,header = None)
     if not entrez:
@@ -289,8 +288,9 @@ def run_bedtools_coverage(bam,bed,outpath,exonbed = False):
 
 
     if exonbed:    
-        exome_report = coverage.groupby(['name'])[['coverage_dp1','len_gen_bp','bp_at_10dp','bp_at_20dp','bp_at_30dp']].sum()
-        rel = exome_report.apply(lambda x:x/float(x['len_gen_bp']),axis = 1).drop([u'len_gen_bp'],axis = 1)
+#        exome_report = coverage.groupby(['name'])[['coverage_dp1','len_gen_bp','bp_at_10dp','bp_at_20dp','bp_at_30dp']].sum()
+        exome_report = coverage.groupby(['name'])[['len_gen_bp','bp_at_10dp','bp_at_20dp','bp_at_30dp']].sum()
+        rel = exome_report.apply(lambda x:x[abscols]/float(x['len_gen_bp']),axis = 1).drop([u'len_gen_bp'],axis = 1)
         exon_coverage = exome_report[['len_gen_bp']].join(rel)
         exon_coverage.reset_index(inplace = True)
         exome_report.reset_index(inplace = True)
@@ -443,8 +443,7 @@ def main(test = False):
     coverage_by_exon = run_bedtools_coverage(reduced_bamfile,exon_bedfile,outpath,exonbed= True)
     
     
-    exome_coverage = pd.read_table(coverage_by_exon)
-    os.system('rm %s'%exon_bedfile)
+    #os.system('rm %s'%exon_bedfile)
     wlogfile.close()
     #os.system('rm %s'%gene_loci)
     #os.system('rm %s'%exon_loci)
