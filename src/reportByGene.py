@@ -287,8 +287,16 @@ def run_bedtools_coverage(bam,bed,outpath,exonbed = False):
         coverage.to_csv(relative_file_report,index = False, sep = '\t')
 
 
-    if exonbed:    
+    if exonbed:
+        coverage.rename(columns = {'score':'Gene'}).to_csv(absolute_file_report,index = False, sep = '\t')
+        relatives = np.round((coverage[abscols].transpose() /coverage['len_gen_bp'].values).transpose(),7)
+        coverage[abscols] = relatives
+        coverage.rename(columns = {'score':'Gene'}).to_csv(relative_file_report,index = False, sep = '\t')
+
+
+    if False:    
 #        exome_report = coverage.groupby(['name'])[['coverage_dp1','len_gen_bp','bp_at_10dp','bp_at_20dp','bp_at_30dp']].sum()
+
         exome_report = coverage.groupby(['name'])[['len_gen_bp','bp_at_10dp','bp_at_20dp','bp_at_30dp']].sum()
         for col in abscols:
             exome_report[col] =  exome_report[col]/exome_report['len_gen_bp']
@@ -296,16 +304,16 @@ def run_bedtools_coverage(bam,bed,outpath,exonbed = False):
         #rel = exome_report.apply(lambda x:x[abscols]/float(x['len_gen_bp']),axis = 1)#.drop([u'len_gen_bp'],axis = 1)
         #print rel.head()
         #exon_coverage = pd.merge(exome_report[['len_gen_bp']]),rel,how = 'inner',left_index = True, right_index = True)
-        exon_coverage.reset_index(inplace = True)
+        exome_coverage.reset_index(inplace = True)
         #exome_report.reset_index(inplace = True)
-        exon_coverage.rename(columns = {'score':'Gene'},inplace = True)
+        exome_coverage.rename(columns = {'score':'Gene'},inplace = True)
 
         abs_coverage = coverage.copy()
         abs_coverage[exome_report.columns] = exome_report
         abs_coverage.to_csv(absolute_file_report,index =False , sep = '\t')
 
         rel_coverage = coverage.copy()
-        rel_coverage[exon_coverage.columns] = exon_coverage
+        rel_coverage[exome_coverage.columns] = exome_coverage
         rel_coverage.to_csv(relative_file_report,index =False , sep = '\t')
 
     
