@@ -24,7 +24,9 @@ def popen_with_logging(cmd,logfile = 'out.log'):
     return None
 
 
-def write_and_logging(mje,writer=io.open('out.log', 'wb'),stdout = True):
+def write_and_logging(mje,writer=None,stdout = True):
+    if writer is None:
+        writer = io.open('out.log', 'wb')
     if stdout:
         print mje
     writer.write(mje)
