@@ -87,15 +87,15 @@ def get_genelist(genelistfile,entrez,writer = None):
     genes = pd.read_csv(genelistfile,header = None)
     if not entrez:
         genelist = genes.iloc[:,0].tolist()
-        mje =  'genes read from file:'
+        mje =  'genes read from file:\n'
         write_and_logging(mje,writer = writer)
-        write_and_logging(' '.join(genelist))
+        write_and_logging(' '.join(genelist),writer = writer)
         #print '\n'
     if entrez:
         genelist = genes.iloc[:,1].tolist()
         mje =  'genes read from file:'
         write_and_logging(mje,writer = writer)
-        write_and_logging(' '.join(genelist))
+        write_and_logging(' '.join(genelist),writer = writer)
         #print '\n'
     return genelist
     
