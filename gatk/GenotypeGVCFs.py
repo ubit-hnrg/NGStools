@@ -15,6 +15,7 @@ def get_args():
     parser.add_argument('-M', '--memory',required = False, default = '4g',help = 'memory to be used in gatk docker')
     parser.add_argument('--overwrite', dest='overwrite', action='store_true')
     parser.add_argument('--no-overwrite', dest='overwrite', action='store_false')
+    parser.add_argument('-b','--batchsize',default='10',required = False)
     parser.set_defaults(overwrite=False)
     
     # parse args
@@ -41,7 +42,7 @@ def popen_with_logging(cmd,logfile = 'out.log'):
     return None
 
 
-def GenomicsDBImport_cmd(sample_file, outpath,sample_path, memory = '4g',image = 'broadinstitute/gatk',dbname = 'mydb',chrom = '12'):
+def GenomicsDBImport_cmd(sample_file, outpath,sample_path, memory = '4g',image = 'broadinstitute/gatk',dbname = 'mydb',chrom = '12',batchsize = '10'):
 
     #Create Docker local paths
     docker_input_dir = '/gatk/inputdata/'
@@ -64,7 +65,7 @@ def GenomicsDBImport_cmd(sample_file, outpath,sample_path, memory = '4g',image =
     'gatk','--java-options','"-Xmx%s -Xms%s"'%(memory,memory),
     'GenomicsDBImport',
     '--genomicsdb-workspace-path',docker_db_path + dbname,
-    '--batch-size','50',
+    '--batch-size',batchsize,
     '-L',chrom]
     
     ffiles = ['-V ' + docker_input_dir + line.rstrip('\n') for line in open(sample_file)]    
@@ -112,7 +113,7 @@ def write_and_logging(mje,writer,stdout = True):
 
 def main():
     args = get_args()
-    sample_file, outpath, logfile, sample_path , ReferenceFile,memory = args.sample_file, args.outpath, args.logfile,args.sample_path,args.ReferenceFile,args.memory
+    sample_file, outpath, logfile, sample_path , ReferenceFile,memory batchsize = args.sample_file, args.outpath, args.logfile,args.sample_path,args.ReferenceFile,args.memory args.batchsize
 
     create_output_dirs(outpath) # no es necesario porque el monatje al docker te lo crea si no existe
     CHRMS = [str(i) for i in np.arange(22)+1] +['X','Y']
@@ -132,7 +133,7 @@ def main():
 
         #create docker call for GenomicDBImport
         dbname = 'dbi'+'_chr'+chrm
-        cmd = GenomicsDBImport_cmd(sample_file=sample_file,sample_path = sample_path, dbname=dbname ,outpath = outpath,image = 'broadinstitute/gatk',chrom=chrm,memory=memory)
+        cmd = GenomicsDBImport_cmd(sample_file=sample_file,sample_path = sample_path, dbname=dbname ,outpath = outpath,image = 'broadinstitute/gatk',chrom=chrm,memory=memory,batchsize=batchsize)
         write_and_logging(mje = '\n'+' '.join(cmd) + '\n', writer = writer1,stdout=False)        
 
         #call genomicDBImport via docker
