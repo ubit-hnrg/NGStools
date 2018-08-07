@@ -138,7 +138,7 @@ def get_locis(genelist,ref,outpath,entrez = False,write_bedfile = True,writer =N
                 gene_query = mg.query(gene, size=5,species = 'human')
                 gids = gene_query['hits']
                 if(len(gids)==0):
-                    mje = 'warning, gene %s was not found and ignored'%gene 
+                    mje = 'warning, gene %s was not found and ignored\n'%gene 
                     write_and_logging(mje,writer = writer)
                     continue
                 else:
@@ -156,7 +156,7 @@ def get_locis(genelist,ref,outpath,entrez = False,write_bedfile = True,writer =N
 
                     # check if there was a match 
                     if i == j:
-                        mje = 'warning, gene %s was not found and ignored'%gene 
+                        mje = 'warning, gene %s was not found and ignored\n'%gene 
                         write_and_logging(mje,writer = writer)
                         continue
                         
@@ -177,7 +177,7 @@ def get_locis(genelist,ref,outpath,entrez = False,write_bedfile = True,writer =N
                 locis.append(loc[0].to_dict())
                 analyzed_genes.append(gene)
             except:
-                mje = 'warning, gene %s was not found and ignored'%gene 
+                mje = 'warning, gene %s was not found and ignored\n'%gene 
                 write_and_logging(mje,writer = writer)
                 continue
                 
@@ -361,7 +361,7 @@ def get_exons(genelist,ref,outpath,entrez = False, write_bedfile = True,writer =
                 gene_query = mg.query(gene, size=5,species = 'human')
                 gids = gene_query['hits']
                 if(len(gids)==0):
-                    mje = 'warning, gene %s was not found and ignored'%gene 
+                    mje = 'warning, gene %s was not found and ignored\n'%gene 
                     write_and_logging(mje,writer = writer)
                     continue
                 else:
@@ -378,7 +378,7 @@ def get_exons(genelist,ref,outpath,entrez = False, write_bedfile = True,writer =
 
                     # check if there was a match 
                     if i == j:
-                        mje = 'warning, gene %s was not found and ignored'%gene 
+                        mje = 'warning, gene %s was not found and ignored\n'%gene 
                         write_and_logging(mje,writer = writer)
                         continue
                         
@@ -415,7 +415,7 @@ def get_exons(genelist,ref,outpath,entrez = False, write_bedfile = True,writer =
                 exonbed.append(exonLoci)
                 analyzed_genes.append(gene)
             except ValueError:
-                mje = 'warning, gene %s was not found and ignored'%gene 
+                mje = 'warning, gene %s was not found and ignored\n'%gene 
                 write_and_logging(mje,writer = writer)
                 continue
                 
