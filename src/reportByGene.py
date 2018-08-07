@@ -146,7 +146,7 @@ def get_locis(genelist,ref,outpath,entrez = False,write_bedfile = True,writer =N
                     for i in range(len(gids)): 
                         gid = int(gids[i][u'_id'])
                         try:
-                            print gid
+                            #print gid
                             ensblID = mg.getgene(gid, fields='ensembl',species = 'human')[u'ensembl'] [u'gene']
                             trylocus = data.locus_of_gene_id(ensblID)
                             break
@@ -166,6 +166,8 @@ def get_locis(genelist,ref,outpath,entrez = False,write_bedfile = True,writer =N
                         mje = 'gen id: %s (ensmbl id %s ) was assumed'%(gid,ensblID)
                         write_and_logging(mje,writer = writer)
                 loc =  data.locus_of_gene_id(ensblID)
+                print gene 
+                print loc
                 locis.append(loc[0].to_dict())
                 analyzed_genes.append(gene)
 
