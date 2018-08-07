@@ -374,12 +374,15 @@ def get_exons(genelist,ref,outpath,entrez = False, write_bedfile = True,writer =
                 else:
                     j=0
                     for i in range(len(gids)): 
-                        gid = int(gids[i][u'_id'])
+                        try:
+                            gid = int(gids[i][u'_id'])
+                        except ValueError:
+                            continue
                         try:
                             ensblID = mg.getgene(gid, fields='ensembl',species = 'human')[u'ensembl'] [u'gene']
                             trylocus = data.locus_of_gene_id(ensblID)
                             break
-                        except ValueError:
+                        except:
                             j=j+1
                             continue
 
