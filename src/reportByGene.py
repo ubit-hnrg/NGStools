@@ -166,9 +166,10 @@ def get_locis(genelist,ref,outpath,entrez = False,write_bedfile = True,writer =N
                         mje = 'gen id: %s (ensmbl id %s ) was assumed'%(gid,ensblID)
                         write_and_logging(mje,writer = writer)
                 loc =  data.locus_of_gene_id(ensblID)
-                print gene 
-                print loc
-                locis.append(loc[0].to_dict())
+#                print gene 
+#                print loc
+#                locis.append(loc[0].to_dict())
+                locis.append(loc.to_dict())
                 analyzed_genes.append(gene)
 
     if entrez == True:
