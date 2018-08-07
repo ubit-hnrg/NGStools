@@ -228,15 +228,15 @@ def run_samtools_view(bamfile,bedfile,outpath,split=False):
 def serie_counting(x):
     return pd.Series({'bp_at_10dp':(x>10).sum(),'bp_at_20dp':(x>20).sum(),'bp_at_30dp':(x>30).sum()})
 
-def run_bedtools_coverage(bam,bed,outpath,exonbed = False):
+def run_bedtools_coverage(bam,bed,outpath,exonbed = False,prefix =''):
     if exonbed :
         resolution = 'exon'
     else:
         resolution = 'gene'
 
-    outcoveragefile = outpath +'.'+os.path.basename(bed)+'.tsv' # lo dejo como archivo oculto
-    absolute_file_report =  outpath + '.' + os.path.basename(bed)+'_absolute_report'+'.tsv'  # lo dejo como archivo oculto
-    relative_file_report= outpath +os.path.basename(bed)+'_relative_report'+'.tsv'
+    outcoveragefile = outpath +'.'+prefix + resolution +'.tsv' # lo dejo como archivo oculto
+    absolute_file_report =  outpath + '.'+ prefix + resolution +'_absolute_report'+'.tsv'  # lo dejo como archivo oculto
+    relative_file_report= outpath + prefix + resolution +'_relative_report'+'.tsv'
 
     print outcoveragefile
     call = 'coverageBed -a %s -b %s > %s'%(bed,bam,outcoveragefile)
@@ -451,8 +451,8 @@ def main(test = False):
     reduced_bamfile = run_samtools_view(bamfile,bedfile,split=split,outpath = outpath)
     
     #compute coverage by gen along the bamfile
-    coverage_file = run_bedtools_coverage(reduced_bamfile,bedfile,outpath)
-    coverage_by_exon = run_bedtools_coverage(reduced_bamfile,exon_bedfile,outpath,exonbed= True)
+    coverage_file = run_bedtools_coverage(reduced_bamfile,bedfile,outpath,prefix =prefix)
+    coverage_by_exon = run_bedtools_coverage(reduced_bamfile,exon_bedfile,outpath,exonbed= True,prefix = prefix)
     
     
     #os.system('rm %s'%exon_bedfile)
