@@ -144,6 +144,7 @@ def get_locis(genelist,ref,outpath,entrez = False,write_bedfile = True,writer =N
                 else:
                     j=0
                     for i in range(len(gids)): 
+                        print gids
                         gid = int(gids[i][u'_id'])
                         try:
                             #print gid
