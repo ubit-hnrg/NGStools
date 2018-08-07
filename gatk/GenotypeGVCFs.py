@@ -113,7 +113,7 @@ def write_and_logging(mje,writer,stdout = True):
 
 def main():
     args = get_args()
-    sample_file, outpath, logfile, sample_path , ReferenceFile,memory batchsize = args.sample_file, args.outpath, args.logfile,args.sample_path,args.ReferenceFile,args.memory args.batchsize
+    sample_file, outpath, logfile, sample_path , ReferenceFile,memory,batchsize = args.sample_file, args.outpath, args.logfile,args.sample_path,args.ReferenceFile,args.memory, args.batchsize
 
     create_output_dirs(outpath) # no es necesario porque el monatje al docker te lo crea si no existe
     CHRMS = [str(i) for i in np.arange(22)+1] +['X','Y']
