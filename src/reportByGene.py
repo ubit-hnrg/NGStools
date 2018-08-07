@@ -164,9 +164,9 @@ def get_locis(genelist,ref,outpath,entrez = False,write_bedfile = True,writer =N
                         continue
                         
                     if len(gids)>1:
-                        mje = 'warning: more than one mathch with %s'%gene
+                        mje = 'warning: more than one mathch with %s |'%gene
                         write_and_logging(mje,writer = writer)
-                        mje = 'gen id: %s (ensmbl id %s ) was assumed'%(gid,ensblID)
+                        mje = 'gen id: %s (ensmbl id %s ) was assumed\n'%(gid,ensblID)
                         write_and_logging(mje,writer = writer)
                 loc =  data.locus_of_gene_id(ensblID)
 #                locis.append(loc[0].to_dict())
@@ -390,9 +390,9 @@ def get_exons(genelist,ref,outpath,entrez = False, write_bedfile = True,writer =
                         continue
                         
                     if len(gids)>1:
-                        mje =  'warning: more than one mathch with %s'%gene
+                        mje =  'warning: more than one mathch with %s |'%gene
                         write_and_logging(mje,writer = writer)
-                        mje = 'gen id: %s (ensmbl id %s ) was assumed'%(gid,ensblID)
+                        mje = 'gen id: %s (ensmbl id %s ) was assumed\n'%(gid,ensblID)
                         write_and_logging(mje,writer = writer)
                 exons = data.exon_ids_of_gene_id(ensblID)
                 exonLocus = [data.locus_of_exon_id(e) for e in exons]
