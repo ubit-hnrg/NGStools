@@ -84,10 +84,17 @@ def GenomicsDBImport_cmd(sample_file, outpath,sample_path, memory = '4g',image =
     
     return cmd
 
-def genotype_gvcf_cmd(ReferenceFile,outpath,dbname,sample_file,memory = '4g',image = 'broadinstitute/gatk'):
+def genotype_gvcf_cmd(ReferenceFile,outpath,dbname,sample_file,memory = '4g',image = 'broadinstitute/gatk',interval = None):
 
     ReferenceDir = os.path.dirname(ReferenceFile)
     ReferenceFile_basename = os.path.basename(ReferenceFile)
+
+    if interval is not None:
+        baseint = os.path.basename(interval)
+        docker_interval_file = '/gatk/%s'%baseint
+        mount_interval_file = interval+':'+docker_interval_file    
+ 
+
 
     docker_db_path = '/dbpath/'
     docker_outdir = '/outdir/'
@@ -104,14 +111,16 @@ def genotype_gvcf_cmd(ReferenceFile,outpath,dbname,sample_file,memory = '4g',ima
     '-v',mount_db_path,
     '-v',mount_output_dir,
     '-v',mount_ref_file,
-    '-v',mount_ref_dir]
+    '-v',mount_ref_dir,
+    '-v',mount_interval_file]
 
     task = ['-t',image,
         'gatk','--java-options','-Xmx%s'%memory,
         'GenotypeGVCFs',
         '-R', docker_ReferenceFile,
         '-V', 'gendb://'+docker_db_path,
-        '-O', docker_outdir + dbname +'_genotypeGVCFs.vcf'
+        '-O', docker_outdir + dbname +'_genotypeGVCFs.vcf',
+        '-L',docker_interval_file
     ]
     cmd = cmd0 + task
     return cmd
@@ -153,7 +162,7 @@ def main():
     
 
     # call Genotype via docker
-    cmd2 = genotype_gvcf_cmd(ReferenceFile=ReferenceFile,outpath = outpath ,dbname = dbname ,sample_file = sample_file,memory=memory)
+    cmd2 = genotype_gvcf_cmd(ReferenceFile=ReferenceFile,outpath = outpath ,dbname = dbname ,sample_file = sample_file,memory=memory,interval = intervalfile)
     if logfile is not './log.out':
         logFILE = outpath + basename_sample_file +'.log.out'
 
