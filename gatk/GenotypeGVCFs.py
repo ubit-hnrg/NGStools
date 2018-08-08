@@ -120,7 +120,8 @@ def genotype_gvcf_cmd(ReferenceFile,outpath,dbname,sample_file,memory = '4g',ima
         '-R', docker_ReferenceFile,
         '-V', 'gendb://'+docker_db_path,
         '-O', docker_outdir + dbname +'_genotypeGVCFs.vcf',
-        '-L',docker_interval_file
+        '-L',docker_interval_file,
+        '-new-qual'
     ]
     cmd = cmd0 + task
     return cmd
