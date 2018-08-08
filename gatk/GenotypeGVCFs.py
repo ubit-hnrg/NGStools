@@ -16,6 +16,8 @@ def get_args():
     parser.add_argument('--overwrite', dest='overwrite', action='store_true')
     parser.add_argument('--no-overwrite', dest='overwrite', action='store_false')
     parser.add_argument('-b','--batchsize',default='10',required = False)
+    parser.add_argument('-i','--intervalfile',default=None,required = False)
+
     parser.set_defaults(overwrite=False)
     
     # parse args
@@ -42,12 +44,19 @@ def popen_with_logging(cmd,logfile = 'out.log'):
     return None
 
 
-def GenomicsDBImport_cmd(sample_file, outpath,sample_path, memory = '4g',image = 'broadinstitute/gatk',dbname = 'mydb',chrom = '12',batchsize = '10'):
+def GenomicsDBImport_cmd(sample_file, outpath,sample_path, memory = '4g',image = 'broadinstitute/gatk',dbname = 'mydb',interval = None,batchsize = '10'):
 
     #Create Docker local paths
     docker_input_dir = '/gatk/inputdata/'
     docker_db_path = '/dbpath/'
     docker_sample_file = '/gatk/samples.txt'
+
+    if interval is not None:
+        baseint = os.path.basename(interval)
+        docker_interval_file = '/gatk/%s'%baseint
+        mount_interval_file = interval+':'+docker_interval_file    
+    else:
+        interval = '1'  # run on chrom 1
 
 
     ## mounting commands for docker
@@ -59,14 +68,15 @@ def GenomicsDBImport_cmd(sample_file, outpath,sample_path, memory = '4g',image =
     cmd0 = ['docker', 'run',
     '-v',mount_input_dir,
     '-v',mount_output_dir,
-    '-v',mount_sample_file]
+    '-v',mount_sample_file,
+    '-v',mount_interval_file]
 
     task = ['-t',image,
     'gatk','--java-options','"-Xmx%s -Xms%s"'%(memory,memory),
     'GenomicsDBImport',
     '--genomicsdb-workspace-path',docker_db_path + dbname,
     '--batch-size',batchsize,
-    '-L',chrom]
+    '-L',docker_interval_file]
     
     ffiles = ['-V ' + docker_input_dir + line.rstrip('\n') for line in open(sample_file)]    
 
@@ -113,10 +123,10 @@ def write_and_logging(mje,writer,stdout = True):
 
 def main():
     args = get_args()
-    sample_file, outpath, logfile, sample_path , ReferenceFile,memory,batchsize = args.sample_file, args.outpath, args.logfile,args.sample_path,args.ReferenceFile,args.memory, args.batchsize
+    sample_file, outpath, logfile, sample_path , ReferenceFile,memory,batchsize,intervalfile = args.sample_file, args.outpath, args.logfile,args.sample_path,args.ReferenceFile,args.memory, args.batchsize,args.intervalfile
 
     create_output_dirs(outpath) # no es necesario porque el monatje al docker te lo crea si no existe
-    CHRMS = [str(i) for i in np.arange(22)+1] +['X','Y']
+    ###CHRMS = [str(i) for i in np.arange(22)+1] +['X','Y']
 
     #create logging file
     basename_sample_file = os.path.basename(sample_file)
@@ -128,27 +138,28 @@ def main():
 
 
     ## dbimport requiere ejecutarse sobre un rango. La manera más practica que veo ahora es x cromosoma, pero tambien puede hacerse via un bed file
-    for chrm in CHRMS:
-        write_and_logging(mje = '\n doing chr %s \n'%chrm, writer = writer1)
 
-        #create docker call for GenomicDBImport
-        dbname = 'dbi'+'_chr'+chrm
-        cmd = GenomicsDBImport_cmd(sample_file=sample_file,sample_path = sample_path, dbname=dbname ,outpath = outpath,image = 'broadinstitute/gatk',chrom=chrm,memory=memory,batchsize=batchsize)
-        write_and_logging(mje = '\n'+' '.join(cmd) + '\n', writer = writer1,stdout=False)        
+#    for chrm in CHRMS:
+    write_and_logging(mje = '\n doing %s \n'%intervalfile, writer = writer1)
 
-        #call genomicDBImport via docker
-        #popen_with_logging(cmd,logfile=logFILE)
-        os.system(" ".join(cmd))   ## WARNING : aca lo force via system, sin logfile, porque popen le pasaba mal el path al docker. No logre entender por que.
-        
+    #create docker call for GenomicDBImport
+    dbname = 'dbi'+'_'+ os.path.basename(intervalfile).split('.')[0]
+    cmd = GenomicsDBImport_cmd(sample_file=sample_file,sample_path = sample_path, dbname=dbname ,outpath = outpath,image = 'broadinstitute/gatk',interval=intervalfile,memory=memory,batchsize=batchsize)
+    write_and_logging(mje = '\n'+' '.join(cmd) + '\n', writer = writer1,stdout=False)        
 
-        # call Genotype via docker
-        cmd2 = genotype_gvcf_cmd(ReferenceFile=ReferenceFile,outpath = outpath ,dbname = dbname ,sample_file = sample_file,memory=memory)
-        if logfile is not './log.out':
-            logFILE = outpath + basename_sample_file +'.log.out'
+    #call genomicDBImport via docker
+    #popen_with_logging(cmd,logfile=logFILE)
+    os.system(" ".join(cmd))   ## WARNING : aca lo force via system, sin logfile, porque popen le pasaba mal el path al docker. No logre entender por que.
+    
 
-        write_and_logging(mje = '\n'+' '.join(cmd2) +'\n', writer = writer1,stdout = False)
+    # call Genotype via docker
+    cmd2 = genotype_gvcf_cmd(ReferenceFile=ReferenceFile,outpath = outpath ,dbname = dbname ,sample_file = sample_file,memory=memory)
+    if logfile is not './log.out':
+        logFILE = outpath + basename_sample_file +'.log.out'
 
-        popen_with_logging(cmd2,logfile=logFILE)
+    write_and_logging(mje = '\n'+' '.join(cmd2) +'\n', writer = writer1,stdout = False)
+
+    popen_with_logging(cmd2,logfile=logFILE)
     
     writer1.close()
 if __name__ == '__main__':
