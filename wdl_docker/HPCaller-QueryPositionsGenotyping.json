@@ -1,0 +1,9 @@
+{
+  "hpc.RefFasta": "/home/ariel/Projects/BIA/VCFs/data/hgref/human_g1k_v37_decoy.fasta",
+  "hpc.SampleName": "TEST",
+  "hpc.queryList": "/home/ariel/wdl_pipelines/haplotypeCaller/query.list",
+  "hpc.HPCaller.inputBAM": "/home/ariel/Projects/BIA/hypopitutarism/data/bamfiles/201803_HG082_Proband.bam",
+  "hpc.HPCaller.bamIndex": "/home/ariel/Projects/BIA/hypopitutarism/data/bamfiles/201803_HG082_Proband.bam.bai",
+  "hpc.RefIndex": "/home/ariel/Projects/BIA/VCFs/data/hgref/human_g1k_v37_decoy.fasta.fai",
+  "hpc.RefDict": "/home/ariel/Projects/BIA/VCFs/data/hgref/human_g1k_v37_decoy.dict"
+}

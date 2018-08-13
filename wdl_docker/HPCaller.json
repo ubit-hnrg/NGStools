@@ -1,0 +1,8 @@
+{
+  "hpc.HPCaller.RefDict": "/home/ariel/Projects/BIA/VCFs/data/hgref/human_g1k_v37_decoy.dict",
+  "hpc.HPCaller.SampleName": "TEST",
+  "hpc.HPCaller.RefIndex": "/home/ariel/Projects/BIA/VCFs/data/hgref/human_g1k_v37_decoy.fasta.fai",
+  "hpc.HPCaller.RefFasta": "/home/ariel/Projects/BIA/VCFs/data/hgref/human_g1k_v37_decoy.fasta",
+  "hpc.HPCaller.inputBAM": "/home/ariel/Projects/BIA/hypopitutarism/data/bamfiles/201803_HG082_Proband.bam",
+  "hpc.HPCaller.bamIndex": "/home/ariel/Projects/BIA/hypopitutarism/data/bamfiles/201803_HG082_Proband.bam.bai"
+}
