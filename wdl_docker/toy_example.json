@@ -1,0 +1,5 @@
+{
+  "TouchWriteHead.touch_write_head.localImputFile": "/home/ariel/wdl_pipelines/test/localfile.txt",
+  "TouchWriteHead.touch_write_head.contentText": "String",
+  "TouchWriteHead.touch_write_head.SampleName": "Tail"
+}
