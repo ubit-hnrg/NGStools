@@ -15,7 +15,7 @@ workflow hpc {
         
     }
 
-    call genotypeGVCF{
+    call genotypeGVCF_gatk3{
         input:
         prefix = SampleName,
         RefFasta = RefFasta,
@@ -45,7 +45,7 @@ task HPCaller {
 		-O ${prefix}.raw.indels.snps.g.vcf  \
 		-L ${queryList} \
         -new-qual\
-        -ERC BP_RESOLUTION
+        -ERC GVCF
 	}
 	runtime {
 #		docker: "broadinstitute/gatk"
@@ -89,5 +89,33 @@ task genotypeGVCF{
 }
 
 
+task genotypeGVCF_gatk3{
+    File RefFasta
+	File RefIndex
+	File RefDict
+    File queryList
+    File rawGvcf
+    File rawGvcfIndex
+    String prefix
+
+    command{
+        java -jar /usr/bin/GenomeAnalysisTK.jar \
+        -T GenotypeGVCFs \
+        -R ${RefFasta} \
+        -V ${rawGvcf} \
+        -L ${queryList} \
+        -o ${prefix}.raw.vcf\
+         -allSites
+    }
+	runtime {
+#		docker: "bioinstaller/gatk3"
+		docker: "d31c44d56cab"  # id gatk3 
+	}
+
+	output {
+	    File rawVCF = "${prefix}.raw.vcf"
+	}
+
+}
 
 
