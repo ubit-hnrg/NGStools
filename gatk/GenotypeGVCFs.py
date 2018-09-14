@@ -85,7 +85,7 @@ def GenomicsDBImport_cmd(sample_file, outpath,sample_path, memory = '4g',image =
     
     return cmd
 
-def genotype_gvcf_cmd(ReferenceFile,outpath,dbname,sample_file,memory = '4g',image = 'broadinstitute/gatk',interval = None,dbsnp_path = dbsnp_path):
+def genotype_gvcf_cmd(ReferenceFile,outpath,dbname,sample_file,dbsnp_path = '/home/bitgenia/bundle/hgref/',memory = '4g',image = 'broadinstitute/gatk',interval = None):
     dbsnpfile = 'All_20170710.vcf.gz'
 
     ReferenceDir = os.path.dirname(ReferenceFile)
@@ -139,7 +139,7 @@ def write_and_logging(mje,writer,stdout = True):
 
 def main():
     args = get_args()
-    sample_file, outpath, logfile, sample_path , ReferenceFile,memory,batchsize,intervalfile,dbsnp_path = args.sample_file, args.outpath, args.logfile,args.sample_path,args.ReferenceFile,args.memory, args.batchsize,args.intervalfile, args.dbsnp_path
+    sample_file, outpath, logfile, sample_path , ReferenceFile,memory,batchsize,intervalfile, dbsnp_path = args.sample_file, args.outpath, args.logfile,args.sample_path,args.ReferenceFile,args.memory, args.batchsize,args.intervalfile, args.dbsnp_path
 
     create_output_dirs(outpath) # no es necesario porque el monatje al docker te lo crea si no existe
     ###CHRMS = [str(i) for i in np.arange(22)+1] +['X','Y']
