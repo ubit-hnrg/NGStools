@@ -102,7 +102,7 @@ def genotype_gvcf_cmd(ReferenceFile,outpath,dbname,sample_file,memory = '4g',ima
     docker_outdir = '/outdir/'
     docker_ReferenceDir = '/gatk/refDir/'
     docker_ReferenceFile = '/gatk/refDir/%s'%ReferenceFile_basename
-    docker_dbsnp_path = '/gatk/dbsnp_path/
+    docker_dbsnp_path = '/gatk/dbsnp_path/'
 
     ## mounting commands for docker
     mount_db_path =  os.path.abspath(outpath+dbname+'/'+dbname)+':'+docker_db_path     
