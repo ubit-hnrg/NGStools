@@ -17,6 +17,7 @@ def get_args():
     parser.add_argument('--no-overwrite', dest='overwrite', action='store_false')
     parser.add_argument('-b','--batchsize',default='10',required = False)
     parser.add_argument('-i','--intervalfile',default=None,required = False)
+    parser.add_argument('-D','--dbsnp_path',default='/home/bitgenia/bundle/hgref/',required = False)
 
     parser.set_defaults(overwrite=False)
     
@@ -84,7 +85,8 @@ def GenomicsDBImport_cmd(sample_file, outpath,sample_path, memory = '4g',image =
     
     return cmd
 
-def genotype_gvcf_cmd(ReferenceFile,outpath,dbname,sample_file,memory = '4g',image = 'broadinstitute/gatk',interval = None):
+def genotype_gvcf_cmd(ReferenceFile,outpath,dbname,sample_file,memory = '4g',image = 'broadinstitute/gatk',interval = None,dbsnp_path = dbsnp_path):
+    dbsnpfile = 'All_20170710.vcf.gz'
 
     ReferenceDir = os.path.dirname(ReferenceFile)
     ReferenceFile_basename = os.path.basename(ReferenceFile)
@@ -100,18 +102,21 @@ def genotype_gvcf_cmd(ReferenceFile,outpath,dbname,sample_file,memory = '4g',ima
     docker_outdir = '/outdir/'
     docker_ReferenceDir = '/gatk/refDir/'
     docker_ReferenceFile = '/gatk/refDir/%s'%ReferenceFile_basename
+    docker_dbsnp_path = '/gatk/dbsnp_path/
 
     ## mounting commands for docker
     mount_db_path =  os.path.abspath(outpath+dbname+'/'+dbname)+':'+docker_db_path     
     mount_ref_file = os.path.abspath(ReferenceFile)+':'+docker_ReferenceFile
     mount_ref_dir = ReferenceDir+':'+docker_ReferenceDir
     mount_output_dir =  os.path.abspath(outpath)+ ':' + docker_outdir
+    mount_dbsnp_path =  os.path.abspath(dbsnp_path)+ ':' + docker_dbsnp_path
 
     cmd0 = ['docker', 'run',
     '-v',mount_db_path,
     '-v',mount_output_dir,
     '-v',mount_ref_file,
     '-v',mount_ref_dir,
+    '-v',mount_dbsnp_path,
     '-v',mount_interval_file]
 
     task = ['-t',image,
@@ -121,7 +126,7 @@ def genotype_gvcf_cmd(ReferenceFile,outpath,dbname,sample_file,memory = '4g',ima
         '-V', 'gendb://'+docker_db_path,
         '-O', docker_outdir + dbname +'_genotypeGVCFs.vcf',
         '-L',docker_interval_file,
-        '--dbsnp',
+        '--dbsnp', docker_db_path + dbsnpfile,
         '-new-qual'
     ]
     cmd = cmd0 + task
@@ -134,7 +139,7 @@ def write_and_logging(mje,writer,stdout = True):
 
 def main():
     args = get_args()
-    sample_file, outpath, logfile, sample_path , ReferenceFile,memory,batchsize,intervalfile = args.sample_file, args.outpath, args.logfile,args.sample_path,args.ReferenceFile,args.memory, args.batchsize,args.intervalfile
+    sample_file, outpath, logfile, sample_path , ReferenceFile,memory,batchsize,intervalfile,dbsnp_path = args.sample_file, args.outpath, args.logfile,args.sample_path,args.ReferenceFile,args.memory, args.batchsize,args.intervalfile, args.dbsnp_path
 
     create_output_dirs(outpath) # no es necesario porque el monatje al docker te lo crea si no existe
     ###CHRMS = [str(i) for i in np.arange(22)+1] +['X','Y']
@@ -164,7 +169,7 @@ def main():
     
 
     # call Genotype via docker
-    cmd2 = genotype_gvcf_cmd(ReferenceFile=ReferenceFile,outpath = outpath ,dbname = dbname ,sample_file = sample_file,memory=memory,interval = intervalfile)
+    cmd2 = genotype_gvcf_cmd(ReferenceFile=ReferenceFile,outpath = outpath ,dbname = dbname ,sample_file = sample_file,memory=memory,interval = intervalfile,dbsnp_path = dbsnp_path)
     if logfile is not './log.out':
         logFILE = outpath + basename_sample_file +'.log.out'
 
