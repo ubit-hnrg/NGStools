@@ -15,7 +15,7 @@ task touch_write_head {
     String contentText
 
 	command {
-		tail ${localImputFile} -n1 > "${SampleName}.txt"
+		tail ${localImputFile} > ${SampleName}.txt
         	}
 
     runtime {

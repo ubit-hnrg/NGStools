@@ -1,0 +1,31 @@
+{
+  "hellotrimmer.trimmo.entrada1": "/home/usuario/Escritorio/reads/ERR550644_1.fastq",
+  "hellotrimmer.trimmo.illuminaadapt": "/home/usuario/Descargas/Trimmomatic-0.38/adapters/TruSeq3-PE.fa",
+  "hellotrimmer.trimmo.slidingW": "SLIDINGWINDOWS:4:20",
+  "hellotrimmer.trimmo.salida2nopareada": "/home/usuario/Escritorio/pruebawdl/ERR550644_2u.fastq",
+  "hellotrimmer.trimmo.entrada2": "/home/usuario/Escritorio/reads/ERR550644_2.fastq",
+  "hellotrimmer.trimmo.salida2pareada": "/home/usuario/Escritorio/pruebawdl/ERR550644_2p.fastq",
+  "hellotrimmer.trimmo.salida1pareada": "/home/usuario/Escritorio/pruebawdl/ERR550644_1p.fastq",
+  "hellotrimmer.trimmo.minl": "MINLEN:50",
+  "hellotrimmer.trimmo.illumina": ":2:30:10",
+  "hellotrimmer.trimmo.lead": "LEADING:20",
+  "hellotrimmer.trimmo.Trimmer": "/home/usuario/Descargas/Trimmomatic-0.38/trimmomatic-0.38.jar",
+  "hellotrimmer.trimmo.modo": "PE",
+  "hellotrimmer.trimmo.archivolog": "/home/usuario/Escritorio/pruebawdl/ERR550644.log",
+  "hellotrimmer.trimmo.salida1nopareada": "/home/usuario/Escritorio/pruebawdl/ERR550644_1u.fastq"
+}
+
+
+{
+  "hellotrimmer.trimmo.entrada1": "/home/usuario/Escritorio/reads/ERR550644_1.fastq",
+  "hellotrimmer.trimmo.illuminaadapt": "/home/usuario/Descargas/Trimmomatic-0.38/adapters/TruSeq3-PE.fa",
+  "hellotrimmer.trimmo.nombrevariable": "ERR550644",
+  "hellotrimmer.trimmo.slidingW": "SLIDINGWINDOWS:4:20",
+  "hellotrimmer.trimmo.entrada2": "/home/usuario/Escritorio/reads/ERR550644_2.fastq",
+  "hellotrimmer.trimmo.minl": "MINLEN:50",
+  "hellotrimmer.trimmo.illumina": ":2:30:10",
+  "hellotrimmer.trimmo.lead": "LEADING:20",
+  "hellotrimmer.trimmo.Trimmer": "/home/usuario/Descargas/Trimmomatic-0.38/trimmomatic-0.38.jar",
+  "hellotrimmer.trimmo.modo": "PE",
+  "hellotrimmer.trimmo.archivolog": "File"
+}
