@@ -433,11 +433,12 @@ def main(test = False):
     exon_bedfile = pd.read_table(exon_bed)
     filtered_exon_bedfile = exon_bedfile[exon_bedfile.geneSymbol.isin(genelist)]
 
+
     #reduced_bamfile = run_samtools_view(bamfile,bedfile,split=split,outpath = outpath)
     
     #compute coverage by gen along the bamfile
     #coverage_file = run_bedtools_coverage(reduced_bamfile,bedfile,outpath,prefix =prefix)
-    coverage_by_exon = run_bedtools_coverage(reduced_bamfile,filtered_exon_bedfile,outpath,exonbed= True,prefix = prefix)
+    coverage_by_exon = run_bedtools_coverage(bamfile,filtered_exon_bedfile,outpath,exonbed= True,prefix = prefix)
     
     
     #os.system('rm %s'%exon_bedfile)
