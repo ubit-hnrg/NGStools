@@ -39,7 +39,7 @@ def parseArgs(description = 'Get coverage at different DPs for a given list of g
     parser.add_argument('-g','--genelistfile',required=True)
     parser.add_argument('-o','--outpath',required=True)
     parser.add_argument('-r','--ref',dest = 'ref',default = '',required = True,type=int,help = 'Reference genome is mandatory since only a list of genames is given and we need to match it inside our bam file')
-    parser.add_argument('-e','--exon_bed',dest = 'bed',default = '',required = True,type=int,help = 'exon bedfile')
+    parser.add_argument('-E','--exon_bed',dest = 'bed',default = '',required = True,type=int,help = 'exon bedfile')
 
 
     parser.add_argument('-l','--logfile',required=False,default= 'out.log')
