@@ -432,13 +432,15 @@ def main(test = False):
     genelist = read_genelist(genelistfile)
     exon_bedfile = pd.read_table(exon_bed)
     filtered_exon_bedfile = exon_bedfile[exon_bedfile.geneSymbol.isin(genelist)]
+    filtered_exon_filename = outpath+'filtered_exon.bed'
+    filtered_exon_bedfile.to_csv(filtered_exon_filename,sep = '\t',index = False)
 
 
     #reduced_bamfile = run_samtools_view(bamfile,bedfile,split=split,outpath = outpath)
     
     #compute coverage by gen along the bamfile
     #coverage_file = run_bedtools_coverage(reduced_bamfile,bedfile,outpath,prefix =prefix)
-    coverage_by_exon = run_bedtools_coverage(bamfile,filtered_exon_bedfile,outpath,exonbed= True,prefix = prefix)
+    coverage_by_exon = run_bedtools_coverage(bamfile,filtered_exon_filename,outpath,exonbed= True,prefix = prefix)
     
     
     #os.system('rm %s'%exon_bedfile)
