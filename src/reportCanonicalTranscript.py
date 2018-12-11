@@ -72,7 +72,7 @@ def check_ref(ref,outpath):
         os.system('mkdir %s'%outpath)    
 
     
-def read_genelist(genelistfile,entrez,writer = None):
+def read_genelist(genelistfile):
     genelist = pd.read_csv(genelistfile,header = None)
     return genelist
     
