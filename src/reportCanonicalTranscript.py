@@ -74,7 +74,7 @@ def check_ref(ref,outpath):
     
 def read_genelist(genelistfile):
     genelist = pd.read_csv(genelistfile,header = None)
-    return genelist
+    return genelist.values
     
     
 def test_mode():
@@ -431,6 +431,7 @@ def main(test = False):
 
     genelist = read_genelist(genelistfile)
     exon_bedfile = pd.read_table(exon_bed)
+
     filtered_exon_bedfile = exon_bedfile[exon_bedfile.geneSymbol.isin(genelist)]
     filtered_exon_filename = outpath+'filtered_exon.bed'
     filtered_exon_bedfile.to_csv(filtered_exon_filename,sep = '\t',index = False)
