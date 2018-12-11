@@ -431,7 +431,6 @@ def main(test = False):
 
     genelist = read_genelist(genelistfile)
     exon_bedfile = pd.read_table(exon_bed)
-    print exon_bedfile.head()
 
     filtered_exon_bedfile = exon_bedfile[exon_bedfile.geneSymbol.isin(genelist)]
     filtered_exon_filename = outpath+'filtered_exon.bed'
