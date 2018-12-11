@@ -429,7 +429,7 @@ def main(test = False):
     check_ref(ref=ref,outpath = outpath)
     wlogfile = io.open(logfile, 'wb')
 
-    genelist = get_genelist(genelistfile)
+    genelist = read_genelist(genelistfile)
     exon_bedfile = pd.read_table(exon_bed)
     filtered_exon_bedfile = exon_bedfile[exon_bedfile.geneSymbol.str.contains(genelist)]
 
