@@ -39,15 +39,15 @@ def parseArgs(description = 'Get coverage at different DPs for a given list of g
     parser.add_argument('-g','--genelistfile',required=True)
     parser.add_argument('-o','--outpath',required=True)
     parser.add_argument('-r','--ref',dest = 'ref',default = '',required = True,type=int,help = 'Reference genome is mandatory since only a list of genames is given and we need to match it inside our bam file')
-    parser.add_argument('-E','--exon_bed',dest = 'bed',default = '',required = True,type=str,help = 'exon bedfile')
+    parser.add_argument('-e','--exon_bed',dest = 'exon_bed',default = '',required = True,type=str,help = 'exon bedfile')
 
 
     parser.add_argument('-l','--logfile',required=False,default= 'out.log')
     parser.add_argument('-p','--prefix',dest = 'prefix',default = '',required = False)
     parser.add_argument('-s','--splitBamFile', dest='split', action='store_false',help = 'in next iterations this flag will allow to split the reducedBAM file by chromosomes')
-    parser.add_argument('-e','--entrez', dest='entrez', action='store_true',help = 'use entrez ids')
+    #parser.add_argument('-e','--entrez', dest='entrez', action='store_true',help = 'use entrez ids')
     parser.set_defaults(split=False)
-    parser.set_defaults(entrez=False)
+    #parser.set_defaults(entrez=False)
 
     args = parser.parse_args()
     return args
@@ -73,7 +73,7 @@ def check_ref(ref,outpath):
 
     
 def read_genelist(genelistfile,entrez,writer = None):
-    genes = pd.read_csv(genelistfile,header = None)
+    genelist = pd.read_csv(genelistfile,header = None)
     return genelist
     
     
