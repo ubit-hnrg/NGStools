@@ -424,7 +424,7 @@ def main(test = False):
         ref, genelistfile, bamfile, outpath, split = test_mode()
     else:
         args = parseArgs()
-        bamfile, outpath, exon_bed, prefix, ref, genelistfile, logfile, split = args.bamfile, args.outpath, args.exon_bed, args.prefix, args.ref, args.genelistfile, args.logfile, args.split, args.entrez 
+        bamfile, outpath, exon_bed, prefix, ref, genelistfile, logfile, split = args.bamfile, args.outpath, args.exon_bed, args.prefix, args.ref, args.genelistfile, args.logfile, args.split 
     #check params
     check_ref(ref=ref,outpath = outpath)
     wlogfile = io.open(logfile, 'wb')
