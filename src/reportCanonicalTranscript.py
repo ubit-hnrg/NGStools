@@ -39,8 +39,7 @@ def parseArgs(description = 'Get coverage at different DPs for a given list of g
     parser.add_argument('-g','--genelistfile',required=True)
     parser.add_argument('-o','--outpath',required=True)
     parser.add_argument('-r','--ref',dest = 'ref',default = '',required = True,type=int,help = 'Reference genome is mandatory since only a list of genames is given and we need to match it inside our bam file')
-    parser.add_argument('-e','--exon_bed',dest = 'exon_bed',default = '',required = True,type=str,help = 'exon bedfile')
-
+    parser.add_argument('-e','--exons',dest = 'exons',default = '',required = True,type=str,help = 'exon tsv file')
 
     parser.add_argument('-l','--logfile',required=False,default= 'out.log')
     parser.add_argument('-p','--prefix',dest = 'prefix',default = '',required = False)
@@ -421,33 +420,41 @@ def get_exons(genelist,ref,outpath,entrez = False, write_bedfile = True,writer =
 
 def main(test = False):
     if test:
-        ref, genelistfile, bamfile, outpath, split = test_mode()
+        ref, genelistfile, bamfile, outpath, = test_mode()
     else:
         args = parseArgs()
-        bamfile, outpath, exon_bed, prefix, ref, genelistfile, logfile, split = args.bamfile, args.outpath, args.exon_bed, args.prefix, args.ref, args.genelistfile, args.logfile, args.split 
+        bamfile, outpath, exon_tsv, prefix, ref, genelistfile, logfile = args.bamfile, args.outpath, args.exons, args.prefix, args.ref, args.genelistfile, args.logfile
     #check params
     check_ref(ref=ref,outpath = outpath)
     wlogfile = io.open(logfile, 'wb')
 
     genelist = read_genelist(genelistfile)
-    exon_bedfile = pd.read_table(exon_bed)
+    exon_tsv = pd.read_table(exon_tsv)
+    gene_bedfile = exon_tsv[['chrom',
+                        'chromStart', 'chromEnd', 'kgID', 'geneSymbol', 'strand']]
+    gene_bedfile.drop_duplicates(subset=['chrom','chromStart','chromEnd','kgID','geneSymbol'],inplace=True)
 
+    exon_bedfile = exon_tsv[['chrom',
+                        'ExonStarts', 'ExonEnds', 'kgID-Exon', 'geneSymbol', 'strand']]
+
+
+    # filter and save gene bedfile to disk
+    filtered_gene_bedfile = gene_bedfile[gene_bedfile.geneSymbol.isin(genelist)]
+    filtered_gene_filename = outpath+'filtered_gene.bed'
+    filtered_gene_bedfile.to_csv(filtered_gene_filename,sep = '\t',index = False,header = False)
+
+
+    # filter and save exon bedfile to disk
     filtered_exon_bedfile = exon_bedfile[exon_bedfile.geneSymbol.isin(genelist)]
     filtered_exon_filename = outpath+'filtered_exon.bed'
-    filtered_exon_bedfile.to_csv(filtered_exon_filename,sep = '\t',index = False)
+    filtered_exon_bedfile.to_csv(filtered_exon_filename,sep = '\t',index = False,header =False)
 
 
-    #reduced_bamfile = run_samtools_view(bamfile,bedfile,split=split,outpath = outpath)
-    
-    #compute coverage by gen along the bamfile
-    #coverage_file = run_bedtools_coverage(reduced_bamfile,bedfile,outpath,prefix =prefix)
-    coverage_by_exon = run_bedtools_coverage(bamfile,filtered_exon_filename,outpath,exonbed= True,prefix = prefix)
-    
-    
-    #os.system('rm %s'%exon_bedfile)
+    reduced_bamfile = run_samtools_view(bamfile,filtered_gene_filename,outpath = outpath)
+     
+    run_bedtools_coverage(reduced_bamfile,filtered_exon_filename,outpath,exonbed= True,prefix = prefix)
     wlogfile.close()
-    #os.system('rm %s'%gene_loci)
-    #os.system('rm %s'%exon_loci)
+
 
 
 
