@@ -1,0 +1,13 @@
+{
+  "JointGenotyping.input_gvcfs_indices": ["/home/usuario/repos/referencias/casosBIA/Caso9_981_Proband.bam.g.vcf.idx"],
+  "JointGenotyping.path_herramientas": "/home/usuario/repos/herramientasdocker",
+  "JointGenotyping.dbsnp_vcf": "/home/usuario/repos/referencias/dbsnp_138.b37.vcf",
+  "JointGenotyping.dbsnp_vcf_index": "/home/usuario/repos/referencias/dbsnp_138.b37.vcf.idx",
+  "JointGenotyping.ref_fasta_index": "/home/usuario/repos/referencias/hs37d5.fa.fai",
+  "JointGenotyping.sample_names": ["Caso9_981_Proband"],
+  "JointGenotyping.callset_name": "Caso9_981_Proband",
+  "JointGenotyping.ref_dict": "/home/usuario/repos/referencias/hs37d5.dict",
+  "JointGenotyping.input_gvcfs": ["/home/usuario/repos/referencias/casosBIA/Caso9_981_Proband.bam.g.vcf"],
+  "JointGenotyping.ref_fasta": "/home/usuario/repos/referencias/hs37d5.fa",
+  "JointGenotyping.interval_list": "/home/usuario/chr.interval_list"
+}
