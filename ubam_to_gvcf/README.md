@@ -14,7 +14,6 @@
 ## usage examples.
 * from solari server run: 
 
-```
-bash 
+```bash 
 sudo java -Dconfig.file=./archi.conf -jar /tools/cromwell/cromwell-33.1.jar run pipelineNGS_singlelane_ubamtogvcf.wdl -i inputsNGS_singlelane.json 
 ```
