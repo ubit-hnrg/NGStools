@@ -1,0 +1,5 @@
+{
+  "prefiltering.sample_name": "test_EB340",
+  "prefiltering.R2_fastq_gz": "/home/ariel/Projects/Gutierrez/cleaningNGS/test/test_eb340_R2.fastq",
+  "prefiltering.R1_fastq_gz": "/home/ariel/Projects/Gutierrez/cleaningNGS/test/test_eb340_R1.fastq"
+}
