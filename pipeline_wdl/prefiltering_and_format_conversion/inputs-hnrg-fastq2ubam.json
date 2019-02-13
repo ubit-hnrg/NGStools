@@ -1,0 +1,10 @@
+{
+  "ConvertPairedFastQsToUnmappedBamWf.tabulatedSampleFilePaths": "/home/ariel/Projects/Gutierrez/cleaningNGS/sample_paths.txt",
+  "ConvertPairedFastQsToUnmappedBamWf.platform_name": "illumina",
+  "ConvertPairedFastQsToUnmappedBamWf.toolpath": "/home/ariel/tools/",
+  "ConvertPairedFastQsToUnmappedBamWf.ubam_list_name": "ubamfiles",
+  "ConvertPairedFastQsToUnmappedBamWf.run_date": "13-02-2019",
+  "ConvertPairedFastQsToUnmappedBamWf.gatk_jar": "gatk-package-4.0.6.0-local.jar",
+  "ConvertPairedFastQsToUnmappedBamWf.platform_unit": "None",
+  "ConvertPairedFastQsToUnmappedBamWf.library_name": "TSO"
+}

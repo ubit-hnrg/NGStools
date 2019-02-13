@@ -1,0 +1,2 @@
+test_EB340|/home/ariel/Projects/Gutierrez/cleaningNGS/test/test_eb340_R1.fastq|/home/ariel/Projects/Gutierrez/cleaningNGS/test/test_eb340_R2.fastq
+test_EB322|/home/ariel/Projects/Gutierrez/cleaningNGS/test/test_eb322_R1.fastq|/home/ariel/Projects/Gutierrez/cleaningNGS/test/test_eb322_R2.fastq

@@ -1,0 +1,10 @@
+{
+  "prefiltering.sample_name": "test_EB340",
+  "prefiltering.R1_fastq_gz": "/home/ariel/Projects/Gutierrez/cleaningNGS/test/test_eb340_R1.fastq",
+  "prefiltering.gatk4_jar": "gatk-package-4.0.6.0-local.jar", 
+  "prefiltering.toolpath": "/home/ariel/tools/", 
+  "prefiltering.R2_fastq_gz": "/home/ariel/Projects/Gutierrez/cleaningNGS/test/test_eb340_R2.fastq",
+  "prefiltering.fastq2ubam.Flowcell": "XYZ",
+  "prefiltering.fastq2ubam.Lane_Number": "2",
+  "prefiltering.fastq2ubam.LIBRARY": "SureSelect"
+}
