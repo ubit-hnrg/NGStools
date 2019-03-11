@@ -65,7 +65,8 @@ workflow ConvertPairedFastQsToUnmappedBamWf {
         input: 
         sample_name = read_file_of_tabulated_inputs.array_of_samples[i],
         R1_fastq_gz = read_file_of_tabulated_inputs.array_of_R1_files[i],
-        R2_fastq_gz = read_file_of_tabulated_inputs.array_of_R2_files[i]
+        R2_fastq_gz = read_file_of_tabulated_inputs.array_of_R2_files[i],
+        toolpath = toolpath
     }
 
     call get_read_group_name{

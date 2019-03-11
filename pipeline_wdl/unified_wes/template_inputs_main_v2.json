@@ -1,0 +1,58 @@
+{
+  "##COMMENT1": "MANDATORY INPUTS",
+  "main_workflow.tabulatedSampleFilePaths": "/home/usuario/main_wdl_20190301/archivofastq.txt",
+  "main_workflow.toolpath": "__installation_path__/tools/",
+  "main_workflow.gatk_jar": "gatk-package-4.0.8.1-local.jar",
+
+  "##COMMENT2": "uBAM METADATA",
+  "main_workflow.platform_unit": "None",
+  "main_workflow.platform_name": "illumina",
+  "main_workflow.run_date": "2018-01-09",
+  "main_workflow.sequencing_center": "UIT-HNRG",
+  "main_workflow.library_name": "TSO",
+
+  "##COMMENT3": "REQUIRED DBS",
+  "main_workflow.ref_name": ".b37",
+  "main_workflow.dbSNP_vcf": "__installation_path__/dbs/All_20180423.vcf.gz",
+  "main_workflow.dbSNP_vcf_index": "__installation_path__/dbs/All_20180423.vcf.gz",
+  "main_workflow.known_indels_sites_VCFs": ["__installation_path__/dbs/Mills_and_1000G_gold_standard.indels.b37.vcf.gz"],
+  "main_workflow.known_indels_sites_indices": ["__installation_path__/dbs/Mills_and_1000G_gold_standard.indels.b37.vcf.idx.gz"],
+
+
+  "##COMMENT4": "REFERENCES",
+  "main_workflow.ref_pac": "__installation_path__/references/hs37d5/hs37d5.fa.pac",
+  "main_workflow.ref_ann": "__installation_path__/references/hs37d5/hs37d5.fa.ann",
+  "main_workflow.ref_bwt": "__installation_path__/references/hs37d5/hs37d5.fa.bwt",
+  "main_workflow.ref_fasta_index": "__installation_path__/references/hs37d5/hs37d5.fa.fai",
+  "main_workflow.ref_fasta": "__installation_path__/references/hs37d5/hs37d5.fa",
+  "main_workflow.ref_amb": "__installation_path__/references/hs37d5/hs37d5.fa.amb",
+  "main_workflow.ref_dict": "__installation_path__/references/hs37d5/hs37d5.dict",
+  "main_workflow.ref_sa": "__installation_path__/references/hs37d5/hs37d5.fa.sa",
+  
+
+  "##COMMENT5": "interval lists",
+  "main_workflow.wgs_evaluation_interval_list": "__installation_path__/libraries/GRCh37/wgs_b37.interval_list",
+  "main_workflow.unpadded_intervals_file": "__installation_path__/libraries/GRCh37/wgs_b37.interval_list",
+  "main_workflow.wgs_calling_interval_list": "__installation_path__/libraries/GRCh37/wgs_b37.interval_list",
+  "main_workflow.wes_calling_interval_list": "__installation_path__/libraries/GRCh37/wgs_b37.interval_list",
+  
+
+  "##COMMENT6": "HAPLOTYPECALLER PARAMETERS",
+  "main_workflow.newqual": "true",
+  "main_workflow.bwa_commandline": "__installation_path__/tools/bwa mem -K 100000000 -p -v 3 -t 4 -Y",
+
+
+  "##COMMENT7": "ORGANIZE THESE PARAMS!!!",
+  "main_workflow.gatk_gkl_pairhmm_implementation":"LOGLESS_CACHING",
+  "main_workflow.gatk_gkl_pairhmm_threads":"1",
+  "main_workflow.haplotype_scatter_count":"2" ,
+  "main_workflow.java_heap_memory_initial": "128m",
+  "main_workflow.smith_waterman_implementation": "AVX_ENABLED",
+  "main_workflow.ubam_list_name": "ubamfiles",
+  "main_workflow.break_bands_at_multiples_of": "1000000",
+  "main_workflow.compression_level": "1",
+  "main_workflow.contamination": "0",
+
+  "##COMMENT8": "KNOWN INDELS !!!"
+}
+
