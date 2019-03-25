@@ -1,0 +1,7 @@
+# ejecutar con el siguiente comando:
+java -Dconfig.file=/path_to_config_fig/myconf.conf -jar /path_to_cromwell/cromwell-33.1.jar run -i test.json  test.wdl 
+
+# o bien: 
+java -Dconfig.file=/path_to_config_fig/myconf_optional_syntaxis.conf -jar /path_to_cromwell/cromwell-33.1.jar run -i test.json  test.wdl 
+
+
