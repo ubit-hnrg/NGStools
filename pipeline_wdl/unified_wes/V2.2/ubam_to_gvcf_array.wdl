@@ -5,12 +5,14 @@
 
 
 task GetBwaVersion {
+String toolpath
+
 
 #/tools/bwa-0.7.17/./bwa 2>&1 | \
   command {
     # not setting set -o pipefail here because /bwa has a rc=1 and we dont want to allow rc=1 to succeed because
     # the sed may also fail with that error and that is something we actually want to fail on.
-    bwa 2>&1 | \
+   ${toolpath}./bwa 2>&1 | \
     grep -e '^Version' | \
     sed 's/Version: //'
   }
@@ -49,15 +51,15 @@ task SamToFastqAndBwaMem {
     
     # set the bash variable needed for the command-line
     #bash_ref_fasta=${ref_fasta}
-
-    java -Dsamjdk.compression_level=${compression_level} -Xmx${java_heap_memory_initial} -jar ${toolpath}${gatk_jar} \
+#bwa mem -K 100000000 -p -v 3 -t 4 ${ref_fasta} /dev/stdin - 2> >(tee ${output_bam_basename}.bwa.stderr.log >&2) | \ 
+ 
+   java -Dsamjdk.compression_level=${compression_level} -Xmx${java_heap_memory_initial} -jar ${toolpath}${gatk_jar} \
         SamToFastq \
         --INPUT=${input_bam} \
         -F=/dev/stdout \
         --INTERLEAVE=true \
         --NON_PF=true | \
-        #bwa mem -K 100000000 -p -v 3 -t 4 ${ref_fasta} /dev/stdin - 2> >(tee ${output_bam_basename}.bwa.stderr.log >&2) | \
-        ${bwa_commandline} ${ref_fasta} /dev/stdin - 2> >(tee ${output_bam_basename}.bwa.stderr.log >&2) | \
+       ${toolpath}${bwa_commandline} ${ref_fasta} /dev/stdin - 2> >(tee ${output_bam_basename}.bwa.stderr.log >&2) | \
         ${toolpath}samtools view -1 - > ${output_bam_basename}.bam
       
   >>>
@@ -87,7 +89,7 @@ task MergeBamAlignment {
   String gatk_jar
   String toolpath
   Int compression_level
-  #String output_bam_basename
+#  File path_borrar
   
 #   java -Dsamjdk.compression_level=${compression_level} -Xms3000m -jar \
 #   ${toolpath}${gatk_jar} \
@@ -115,7 +117,7 @@ task MergeBamAlignment {
 #      --UNMAPPED_READ_STRATEGY=COPY_TO_TAG \
 #      --UNMAP_CONTAMINANT_READS=true
 
-  command {
+  command <<<
    java -Dsamjdk.compression_level=${compression_level} -Xms3000m -jar \
    ${toolpath}${gatk_jar} \
        MergeBamAlignment \
@@ -135,10 +137,15 @@ task MergeBamAlignment {
       --MAX_INSERTIONS_OR_DELETIONS=-1 \
       --PRIMARY_ALIGNMENT_STRATEGY=MostDistant \
       --ALIGNER_PROPER_PAIR_FLAGS=true \
-      --UNMAPPED_READ_STRATEGY=COPY_TO_TAG \
-      --UNMAP_CONTAMINANT_READS=true
-      
-    }  
+      -PG="bwamem" \
+      --PROGRAM_GROUP_NAME="bwamem" \
+      --PROGRAM_GROUP_VERSION="${bwa_version}" \
+      --PROGRAM_GROUP_COMMAND_LINE="${bwa_commandline} ${ref_fasta}" \
+      --UNMAP_CONTAMINANT_READS=true \
+      --UNMAPPED_READ_STRATEGY=COPY_TO_TAG\
+      --ADD_PG_TAG_TO_READS=false
+    >>>
+ 
   output {
     File output_bam = "${output_bam_basename}.bam"
   }
@@ -153,7 +160,7 @@ task MarkDuplicates {
   Int compression_level
   String java_heap_memory_initial
   
-String gatk_jar
+  String gatk_jar
   String toolpath
   
 
@@ -517,7 +524,7 @@ task MergeVCFs {
     java -Xms2000m -jar ${toolpath}${gatk_jar} \
       MergeVcfs \
       -I=${sep=' -I=' input_vcfs} \
-      -O=${output_vcf_name}
+      -O=${output_vcf_name} 
   }
 
   output {
@@ -585,14 +592,35 @@ task CollectGvcfCallingMetrics {
   }
 }
 
+task path_borrado {
+File path1
+#Array[String] path2 
+#String temp1 = "temp1"
+#String temp2 = "temp2"
+#mv ${write_lines(path1)}  ${temp1}.tsv
+command <<<
+rm ${path1}
+>>>
+}
+
+task symlink_important_files {
+    File output_to_save
+    String path_save
+    command{
+       ln -s ${output_to_save} ${path_save}
+    }
+}
+
 
 
 
 
 
 ##############################################    WORKFLOW
-workflow pipeV0 {
+workflow ubam2gvcf {
 
+   String path_save
+ 
     ### PATH local de las herramientas sacadas de docker
     String gatk_jar
     String toolpath
@@ -654,28 +682,19 @@ workflow pipeV0 {
   File wgs_evaluation_interval_list
 
 
-  ####genotipado
-  File unpadded_intervals_file
-
-
-  ### scatter sobre muestras 
-  #Array[File] ubams_entrada 
-  #Int num_muestras = length(ubams_entrada) 
-
   #####opt de haplotypecaller
   String smith_waterman_implementation
   Float? contamination
   String newqual 
   
 
-  #Array[File] inputs_ubams 
-  #File uniquesample_name
+
   String sample_name
   
   File flowcell_unmapped_bams_list ### archivo txt con ubams de 1 sample (muchos ubam)
   
   
-  String base_file_name = sample_name + ref_name
+  String base_file_name = sample_name  + ref_name
   Array[File] flowcell_unmapped_bams = read_lines(flowcell_unmapped_bams_list)
   
   
@@ -690,7 +709,8 @@ workflow pipeV0 {
     
     
     call GetBwaVersion {
-    
+    input:
+    toolpath = toolpath
     }
 
 
@@ -743,8 +763,16 @@ workflow pipeV0 {
         gatk_jar = gatk_jar,
         toolpath = toolpath     
     }
-  #}
- }
+
+#Array[File] borrado_mergebam = ["${MergeBamAlignment.output_bam}"]
+#}
+#call path_borrado as borrar_Mergebam {
+#
+#    input:
+#     path1 = MergeBamAlignment.output_bam
+# }
+
+}
 
   # Aggregate aligned+merged flowcell BAM files and mark duplicates
   # We take advantage of the tool's ability to take multiple BAM inputs and write out a single output
@@ -765,6 +793,19 @@ workflow pipeV0 {
   }
 
 
+#scatter (paths in MergeBamAlignment.output_bam) {
+#    call path_borrado as borrar_Mergebam{
+#        input:
+#        path1 = MergeBamAlignment.output_bam
+#      
+#    }
+#}
+
+
+
+
+
+
 # Sort aggregated+deduped BAM file and fix tags
 ############### hay una version de wdl en la web que usa SamtoolsSort as SortSampleBam
   call SortAndFixTags {
@@ -778,6 +819,13 @@ workflow pipeV0 {
       gatk_jar = gatk_jar,
       toolpath = toolpath      
   }
+
+ # call path_borrado as borrar_SortandFix {
+#
+  # input:
+  #   path1 = SortAndFixTags.output_bam
+ #}
+
 
   # Create list of sequences for scatter-gather parallelization 
   call CreateSequenceGroupingTSV {
@@ -836,6 +884,14 @@ scatter (subgroup in CreateSequenceGroupingTSV.sequence_grouping_with_unmapped) 
         toolpath = toolpath    
         
     }
+#call path_borrado as borrar_Applybqsr {
+#
+#  input:
+#    path1 = ApplyBQSR.recalibrated_bam
+#}
+#Array[File] borrado_apply = ["${ApplyBQSR.recalibrated_bam}"]
+
+
 } 
 
 # Merge the recalibrated BAM files resulting from by-interval recalibration
@@ -849,8 +905,6 @@ scatter (subgroup in CreateSequenceGroupingTSV.sequence_grouping_with_unmapped) 
       gatk_jar = gatk_jar,
       toolpath = toolpath     
       
-      
-
 }
 
 
@@ -908,12 +962,13 @@ call ScatterIntervalList {
 # Combine by-interval GVCFs into a single sample GVCF file
   call MergeVCFs {
     input:
-
+      
+  
       input_vcfs = HaplotypeCaller.output_gvcf,
       input_vcfs_indexes = HaplotypeCaller.output_gvcf_index,
       output_vcf_name = base_file_name + ".g.vcf.gz",
       gatk_jar = gatk_jar,
-        toolpath = toolpath
+      toolpath = toolpath
       }
 
 # Validate the GVCF output of HaplotypeCaller
@@ -945,12 +1000,42 @@ call ScatterIntervalList {
       gatk_jar = gatk_jar,
         toolpath = toolpath
   }
-
   
+
+
+Array[File] salidas = ["${GatherBamFiles.output_bam}","${GatherBamFiles.output_bam_index}","${MergeVCFs.output_vcf}","${MergeVCFs.output_vcf_index}","${CollectGvcfCallingMetrics.summary_metrics}","${CollectGvcfCallingMetrics.detail_metrics}"]
+scatter (paths in salidas) {
+    call symlink_important_files {
+        input:
+        output_to_save = paths,
+        path_save = path_save
+    }
+}
+
+#Array[File] borrado = ["${MarkDuplicates.output_bam}","${SortAndFixTags.output_bam}"]
+#scatter (paths in borrado) {
+#    call path_borrado {
+#        input:
+#        path1 = paths
+#      
+#    }
+#}
+
+# 
+
 
 
 # Outputs that will be retained when execution is complete  
   output {
+
+    ####paths para borrar archivos intermedios
+   #Array[File] path_mergebam = borrar_Mergebam.path_borrar1
+   #File path_markdup = borrar_Markdup.path_borrar1
+   #File path_sortandfix = borrar_SortandFix.path_borrar1
+   #Array[File] path_applybqsr = borrar_Applybqsr.path_borrar1
+   #File path_gatherbams = borrar_GatherBams.path_borrar1
+
+  #####outputs workflow ubam2gvcf
    File duplication_metrics = MarkDuplicates.duplicate_metrics
    File bqsr_report = GatherBqsrReports.output_bqsr_report
    File analysis_ready_bam = GatherBamFiles.output_bam

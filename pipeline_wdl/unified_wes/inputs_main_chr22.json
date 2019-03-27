@@ -2,7 +2,7 @@
   "##COMMENT1": "MANDATORY INPUTS",
   "main_workflow.tabulatedSampleFilePaths": "/home/agus/bams/test_chr22.txt",
   "main_workflow.toolpath": "/home/agus/HNRG-pipeline-V0.1/tools/",
-  "main_workflow.gatk_jar": "gatk-package-4.1.0.0-local.jar",
+  "main_workflow.gatk_jar": "gatk-package-4.0.8.1-local.jar",
 
   "##COMMENT2": "uBAM METADATA",
   "main_workflow.platform_unit": "None",
@@ -31,10 +31,10 @@
   
 
   "##COMMENT5": "interval lists",
-  "main_workflow.wgs_evaluation_interval_list": "/home/agus/HNRG-pipeline-V0.1/libraries/GRCh37/try_S07604624_SureSelectHumanAllExonV6+UTRs_Covered.interval_list",
-  "main_workflow.unpadded_intervals_file": "/home/agus/HNRG-pipeline-V0.1/libraries/GRCh37/try_S07604624_SureSelectHumanAllExonV6+UTRs_Covered.interval_list",
-  "main_workflow.wgs_calling_interval_list": "/home/agus/HNRG-pipeline-V0.1/libraries/GRCh37/try_S07604624_SureSelectHumanAllExonV6+UTRs_Covered.interval_list",
-  "main_workflow.wes_calling_interval_list": "/home/agus/HNRG-pipeline-V0.1/libraries/GRCh37/try_S07604624_SureSelectHumanAllExonV6+UTRs_Covered.interval_list",
+  "main_workflow.wgs_evaluation_interval_list": "/home/agus/HNRG-pipeline-V0.1/libraries/GRCh37/S07604624_SureSelectHumanAllExonV6+UTRs_Padded_GRCh37.interval_list",
+  "main_workflow.unpadded_intervals_file": "/home/agus/HNRG-pipeline-V0.1/libraries/GRCh37/S07604624_SureSelectHumanAllExonV6+UTRs_Padded_GRCh37.interval_list",
+  "main_workflow.wgs_calling_interval_list": "/home/agus/HNRG-pipeline-V0.1/libraries/GRCh37/S07604624_SureSelectHumanAllExonV6+UTRs_Padded_GRCh37.interval_list",
+  "main_workflow.wes_calling_interval_list": "/home/agus/HNRG-pipeline-V0.1/libraries/GRCh37/S07604624_SureSelectHumanAllExonV6+UTRs_Padded_GRCh37.interval_list",
   
 
   "##COMMENT6": "HAPLOTYPECALLER PARAMETERS",
