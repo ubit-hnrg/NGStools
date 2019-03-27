@@ -1,0 +1,65 @@
+{
+  "##COMMENT0": "INPUTS PARA PIPELINE PARA EL ANALISIS DE DATOS NGS. UBIT-HNRG MARZO 2019",
+  
+  "##COMMENT1": "MANDATORY INPUTS",
+  "main_workflow.tabulatedSampleFilePaths": "/home/agus/bams/chr22_test/test_chr22.txt",
+  "main_workflow.toolpath": "/home/agus/HNRG-pipeline-V0.1/tools/",
+  "main_workflow.gatk_jar": "gatk-package-4.0.8.1-local.jar",
+  "main_workflow.path_softlink": "/home/agus/V2.1/V2/",
+
+
+  "##COMMENT2": "uBAM METADATA",
+  "main_workflow.platform_unit": ".b37",
+  "main_workflow.run_date": "2019-03-01",
+  "main_workflow.platform_name": "Illumina",
+  "main_workflow.library_name": "TSO",
+  "main_workflow.sequencing_center": "UIT-HNRG",
+
+
+
+  "##COMMENT3": "REQUIRED DBS",
+  "main_workflow.ref_name": ".b37",
+  "main_workflow.dbSNP_vcf": "/home/agus/HNRG-pipeline-V0.1/dbs/All_20180423.vcf.gz",
+  "main_workflow.dbSNP_vcf_index": "/home/agus/HNRG-pipeline-V0.1/dbs/All_20180423.vcf.gz.tbi",
+  "main_workflow.known_indels_sites_VCFs": ["/home/agus/HNRG-pipeline-V0.1/dbs/Mills_and_1000G_gold_standard.indels.b37.vcf.gz"],
+  "main_workflow.known_indels_sites_indices": ["/home/agus/HNRG-pipeline-V0.1/dbs/Mills_and_1000G_gold_standard.indels.b37.vcf.gz.tbi"],
+
+  
+  "##COMMENT4": "REFERENCES",
+  "main_workflow.ref_pac": "/home/agus/HNRG-pipeline-V0.1/references/hs37d5/hs37d5.fa.pac",
+  "main_workflow.ref_sa": "/home/agus/HNRG-pipeline-V0.1/references/hs37d5/hs37d5.fa.sa",
+  "main_workflow.ref_ann": "/home/agus/HNRG-pipeline-V0.1/references/hs37d5/hs37d5.fa.ann",
+  "main_workflow.ref_dict": "/home/agus/HNRG-pipeline-V0.1/references/hs37d5/hs37d5.dict",
+  "main_workflow.ref_bwt": "/home/agus/HNRG-pipeline-V0.1/references/hs37d5/hs37d5.fa.bwt",
+  "main_workflow.ref_fasta": "/home/agus/HNRG-pipeline-V0.1/references/hs37d5/hs37d5.fa",
+  "main_workflow.ref_amb": "/home/agus/HNRG-pipeline-V0.1/references/hs37d5/hs37d5.fa.amb",
+  "main_workflow.ref_fasta_index": "/home/agus/HNRG-pipeline-V0.1/references/hs37d5/hs37d5.fa.fai",
+
+  "##COMMENT5": "interval lists",
+  "main_workflow.ubam2gvcf.wes_calling_interval_list": "/home/agus/HNRG-pipeline-V0.1/libraries/GRCh37/TSO_v2.0_b37.interval_list",
+  "main_workflow.ubam2gvcf.wgs_evaluation_interval_list": "/home/agus/HNRG-pipeline-V0.1/libraries/GRCh37/TSO_v2.0_b37.interval_list",
+  "main_workflow.ubam2gvcf.wgs_calling_interval_list": "/home/agus/HNRG-pipeline-V0.1/libraries/GRCh37/TSO_v2.0_b37.interval_list",
+  "main_workflow.JointGenotyping.eval_interval_list": "/home/agus/HNRG-pipeline-V0.1/libraries/GRCh37/TSO_v2.0_b37.interval_list",
+  "main_workflow.JointGenotyping.unpadded_intervals_file": "/home/agus/HNRG-pipeline-V0.1/libraries/GRCh37/unpadded_TSO_v2.0_b37.interval_list",
+  
+  "##COMMENT6": "HAPLOTYPECALLER PARAMETERS",
+  "main_workflow.newqual": "true",
+  "main_workflow.haplotype_scatter_count": "2",
+  "main_workflow.smith_waterman_implementation": "FASTEST_AVAILABLE",
+  "main_workflow.gatk_gkl_pairhmm_threads": "1",
+  "main_workflow.gatk_gkl_pairhmm_implementation": "LOGLESS_CACHING",
+
+  "##COMMENT7": "BWA PARAMETERS",
+  "main_workflow.bwa_commandline": "bwa mem -K 100000000 -p -v 3 -t 4 -Y",
+
+
+  "##COMMENT8": "VARIOS",
+
+  "main_workflow.JointGenotyping.excess_het_threshold": "54.69",
+  "main_workflow.java_heap_memory_initial": "128m",
+  "main_workflow.ubam_list_name": "ubamfiles",
+  "main_workflow.break_bands_at_multiples_of": "1000000",
+  "main_workflow.compression_level": "1",
+  "main_workflow.contamination": "0"
+}
+
