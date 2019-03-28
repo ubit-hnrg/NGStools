@@ -1,5 +1,0 @@
-cEDIE_1A|/home/usuario/pipelineUIT/fq_test/cEDIE_1A_TD180109324_HK7KWCCXY_L4_1_MilLineas.fq|/home/usuario/pipelineUIT/fq_test/cEDIE_1A_TD180109324_HK7KWCCXY_L4_2_MilLineas.fq
-cEDIE_1B|/home/usuario/pipelineUIT/fq_test/cEDIE_1B_TD180109325_HK7KWCCXY_L4_1_MilLineas.fq|/home/usuario/pipelineUIT/fq_test/cEDIE_1B_TD180109325_HK7KWCCXY_L4_2_MilLineas.fq
-cEDIE_1C|/home/usuario/pipelineUIT/fq_test/cEDIE_1C_TD180109326_HK7KKCCXY_L2_1_MilLineas.fq|/home/usuario/pipelineUIT/fq_test/cEDIE_1C_TD180109326_HK7KKCCXY_L2_2_MilLineas.fq
-cEDIE_1C|/home/usuario/pipelineUIT/fq_test/cEDIE_1C_TD180109326_HK7KWCCXY_L7_1_MilLineas.fq|/home/usuario/pipelineUIT/fq_test/cEDIE_1C_TD180109326_HK7KWCCXY_L7_2_MilLineas.fq
-
