@@ -5,7 +5,7 @@
 workflow ubamtobwa {
     
     #Main input, array of ubams of (all samples) x (all lanes). i.e. containing all ubams of readgroups.  
-    Array array_unmapped_bams
+    Array[File] array_unmapped_bams
 
     ### PATH local de las herramientas sacadas de docker
     String gatk_jar
