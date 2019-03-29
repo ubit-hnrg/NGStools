@@ -284,7 +284,7 @@ input:
      ref_dict = ref_dict,
      gatk_jar = gatk_jar,
      toolpath = toolpath,
-     sample_names = ConvertPairedFastQsToUnmappedBamWf.output_bams_sample_names,
+     sample_names = ConvertPairedFastQsToUnmappedBamWf.output_ubams_sample_names,
      input_gvcfs = bam2gvcf.output_vcf,
      input_gvcfs_indices = bam2gvcf.output_vcf_index
 }
@@ -292,7 +292,7 @@ input:
     # Outputs that will be retained when execution is complete
   output {
     Array[File] output_bams = ConvertPairedFastQsToUnmappedBamWf.output_bams
-    Array[String] output_bams_sample_names =  ConvertPairedFastQsToUnmappedBamWf.output_bams_sample_names
+    Array[String] output_ubams_sample_names =  ConvertPairedFastQsToUnmappedBamWf.output_ubams_sample_names
     File unmapped_bam_list = ConvertPairedFastQsToUnmappedBamWf.unmapped_bam_list
     File samplesnames = ConvertPairedFastQsToUnmappedBamWf.samplesnames
     Array[File] muestras  =  ConvertPairedFastQsToUnmappedBamWf.muestras
