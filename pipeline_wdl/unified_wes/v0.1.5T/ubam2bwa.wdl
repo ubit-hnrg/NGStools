@@ -123,53 +123,52 @@ String toolpath
 
 
 # Read unmapped BAM, convert on-the-fly to FASTQ and stream to BWA MEM for alignment
-task SamToFastqAndBwaMem {
-  Array[File] array_input_bams
+#task SamToFastqAndBwaMem {
+#  Array[File] array_input_bams
   
-  String gatk_jar
-  String toolpath
-  String bwa_commandline
+#  String gatk_jar
+#  String toolpath
+#  String bwa_commandline
 
-  Int compression_level
-  String java_heap_memory_initial
+#  Int compression_level
+#  String java_heap_memory_initial
 
   #String output_bam_basename
-  File ref_fasta
-  File ref_fasta_index
-  File ref_dict
-  File ref_amb
-  File ref_ann
-  File ref_bwt
-  File ref_pac
-  File ref_sa  
+#  File ref_fasta
+#  File ref_fasta_index
+#  File ref_dict
+#  File ref_amb
+#  File ref_ann
+#  File ref_bwt
+#  File ref_pac
+#  File ref_sa  
         
 
-  command <<<
-    set -o pipefail
-    set -e
+#  command <<<
+#    set -o pipefail
+#    set -e
 
-  for ubamfile in ${sep=' ' array_input_bams}  ; do
-    output_filename=$(basename $ubamfile)
+#  for ubamfile in ${sep=' ' array_input_bams}  ; do
+#    output_filename=$(basename $ubamfile)
 
 
-   java -Dsamjdk.compression_level=${compression_level} -Xmx${java_heap_memory_initial} -jar ${toolpath}${gatk_jar} \
-        SamToFastq \
-        --INPUT=$ubamfile \
-        -F=/dev/stdout \
-        --INTERLEAVE=true \
-        --NON_PF=true | \
-        ${toolpath}${bwa_commandline} ${ref_fasta} /dev/stdin - 2> >(tee $output_filename.unmerged.bwa.stderr.log >&2) | \
-        ${toolpath}samtools view -1 - > $output_filename.unmerged.bam
+#   java -Dsamjdk.compression_level=${compression_level} -Xmx${java_heap_memory_initial} -jar ${toolpath}${gatk_jar} \
+#        SamToFastq \
+#        --INPUT=$ubamfile \
+#        -F=/dev/stdout \
+#        --INTERLEAVE=true \
+#        --NON_PF=true | \
+#        ${toolpath}${bwa_commandline} ${ref_fasta} /dev/stdin - 2> >(tee $output_filename.unmerged.bwa.stderr.log >&2) | \
+#        ${toolpath}samtools view -1 - > $output_filename.unmerged.bam
   
-  done        
+#  done        
       
-  >>>
-  output {
-    Array[File] output_bam_files = glob(*.bam)
-    #File output_bam = "${output_bam_basename}.bam"
-    Array[File] bwa_stderr_log = glob(*log)
-  }
-}
+#  >>>
+#  output {
+#    Array[File] output_bam_files = glob(*.bam)
+#    Array[File] bwa_stderr_log = glob(*log)
+#  }
+#}
 
 
 #All in one
