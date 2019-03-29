@@ -38,7 +38,7 @@ workflow ubamtobwa {
     # Map reads to reference
     call SamToFastqAndBwaMem2 {
       input:
-        array_input_bam = array_unmapped_bams,
+        array_input_bams = array_unmapped_bams,
         bwa_commandline = bwa_commandline,
         compression_level = compression_level,
         java_heap_memory_initial = java_heap_memory_initial,
