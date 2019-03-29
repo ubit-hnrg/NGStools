@@ -238,10 +238,9 @@ task SamToFastqAndBwaMem2 {
   >>>
   
   output {
-    Array[File] output_bwa_files = glob(*unmerged.bam)
-    Array[File] output_mergedbam_files = glob(*aligned.unsorted.bam)
-    #File output_bam = "${output_bam_basename}.bam"
-    Array[File] bwa_stderr_log = glob(*log)
+    Array[File] output_bwa_files = glob("*unmerged.bam")
+    Array[File] output_mergedbam_files = glob("*aligned.unsorted.bam")
+    Array[File] bwa_stderr_log = glob("*log")
   }
 }
 
