@@ -106,7 +106,7 @@ workflow ConvertPairedFastQsToUnmappedBamWf {
   #Create a file with a list of the generated ubams
   call CreateFoFN {
     input:
-      array_of_files = PairedFastQsToUnmappedBAM.output_bam,
+      array_of_files = PairedFastQsToUnmappedBAM.output_ubam,
       fofn_name = ubam_list_name,
       #docker = gatk_docker
   }
@@ -131,9 +131,9 @@ workflow ConvertPairedFastQsToUnmappedBamWf {
     #String path_borrado = write_lines(fastp.fastq_cleaned_R1)
     File p_borrar1 = path_borrado.path_borrar1 
     File p_borrar2 = path_borrado.path_borrar2
-    Array[File] output_bams = PairedFastQsToUnmappedBAM.output_bam
-    Array[String] output_bams_sample_names =  read_file_of_tabulated_inputs.array_of_samples
-    File unmapped_bam_list = CreateFoFN.fofn_list 
+    Array[File] output_ubams = PairedFastQsToUnmappedBAM.output_ubam
+    Array[String] output_ubams_sample_names =  read_file_of_tabulated_inputs.array_of_samples
+    File unmapped_ubam_list = CreateFoFN.fofn_list 
     File samplesnames = read_file_of_tabulated_inputs.unique_samples ##samples names unicos
     Array[File] muestras  =  Create_inputs_for_preprocesing.ubam_samples ###array de samples: S1,S2,..,Sn
   }
@@ -254,7 +254,7 @@ task PairedFastQsToUnmappedBAM {
   }
 #
   output {
-    File output_bam = "${sample_name}_${readgroup_name}.unmapped.bam"
+    File output_ubam = "${sample_name}_${readgroup_name}.unmapped.bam"
   }
 }
 
