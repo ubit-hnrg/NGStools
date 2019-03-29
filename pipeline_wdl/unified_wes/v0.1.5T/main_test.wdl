@@ -1,10 +1,10 @@
 #### main para unir workflows
 
 
-import "/home/agus/NGStools/pipeline_wdl/unified_wes/v0.1.4_test/hnrg-fastq2ubam_test.wdl" as fastq2ubam 
-import "/home/agus/NGStools/pipeline_wdl/unified_wes/v0.1.4_test/bam2gvcf.wdl" as bamtogvcf
-import "/home/agus/NGStools/pipeline_wdl/unified_wes/v0.1.4_test/ubam2bwa.wdl" as ubam2bwa
-import "/home/agus/NGStools/pipeline_wdl/unified_wes/v0.1.4_test/jointgenotype_sinrecalibracion.wdl" as joint_genotype
+import hnrg-fastq2ubam_test.wdl as fastq2ubam 
+import bam2gvcf.wdl as bamtogvcf
+import ubam2bwa.wdl as ubam2bwa
+import jointgenotype_sinrecalibracion.wdl as joint_genotype
 
 task borrado {
 File path1
