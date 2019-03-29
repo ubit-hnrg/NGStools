@@ -196,14 +196,14 @@ File uniquesample_name = ConvertPairedFastQsToUnmappedBamWf.samplesnames
    call bamtogvcf.bam2gvcf {
       input:
     #base_file_name =  ubamtobwa.nombre_base,
-    base_file_name =  'pepito',
+    base_file_name =  'pepito',                                          #### ARTEFACTO PARA PROBAR EL WORKFLOW ANTERIOR, ESTO HAY QUE TRABAJRLO Y ARTICULARLO BIEN. 
     #inputs_ubams = ConvertPairedFastQsToUnmappedBamWf.muestras,
     #uniquesample_name = ConvertPairedFastQsToUnmappedBamWf.samplesnames,
     path_save = mkdir_samplename.path_out_softlink,
     #sample_name = sample_name,
     #flowcell_unmapped_bams_list = sample,
     #bams_entrada = ubamtobwa.bam_alineado,
-    bams_entrada = ubamtobwa.output_mergedbam_files[1],
+    bams_entrada = ubamtobwa.output_mergedbam_files[1],                   #### ARTEFACTO PARA PROBAR EL WORKFLOW ANTERIOR, ESTO HAY QUE TRABAJRLO Y ARTICULARLO BIEN. 
     #ref_name = ref_name,
     #unmapped_bam_suffix = ".bam",
     #bwa_commandline = bwa_commandline,
