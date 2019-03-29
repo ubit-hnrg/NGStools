@@ -195,7 +195,8 @@ File uniquesample_name = ConvertPairedFastQsToUnmappedBamWf.samplesnames
 
    call bamtogvcf.bam2gvcf {
       input:
-    base_file_name =  ubamtobwa.nombre_base,
+    #base_file_name =  ubamtobwa.nombre_base,
+    base_file_name =  'pepito',
     #inputs_ubams = ConvertPairedFastQsToUnmappedBamWf.muestras,
     #uniquesample_name = ConvertPairedFastQsToUnmappedBamWf.samplesnames,
     path_save = mkdir_samplename.path_out_softlink,
