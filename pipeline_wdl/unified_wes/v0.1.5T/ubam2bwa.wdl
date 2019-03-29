@@ -41,6 +41,7 @@ workflow ubamtobwa {
         array_input_bams = array_unmapped_bams,
         bwa_commandline = bwa_commandline,
         compression_level = compression_level,
+        bwa_version = GetBwaVersion.version,
         java_heap_memory_initial = java_heap_memory_initial,
         #output_bam_basename = bam_basename + ".unmerged",
         ref_fasta = ref_fasta,
