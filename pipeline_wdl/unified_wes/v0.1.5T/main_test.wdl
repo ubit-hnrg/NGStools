@@ -293,7 +293,7 @@ input:
     
     # Outputs that will be retained when execution is complete
   output {
-    Array[File] output_bams = ConvertPairedFastQsToUnmappedBamWf.output_bams
+    Array[File] output_ubams = ConvertPairedFastQsToUnmappedBamWf.output_ubams
     Array[String] output_ubams_sample_names =  ConvertPairedFastQsToUnmappedBamWf.output_ubams_sample_names
     File unmapped_ubam_list = ConvertPairedFastQsToUnmappedBamWf.unmapped_ubam_list
     File samplesnames = ConvertPairedFastQsToUnmappedBamWf.samplesnames
