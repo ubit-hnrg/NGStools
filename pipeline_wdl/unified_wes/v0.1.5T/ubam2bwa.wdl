@@ -4,26 +4,17 @@
 
 workflow ubamtobwa {
     
-    #String path_save
- 
+    #Main input, array of ubams of (all samples) x (all lanes). i.e. containing all ubams of readgroups.  
+    Array array_unmapped_bams
+
     ### PATH local de las herramientas sacadas de docker
     String gatk_jar
     String toolpath
-
-
     ####### Reference name, .b37 , .hg19, etc. 
     String ref_name
     #String base_file_name
-   
-    
-    
- 
     ########################command line para el bwa 
-    #String bwa_commandline="bwa mem -K 100000000 -p -v 3 -t 4 -Y"
     String bwa_commandline
-
-
-
     ########## referencia
     File ref_fasta
     File ref_fasta_index
@@ -33,35 +24,15 @@ workflow ubamtobwa {
     File ref_bwt
     File ref_pac
     File ref_sa
-   
-
-    ##################################
     Int compression_level
     String java_heap_memory_initial
-
   
-
-
-  String sample_name_ubam
-  
-  File flowcell_unmapped_bams_list ### archivo txt con ubams de 1 sample (muchos ubam)
-  
-  
-  String base_file_name = sample_name_ubam  + ref_name
-  
-  Array[File] flowcell_unmapped_bams = read_lines(flowcell_unmapped_bams_list)
-  #String unmapped_bam_suffix
-  #String base_file_name
-  #File unmapped_bam
 
 
     call GetBwaVersion {
       input:
       toolpath = toolpath
     }
-
-
-    
     
 
     # Map reads to reference
@@ -120,6 +91,12 @@ workflow ubamtobwa {
 
 #}
 #}
+
+output {
+    Array[File] output_bwa_files = SamToFastqAndBwaMem2.output_bwa_files
+    Array[File] output_mergedbam_files = SamToFastqAndBwaMem2.output_mergedbam_files
+    Array[File] bwa_stderr_log = SamToFastqAndBwaMem2.bwa_stderr_log
+}
 
 }
 

@@ -157,28 +157,14 @@ Array[File] inputs_ubams = ConvertPairedFastQsToUnmappedBamWf.muestras
 File uniquesample_name = ConvertPairedFastQsToUnmappedBamWf.samplesnames
 
 
-scatter (sample in inputs_ubams)  {
-
-  String sample_name = basename(sample, ".txt")
-
-   #####subworkflow de fastq2bwa
-
-  call mkdir_samplename {
-    input: 
-     path_softlink = path_softlink,
-     samplename = sample_name
-}
-
-   call ubam2bwa.ubamtobwa {
+  call ubam2bwa.ubamtobwa {
 
     input:
-     
-    sample_name_ubam = sample_name,
-    flowcell_unmapped_bams_list = sample,
+    array_unmapped_bams = ConvertPairedFastQsToUnmappedBamWf.output_ubams,
+    #flowcell_unmapped_bams_list = sample,
     ref_name = ref_name,
     compression_level = compression_level,
     java_heap_memory_initial = java_heap_memory_initial,
-    unmapped_bam_suffix = ".bam",
     bwa_commandline = bwa_commandline,
     ref_fasta = ref_fasta,
     ref_fasta_index = ref_fasta_index,
@@ -195,7 +181,18 @@ scatter (sample in inputs_ubams)  {
    } 
 
 
-  
+  scatter (sample in inputs_ubams)  {
+
+  String sample_name = basename(sample, ".txt")
+
+   #####subworkflow de fastq2bwa
+
+  call mkdir_samplename {
+    input: 
+     path_softlink = path_softlink,
+     samplename = sample_name
+}
+
    call bamtogvcf.bam2gvcf {
       input:
     base_file_name =  ubamtobwa.nombre_base,
