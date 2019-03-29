@@ -295,7 +295,7 @@ input:
   output {
     Array[File] output_bams = ConvertPairedFastQsToUnmappedBamWf.output_bams
     Array[String] output_ubams_sample_names =  ConvertPairedFastQsToUnmappedBamWf.output_ubams_sample_names
-    File unmapped_bam_list = ConvertPairedFastQsToUnmappedBamWf.unmapped_bam_list
+    File unmapped_ubam_list = ConvertPairedFastQsToUnmappedBamWf.unmapped_ubam_list
     File samplesnames = ConvertPairedFastQsToUnmappedBamWf.samplesnames
     Array[File] muestras  =  ConvertPairedFastQsToUnmappedBamWf.muestras
   # Outputs del workflow bam2gvcf (bam2gvcf)  
