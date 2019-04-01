@@ -131,9 +131,13 @@ workflow ConvertPairedFastQsToUnmappedBamWf {
     #String path_borrado = write_lines(fastp.fastq_cleaned_R1)
     File p_borrar1 = path_borrado.path_borrar1 
     File p_borrar2 = path_borrado.path_borrar2
-    Array[File] output_ubams = PairedFastQsToUnmappedBAM.output_ubam
+
     Array[String] output_ubams_sample_names =  read_file_of_tabulated_inputs.array_of_samples
+
+    Array[File] output_ubams = PairedFastQsToUnmappedBAM.output_ubam
     File unmapped_ubam_list = CreateFoFN.fofn_list 
+
+    #samples sin repetir, en formato archivo y array.
     File samplesnames = read_file_of_tabulated_inputs.unique_samples ##samples names unicos
     Array[File] muestras  =  Create_inputs_for_preprocesing.ubam_samples ###array de samples: S1,S2,..,Sn
   }
