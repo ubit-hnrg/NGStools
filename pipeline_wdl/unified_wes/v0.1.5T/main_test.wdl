@@ -84,7 +84,7 @@ workflow main_workflow {
     #Array[File] flowcell_unmapped_bams
     
  
-    ########################command line para el bwa 
+    ########################  command line para el bwa ##################
     String bwa_commandline = "bwa mem -K 100000000 -p -v 3 -t 4 -Y"
   
     ########## referencia
@@ -124,14 +124,8 @@ workflow main_workflow {
     String smith_waterman_implementation = "AVX_ENABLED"
     Float? contamination = "0"
     String newqual = "true"
- 
-  
-
-    
-    #Array[File] inputs_ubams ###ubams del fastq2ubam
 
 
-  
   call fastq2ubam.ConvertPairedFastQsToUnmappedBamWf {  
       input: 
       tabulatedSampleFilePaths = tabulatedSampleFilePaths,
@@ -153,7 +147,7 @@ workflow main_workflow {
     }
  
 
-Array[File] inputs_ubams = ConvertPairedFastQsToUnmappedBamWf.muestras
+Array[File] inputs_bams = ConvertPairedFastQsToUnmappedBamWf.muestras
 File uniquesample_name = ConvertPairedFastQsToUnmappedBamWf.samplesnames
 
 
@@ -180,8 +174,11 @@ File uniquesample_name = ConvertPairedFastQsToUnmappedBamWf.samplesnames
 
    } 
 
+  #inputs_bams is an array of files. Each element is a file containing all the aligned and merged bams of a sample.
+  scatter (sample in inputs_bams)  {
 
-  scatter (sample in inputs_ubams)  {
+  File flowcell_mapped_bams_listfile = sample
+  Array[File] flowcell_mapped_bams = read_lines(flowcell_mapped_bams_listfile)
 
   String sample_name = basename(sample, ".txt")
 
@@ -203,7 +200,8 @@ File uniquesample_name = ConvertPairedFastQsToUnmappedBamWf.samplesnames
     #sample_name = sample_name,
     #flowcell_unmapped_bams_list = sample,
     #bams_entrada = ubamtobwa.bam_alineado,
-    bams_entrada = ubamtobwa.output_mergedbam_files[1],                   #### ARTEFACTO PARA PROBAR EL WORKFLOW ANTERIOR, ESTO HAY QUE TRABAJRLO Y ARTICULARLO BIEN. 
+    #bams_entrada = ubamtobwa.output_mergedbam_files[1],                   #### ARTEFACTO PARA PROBAR EL WORKFLOW ANTERIOR, ESTO HAY QUE TRABAJRLO Y ARTICULARLO BIEN. 
+    bams_entrada = flowcell_mapped_bams  #array of basm corresponding to ONE sample. 
     #ref_name = ref_name,
     #unmapped_bam_suffix = ".bam",
     #bwa_commandline = bwa_commandline,

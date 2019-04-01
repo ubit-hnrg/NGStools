@@ -38,7 +38,7 @@ workflow ubamtobwa {
     # Map reads to reference
     call Serial_SamToFastq_BwaMem_MergeBamAlignment {
       input:
-        array_input_bams = array_unmapped_bams,
+        array_input_ubams = array_unmapped_bams,
         bwa_commandline = bwa_commandline,
         compression_level = compression_level,
         bwa_version = GetBwaVersion.version,
@@ -57,9 +57,9 @@ workflow ubamtobwa {
     }
 
 output {
-    Array[File] output_bwa_files = SamToFastqAndBwaMem2.output_bwa_files
-    Array[File] output_mergedbam_files = SamToFastqAndBwaMem2.output_mergedbam_files
-    Array[File] bwa_stderr_log = SamToFastqAndBwaMem2.bwa_stderr_log
+    Array[File] output_bwa_files = Serial_SamToFastq_BwaMem_MergeBamAlignment.output_bwa_files
+    Array[File] output_mergedbam_files = Serial_SamToFastq_BwaMem_MergeBamAlignment.output_mergedbam_files
+    Array[File] bwa_stderr_log = Serial_SamToFastq_BwaMem_MergeBamAlignment.bwa_stderr_log
 }
 
 }
@@ -90,7 +90,7 @@ String toolpath
 
 #All in one task
 task Serial_SamToFastq_BwaMem_MergeBamAlignment {
-  Array[File] array_input_bams
+  Array[File] array_input_ubams
   
   String gatk_jar
   String toolpath
@@ -112,8 +112,9 @@ task Serial_SamToFastq_BwaMem_MergeBamAlignment {
     set -o pipefail
     set -e
 
-  for ubamfile in ${sep=' ' array_input_bams}  ; do
-    output_bwa_filename=$(basename $ubamfile)
+  for ubamfile in ${sep=' ' array_input_ubams}  ; do
+    output_bwa_prefix=${ubamfile%.unmapped.bam*}
+    #output_bwa_filename=$(basename $ubamfile)
     #output_filename=$(basename $ubamfile)
 
    java -Dsamjdk.compression_level=${compression_level} -Xmx${java_heap_memory_initial} -jar ${toolpath}${gatk_jar} \
@@ -123,7 +124,7 @@ task Serial_SamToFastq_BwaMem_MergeBamAlignment {
         --INTERLEAVE=true \
         --NON_PF=true | \
         ${toolpath}${bwa_commandline} ${ref_fasta} /dev/stdin - 2> >(tee $output_filename.unmerged.bwa.stderr.log >&2) | \
-        ${toolpath}samtools view -1 - > $output_bwa_filename.unmerged.bam
+        ${toolpath}samtools view -1 - > $output_bwa_prefix.aligned.unmerged.bam
   
     java -Dsamjdk.compression_level=${compression_level} -Xms3000m -jar \
     ${toolpath}${gatk_jar} \
@@ -131,9 +132,9 @@ task Serial_SamToFastq_BwaMem_MergeBamAlignment {
         --VALIDATION_STRINGENCY=SILENT \
         --EXPECTED_ORIENTATIONS=FR \
         --ATTRIBUTES_TO_RETAIN=X0 \
-        --ALIGNED_BAM=$output_bwa_filename.unmerged.bam \
+        --ALIGNED_BAM=$output_bwa_prefix.aligned.unmerged.bam \
         --UNMAPPED_BAM=$ubamfile \
-        -O=$output_bwa_filename.unmerged.aligned.unsorted.bam \
+        -O=$output_bwa_prefix.merged.unsorted.bam \
         -R=${ref_fasta} \
         --SORT_ORDER="unsorted" \
         --IS_BISULFITE_SEQUENCE=false \
@@ -155,8 +156,55 @@ task Serial_SamToFastq_BwaMem_MergeBamAlignment {
   >>>
   
   output {
-    Array[File] output_bwa_files = glob("*unmerged.bam")
-    Array[File] output_mergedbam_files = glob("*aligned.unsorted.bam")
+    Array[File] output_bwa_files = glob("*aligned.unmerged.bam")
+    Array[File] output_mergedbam_files = glob("*merged.unsorted.bam")
     Array[File] bwa_stderr_log = glob("*log")
   }
+}
+
+
+
+task Create_inputs_for_preprocesing {
+ File bams_sample_names
+ File bam_paths 
+# Array[File] = []
+
+command <<<  
+python <<CODE 
+
+with open("${bams_sample_names}", "r") as sf:
+    samples = sf.readlines()
+    samples =[i.strip('\n') for i in samples]
+    if samples[-1]=='':
+        samples = samples[:-1]
+        
+
+with open("${bam_paths}", "r") as ubf:
+    bams = ubf.readlines()
+    bams =[i.strip('\n') for i in bams]
+    if bams[-1]=='':
+        bams = bams[:-1]
+      
+open_files = []
+for i in range(len(samples)):
+    sample = samples[i]
+    bam = bams[i]
+    
+    filename ='%s.txt'%sample
+    if sample not in open_files:
+        with open(filename,'w') as f:
+            f.write("%s\n"%bam)
+            open_files.append(sample)
+        f.close()
+    else:
+        with open(filename,'a') as f:
+            f.write("%s\n"%bam)
+        f.close()
+
+CODE
+>>>
+
+output {
+
+    Array[File] bam_samples = glob("*.txt")
 }

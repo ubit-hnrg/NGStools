@@ -553,9 +553,6 @@ workflow bam2gvcf {
         toolpath = toolpath
   }
 
-
-
-
   #  call path_borrado as borrar_Mergebam{
   #      input:
   #      path1 = MergeBamAlignment.output_bam
