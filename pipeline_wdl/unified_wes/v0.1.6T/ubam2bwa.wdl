@@ -57,9 +57,8 @@ workflow ubamtobwa {
     }
 
 output {
-    Array[File] output_bwa_files = Serial_SamToFastq_BwaMem_MergeBamAlignment.output_bwa_files
     Array[File] output_mergedbam_files = Serial_SamToFastq_BwaMem_MergeBamAlignment.output_mergedbam_files
-    Array[File] bwa_stderr_log = Serial_SamToFastq_BwaMem_MergeBamAlignment.bwa_stderr_log
+
 }
 
 }
@@ -107,11 +106,7 @@ task Serial_SamToFastq_BwaMem_MergeBamAlignment {
   File ref_pac
   File ref_sa  
         
-  #output_bwa_prefix=${ubamfile%.unmapped.bam*}
-    #output_bwa_filename=$(basename $ubamfile)
-    #output_filename=$(basename $ubamfile)    
-    
-    #output_bwa_prefix=$ubamfile%.unmapped.bam*
+ 
 
   command <<<
     set -o pipefail
@@ -159,57 +154,7 @@ task Serial_SamToFastq_BwaMem_MergeBamAlignment {
   >>>
   
   output {
-    Array[File] output_bwa_files = glob("*aligned.unmerged.bam")
     Array[File] output_mergedbam_files = glob("*merged.unsorted.bam")
-    Array[File] bwa_stderr_log = glob("*log")
   }
 }
 
-
-
-task Create_inputs_for_preprocesing {
- File bams_sample_names
- File bam_paths 
-# Array[File] = []
-
-command <<<  
-python <<CODE 
-
-with open("${bams_sample_names}", "r") as sf:
-    samples = sf.readlines()
-    samples =[i.strip('\n') for i in samples]
-    if samples[-1]=='':
-        samples = samples[:-1]
-        
-
-with open("${bam_paths}", "r") as ubf:
-    bams = ubf.readlines()
-    bams =[i.strip('\n') for i in bams]
-    if bams[-1]=='':
-        bams = bams[:-1]
-      
-open_files = []
-for i in range(len(samples)):
-    sample = samples[i]
-    bam = bams[i]
-    
-    filename ='%s.txt'%sample
-    if sample not in open_files:
-        with open(filename,'w') as f:
-            f.write("%s\n"%bam)
-            open_files.append(sample)
-        f.close()
-    else:
-        with open(filename,'a') as f:
-            f.write("%s\n"%bam)
-        f.close()
-
-CODE
->>>
-
-output {
-
-    Array[File] bam_samples = glob("*.txt")
-}
-
-}

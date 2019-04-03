@@ -51,6 +51,18 @@ task mkdir_samplename {
 }
 
 
+task subset_array_glob {
+  String pattern 
+  Array[File] array_of_files
+
+  command{
+  }
+
+  output {
+    Array[File] subArray_input_ubam2gvcf = glob('../inputs/*/*${pattern}*')
+  }
+}
+
 
 
 
@@ -146,11 +158,6 @@ workflow main_workflow {
      path2 = ConvertPairedFastQsToUnmappedBamWf.p_borrar2
     }
  
-
-Array[File] inputs_bams = ConvertPairedFastQsToUnmappedBamWf.muestras
-File uniquesample_name = ConvertPairedFastQsToUnmappedBamWf.samplesnames
-
-
   call ubam2bwa.ubamtobwa {
 
     input:
@@ -175,14 +182,17 @@ File uniquesample_name = ConvertPairedFastQsToUnmappedBamWf.samplesnames
    } 
 
 
+Array[File] array_of_samples_txt = ConvertPairedFastQsToUnmappedBamWf.muestras
+File uniquesample_name = ConvertPairedFastQsToUnmappedBamWf.samplesnames
 
   #inputs_bams is an array of files. Each element is a file containing all the aligned and merged bams of a sample.
-  scatter (sample in ubamtobwa.output_mergedbam_files)  {
+  scatter (sample_txt in array_of_samples_txt)  {
+  #ubamtobwa.output_mergedbam_files
+  
+  #File flowcell_mapped_bams_listfile = sample_txt
+  #Array[File] flowcell_mapped_bams = read_lines(flowcell_mapped_bams_listfile)
 
-  File flowcell_mapped_bams_listfile = sample
-  Array[File] flowcell_mapped_bams = read_lines(flowcell_mapped_bams_listfile)
-
-  String sample_name = basename(sample, ".txt")
+  String sample_name = basename(sample_txt, ".txt")
 
    #####subworkflow de fastq2bwa
 
@@ -191,6 +201,13 @@ File uniquesample_name = ConvertPairedFastQsToUnmappedBamWf.samplesnames
      path_softlink = path_softlink,
      samplename = sample_name
 }
+
+   call subset_array_glob {
+     input: 
+       pattern = sample_name,
+       array_of_files = ubamtobwa.output_mergedbam_files
+
+   }
 
    call bamtogvcf.bam2gvcf {
       input:
@@ -201,7 +218,7 @@ File uniquesample_name = ConvertPairedFastQsToUnmappedBamWf.samplesnames
     path_save = mkdir_samplename.path_out_softlink,
     #sample_name = sample_name,
     #flowcell_unmapped_bams_list = sample,
-    bams_entrada = sample,
+    bams_entrada = subset_array_glob.subArray_input_ubam2gvcf,
     #bams_entrada = ubamtobwa.output_mergedbam_files[1],                   #### ARTEFACTO PARA PROBAR EL WORKFLOW ANTERIOR, ESTO HAY QUE TRABAJRLO Y ARTICULARLO BIEN. 
     ##bams_entrada = flowcell_mapped_bams,  #array of basm corresponding to ONE sample. 
     #ref_name = ref_name,
