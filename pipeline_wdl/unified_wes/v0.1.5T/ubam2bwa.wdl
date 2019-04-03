@@ -113,7 +113,7 @@ task Serial_SamToFastq_BwaMem_MergeBamAlignment {
     set -e
 
   for ubamfile in ${sep=' ' array_input_ubams}  ; do
-    output_bwa_prefix=${ubamfile%.unmapped.bam*}
+    output_bwa_prefix=$(basename $ubamfile .unmapped.bam}
     #output_bwa_filename=$(basename $ubamfile)
     #output_filename=$(basename $ubamfile)
 
@@ -156,7 +156,7 @@ task Serial_SamToFastq_BwaMem_MergeBamAlignment {
   >>>
   
   output {
-    Array[File] output_bwa_files = glob("*aligned.unmerged.bam")
+    #Array[File] output_bwa_files = glob("*aligned.unmerged.bam")  #these files will not be necessary and glob make rigid copies.
     Array[File] output_mergedbam_files = glob("*merged.unsorted.bam")
     Array[File] bwa_stderr_log = glob("*log")
   }
