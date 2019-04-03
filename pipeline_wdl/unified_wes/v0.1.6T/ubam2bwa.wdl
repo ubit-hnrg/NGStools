@@ -118,7 +118,12 @@ task Serial_SamToFastq_BwaMem_MergeBamAlignment {
     set -e
 
   for ubamfile in ${sep=' ' array_input_ubams}  ; do
+<<<<<<< HEAD
         output_bwa_prefix=$(basename $ubamfile .unmapped.bam)
+=======
+        
+        output_bwa_prefix=("${ubamfile%%.unmapped.bam*}")
+>>>>>>> 2de70e45781195e8203ecbecb4d08d432150f5ad
 
 
   
