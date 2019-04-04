@@ -290,6 +290,8 @@ Array[File] array_of_samples_txt = ConvertPairedFastQsToUnmappedBamWf.muestras
 #}
 File uniquesample_name =read_lines(ConvertPairedFastQsToUnmappedBamWf.samplesnames)
 
+
+
 ##########################################llamada workflow Joint Genotyping
 call joint_genotype.JointGenotyping {
 input:
