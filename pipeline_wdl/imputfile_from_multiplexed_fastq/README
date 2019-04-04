@@ -1,1 +1,2 @@
-readlink -f TSO20180510fq/*/*.gz|sort | ./generate_fasq_tsv.sh
+readlink -f /home/hnrg/samplesHNRG/testing/TSO20180510fq/*/*.gz|sort | ./generate_fasq_tsv.sh
+#this line create a file named samples.txt in the current directory
