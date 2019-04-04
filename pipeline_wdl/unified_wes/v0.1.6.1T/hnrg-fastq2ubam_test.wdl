@@ -85,7 +85,10 @@ workflow ConvertPairedFastQsToUnmappedBamWf {
         platform_name = platform_name,
         sequencing_center = sequencing_center,
         gatk_jar = gatk_jar,
-        toolpath = toolpath
+        toolpath = toolpath,
+        platform_model = platform_model, 
+        read_lenght = read_lenght 
+        
         #docker = gatk_docker,
         #preemptible_attempts = preemptible_attempts
     }
