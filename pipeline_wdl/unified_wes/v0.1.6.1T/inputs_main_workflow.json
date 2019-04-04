@@ -6,7 +6,8 @@
   "main_workflow.toolpath": "/home/agus/HNRG-pipeline-V0.1/tools/",
   "main_workflow.gatk_jar": "gatk-package-4.0.8.1-local.jar",
   "main_workflow.path_softlink": "/home/agus/test/v.0.1.4_test/",
-
+  "main_workflow.platformmodel" : "NextSeq-500",
+  "main_workflow.readlenght" : "151"
 
   "##COMMENT2": "uBAM METADATA",
   "main_workflow.platform_unit": ".b37",
