@@ -36,11 +36,14 @@ workflow ConvertPairedFastQsToUnmappedBamWf {
   #Array[String] readgroup_name     # THIS WILL COMPUTED AUTOMATICALLY FROM FASTQFILES AS: "FLOWCELLID_LANE{NUMBER}"
   String run_date                   
   String library_name 
-  String platform_unit 
   String platform_name 
   String sequencing_center
   String gatk_jar
   String toolpath
+  String platform_model
+  String read_lenght
+
+
 
   String ubam_list_name
 
@@ -78,7 +81,6 @@ workflow ConvertPairedFastQsToUnmappedBamWf {
         rgpufile = get_read_group_name.RGpu,        
         rgfile = get_read_group_name.rgname,
         library_name = library_name,
-        platform_unit = platform_unit,
         run_date = run_date,   ### ojo aca es la fecha de coorrida del seqcuenciador!!! Esto puede que deba ser una columna mas a parsear en el archivo tabulado y convertirse en array
         platform_name = platform_name,
         sequencing_center = sequencing_center,
@@ -230,9 +232,8 @@ task PairedFastQsToUnmappedBAM {
   File rgfile # this expects an one line file containing the readgroupname
   File rgpufile
   String readgroup_name  = read_lines(rgfile)[0]
-  String platform_unit = read_lines(rgpufile)[0]
+  String platform_unit = read_lines(rgpufile)[0] ####  flowcell-barcode.lane.
   String library_name
-  String platform_unit
   String run_date
   String platform_name
   String sequencing_center

@@ -72,14 +72,15 @@ workflow main_workflow {
   File tabulatedSampleFilePaths
   String run_date                   
   String library_name 
-  String platform_unit 
+  #String platform_unit 
   String platform_name 
   String gatk_jar
   String toolpath
   String ubam_list_name
   String sequencing_center =  "UIT-HNRG" 
   String readlenght
-  String platform_model
+  String platformmodel
+ 
 
 #inputs for preprocesing ( ubam2gvcf)
 
@@ -144,15 +145,14 @@ workflow main_workflow {
       input: 
       tabulatedSampleFilePaths = tabulatedSampleFilePaths,
       run_date = run_date,                   
-      library_name = library_name,  
-      platform_unit = platform_unit, 
+      library_name = library_name,   
       platform_name = platform_name,
       gatk_jar = gatk_jar,
       toolpath = toolpath,
       ubam_list_name = ubam_list_name,
       sequencing_center = sequencing_center,
-      readlenght = read_lenght,
-      platformmodel = platform_model
+      read_lenght = readlenght,
+      platform_model = platformmodel
 
       }
 
