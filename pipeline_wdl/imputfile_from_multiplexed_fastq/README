@@ -1,0 +1,1 @@
+readlink -f TSO20180510fq/*/*.gz|sort | ./generate_fasq_tsv.sh
