@@ -88,7 +88,6 @@ workflow ConvertPairedFastQsToUnmappedBamWf {
         toolpath = toolpath,
         platform_model = platform_model, 
         read_lenght = read_lenght 
-        
         #docker = gatk_docker,
         #preemptible_attempts = preemptible_attempts
     }
@@ -258,6 +257,7 @@ task PairedFastQsToUnmappedBAM {
     --FASTQ ${fastq_1} \
     --FASTQ2 ${fastq_2} \
     --OUTPUT ${sample_name}_${readgroup_name}.unmapped.bam \
+    --COMMENT sampleName:${info_name}_readLenght:${read_lenght} \
     --READ_GROUP_NAME ${readgroup_name} \
     --SAMPLE_NAME ${sample_name} \
     --LIBRARY_NAME ${library_name} \
@@ -265,8 +265,8 @@ task PairedFastQsToUnmappedBAM {
     --PLATFORM_MODEL ${platform_model}  \
     --RUN_DATE ${run_date} \
     --PLATFORM ${platform_name} \
-    --SEQUENCING_CENTER ${sequencing_center}
-    --COMMENT sampleName:${info_name}_readLenght:${read_lenght}
+    --SEQUENCING_CENTER ${sequencing_center} \
+    
   }
 #
   output {
