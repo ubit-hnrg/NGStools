@@ -183,7 +183,6 @@ workflow main_workflow {
 
 
 Array[File] array_of_samples_txt = ConvertPairedFastQsToUnmappedBamWf.muestras
-File uniquesample_name = ConvertPairedFastQsToUnmappedBamWf.samplesnames
 
   #inputs_bams is an array of files. Each element is a file containing all the aligned and merged bams of a sample.
   scatter (sample_txt in array_of_samples_txt)  {
@@ -289,6 +288,7 @@ File uniquesample_name = ConvertPairedFastQsToUnmappedBamWf.samplesnames
 #    path1 = paths3
 #}
 #}
+File uniquesample_name =read_lines(ConvertPairedFastQsToUnmappedBamWf.samplesnames)
 
 ##########################################llamada workflow Joint Genotyping
 call joint_genotype.JointGenotyping {
@@ -303,7 +303,7 @@ input:
      ref_dict = ref_dict,
      gatk_jar = gatk_jar,
      toolpath = toolpath,
-     sample_names = ConvertPairedFastQsToUnmappedBamWf.output_ubams_sample_names,
+     sample_names = uniquesample_name,
      input_gvcfs = bam2gvcf.output_vcf,
      input_gvcfs_indices = bam2gvcf.output_vcf_index
 }
