@@ -75,7 +75,7 @@ workflow ConvertPairedFastQsToUnmappedBamWf {
         info_name = read_file_of_tabulated_inputs.info_name[i],
         fastq_1 = fastp.fastq_cleaned_R1,
         fastq_2 = fastp.fastq_cleaned_R2,
-        rgpufile = get_read_group_name.rgpu,        
+        rgpufile = get_read_group_name.RGpu,        
         rgfile = get_read_group_name.rgname,
         library_name = library_name,
         platform_unit = platform_unit,
