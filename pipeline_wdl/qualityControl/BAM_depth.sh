@@ -2,6 +2,7 @@
 sampleID=$1
 BAM='/home/hnrg/resultsHNRG/'$sampleID'/'$sampleID'.bam'
 EXON_coords=/home/hnrg/HNRG-pipeline-V0.1/libraries/GRCh37/exon_coords_in_TSO_V1_padded.bed
+toolpath=/home/hnrg/HNRG-pipeline-V0.1/tools
 # ok for reduce bam
 $toolpath/bedtools2/bin/intersectBed -a $BAM -b $EXON_coords > $sampleID'_exonTSO_reduced.bam'
 
