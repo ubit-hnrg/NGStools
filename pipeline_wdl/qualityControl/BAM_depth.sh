@@ -23,5 +23,5 @@ $toolpath/bedtools2/bin/intersectBed -a $sampleID'_loj_sorted_cols.tsv' -b $EXON
 
 echo -e 'chr\tstart\tend\tcount\tgeneSymbol\texon_number\texon_chr\texon_start\texon_end' > header.tsv
 cat header.tsv $sampleID'_loj_exon_filtered.coverage' > $sampleID'_exon_filtered_coverage.tsv'
-rm $sampleID'_loj_exon_filtered.coverage loj.txt' $sampleID'_loj_sorted_cols.tsv' header.tsv $sampleID'_exon.coverage' $sampleID'_loj.txt'
+rm $sampleID'_loj_exon_filtered.coverage' $sampleID'_loj_sorted_cols.tsv' header.tsv $sampleID'_exon.coverage' $sampleID'_loj.txt'
 
