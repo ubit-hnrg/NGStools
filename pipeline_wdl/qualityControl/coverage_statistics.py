@@ -1,0 +1,91 @@
+
+import pandas as pd
+import numpy as np
+from statsmodels.stats.weightstats import DescrStatsW
+
+
+## utility functions
+
+def depth_fraction(coverage,thr=0,ZeroDepth=False):
+    if not ZeroDepth:
+        condition = coverage['count']>=thr
+    else:
+        condition = coverage['count']== thr
+
+#    return coverage[condition].count_length.sum()/float(coverage.count_length.sum())
+    return coverage[condition].count_length.sum()/float(coverage.count_length.sum())
+
+
+# load and correct coverage data
+sample='EB802'
+ffile='%s_exon_filtered_coverage.tsv.gz'%sample
+coverage = pd.read_table('~/%s'%ffile)
+
+
+
+# ensure intervals fall inside library kit
+coverage = coverage[(coverage.chr==coverage.exon_chr)&(coverage.start>=coverage.exon_start)&(coverage.end<=coverage.exon_end)]
+#sort and remove duplicates
+coverage.sort_values(by=['chr','start','end'],ascending=[True,True,False])
+coverage.drop_duplicates(inplace = True,subset=['chr','start','geneSymbol'])
+coverage['count_length']=coverage.end-coverage.start
+coverage['exon_length']=coverage.exon_end-coverage.exon_start
+
+
+
+# ## Compute global statistics
+
+signif=2
+bases_without_reads = depth_fraction(coverage,ZeroDepth=True)
+bases_greater1 = depth_fraction(coverage,thr=1)
+bases_greater10 = depth_fraction(coverage,thr=10)
+bases_greater20 = depth_fraction(coverage,thr=20)
+bases_greater30 = depth_fraction(coverage,thr=30)
+
+# uso estadisticos pesados popr la longitud de cada intervalo de profundidad constante
+weighted_stats = DescrStatsW(coverage['count'], weights=coverage.count_length, ddof=0)
+
+
+global_depth={}
+global_depth.update({'mean_DP':round(weighted_stats.mean,signif)})
+global_depth.update({'median_DP':weighted_stats.quantile(0.5).values[0]})
+global_depth.update({'std_DP':round(weighted_stats.std,signif)})
+global_depth.update({'q25_DP':weighted_stats.quantile(0.25).values[0]})
+global_depth.update({'q75_DP':weighted_stats.quantile(0.75).values[0]})
+global_depth.update({'q95_DP':weighted_stats.quantile(0.95).values[0]})
+
+global_depth.update({'dp>=1':bases_greater1})
+global_depth.update({'dp>=10':bases_greater10})
+global_depth.update({'dp>=20':bases_greater20})
+global_depth.update({'dp>=30':bases_greater30})
+global_depth.update({'q95_DP':weighted_stats.quantile(0.95).values[0]})
+#global_depth.update({'DP=0':round(bases_without_reads,signif)})
+
+globa_statistics = pd.Series(global_depth).to_frame()
+globa_statistics.columns=[sample]
+globa_statistics = globa_statistics.loc[[u'dp>=1',u'dp>=10', u'dp>=20', u'dp>=30', 
+         u'median_DP', u'q25_DP', u'q75_DP', u'q95_DP',
+         u'mean_DP', u'std_DP'],:]
+
+
+# # compute per gene statistics
+
+depth1 = coverage.groupby(['geneSymbol','exon_number'])['count','count_length'].apply(lambda x: depth_fraction(x,thr=1))
+depth10 = coverage.groupby(['geneSymbol','exon_number'])['count','count_length'].apply(lambda x: depth_fraction(x,thr=10))
+depth20 = coverage.groupby(['geneSymbol','exon_number'])['count','count_length'].apply(lambda x: depth_fraction(x,thr=20))
+depth30 = coverage.groupby(['geneSymbol','exon_number'])['count','count_length'].apply(lambda x: depth_fraction(x,thr=30))
+
+depth_by_exon = pd.concat([depth1,depth10,depth20,depth30],axis=1)
+depth_by_exon.columns=['dp1','dp10','dp20','dp30']
+depth_by_exon =depth_by_exon.round(2)
+
+
+exon_description = coverage[['chr','exon_start','exon_end','geneSymbol','exon_number']].drop_duplicates()
+depth_by_exon = pd.merge(depth_by_exon,exon_description,how='left',left_index=True,right_on=['geneSymbol','exon_number'])
+depth_by_exon = depth_by_exon[[u'geneSymbol', u'exon_number', u'dp1', u'dp10', u'dp20', u'dp30', u'chr', u'exon_start', u'exon_end']]
+depth_by_exon.sort_values(by=['chr','exon_start','exon_end'],inplace = True)
+
+# save outputs
+globa_statistics.round(2).to_csv('%s_coverage_statistics.tsv'%sample,sep='\t')
+depth_by_exon.to_csv('%s_coverage_statistics_by_exon.tsv'%sample,index = False,sep='\t')
+
