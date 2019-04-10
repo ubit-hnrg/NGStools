@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 sampleID=$1
 BAM='/home/hnrg/resultsHNRG/'$sampleID'/'$sampleID'.bam'
 EXON_coords=/home/hnrg/HNRG-pipeline-V0.1/libraries/GRCh37/exon_coords_in_TSO_V1_padded.bed
