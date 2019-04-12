@@ -2,7 +2,7 @@
 import pandas as pd
 import sys 
 
-sample='EB802'
+sample=sys.argv[1]
 path = '/home/hnrg/resultsHNRG/%s'%sample
 samtools_global_report_file = path + '/%s.samtools_stats'%(sample,%sample)
 samtools_kit_report_file = path + '/%s_TSO.samtools_stats'%(sample,%sample)
