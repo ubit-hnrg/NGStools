@@ -2,9 +2,7 @@
 import pandas as pd
 import os
 import sys
-
-print len(sys.argv)
-print type(sys.argv)
+import openpyxl
 
 report_pairs =sys.argv[1:-1]
 output = sys.argv[-1]
