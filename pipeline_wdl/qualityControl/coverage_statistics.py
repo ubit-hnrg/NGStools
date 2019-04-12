@@ -7,9 +7,9 @@ import os
 
 #ffile='EB802_exon_filtered_coverage.tsv.gz'
 ffile = sys.argv[1]
-print ffile
 signif=2
 sample=os.path.basename(ffile).split('_')[0]
+print sample
 output_global_coverage = '%s_coverage_statistics.tsv'%sample
 output_coverage_by_exon = '%s_coverage_statistics_by_exon.tsv'%sample
 
