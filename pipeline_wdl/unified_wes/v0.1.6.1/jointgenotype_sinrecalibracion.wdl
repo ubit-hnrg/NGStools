@@ -217,7 +217,7 @@ task ImportGVCFs {
     # a significant amount of non-heap memory for native libraries.
     # Also, testing has shown that the multithreaded reader initialization
     # does not scale well beyond 5 threads, so don't increase beyond that.
-    java -Xmx4g -Xms4g -jar ${toolpath}${gatk_jar} \
+    java -Xmx1g -Xms1g -jar ${toolpath}${gatk_jar} \
     GenomicsDBImport \
     --genomicsdb-workspace-path ${workspace_dir_name} \
     --batch-size ${batch_size} \
@@ -257,7 +257,7 @@ task GenotypeGVCFs {
     tar -xf ${workspace_tar}
     WORKSPACE=$( basename ${workspace_tar} .tar)
 
-    java -Xmx4g -Xms4g -jar ${toolpath}${gatk_jar}\
+    java -Xmx1g -Xms1g -jar ${toolpath}${gatk_jar}\
      GenotypeGVCFs \
      -R ${ref_fasta} \
      -O ${output_vcf_filename} \
