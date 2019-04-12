@@ -12,7 +12,7 @@ for rep in reports:
     print rep
     sample = os.path.basename(rep).split('_')[0]
     print sample
-    df = pd.read_table(rep,index_col=[0],header =None)
+    df = pd.read_table(rep,index_col=[0])
     df.columns=[sample]
     merged_report.append(df)
 
