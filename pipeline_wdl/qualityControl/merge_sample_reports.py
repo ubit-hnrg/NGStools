@@ -7,7 +7,7 @@ reports = sys.argv[1]
 outfile = sys.argv[2]
 merged_report = []
 
-reports = pd.read_csv(reports).values
+reports = pd.read_csv(reports).values.flatten()
 for rep in reports:
     print rep
     sample = os.path.basename(rep).split('_')[0]
