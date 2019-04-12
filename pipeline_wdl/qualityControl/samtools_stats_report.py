@@ -4,8 +4,8 @@ import sys
 
 sample=sys.argv[1]
 path = '/home/hnrg/resultsHNRG/%s'%sample
-samtools_global_report_file = path + '/%s.samtools_stats'%(sample,%sample)
-samtools_kit_report_file = path + '/%s_TSO.samtools_stats'%(sample,%sample)
+samtools_global_report_file = path + '/%s.samtools_stats'%(sample,sample)
+samtools_kit_report_file = path + '/%s_TSO.samtools_stats'%(sample,sample)
 output = path + '/%s_samtools_report.tsv'%sample
 
 def parse_samtools_report_SN(samtools_stat_file):
