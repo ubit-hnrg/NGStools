@@ -3,7 +3,7 @@ import sys
 import pandas as pd
 import os
 
-reports = sys.args[1]
+reports = sys.argv[1]
 outfile = sys.argv[2]
 merged_report = []
 
