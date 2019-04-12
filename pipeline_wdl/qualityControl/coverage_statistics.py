@@ -3,9 +3,11 @@ import sys
 import pandas as pd
 import numpy as np
 from statsmodels.stats.weightstats import DescrStatsW
+import os
 
 #ffile='EB802_exon_filtered_coverage.tsv.gz'
-ffile sys.argv[1]
+ffile = sys.argv[1]
+print ffile
 signif=2
 sample=os.path.basename(ffile).split('_')[0]
 output_global_coverage = '%s_coverage_statistics.tsv'%sample
@@ -23,7 +25,7 @@ def depth_fraction(coverage,thr=0,ZeroDepth=False):
     return coverage[condition].count_length.sum()/float(coverage.count_length.sum())
 
 
-coverage = pd.read_table('~/%s'%ffile)
+coverage = pd.read_table(ffile)
 
 # ensure intervals fall inside library kit
 coverage = coverage[(coverage.chr==coverage.exon_chr)&(coverage.start>=coverage.exon_start)&(coverage.end<=coverage.exon_end)]
