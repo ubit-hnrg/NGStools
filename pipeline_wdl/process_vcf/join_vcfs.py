@@ -13,7 +13,7 @@ args = parser.parse_args()
 
 
 multianno_tsv=args.multianno_tsv
-vcf_file=sys.args.vcf_multisample
+vcf_file=args.vcf_multisample
 
 def read_vcf(path):
     with open(path, 'r') as f:
