@@ -29,5 +29,6 @@ sample = multianno.columns[-1]
 vcf=read_vcf(vcf_file)
 vcf = vcf.iloc[:,~vcf.columns.isin(['QUAL','FILTER','INFO','FORMAT',sample])]
 
+output = StringIO()
 df = pd.merge(multianno,vcf,how='left',on=['#CHROM','POS','ID','REF','ALT'])
-sys.stdout.write(df)
+df.to_csv(output,sep='\t')
