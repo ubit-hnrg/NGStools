@@ -1,7 +1,7 @@
 import pandas as pd
 import argparse 
 from StringIO import StringIO
-
+import sys
 
 
 parser = argparse.ArgumentParser(prog='left_join_multianno_and_multisampleVCF', usage='%(prog)s [options] > outputfile.tsv')
@@ -29,5 +29,5 @@ sample = multianno.columns[-1]
 vcf=read_vcf(vcf_file)
 vcf = vcf.iloc[:,~vcf.columns.isin(['QUAL','FILTER','INFO','FORMAT',sample])]
 
-pd.merge(multianno,vcf,how='left',on=['#CHROM','POS','ID','REF','ALT'])
-
+df = pd.merge(multianno,vcf,how='left',on=['#CHROM','POS','ID','REF','ALT'])
+sys.stdout.write(df)
