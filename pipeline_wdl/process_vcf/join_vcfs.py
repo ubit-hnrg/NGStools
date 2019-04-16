@@ -8,12 +8,14 @@ parser = argparse.ArgumentParser(prog='left_join_multianno_and_multisampleVCF', 
 
 parser.add_argument('--multianno_tsv', help='modified annovar output (with removed unammed fields)')
 parser.add_argument('--vcf_multisample', help='multisample vcf file')
+parser.add_argument('--output', help='output file')
 
 args = parser.parse_args()
 
 
 multianno_tsv=args.multianno_tsv
 vcf_file=args.vcf_multisample
+output=args.output
 
 def read_vcf(path):
     with open(path, 'r') as f:
@@ -29,6 +31,5 @@ sample = multianno.columns[-1]
 vcf=read_vcf(vcf_file)
 vcf = vcf.iloc[:,~vcf.columns.isin(['QUAL','FILTER','INFO','FORMAT',sample])]
 
-output = StringIO()
 df = pd.merge(multianno,vcf,how='left',on=['#CHROM','POS','ID','REF','ALT'])
-df.to_csv(output,sep='\t')
+df.to_csv(output,sep='\t',index = False)
