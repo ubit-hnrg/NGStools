@@ -32,4 +32,10 @@ vcf=read_vcf(vcf_file)
 vcf = vcf.iloc[:,~vcf.columns.isin(['QUAL','FILTER','INFO','FORMAT',sample])]
 
 df = pd.merge(multianno,vcf,how='left',on=['#CHROM','POS','ID','REF','ALT'])
+df['GENOTIPO']=df[sample].str.split(':',expand=True)[0]
+cols = df.columns
+firstCols =  ['#CHROM','POS','ID','REF','ALT','QUAL','FILTER','INFO','FORMAT','GENOTIPO',sample]
+cols =  [c for c in cols if c not in firstCols]
+cols = firstCols + cols
+df = df.reindex(columns=cols)
 df.to_csv(output,sep='\t',index = False)
