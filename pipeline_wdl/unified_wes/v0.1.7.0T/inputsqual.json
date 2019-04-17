@@ -1,0 +1,7 @@
+{
+  "quality_control.exon_coords": "File",
+  "quality_control.toolpath": "String",
+  "quality_control.tso_bed": "File",
+  "quality_control.analysis_readybam": "File"
+}
+
