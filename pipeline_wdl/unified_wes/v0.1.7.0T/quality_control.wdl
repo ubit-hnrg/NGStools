@@ -57,8 +57,8 @@ output {
 
 #File reduced_bam = $name'_exonTSO_reduced.bam'
 #File exon_coverage = $name'_exon_filtered_coverage.tsv'
-File glob_cov_stats = "$name'_coverage_statistics.tsv'"
-File cov_stats_by_name = "$name'_coverage_statistics_by_exon.tsv'"
+File glob_cov_stats = "$name_coverage_statistics.tsv"
+File cov_stats_by_name = "$name_coverage_statistics_by_exon.tsv"
 String sample_Name = "name"
 
 }
@@ -215,6 +215,18 @@ sampleID = bam_depth.sample_Name,
 samtools_global_report = samtools_stat.samtools_original_bam,
 samtools_report = samtools_stat.samtools_TSO_bam,
 toolpath = toolpath
+
+}
+
+output {
+File depth_global_cov_stats = bam_depth.glob_cov_stats
+File by_exon_depth = bam_depth.cov_stats_by_name
+File coverage_merged_report = coverage_global_reports.merged_report
+File reporte_final = reports_file.output_report
+
+File Samt_bam_stat = samtools_stat.samtools_original_bam 
+File Samt_TSO_stat = samtools_stat.samtools_TSO_bam
+
 
 }
 
