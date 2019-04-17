@@ -53,16 +53,53 @@ for i in 1711242 1802140 1804642 1805817 1809341 1809720 1810255 1901364 1901981
     echo $id;
     out_prefix=/home/hnrg/resultsHNRG/$i/$i'_TSO_renamed_one_sample';
 
+    #columnas a cortar (localizando Otherinfo column y las 2 siguientes)
+    nl0=$(head -n1 $out_prefix.hg19_multianno.txt|tr '\t' '\n'|nl|grep 'Otherinfo'|cut -f1)
+    nl1=$((nl0 + 1))
+    nl2=$((nl0 + 2))
+
+    # meto header (dejando el campo 'Otherinfo' que despues va a aser remplazado por las columnas del vcf original)
     head -n1 $out_prefix.hg19_multianno.txt > $out_prefix.hg19_multianno.tsv
-    tail -n+2 $out_prefix.hg19_multianno.txt|cut -f163,164,165 --complement >>  $out_prefix.hg19_multianno.tsv;
+    tail -n+2 $out_prefix.hg19_multianno.txt|cut -f$nl0,$nl1,$nl2 --complement >>  $out_prefix.hg19_multianno.tsv;
+
     vcf_header=$(grep '#CH' /home/hnrg/resultsHNRG/$i/TSO20190328_TSO_renamed.$id.vcf);
+    #remplazo columnas
     sed -i "s/Otherinfo/$vcf_header/g" $out_prefix.hg19_multianno.tsv;
     python /home/hnrg/NGStools/pipeline_wdl/process_vcf/join_vcfs.py --multianno_tsv=$out_prefix.hg19_multianno.tsv --vcf_multisample=/home/hnrg/resultsHNRG/TSO20190328/TSO20190328_TSO_renamed.vcf --output=/home/hnrg/resultsHNRG/$i/$i.multiano_multisample.tsv
     done
-
 
 #este vcf se puede usar para anotar. 
 #El header debe skipear tres columnas de other info 163,164,y 165. 
 #Luego las restantes (166 hasta el final) son las columnas del vcf de entrada.
 # la ventaja de hacerlo así es que naturalmente quedan sólo los alternativos correspondientes a la muestra que se está mirando. 
 
+
+
+
+## genero listas de genes
+python ~/NGStools/pipeline_wdl/process_vcf/parse-sheets.py -i=/home/hnrg/metadataHNRG/TSO-20190328-bioinfo.xlsx -o=/home/hnrg/metadataHNRG/
+
+
+
+for i in 1711242 1802140 1804642 1805817 1809341 1809720 1810255 1901364 1901981 EB761 EB790 EB802;
+    do
+    head -n1 /home/hnrg/resultsHNRG/$i/$i.multiano_multisample.tsv > /home/hnrg/resultsHNRG/$i/$i'_geneList'.multiano_multisample.tsv
+    grep /home/hnrg/resultsHNRG/$i/$i.multiano_multisample.tsv -f /home/hnrg/metadataHNRG/$i/$i'_genelist.txt' >> /home/hnrg/resultsHNRG/$i/$i'_geneList'.multiano_multisample.tsv
+done
+
+
+### merge results into a xlsx file
+for i in 1711242 1802140 1804642 1805817 1809341 1809720 1810255 1901364 1901981 EB761 EB790 EB802;
+    do echo $i;
+    /home/hnrg/NGStools/pipeline_wdl/qualityControl/make_excel_report.py /home/hnrg/resultsHNRG/$i/$i.multiano_multisample.tsv:Variants \
+    /home/hnrg/resultsHNRG/$i/$i'_geneList'.multiano_multisample.tsv:GeneListVariants /home/hnrg/resultsHNRG/$i/$i'_coverage_statistics_by_exon.tsv':ExonCoverage \
+    /home/hnrg/resultsHNRG/$i/$i.variants.xlsx
+    done
+
+
+## ONLY FOR CHECK. 
+#check if gene List in our reference gene dabtase
+for i in 1711242 1802140 1804642 1805817 1809341 1809720 1810255 1901364 1901981 EB761 EB790 EB802;
+    do echo $i;
+    grep /home/hnrg/metadataHNRG/$i/$i'_genelist.txt' -v -f refGene.list >/home/hnrg/metadataHNRG/$i/$i'NotIn_refGene.txt';
+    done
