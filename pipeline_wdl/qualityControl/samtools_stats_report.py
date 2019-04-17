@@ -1,12 +1,25 @@
 #!/usr/bin/python
 import pandas as pd
 import sys 
+import argparse
 
-sample=sys.argv[1]
-path = '/home/hnrg/resultsHNRG/%s'%sample
-samtools_global_report_file = path + '/%s_samtools.stats'%sample
-samtools_kit_report_file = path + '/%s_TSO_samtools.stats'%sample
-output = path + '/%s_samtools_report.tsv'%sample
+parser = argparse.ArgumentParser(prog='samtools_stat_report.py',description='Make aligment report from samtools stat reports', usage='%(prog)s  --samtools_global_report --samtools_library_report --output_file')
+parser.add_argument('-g','--samtools_global_report', help='global report from samtools stat tool')
+parser.add_argument('-l','--samtools_library_report', help='library kit restricted report from samtools stat tool')
+parser.add_argument('-o','--output_file')
+
+args = parser.parse_args()
+samtools_global_report_file = args.samtools_global_report
+samtools_kit_report_file = args.samtools_library_report
+output = args.output_file
+
+
+
+#sample=sys.argv[1]
+#path = '/home/hnrg/resultsHNRG/%s'%sample
+#samtools_global_report_file = path + '/%s_samtools.stats'%sample
+#samtools_kit_report_file = path + '/%s_TSO_samtools.stats'%sample
+#output = path + '/%s_samtools_report.tsv'%sample
 
 def parse_samtools_report_SN(samtools_stat_file):
     order=[]
