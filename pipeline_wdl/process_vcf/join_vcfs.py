@@ -31,6 +31,7 @@ multianno=pd.read_table(multianno_tsv)
 sample = multianno.columns[-1]
 vcf=read_vcf(vcf_file)
 vcf = vcf.iloc[:,~vcf.columns.isin(['QUAL','FILTER','INFO','FORMAT',sample])]
+vcf.rename(columns={'ALT':'ALTERNATIVES'},inplace=True)
 
 df = pd.merge(multianno,vcf,how='left',on=['#CHROM','POS','ID','REF'])
 df['GENOTIPO']=df[sample].str.split(':',expand=True)[0]
