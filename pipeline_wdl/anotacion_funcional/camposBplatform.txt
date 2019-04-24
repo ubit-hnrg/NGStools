@@ -1,0 +1,161 @@
+
+-------ESTO SALE DE SNPEFF y es lo que espera la plataforma.
+
+##INFO=<ID=SNPEFF_AMINO_ACID_CHANGE,Number=1,Type=String,Description="Old/New amino acid for the highest-impact effect resulting from the current variant (in HGVS style)">
+##INFO=<ID=SNPEFF_CODON_CHANGE,Number=1,Type=String,Description="Old/New codon for the highest-impact effect resulting from the current variant">
+##INFO=<ID=SNPEFF_EFFECT,Number=1,Type=String,Description="The highest-impact effect resulting from the current variant (or one of the highest-impact effects, if there is a tie)">
+##INFO=<ID=SNPEFF_FUNCTIONAL_CLASS,Number=1,Type=String,Description="Functional class of the highest-impact effect resulting from the current variant: [NONE, SILENT, MISSENSE, NONSENSE]">
+##INFO=<ID=SNPEFF_GENE_BIOTYPE,Number=1,Type=String,Description="Gene biotype for the highest-impact effect resulting from the current variant">
+##INFO=<ID=SNPEFF_GENE_NAME,Number=1,Type=String,Description="Gene name for the highest-impact effect resulting from the current variant">
+##INFO=<ID=SNPEFF_IMPACT,Number=1,Type=String,Description="Impact of the highest-impact effect resulting from the current variant [MODIFIER, LOW, MODERATE, HIGH]">
+##INFO=<ID=SNPEFF_ALLELE,Number=.,Type=String,Description="Allele">
+##INFO=<ID=SNPEFF_EXON_ID,Number=1,Type=String,Description="Exon or Intron rank for the highest-impact effect resulting from the current variant">
+##INFO=<ID=SNPEFF_TRANSCRIPT_ID,Number=1,Type=String,Description="Transcript ID for the highest-impact effect resulting from the current variant">
+##INFO=<ID=SNPEFF_GENE_ID,Number=A,Type=String,Description="Field 'Ensembl_geneid' from dbNSFP">
+
+-------------FORMAT
+
+##FORMAT=<ID=DP,Number=1,Type=Integer,Description="Approximate read depth (reads with MQ=255 or with bad mates are filtered)">
+##FORMAT=<ID=GL,Number=3,Type=Float,Description="Likelihoods for RR,RA,AA genotypes (R=ref,A=alt)">
+##FORMAT=<ID=GQ,Number=1,Type=Integer,Description="Genotype Quality, the Phred-scaled marginal (or unconditional) probability of the called genotype">
+##FORMAT=<ID=GT,Number=1,Type=String,Description="Genotype">
+##FORMAT=<ID=AD,Number=.,Type=Integer,Description="Allelic depths for the ref and alt alleles in the order listed">
+##FORMAT=<ID=PL,Number=G,Type=Integer,Description="Normalized, Phred-scaled likelihoods for genotypes as defined in the VCF specification">
+
+
+-------------Hasta aqui lo mandatorio. De aqui para abajo opcional, pero si no estan van a estar limitados los filtros y la visualizacion de los datos.
+
+#INFO=<ID=AF,Number=A,Type=Float,Description="Allele frequency based on Flow Evaluator observation counts">
+##INFO=<ID=CAF,Number=.,Type=String,Description="An ordered, comma delimited list of allele frequencies based on 1000Genomes, starting with the reference allele followed by alternate alleles as ordered in the ALT column. Where a 1000Genomes alternate allele is not in the dbSNPs alternate allele set, the allele is added to the ALT column.  The minor allele is the second largest value in the list, and was previuosly reported in VCF as the GMAF.  This is the GMAF reported on the RefSNP and EntrezSNP pages and VariationReporter">
+##INFO=<ID=GMAF,Number=1,Type=Float,Description="Global Minor Allele Frequency [0, 0.5]; global population is 1000GenomesProject phase 1 genotype data from 629 individuals, released in the 11-23-2012 dataset">
+##INFO=<ID=MAF,Number=.,Type=String,Description="Minor Allele Frequency in percent in the order of EA,AA,All">
+
+
+##INFO=<ID=MAA,Number=.,Type=String,Description="An ordered, comma delimited list of alternatives alleles.">
+##INFO=<ID=set,Number=1,Type=String,Description="Source VCF for the merged record in CombineVariants">
+##INFO=<ID=DP,Number=1,Type=Integer,Description="Approximate read depth; some reads may have been filtered">
+
+##EXAC (esto quizas sean inncesario si ahora ya anotamos con gnomADD, se mantiene para que sea compatible hacia atras.)
+
+##INFO=<ID=AN_Adj,Number=1,Type=Integer,Description="Adjusted Chromosome Count">
+##INFO=<ID=AC_Adj,Number=A,Type=Integer,Description="Adjusted Allele Counts">
+##INFO=<ID=AC_Het,Number=A,Type=Integer,Description="Adjusted Heterozygous Counts">
+##INFO=<ID=AC_Hom,Number=A,Type=Integer,Description="Adjusted Homozygous Counts">
+##INFO=<ID=AC_Hemi,Number=A,Type=Integer,Description="Adjusted Hemizygous Counts">
+
+
+
+
+----------CLINVAR 
+
+##INFO=<ID=CLNDSDBID,Number=.,Type=String,Description="Variant disease database ID">
+##INFO=<ID=CLNDBN,Number=.,Type=String,Description="Variant disease name">
+##INFO=<ID=CLNDSDB,Number=.,Type=String,Description="Variant disease database name">
+##INFO=<ID=CLNHGVS,Number=.,Type=String,Description="Variant names from HGVS.    The order of these variants corresponds to the order of the info in the other clinical  INFO tags.">
+##INFO=<ID=CLNALLE,Number=.,Type=Integer,Description="Variant alleles from REF or ALT columns.  0 is REF, 1 is the first ALT allele, etc.  This is used to match alleles with other corresponding clinical (CLN) INFO tags.  A value of -1 indicates that no allele was found to match a corresponding HGVS allele name.">
+##INFO=<ID=CLNSRCID,Number=.,Type=String,Description="Variant Clinical Channel IDs">
+##INFO=<ID=CLNSRC,Number=.,Type=String,Description="Variant Clinical Chanels">
+##INFO=<ID=CLNORIGIN,Number=.,Type=String,Description="Allele Origin. One or more of the following values may be added: 0 - unknown; 1 - germline; 2 - somatic; 4 - inherited; 8 - paternal; 16 - maternal; 32 - de-novo; 64 - biparental; 128 - uniparental; 256 - not-tested; 512 - tested-inconclusive; 1073741824 - other">
+##INFO=<ID=CLNSIG,Number=.,Type=String,Description="Variant Clinical Significance, 0 - Uncertain significance, 1 - not provided, 2 - Benign, 3 - Likely benign, 4 - Likely pathogenic, 5 - Pathogenic, 6 - drug response, 7 - histocompatibility, 255 - other">
+
+##INFO=<ID=PhastCons,Number=1,Type=Float,Description="PhastCons conservation score">
+##INFO=<ID=CADD_1000G_RawScore,Number=.,Type=Float,Description="CADD - 1000 Genome variants (SNVs and InDels) - RawScore">
+##INFO=<ID=CADD_1000G_PHRED,Number=.,Type=Float,Description="CADD - 1000 Genome variants (SNVs and InDels) - PHRED">
+
+
+--------ANNOVAR (Todos estos salen de annovar.)
+
+##INFO=<ID=gnomAD_genome_ALL,Number=.,Type=String,Description="campo generado automaticamente desde script gnomAD_genome_ALL">
+##INFO=<ID=gnomAD_exome_ALL,Number=.,Type=String,Description="campo generado automaticamente desde script gnomAD_exome_ALL">
+
+##INFO=<ID=FATHMM_score,Number=.,Type=String,Description="campo generado automaticamente desde script FATHMM_score">
+##INFO=<ID=Polyphen2_HDIV_rankscore,Number=.,Type=String,Description="campo generado automaticamente desde script Polyphen2_HDIV_rankscore">
+
+##INFO=<ID=phyloP20way_mammalian_rankscore,Number=.,Type=String,Description="campo generado automaticamente desde script phyloP20way_mammalian_rankscore">
+##INFO=<ID=phastCons20way_mammalian_rankscore,Number=.,Type=String,Description="campo generado automaticamente desde script phastCons20way_mammalian_rankscore">
+##INFO=<ID=phyloP20way_mammalian,Number=.,Type=String,Description="campo generado automaticamente desde script phyloP20way_mammalian">
+##INFO=<ID=phastCons20way_mammalian,Number=.,Type=String,Description="campo generado automaticamente desde script phastCons20way_mammalian">
+##INFO=<ID=phastCons100way_vertebrate,Number=.,Type=String,Description="campo generado automaticamente desde script phastCons100way_vertebrate">
+##INFO=<ID=phastCons100way_vertebrate_rankscore,Number=.,Type=String,Description="campo generado automaticamente desde script phastCons100way_vertebrate_rankscore">
+##INFO=<ID=phyloP100way_vertebrate,Number=.,Type=String,Description="campo generado automaticamente desde script phyloP100way_vertebrate">
+
+##INFO=<ID=GERP++_RS,Number=.,Type=String,Description="campo generado automaticamente desde script GERP++_RS">
+##INFO=<ID=GERP++_RS_rankscore,Number=.,Type=String,Description="campo generado automaticamente desde script GERP++_RS_rankscore">
+
+##INFO=<ID=M-CAP_rankscore,Number=.,Type=String,Description="campo generado automaticamente desde script M-CAP_rankscore">
+##INFO=<ID=VEST3_rankscore,Number=.,Type=String,Description="campo generado automaticamente desde script VEST3_rankscore">
+
+##INFO=<ID=CADD_phred,Number=.,Type=String,Description="campo generado automaticamente desde script CADD_phred">
+##INFO=<ID=CADD_raw_rankscore,Number=.,Type=String,Description="campo generado automaticamente desde script CADD_raw_rankscore">
+##INFO=<ID=CADD_raw,Number=.,Type=String,Description="campo generado automaticamente desde script CADD_raw">
+
+##INFO=<ID=MutationTaster_score,Number=.,Type=String,Description="campo generado automaticamente desde script MutationTaster_score">
+##INFO=<ID=DANN_rankscore,Number=.,Type=String,Description="campo generado automaticamente desde script DANN_rankscore">
+##INFO=<ID=DANN_score,Number=.,Type=String,Description="campo generado automaticamente desde script DANN_score">
+##INFO=<ID=InterVarVeredict,Number=.,Type=String,Description="campo generado automaticamente desde script InterVarVeredict">
+##INFO=<ID=InterVarEvidence,Number=.,Type=String,Description="campo generado automaticamente desde script InterVarEvidence">
+##INFO=<ID=MutationTaster_pred,Number=.,Type=String,Description="campo generado automaticamente desde script MutationTaster_pred">
+
+##INFO=<ID=PROVEAN_score,Number=.,Type=String,Description="campo generado automaticamente desde script PROVEAN_score">
+##INFO=<ID=LRT_score,Number=.,Type=String,Description="campo generado automaticamente desde script LRT_score">
+
+##INFO=<ID=Polyphen2_HVAR_score,Number=.,Type=String,Description="campo generado automaticamente desde script Polyphen2_HVAR_score">
+##INFO=<ID=Polyphen2_HVAR_pred,Number=.,Type=String,Description="campo generado automaticamente desde script Polyphen2_HVAR_pred">
+
+##INFO=<ID=M-CAP_pred,Number=.,Type=String,Description="campo generado automaticamente desde script M-CAP_pred">
+##INFO=<ID=Polyphen2_HVAR_rankscore,Number=.,Type=String,Description="campo generado automaticamente desde script Polyphen2_HVAR_rankscore">
+##INFO=<ID=VEST3_score,Number=.,Type=String,Description="campo generado automaticamente desde script VEST3_score">
+##INFO=<ID=M-CAP_score,Number=.,Type=String,Description="campo generado automaticamente desde script M-CAP_score">
+##INFO=<ID=Polyphen2_HDIV_score,Number=.,Type=String,Description="campo generado automaticamente desde script Polyphen2_HDIV_score">
+
+##INFO=<ID=FATHMM_converted_rankscore,Number=.,Type=String,Description="campo generado automaticamente desde script FATHMM_converted_rankscore">
+##INFO=<ID=FATHMM_pred,Number=.,Type=String,Description="campo generado automaticamente desde script FATHMM_pred">
+##INFO=<ID=Polyphen2_HDIV_pred,Number=.,Type=String,Description="campo generado automaticamente desde script Polyphen2_HDIV_pred">
+##INFO=<ID=SIFT_score,Number=.,Type=String,Description="campo generado automaticamente desde script SIFT_score">
+##INFO=<ID=SIFT_converted_rankscore,Number=.,Type=String,Description="campo generado automaticamente desde script SIFT_converted_rankscore">
+##INFO=<ID=MutationTaster_converted_rankscore,Number=.,Type=String,Description="campo generado automaticamente desde script MutationTaster_converted_rankscore">
+##INFO=<ID=SIFT_pred,Number=.,Type=String,Description="campo generado automaticamente desde script SIFT_pred">
+##INFO=<ID=AAChange.refGene,Number=.,Type=String,Description="campo generado automaticamente desde script AAChange.refGene">
+##INFO=<ID=AAChange.ensGene,Number=.,Type=String,Description="campo generado automaticamente desde script AAChange.refGene">
+
+------------ VARTYPE (Salen de Vartype)
+##INFO=<ID=SNP,Number=0,Type=Flag,Description="Variant is a SNP">
+##INFO=<ID=MNP,Number=0,Type=Flag,Description="Variant is an MNP">
+##INFO=<ID=INS,Number=0,Type=Flag,Description="Variant is an insertion">
+##INFO=<ID=DEL,Number=0,Type=Flag,Description="Variant is an deletion">
+##INFO=<ID=MIXED,Number=0,Type=Flag,Description="Variant is mixture of INS/DEL/SNP/MNP">
+##INFO=<ID=HOM,Number=0,Type=Flag,Description="Variant is homozygous">
+##INFO=<ID=HET,Number=0,Type=Flag,Description="Variant is heterozygous">
+##INFO=<ID=VARTYPE,Number=A,Type=String,Description="Comma separated list of variant types. One per allele">
+
+-----Strand Bias
+#https://www.broadinstitute.org/gatk/guide/tooldocs/org_broadinstitute_gatk_tools_walkers_annotator_FisherStrand.php
+#https://www.broadinstitute.org/gatk/guide/tooldocs/org_broadinstitute_gatk_tools_walkers_annotator_StrandOddsRatio.php
+
+##INFO=<ID=FS,Number=1,Type=Float,Description="Phred-scaled p-value using Fisher's exact test to detect strand bias">
+##INFO=<ID=SOR,Number=1,Type=Float,Description="Symmetric Odds Ratio of 2x2 contingency table to detect strand bias">
+
+
+------- FORMAT adicionales 
+
+##FORMAT=<ID=SP,Number=1,Type=Integer,Description="Phred-scaled strand bias P-value">
+##FORMAT=<ID=FT,Number=1,Type=String,Description="Genotype-level filter">
+##FORMAT=<ID=PGT,Number=1,Type=String,Description="Physical phasing haplotype information, describing how the alternate alleles are phased in relation to one another">
+##FORMAT=<ID=PID,Number=1,Type=String,Description="Physical phasing ID information, where each unique ID within a given sample (but not across samples) connects records within a phasing group">
+##FORMAT=<ID=RGQ,Number=1,Type=Integer,Description="Unconditional reference genotype confidence, encoded as a phred quality -10*log10 p(genotype call is wrong)">
+##FORMAT=<ID=SB,Number=4,Type=Integer,Description="Per-sample component statistics which comprise the Fisher's Exact Test to detect strand bias.">
+
+-----Platypus (Si utilizas platypus)
+##FORMAT=<ID=GOF,Number=.,Type=Float,Description="Goodness of fit value">
+-----DP Platypus
+##FORMAT=<ID=NR,Number=.,Type=Integer,Description="Number of reads covering variant location in this sample">
+-----AD Platypus
+##FORMAT=<ID=NV,Number=.,Type=Integer,Description="Number of reads containing variant in this sample">
+
+#Freebayes (Si utilizas freebayes)
+##FORMAT=<ID=RO,Number=1,Type=Integer,Description="Reference allele observation count">
+##FORMAT=<ID=QR,Number=1,Type=Integer,Description="Sum of quality of the reference observations">
+##FORMAT=<ID=AO,Number=A,Type=Integer,Description="Alternate allele observation count">
+##FORMAT=<ID=QA,Number=A,Type=Integer,Description="Sum of quality of the alternate observations">
+##FORMAT=<ID=MIN,Number=1,Type=Integer,Description="Minimum depth in gVCF output block.">
+
