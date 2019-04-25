@@ -5,13 +5,30 @@ import numpy as np
 from statsmodels.stats.weightstats import DescrStatsW
 import os
 
+
+parser = argparse.ArgumentParser()
+parser.add_argument('-i','--exon_coverage_regions', help='exon coverage regions in exons')
+parser.add_argument('-g','--output_global_report') #default='global_coverage_statistics.tsv'
+parser.add_argument('-e','--output_exon_report')# default='./coverage_statistics_by_exon.tsv')
+parser.add_argument('-s','--samplename')
+
+args =  parser.parse_args()
+
+
+
 #ffile='EB802_exon_filtered_coverage.tsv.gz'
-ffile = sys.argv[1]
+#ffile = sys.argv[1]
+ffile = args.exon_coverage_regions  # input file
+sample = args.samplename
+output_global_coverage = args.output_global_report
+output_coverage_by_exon = args.output_exon_report
+
+
 signif=2
-sample=os.path.basename(ffile).split('_')[0]
-print sample
-output_global_coverage = '%s_coverage_statistics.tsv'%sample
-output_coverage_by_exon = '%s_coverage_statistics_by_exon.tsv'%sample
+#sample=os.path.basename(ffile).split('_')[0]
+#print sample
+#output_global_coverage = '%s_coverage_statistics.tsv'%sample
+#output_coverage_by_exon = '%s_coverage_statistics_by_exon.tsv'%sample
 
 
 
