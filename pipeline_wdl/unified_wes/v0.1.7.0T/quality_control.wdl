@@ -44,7 +44,7 @@ cat header.tsv ${name}'_loj_exon_filtered.coverage' > ${name}'_exon_filtered_cov
 rm ${name}'_loj_exon_filtered.coverage' ${name}'_loj_sorted_cols.tsv' header.tsv ${name}'_exon.coverage' ${name}'_loj.txt'
 
 #####coverage statistics cambio la forma del input... 
-/home/hnrg/NGStools/src/coverage_statistics_v1.0.py -i ${name}'_exon_filtered_coverage.tsv' -g ${name}_global_coverage_statistics.tsv -e ${name}_coverage_statistics_by_exon.tsv -s ${name}
+/home/hnrg/NGStools/pipeline_wdl/qualityControl/coverage_statistics_v1.0.py -i ${name}'_exon_filtered_coverage.tsv' -g ${name}_global_coverage_statistics.tsv -e ${name}_coverage_statistics_by_exon.tsv -s ${name}
 
 
 rm ${name}'_exonTSO_reduced.bam' ${name}'_exon_filtered_coverage.tsv'
@@ -139,7 +139,7 @@ String toolpath
 
 
 command{
-/home/hnrg/NGStools/src/merge_sample_reports.py -i ${coverage_global_files} -o outfile
+/home/hnrg/NGStools/pipeline_wdl/qualityControl/merge_sample_reports.py -i ${coverage_global_files} -o outfile
 }
 
 output {
@@ -164,7 +164,7 @@ String toolpath
 #String path_salida 
 
 command {
-${toolpath}qualityControl/samtools_stats_report.py -g=${samtools_global_report} -l=${samtools_report} -o=${sampleID}_samtools_report.tsv
+/home/hnrg/NGStools/pipeline_wdl/qualityControl/samtools_stats_report.py -g=${samtools_global_report} -l=${samtools_report} -o=${sampleID}_samtools_report.tsv
 
 }
 
