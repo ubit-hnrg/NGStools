@@ -47,6 +47,7 @@ rm ${name}'_loj_exon_filtered.coverage' ${name}'_loj_sorted_cols.tsv' header.tsv
 ${toolpath}../src/coverage_statistics_v1.0.py -i ${name}'_exon_filtered_coverage.tsv' -g ${name}_global_coverage_statistics.tsv -e ${name}_coverage_statistics_by_exon.tsv -s ${name}
 
 
+rm ${name}'_exonTSO_reduced.bam' ${name}'_exon_filtered_coverage.tsv'
 >>>
 
 
@@ -193,7 +194,7 @@ toolpath = toolpath
 
 call stat_files {
     input:
- files_in = ["bam_depth.glob_cov_stats","bam_depth.cov_stats_by_exon"], 
+ files_in = ["${bam_depth.glob_cov_stats}","${bam_depth.cov_stats_by_exon}"], 
  sample_name = bam_depth.sample_Name
 
 }
