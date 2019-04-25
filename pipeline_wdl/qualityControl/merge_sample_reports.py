@@ -2,9 +2,16 @@
 import sys
 import pandas as pd
 import os
+import argparse
 
-reports = sys.argv[1]
-outfile = sys.argv[2]
+parser = argparse.ArgumentParser()
+parser.add_argument('-i','--report_files', help='file containing one report file per line')
+parser.add_argument('-o','--output_merged_report') 
+
+args =  parser.parse_args()
+
+reports = args.report_files
+outfile = args.output_merged_report
 merged_report = []
 
 reports = pd.read_csv(reports).values.flatten()
