@@ -133,6 +133,7 @@ task merge_coverage_global_reports {
 ####inputs del paso1 
 File coverage_global_files
 String sample_Name
+String toolpath
 #File coverage_stats 
 
 
@@ -162,7 +163,7 @@ String toolpath
 #String path_salida 
 
 command {
-${toolpath}/qualityControl/samtools_stats_report.py -g=${samtools_global_report} -l=${samtools_report} -o=${sampleID}_samtools_report.tsv
+${toolpath}qualityControl/samtools_stats_report.py -g=${samtools_global_report} -l=${samtools_report} -o=${sampleID}_samtools_report.tsv
 
 }
 
@@ -217,6 +218,7 @@ call merge_coverage_global_reports {
 
 input: 
 ####inputs del paso1 
+toolpath = toolpath,
 coverage_global_files = stat_files.path_stat_files,
 sample_Name = bam_depth.sample_Name
 #coverage_stats = bam_depth.cov_stats_by_name
