@@ -38,13 +38,14 @@ def process_genotipo(multianno):
 
 
 def process_InterVar(multianno):
-    multianno['InterVarEvidence'] = multianno.apply(lambda x: list(x.keys()[x==1]) if any(x==1) else np.nan,axis =1)
-    multianno.drop(['PVS1', 'PS1', 'PS2', 'PS3', 'PS4', 'PM1', 'PM2',
+    evidence_cols = ['PVS1', 'PS1', 'PS2', 'PS3', 'PS4', 'PM1', 'PM2',
            'PM3', 'PM4', 'PM5', 'PM6', 'PP1', 'PP2', 'PP3', 'PP4', 'PP5', 'BA1',
            'BS1', 'BS2', 'BS3', 'BS4', 'BP1', 'BP2', 'BP3', 'BP4', 'BP5', 'BP6',
-           'BP7'],axis =1,inplace = True)
+           'BP7']
+    multianno['InterVarEvidence'] = multianno[evidence_cols].apply(lambda x: list(x.keys()[x==1]) if any(x==1) else np.nan,axis =1)
+    multianno.drop(evidence_cols,axis =1,inplace = True)
 
-    multianno.rename(columns={'InterVar_automated':'InterVarVeredict'},inplace = True)
+    multianno.rename(columns={'InterVar_automated':1804642'InterVarVeredict'},inplace = True)
     return(multianno)
 
 
