@@ -2,6 +2,7 @@ import pandas as pd
 import argparse 
 from StringIO import StringIO
 import sys
+import numpy as np
 
 
 parser = argparse.ArgumentParser(prog='left_join_multianno_and_multisampleVCF', usage='%(prog)s [options] > outputfile.tsv')
@@ -26,17 +27,29 @@ def read_vcf(path):
                ,sep='\t')
     return(df)
 
-
+#This assume that your vcf file contain only one sample. 
 multianno=pd.read_table(multianno_tsv)
 sample = multianno.columns[-1]
+
+# this vcf is multisample
 vcf=read_vcf(vcf_file)
 vcf = vcf.iloc[:,~vcf.columns.isin(['QUAL','FILTER','INFO','FORMAT',sample])]
 vcf.rename(columns={'ALT':'ALTERNATIVES'},inplace=True)
 
 df = pd.merge(multianno,vcf,how='left',on=['#CHROM','POS','ID','REF'])
-df['GENOTIPO']=df[sample].str.split(':',expand=True)[0]
+
+def process_genotipo(multianno):
+    multianno['GENOTIPO']=multianno[sample].str.split(':',expand=True)[0]
+    dp = =multianno[sample].str.split(':',expand=True)[2]
+    multianno['DP'] = dp
+    fqmax_alt = multianno[sample].str.split(':',expand=True)[1].sp.lit(',').max()/float(dp)
+    multianno['fqmax_alt'] = np.round(fqmax_alt,2)
+
+df = process_genotipo() 
+
+## reorganize columns
 cols = df.columns
-firstCols =  ['#CHROM','POS','ID','REF','ALT','QUAL','FILTER','INFO','FORMAT','GENOTIPO',sample]
+firstCols =  ['#CHROM','POS','ID','REF','ALT','QUAL','FILTER','INFO','FORMAT','GENOTIPO','DP','fqmax_alt',sample]
 cols =  [c for c in cols if c not in firstCols]
 cols = firstCols + cols
 df = df.reindex(columns=cols)
