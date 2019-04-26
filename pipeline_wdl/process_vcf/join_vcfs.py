@@ -32,7 +32,7 @@ def process_genotipo(multianno):
     dp = multianno[sample].str.split(':',expand=True)[2].apply(pd.to_numeric)
     multianno['DP'] = dp
     max_alt = multianno[sample].str.split(':',expand=True)[1].str.split(',',expand = True).applymap(pd.to_numeric).max(1)
-    multianno['fqmax_alt'] = np.round(multianno['max_alt']/multianno['DP'],2)
+    multianno['fqmax_alt'] = np.round(max_alt/dp,2)
     return multianno
 
 
