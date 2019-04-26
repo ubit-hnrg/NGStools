@@ -36,6 +36,19 @@ def process_genotipo(multianno):
     return multianno
 
 
+
+def process_InterVar(multianno):
+    multianno['InterVarEvidence'] = multianno.apply(lambda x: list(x.keys()[x==1]) if any(x==1) else np.nan,axis =1)
+    multianno.drop(['PVS1', 'PS1', 'PS2', 'PS3', 'PS4', 'PM1', 'PM2',
+           'PM3', 'PM4', 'PM5', 'PM6', 'PP1', 'PP2', 'PP3', 'PP4', 'PP5', 'BA1',
+           'BS1', 'BS2', 'BS3', 'BS4', 'BP1', 'BP2', 'BP3', 'BP4', 'BP5', 'BP6',
+           'BP7'],axis =1,inplace = True)
+
+    multianno.rename(columns={'InterVar_automated':'InterVarVeredict'},inplace = True)
+    return(multianno)
+
+
+
 #This assume that your vcf file contain only one sample. 
 multianno=pd.read_table(multianno_tsv)
 sample = multianno.columns[-1]
@@ -46,6 +59,7 @@ vcf = vcf.iloc[:,~vcf.columns.isin(['QUAL','FILTER','INFO','FORMAT',sample])]
 vcf.rename(columns={'ALT':'ALTERNATIVES'},inplace=True)
 
 multianno = process_genotipo(multianno) 
+multianno = process_InterVar(multianno)
 df = pd.merge(multianno,vcf,how='left',on=['#CHROM','POS','ID','REF'])
 
 ## reorganize columns
