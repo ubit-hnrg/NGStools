@@ -45,7 +45,9 @@ def process_InterVar(multianno):
     multianno['InterVarEvidence'] = multianno[evidence_cols].apply(lambda x: list(x.keys()[x==1]) if any(x==1) else np.nan,axis =1)
     multianno.drop(evidence_cols,axis =1,inplace = True)
 
-    multianno.rename(columns={'InterVar_automated':'InterVarVeredict'},inplace = True)
+    veredict = multianno['InterVar_automated']
+    multianno.drop(['InterVar_automated'],inplace = True,axis=1)
+    multianno['InterVarVeredict'] = veredict
     return(multianno)
 
 
