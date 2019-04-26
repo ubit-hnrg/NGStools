@@ -29,12 +29,10 @@ def read_vcf(path):
 
 def process_genotipo(multianno):
     multianno['GENOTIPO']=multianno[sample].str.split(':',expand=True)[0]
-    dp = multianno[sample].str.split(':',expand=True)[2]
+    dp = multianno[sample].str.split(':',expand=True)[2].apply(pd.to_numeric)
     multianno['DP'] = dp
-    max_alt = multianno[sample].str.split(':',expand=True)[1].str.split(',').max()
-    multianno['max_alt'] = max_alt
-    multianno['fqmax_alt'] = multianno['max_alt']/multianno['DP']
-    multianno['fqmax_alt'] = multianno['fqmax_alt'].round(2)
+    max_alt = df['muestra'].str.split(':',expand=True)[1].str.split(',',expand = True).applymap(pd.to_numeric).max(1)
+    multianno['fqmax_alt'] = np.round(multianno['max_alt']/multianno['DP'],2)
     return multianno
 
 
