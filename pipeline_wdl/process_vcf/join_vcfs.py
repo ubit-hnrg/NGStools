@@ -27,6 +27,15 @@ def read_vcf(path):
                ,sep='\t')
     return(df)
 
+def process_genotipo(multianno):
+    multianno['GENOTIPO']=multianno[sample].str.split(':',expand=True)[0]
+    dp = =multianno[sample].str.split(':',expand=True)[2]
+    multianno['DP'] = dp
+    fqmax_alt = multianno[sample].str.split(':',expand=True)[1].sp.lit(',').max()/float(dp)
+    multianno['fqmax_alt'] = np.round(fqmax_alt,2)
+    return multianno
+
+
 #This assume that your vcf file contain only one sample. 
 multianno=pd.read_table(multianno_tsv)
 sample = multianno.columns[-1]
@@ -36,16 +45,8 @@ vcf=read_vcf(vcf_file)
 vcf = vcf.iloc[:,~vcf.columns.isin(['QUAL','FILTER','INFO','FORMAT',sample])]
 vcf.rename(columns={'ALT':'ALTERNATIVES'},inplace=True)
 
+multianno = process_genotipo(multianno) 
 df = pd.merge(multianno,vcf,how='left',on=['#CHROM','POS','ID','REF'])
-
-def process_genotipo(multianno):
-    multianno['GENOTIPO']=multianno[sample].str.split(':',expand=True)[0]
-    dp = =multianno[sample].str.split(':',expand=True)[2]
-    multianno['DP'] = dp
-    fqmax_alt = multianno[sample].str.split(':',expand=True)[1].sp.lit(',').max()/float(dp)
-    multianno['fqmax_alt'] = np.round(fqmax_alt,2)
-
-df = process_genotipo() 
 
 ## reorganize columns
 cols = df.columns
