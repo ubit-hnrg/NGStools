@@ -32,8 +32,10 @@ for i in range(1, wb.nsheets):
        cells = sheet.col(0)[1:]
        values = [x.value for x in cells if x.value is not '']
 
-       gene_list=pd.Series(values).to_frame()
-       gene_list.columns=[sampleID]
-
-       gene_list.to_csv(outfile,index = False,header=None)
+#       l = len(values)-1;
+#       k=0
+       with open(outfile, 'w') as f:
+              for item in values:
+                     if item !='':
+                            f.write("%s\t\n" % item)
 
