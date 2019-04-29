@@ -56,7 +56,7 @@ workflow ConvertPairedFastQsToUnmappedBamWf {
     
 
   # Convert multiple pairs of input fastqs in parallel
-  scatter (i in range(length( read_file_of_tabulated_inputs.array_of_samples ))) {
+  scatter (i in range(length(read_file_of_tabulated_inputs.array_of_samples ))) {
 
     call fastp {
         input: 
@@ -93,27 +93,38 @@ workflow ConvertPairedFastQsToUnmappedBamWf {
     }
   
   
-#call Creando_inputs {
- #input:
-  #ubam_path = PairedFastQsToUnmappedBAM.output_bam,
-  #ubam_name = read_file_of_tabulated_inputs.array_of_samples[i],
-
- #}
 
 } ## fin scatter
  
+
+
   #Create a file with a list of the generated ubams
   call CreateFoFN {
     input:
       array_of_files = PairedFastQsToUnmappedBAM.output_ubam,
-      fofn_name = ubam_list_name,
-      #docker = gatk_docker
+      fofn_name = ubam_list_name
+     
+  }
+
+   #Create a file with a list of the generated fastp_json file
+  call CreateFoFN as FoFN_fastp {
+    input:
+      array_of_files = fastp.fastp_json_report,
+      fofn_name = "fastp_reports"
+     
   }
 
   
   call Create_inputs_for_preprocesing {
     input:
       ubams_paths = CreateFoFN.fofn_list,
+      bams_sample_names = read_file_of_tabulated_inputs.samplenames,
+
+  }
+
+    call Create_inputs_for_preprocesing as fastp_report_files {
+    input:
+      ubams_paths = FoFN_fastp.fofn_list,
       bams_sample_names = read_file_of_tabulated_inputs.samplenames,
 
   }
@@ -139,6 +150,10 @@ workflow ConvertPairedFastQsToUnmappedBamWf {
     #samples sin repetir, en formato archivo y array.
     File samplesnames = read_file_of_tabulated_inputs.unique_samples ##samples names unicos
     Array[File] muestras  =  Create_inputs_for_preprocesing.ubam_samples ###array de samples: S1,S2,..,Sn
+
+    ####fastp_report
+    Array[File] fastp_reports  =  fastp_report_files.ubam_samples ###array de reportes_fastp
+
 
   }
 
@@ -190,18 +205,19 @@ File R1_fastq_gz
 File R2_fastq_gz
 String R1_stripped_basename = basename(R1_fastq_gz, ".fastq.gz")
 String R2_stripped_basename = basename(R2_fastq_gz, ".fastq.gz")
+String report_name = basename(R2_fastq_gz,"_R2_001.fastq.gz")
 String toolpath
 
 
 command {
-    ${toolpath}fastp -i ${R1_fastq_gz} -I ${R2_fastq_gz} -o ${R1_stripped_basename}_cleaned.fastq.gz -O ${R2_stripped_basename}_cleaned.fastq.gz -h ${R1_stripped_basename}.html -j ${R1_stripped_basename}.json
+    ${toolpath}fastp -i ${R1_fastq_gz} -I ${R2_fastq_gz} -o ${R1_stripped_basename}_cleaned.fastq.gz -O ${R2_stripped_basename}_cleaned.fastq.gz -h ${report_name}.html -j ${report_name}.json
 }
 
 output {
     File fastq_cleaned_R1 = "${R1_stripped_basename}_cleaned.fastq.gz"
     File fastq_cleaned_R2 = "${R2_stripped_basename}_cleaned.fastq.gz"
-    File fastp_json_report = "${R1_stripped_basename}.json"
-    File fastp_html_report = "${R1_stripped_basename}.html"
+    File fastp_json_report = "${report_name}.json"
+    File fastp_html_report = "${report_name}.html"
     
     }
 
@@ -291,22 +307,6 @@ task CreateFoFN {
   }
 }
 
-
-
-
-task Creando_inputs {
- Array[String] ubam_path 
- String ubam_name
- 
-
- command {
-    mv ${write_lines(ubam_path)}  ${ubam_name}.txt \
-   
-  }
-output {
-  File ubamsample = "${ubam_name}.txt"
- }
- }
 
 task Create_inputs_for_preprocesing {
  File bams_sample_names
