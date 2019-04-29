@@ -139,11 +139,11 @@ String toolpath
 
 
 command{
-/home/hnrg/NGStools/pipeline_wdl/qualityControl/merge_sample_reports.py -i ${coverage_global_files} -o outfile
+/home/hnrg/NGStools/pipeline_wdl/qualityControl/merge_sample_reports.py -i ${coverage_global_files} -o ${sample_Name}.merged_report
 }
 
 output {
-File merged_report = "reporte_salida"
+File merged_report = "${sample_Name}.merged_report"
 
 }
 
