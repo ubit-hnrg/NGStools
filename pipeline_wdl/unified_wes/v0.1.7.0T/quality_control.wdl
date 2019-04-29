@@ -158,13 +158,13 @@ task samtools_reports_file {
 String sampleID
 #File sample
 File samtools_global_report
-File samtools_report
+File samtools_library_report
 String toolpath
 
 #String path_salida 
 
 command {
-/home/hnrg/NGStools/pipeline_wdl/qualityControl/samtools_stats_report.py -g=${samtools_global_report} -l=${samtools_report} -o=${sampleID}_samtools_report.tsv
+/home/hnrg/NGStools/pipeline_wdl/qualityControl/samtools_stats_report.py -g=${samtools_global_report} -l=${samtools_library_report} -o=${sampleID}_samtools_report.tsv
 
 }
 
@@ -192,12 +192,12 @@ toolpath = toolpath
 
 }
 
-call stat_files {
-    input:
- files_in = ["${bam_depth.glob_cov_stats}","${bam_depth.cov_stats_by_exon}"], 
- sample_name = bam_depth.sample_Name
-
-}
+#call stat_files {
+#    input:
+# files_in = ["${bam_depth.glob_cov_stats}","${bam_depth.cov_stats_by_exon}"], 
+# sample_name = bam_depth.sample_Name
+#
+#}
 
 #File glob_cov_stats = "${name}_coverage_statistics.tsv"
 #File Files_global_stats = "${name}.files"
@@ -211,35 +211,42 @@ toolpath = toolpath,
 TSO_bed = tso_bed, #./TruSight_One_v1_padded_100_GRCh37.bed
 input_orig_bam = analysis_readybam
 
-
 }
 
-
-call merge_coverage_global_reports {
-
-input: 
-####inputs del paso1 
-toolpath = toolpath,
-coverage_global_files = stat_files.path_stat_files,
-sample_Name = bam_depth.sample_Name
-#coverage_stats = bam_depth.cov_stats_by_name
-
-} 
 
 call samtools_reports_file {
 
 input: 
 sampleID = bam_depth.sample_Name,
 samtools_global_report = samtools_stat.samtools_stat_original_bam,
-samtools_report = samtools_stat.samtools_stat_TSO_bam,
+samtools_library_report = samtools_stat.samtools_stat_TSO_bam,
 toolpath = toolpath
 
 }
 
+####### esto mergea archivos de distintas muestras
+##call merge_coverage_global_reports {
+
+#input: 
+####inputs del paso1 
+#toolpath = toolpath,
+#coverage_global_files = stat_files.path_stat_files,
+#sample_Name = bam_depth.sample_Name
+#coverage_stats = bam_depth.cov_stats_by_name
+
+#} 
+
+
+
+
+
+
+
+
 output {
 File depth_global_cov_stats = bam_depth.glob_cov_stats
 File by_exon_depth = bam_depth.cov_stats_by_exon
-File coverage_merged_report = merge_coverage_global_reports.merged_report
+#File coverage_merged_report = merge_coverage_global_reports.merged_report
 File reporte_final = samtools_reports_file.output_report
 
 File Samt_bam_stat = samtools_stat.samtools_stat_original_bam 
