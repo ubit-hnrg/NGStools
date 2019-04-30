@@ -287,6 +287,8 @@ call merge_coverage_global_reports {
 input:  
 #toolpath = toolpath,
 coverage_global_files = bams_stat_depth_global_coverage_stats,
+TSO_name = Tso_name
+
 #sample_Name = bam_depth.sample_Name
 #coverage_stats = bam_depth.cov_stats_by_name
 
