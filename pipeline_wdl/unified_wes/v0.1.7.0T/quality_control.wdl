@@ -1,12 +1,12 @@
 ###fastp
 
 task fastp_qual {
-Array[File] inputs_json_report
+File inputs_json_report
 String Tso_name
 
 #${sep=' -I ' input_bqsr_reports}
 command <<<
-/home/hnrg/NGStools/pipeline_wdl/unified_wes/v0.1.7.0T/estadistica_fastp.py -i ${sep=' -i ' inputs_json_report} -o ${Tso_name}_fastp_report.tsv
+/home/hnrg/NGStools/pipeline_wdl/unified_wes/v0.1.7.0T/estadistica_fastp.py -i ${inputs_json_report} -o ${Tso_name}_fastp_report.tsv
 >>>
 
 
@@ -222,12 +222,12 @@ File analysis_readybam
 String toolpath
 File exon_coords
 File tso_bed
-Array[File] fastp_json_files
+File fastp_json_files
 String Tso_name 
 
 call fastp_qual {
 input:
-inputs_json_report = read_lines(fastp_json_files),
+inputs_json_report = fastp_json_files,
 Tso_name = Tso_name
 
 }
