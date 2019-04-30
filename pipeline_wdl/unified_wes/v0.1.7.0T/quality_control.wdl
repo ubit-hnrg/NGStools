@@ -232,10 +232,11 @@ Tso_name = Tso_name
 
 }
 
+Array[File] bambam = read_lines(analysis_readybam)
 
 ######################scatter por los bams... analysis_readybam
 
-scatter (bams_ready in read_lines(analysis_readybam))  {
+scatter (bams_ready in bambam)  {
 
 call bam_depth {
 input: 
