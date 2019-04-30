@@ -4,8 +4,9 @@ task fastp_qual {
 Array[File] inputs_json_report
 String Tso_name
 
+#${sep=' -I ' input_bqsr_reports}
 command <<<
-./estadistica_fastp.py -i ${inputs_json_report} -o ${Tso_name}_fastp_report.tsv
+./estadistica_fastp.py -i ${sep=' -i ' inputs_json_report} -o ${Tso_name}_fastp_report.tsv
 >>>
 
 
@@ -185,9 +186,9 @@ String TSO_name
 #File coverage_stats 
 
 
-command{
-/home/hnrg/NGStools/pipeline_wdl/qualityControl/merge_sample_reports.py -i ${coverage_global_files} -o ${TSO_name}.merged_global_report
-}
+command<<<
+/home/hnrg/NGStools/pipeline_wdl/qualityControl/merge_sample_reports.py -i ${sep=' -i ' coverage_global_files} -o ${TSO_name}.merged_global_report
+>>>
 
 output {
 File merged_glob_report = "${TSO_name}.merged_global_report"
