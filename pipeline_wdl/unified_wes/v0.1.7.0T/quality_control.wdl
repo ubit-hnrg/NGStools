@@ -227,7 +227,7 @@ String Tso_name
 
 call fastp_qual {
 input:
-inputs_json_report = fastp_json_files,
+inputs_json_report = read_lines(fastp_json_files),
 Tso_name = Tso_name
 
 }
