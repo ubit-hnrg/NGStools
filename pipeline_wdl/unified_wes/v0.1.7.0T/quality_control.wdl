@@ -1,4 +1,22 @@
-####paso1
+###fastp
+
+task fastp_qual {
+Array[File] inputs_json_report
+String Tso_name
+
+command <<<
+./estadistica_fastp.py -i ${inputs_json_report} -o ${Tso_name}_fastp_report.tsv
+>>>
+
+
+output {
+File fastp_stats = "${Tso_name}_fastp_report.tsv"
+
+}
+}
+
+
+####paso1 para calidad de bams
 task bam_depth {
 
 File input_bam
@@ -67,23 +85,22 @@ String sample_Name = "${name}"
 
 }
 
-task stat_files {
-Array[File] files_in
-String sample_name 
+#task stat_files {
+#Array[File] files_in
+#String sample_name 
 
 
-command <<<
-mv ${write_lines(files_in)}  ${sample_name}.txt
+#command <<<
+#mv ${write_lines(files_in)}  ${sample_name}.txt
 
->>>
+#>>>
 
-output {
-File path_stat_files = "${sample_name}.txt"
+#output {
+#File path_stat_files = "${sample_name}.txt"
 
-}
+#}
 
-
-}
+#}
 
 
 #####task del summary_metrics de samtools
@@ -122,32 +139,7 @@ File samtools_stat_TSO_bam = "${name}_TSO_samtools.stats"
 
 }
 
-#README_run_merge_coverage_global_reports.sh
-#task merge coverage_global_reports
-# /home/hnrg/NGStools/pipeline_wdl/qualityControl/merge_sample_reports.py coveerage_global_statistics.files TSO20190328_coverage_statistics.tsv
 
-
-#########este script es alimentado por un archivo que tiene  nombre_reporte.tsv por cada linea. y se llama en uno de los ultimos pasos 
-
-#####
-task merge_coverage_global_reports {
-####inputs del paso1 
-File coverage_global_files
-String sample_Name
-String toolpath
-#File coverage_stats 
-
-
-command{
-/home/hnrg/NGStools/pipeline_wdl/qualityControl/merge_sample_reports.py -i ${coverage_global_files} -o ${sample_Name}.merged_report
-}
-
-output {
-File merged_report = "${sample_Name}.merged_report"
-
-}
-
-}
 
 
 
@@ -170,7 +162,54 @@ command {
 
 output {
  
-File output_report = "${sampleID}_samtools_report.tsv" 
+File output_global_report = "${sampleID}_samtools_report.tsv" 
+
+}
+
+}
+
+
+#README_run_merge_coverage_global_reports.sh
+#task merge coverage_global_reports
+# /home/hnrg/NGStools/pipeline_wdl/qualityControl/merge_sample_reports.py coveerage_global_statistics.files TSO20190328_coverage_statistics.tsv
+
+
+#########este script es alimentado por un archivo que tiene  nombre_reporte.tsv por cada linea. y se llama en uno de los ultimos pasos 
+
+#####
+task merge_coverage_global_reports {
+####inputs del paso1 
+Array[File] coverage_global_files
+String TSO_name
+#String toolpath
+#File coverage_stats 
+
+
+command{
+/home/hnrg/NGStools/pipeline_wdl/qualityControl/merge_sample_reports.py -i ${coverage_global_files} -o ${TSO_name}.merged_global_report
+}
+
+output {
+File merged_glob_report = "${TSO_name}.merged_global_report"
+
+}
+
+}
+
+task merge_samtools_reports {
+####inputs del paso1 
+Array[File] samtools_reports_files
+String TSO_name
+#String toolpath
+#File coverage_stats 
+
+
+command{
+/home/hnrg/NGStools/pipeline_wdl/qualityControl/merge_sample_reports.py -i ${samtools_reports_files} -o ${TSO_name}.merged_st_report
+}
+
+output {
+File merged_st_report = "${TSO_name}.merged_st_report"
 
 }
 
@@ -178,15 +217,28 @@ File output_report = "${sampleID}_samtools_report.tsv"
 
 workflow quality_control {
 
-File analysis_readybam 
+Array[File] analysis_readybam 
 String toolpath
 File exon_coords
 File tso_bed
+Array[File] fastp_json_files
+String Tso_name 
+
+call fastp_qual {
+input:
+inputs_json_report = fastp_json_files,
+Tso_name = Tso_name
+
+}
+
+
+######################scatter por los bams... analysis_readybam
+
+scatter (bams_ready in analysis_readybam)  {
 
 call bam_depth {
 input: 
-
-input_bam = analysis_readybam,
+input_bam = bams_ready,
 Exon_coords = exon_coords,
 toolpath = toolpath
 
@@ -224,18 +276,23 @@ toolpath = toolpath
 
 }
 
-####### esto mergea archivos de distintas muestras
-##call merge_coverage_global_reports {
+}
 
-#input: 
-####inputs del paso1 
+Array[File] bams_stat_depth_global_coverage_stats = ["${bam_depth.glob_cov_stats}"]
+
+
+####### esto mergea archivos de distintas muestras
+call merge_coverage_global_reports {
+
+input:  
 #toolpath = toolpath,
-#coverage_global_files = stat_files.path_stat_files,
+coverage_global_files = bams_stat_depth_global_coverage_stats,
 #sample_Name = bam_depth.sample_Name
 #coverage_stats = bam_depth.cov_stats_by_name
 
-#} 
+} 
 
+#Array[File] stat_alineamiento = ["${samtools_reports_file.output_global_report}"]
 
 
 
@@ -244,13 +301,13 @@ toolpath = toolpath
 
 
 output {
-File depth_global_cov_stats = bam_depth.glob_cov_stats
-File by_exon_depth = bam_depth.cov_stats_by_exon
+Array[File] depth_global_cov_stats = bam_depth.glob_cov_stats ###estadistica del alineamiento...
+Array[File] by_exon_depth = bam_depth.cov_stats_by_exon
 #File coverage_merged_report = merge_coverage_global_reports.merged_report
-File reporte_final = samtools_reports_file.output_report
+Array[File] reporte_final = samtools_reports_file.output_global_report ### archivo para mergear... estadistica en la libreria del experimento
 
-File Samt_bam_stat = samtools_stat.samtools_stat_original_bam 
-File Samt_TSO_stat = samtools_stat.samtools_stat_TSO_bam
+Array[File] Samt_bam_stat = samtools_stat.samtools_stat_original_bam 
+Array[File] Samt_TSO_stat = samtools_stat.samtools_stat_TSO_bam
 
 
 }
