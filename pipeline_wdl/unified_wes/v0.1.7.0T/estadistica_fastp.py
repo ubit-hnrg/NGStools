@@ -1,9 +1,8 @@
 #!/usr/bin/python
-
+from __future__ import division
 import json
 import pandas as pd
 import os
-from __future__ import division
 import numpy as np
 import argparse
 
