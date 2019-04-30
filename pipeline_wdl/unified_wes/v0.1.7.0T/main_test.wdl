@@ -5,6 +5,7 @@ import './hnrg-fastq2ubam_test.wdl' as fastq2ubam
 import './bam2gvcf.wdl' as bamtogvcf
 import './ubam2bwa.wdl' as ubam2bwa
 import './jointgenotype_sinrecalibracion.wdl' as joint_genotype
+import './quality_control.wdl' as qual_control 
 
 task borrado {
 File path1
@@ -320,6 +321,22 @@ input:
      input_gvcfs_indices = bam2gvcf.output_vcf_index
 }
     
+
+
+
+ call qual_control.quality_control {
+ 
+ input: 
+ fastp_json_files = ConvertPairedFastQsToUnmappedBamWf.fastp_reports,
+ analysis_readybam = bam2gvcf.bams_ready,
+ toolpath = toolpath,
+ exon_coords = ,
+ tso_bed = 
+
+
+ }
+
+
     # Outputs that will be retained when execution is complete
   output {
     Array[File] output_ubams = ConvertPairedFastQsToUnmappedBamWf.output_ubams
