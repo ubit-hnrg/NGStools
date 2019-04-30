@@ -120,11 +120,11 @@ command {
 ##paso1
 ###$name=$(basename ${input_orig_bam} .bam)
 
-${toolpath}samtools stats ${input_orig_bam}  > ${name}'_orig_samtools.stats'
+${toolpath}samtools stats ${input_orig_bam}  > ${name}_orig_samtools.stats
 
 #paso2
 ##input es el bam original  y el intervalo de captura
-${toolpath}samtools stats ${input_orig_bam} -t ${TSO_bed} > ${name}'_TSO_samtools.stats'
+${toolpath}samtools stats ${input_orig_bam} -t ${TSO_bed} > ${name}_TSO_samtools.stats
 
 }
 output {
