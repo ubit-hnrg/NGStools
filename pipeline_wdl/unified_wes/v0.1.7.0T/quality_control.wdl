@@ -218,7 +218,7 @@ File merged_st_report = "${TSO_name}.merged_st_report"
 
 workflow quality_control {
 
-File analysis_readybam 
+Array[File] analysis_readybam 
 String toolpath
 File exon_coords
 File tso_bed
