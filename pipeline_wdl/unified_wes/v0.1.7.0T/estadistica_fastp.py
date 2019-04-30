@@ -13,7 +13,7 @@ import argparse
 
 
 
-parser = argparse.ArgumentParser(prog='fastp_stat_report.py',description='Extract statistic info from fastp_json reports', usage='%(prog)s  --fastp_json_report --output_file')
+parser = argparse.ArgumentParser(prog='estadistica_fastp.py',description='Extract statistic info from fastp_json reports', usage='%(prog)s  --fastp_json_report --output_file')
 parser.add_argument('-i','--fastp_json_report_list', help='input file with one_sample_multi_lane_fastpjson_report_file per line')
 parser.add_argument('-o','--output_file', help='a tsv file with all statistics')
 args = parser.parse_args()
