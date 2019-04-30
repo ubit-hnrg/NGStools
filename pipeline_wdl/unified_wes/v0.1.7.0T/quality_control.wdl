@@ -25,7 +25,7 @@ File Exon_coords
 #String sampleID
 
 ###herramientas
-String name = basename(input_bam ,".bam")
+String name = basename(input_bam, ".bam")
 String toolpath
 
 command <<<
@@ -113,7 +113,7 @@ task samtools_stat{
 String toolpath
 File TSO_bed #./TruSight_One_v1_padded_100_GRCh37.bed
 File input_orig_bam
-String name = basename(input_orig_bam ,".bam")
+String name = basename(input_orig_bam, ".bam")
 
 command {
 
@@ -235,7 +235,7 @@ Tso_name = Tso_name
 
 ######################scatter por los bams... analysis_readybam
 
-scatter (bams_ready in analysis_readybam)  {
+scatter (bams_ready in read_lines(analysis_readybam)  {
 
 call bam_depth {
 input: 
@@ -262,7 +262,7 @@ call samtools_stat {
 input:
 toolpath = toolpath,
 TSO_bed = tso_bed, #./TruSight_One_v1_padded_100_GRCh37.bed
-input_orig_bam = analysis_readybam
+input_orig_bam = bams_ready
 
 }
 
