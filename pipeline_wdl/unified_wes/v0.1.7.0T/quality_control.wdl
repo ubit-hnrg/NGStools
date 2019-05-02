@@ -281,7 +281,7 @@ toolpath = toolpath
 
 }
 
-File bams_stat_depth_global_coverage_stats = write_lines(["${bam_depth.glob_cov_stats}"])
+Array[File] bams_stat_depth_global_coverage_stats = ["${bam_depth.glob_cov_stats}"]
 
 
 ####### esto mergea archivos de distintas muestras
@@ -289,7 +289,7 @@ call merge_coverage_global_reports {
 
 input:  
 #toolpath = toolpath,
-coverage_global_files = bams_stat_depth_global_coverage_stats,
+coverage_global_files = write_lines(bams_stat_depth_global_coverage_stats),
 TSO_name = Tso_name
 
 #sample_Name = bam_depth.sample_Name
