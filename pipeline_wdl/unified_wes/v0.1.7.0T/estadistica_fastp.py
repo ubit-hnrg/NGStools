@@ -168,5 +168,5 @@ for q in range(len(content)):
                  u'longitud media R2 despues del filtrado'],:])
         
 pd.options.display.float_format = '{:.2f}'.format
-display(pd.concat(reportes, axis=1).round(2))
-pd.concat(reportes, axis=1).to_csv(out,sep='\t')
+#display(pd.concat(reportes, axis=1).round(2))
+pd.concat(reportes, axis=1).round(2).to_csv(out,sep='\t')
