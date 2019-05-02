@@ -180,7 +180,7 @@ File output_global_report = "${sampleID}_samtools_report.tsv"
 #####
 task merge_coverage_global_reports {
 ####inputs del paso1 
-Array[File] coverage_global_files
+File coverage_global_files
 String TSO_name
 #String toolpath
 #File coverage_stats 
@@ -188,7 +188,7 @@ String TSO_name
 #gvcfs = ['${sep="','" input_gvcfs}']
 
 command<<<
-/home/hnrg/NGStools/pipeline_wdl/qualityControl/merge_sample_reports.py -i ${write_lines(coverage_global_files)} -o ${TSO_name}.merged_global_report
+/home/hnrg/NGStools/pipeline_wdl/qualityControl/merge_sample_reports.py -i ${coverage_global_files} -o ${TSO_name}.merged_global_report
 >>>
 
 output {
@@ -216,6 +216,23 @@ File merged_st_report = "${TSO_name}.merged_st_report"
 }
 
 }
+
+task CreateFoFN {
+  # Command parameters
+  Array[String] array_of_files
+  String fofn_name
+  
+  command {
+    mv ${write_lines(array_of_files)}  ${fofn_name}.list \
+   
+  }
+  output {
+    File fofn_list = "${fofn_name}.list"
+  }
+}
+
+
+
 
 workflow quality_control {
 
@@ -284,12 +301,20 @@ toolpath = toolpath
 Array[File] bams_stat_depth_global_coverage_stats = ["${bam_depth.glob_cov_stats}"]
 
 
+ #Create a file with a list of the generated ubams
+  call CreateFoFN {
+    input:
+      array_of_files = bams_stat_depth_global_coverage_stats,
+      fofn_name = Tso_name
+     
+  }
+
 ####### esto mergea archivos de distintas muestras
 call merge_coverage_global_reports {
 
 input:  
 #toolpath = toolpath,
-coverage_global_files = bams_stat_depth_global_coverage_stats,
+coverage_global_files = CreateFoFN.fofn_list,
 TSO_name = Tso_name
 
 #sample_Name = bam_depth.sample_Name
