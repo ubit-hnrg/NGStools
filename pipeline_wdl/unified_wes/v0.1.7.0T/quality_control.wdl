@@ -231,6 +231,53 @@ task CreateFoFN {
   }
 }
 
+task Create_inputs_for_preprocesing {
+ File stats_files_name
+ File stats_paths 
+# Array[File] = []
+
+command <<<  
+python <<CODE 
+
+with open("${stats_files_name}", "r") as sf:
+    samples = sf.readlines()
+    samples =[i.strip('\n') for i in samples]
+    if samples[-1]=='':
+        samples = samples[:-1]
+        
+
+with open("${stats_paths}", "r") as ubf:
+    ubams = ubf.readlines()
+    ubams =[i.strip('\n') for i in ubams]
+    if ubams[-1]=='':
+        ubams = ubams[:-1]
+      
+open_files = []
+for i in range(len(samples)):
+    sample = samples[i]
+    ubam = ubams[i]
+    
+    filename ='%s.tsv'%sample
+    if sample not in open_files:
+        with open(filename,'w') as f:
+            f.write("%s\n"%ubam)
+            open_files.append(sample)
+        f.close()
+    else:
+        with open(filename,'a') as f:
+            f.write("%s\n"%ubam)
+        f.close()
+
+CODE
+>>>
+
+output {
+
+    Array[File] samples_for_merge = glob("*.tsv")
+}
+
+
+}
 
 
 
@@ -309,12 +356,19 @@ Array[File] bams_stat_depth_global_coverage_stats = ["${bam_depth.glob_cov_stats
      
   }
 
+  #call Create_inputs_for_preprocesing {
+  #  input:
+  #    ubams_paths = CreateFoFN.fofn_list,
+  #    bams_sample_names = read_file_of_tabulated_inputs.samplenames,
+
+  #}
+
 ####### esto mergea archivos de distintas muestras
 call merge_coverage_global_reports {
 
 input:  
 #toolpath = toolpath,
-coverage_global_files = CreateFoFN.fofn_list,
+coverage_global_files = write_lines(CreateFoFN.fofn_list),
 TSO_name = Tso_name
 
 #sample_Name = bam_depth.sample_Name
