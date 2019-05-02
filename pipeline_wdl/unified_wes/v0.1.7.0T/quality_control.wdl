@@ -185,9 +185,10 @@ String TSO_name
 #String toolpath
 #File coverage_stats 
 
+#gvcfs = ['${sep="','" input_gvcfs}']
 
 command<<<
-/home/hnrg/NGStools/pipeline_wdl/qualityControl/merge_sample_reports.py -i ${sep=' -i ' coverage_global_files} -o ${TSO_name}.merged_global_report
+/home/hnrg/NGStools/pipeline_wdl/qualityControl/merge_sample_reports.py -i '${sep=',' -i coverage_global_files}' -o ${TSO_name}.merged_global_report
 >>>
 
 output {
