@@ -180,7 +180,7 @@ File output_global_report = "${sampleID}_samtools_report.tsv"
 #####
 task merge_coverage_global_reports {
 ####inputs del paso1 
-File coverage_global_files
+Array[File] coverage_global_files
 String TSO_name
 #String toolpath
 #File coverage_stats 
@@ -188,7 +188,7 @@ String TSO_name
 #gvcfs = ['${sep="','" input_gvcfs}']
 
 command<<<
-/home/hnrg/NGStools/pipeline_wdl/qualityControl/merge_sample_reports.py -i ${coverage_global_files} -o ${TSO_name}.merged_global_report
+/home/hnrg/NGStools/pipeline_wdl/qualityControl/merge_sample_reports.py -i ${write_lines(coverage_global_files)} -o ${TSO_name}.merged_global_report
 >>>
 
 output {
@@ -289,7 +289,7 @@ call merge_coverage_global_reports {
 
 input:  
 #toolpath = toolpath,
-coverage_global_files = write_lines(bams_stat_depth_global_coverage_stats),
+coverage_global_files = bams_stat_depth_global_coverage_stats,
 TSO_name = Tso_name
 
 #sample_Name = bam_depth.sample_Name
