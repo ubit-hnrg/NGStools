@@ -180,7 +180,7 @@ File output_global_report = "${sampleID}_samtools_report.tsv"
 #####
 task merge_coverage_global_reports {
 ####inputs del paso1 
-Array[File] coverage_global_files
+File coverage_global_files
 String TSO_name
 #String toolpath
 #File coverage_stats 
@@ -188,7 +188,7 @@ String TSO_name
 #gvcfs = ['${sep="','" input_gvcfs}']
 
 command<<<
-/home/hnrg/NGStools/pipeline_wdl/qualityControl/merge_sample_reports.py -i ${sep=',' coverage_global_files} -o ${TSO_name}.merged_global_report
+/home/hnrg/NGStools/pipeline_wdl/qualityControl/merge_sample_reports.py -i ${coverage_global_files} -o ${TSO_name}.merged_global_report
 >>>
 
 output {
@@ -281,7 +281,7 @@ toolpath = toolpath
 
 }
 
-Array[File] bams_stat_depth_global_coverage_stats = ["${bam_depth.glob_cov_stats}"]
+File bams_stat_depth_global_coverage_stats = write_lines(["${bam_depth.glob_cov_stats}"])
 
 
 ####### esto mergea archivos de distintas muestras
