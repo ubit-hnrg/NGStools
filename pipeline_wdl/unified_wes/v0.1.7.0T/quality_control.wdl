@@ -368,7 +368,7 @@ call merge_coverage_global_reports {
 
 input:  
 #toolpath = toolpath,
-coverage_global_files = write_lines(CreateFoFN.fofn_list),
+coverage_global_files = CreateFoFN.fofn_list,
 TSO_name = Tso_name
 
 #sample_Name = bam_depth.sample_Name
