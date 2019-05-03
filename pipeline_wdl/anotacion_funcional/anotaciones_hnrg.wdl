@@ -92,17 +92,16 @@ String annovar_dbpath
 
 
 command <<<
-#!/bin/bash
 
-{path_herramientas}/table_annovar.pl ${vcf_in} ${annovar_dbpath} -vcfinput  -buildver hg19 -remove -out ${out_prefix} -protocol dbnsfp35a -operation f -nastring . 
+perl ${path_herramientas}/annovar/table_annovar.pl ${vcf_in} ${annovar_dbpath} -vcfinput  -buildver hg19 -remove -out ${out_prefix} -protocol dbnsfp35a -operation f -nastring . 
 
 >>>
 
 output {
 
-		File avinput = "${out_prefix}.avinput"
-		File multianno_txt = "${out_prefix}.hg19_multianno.txt"
-		File multianno_vcf = "${out_prefix}.hg19_multianno.vcf"
+ File avinput = "${out_prefix}.avinput"
+ File multianno_txt = "${out_prefix}.hg19_multianno.txt"
+ File multianno_vcf = "${out_prefix}.hg19_multianno.vcf"
 }
 
 }
@@ -224,6 +223,7 @@ call Snpsift as step5_hapmap{
 input:
     sample_name = sample_name,
     parametros = "annotate -v",
+    #input_vcf = step3_dbSNP151.salida_Snpsift,
     input_vcf = step4_1000Genomes.salida_Snpsift,
     path_herramientas = path_herramientas,
     java_heap_memory_initial = java_heap_memory_initial,
@@ -303,7 +303,7 @@ input:
 call Snpsift_nodb as step10_PhastCons{
 input:
     sample_name = sample_name,
-    parametros = "phastCons -v ${path_herramientas}/snpEff/data/phastCons",
+    parametros = "phastCons -v /home/hnrg/HNRG-pipeline-V0.1/dbs/GRCh37_snpsift/snpEff/data/phastCons",
     input_vcf = step9_EVS.salida_Snpsift,
     path_herramientas = path_herramientas,
     java_heap_memory_initial = java_heap_memory_initial,
@@ -328,7 +328,8 @@ input:
 call Snpsift as step12_clinVar{
 input:
     sample_name = sample_name,
-    parametros = "annotate -v -info CLNHGVS,CLNALLE,CLNSRC,CLNORIGIN,CLNSRCID,CLNSIG,CLNDSDB,CLNDSDBID,CLNDBN,CLNACC",
+    #parametros = "annotate -v -info CLNHGVS,CLNALLE,CLNSRC,CLNORIGIN,CLNSRCID,CLNSIG,CLNDSDB,CLNDSDBID,CLNDBN,CLNACC",
+    parametros = "annotate",
     input_vcf = step10_PhastCons.salida_Snpsift,
     #input_vcf = step11_CADD.salida_Snpsift,
     path_herramientas = path_herramientas,
