@@ -231,54 +231,6 @@ task CreateFoFN {
   }
 }
 
-task Create_inputs_for_preprocesing {
- File stats_files_name
- File stats_paths 
-# Array[File] = []
-
-command <<<  
-python <<CODE 
-
-with open("${stats_files_name}", "r") as sf:
-    samples = sf.readlines()
-    samples =[i.strip('\n') for i in samples]
-    if samples[-1]=='':
-        samples = samples[:-1]
-        
-
-with open("${stats_paths}", "r") as ubf:
-    ubams = ubf.readlines()
-    ubams =[i.strip('\n') for i in ubams]
-    if ubams[-1]=='':
-        ubams = ubams[:-1]
-      
-open_files = []
-for i in range(len(samples)):
-    sample = samples[i]
-    ubam = ubams[i]
-    
-    filename ='%s.tsv'%sample
-    if sample not in open_files:
-        with open(filename,'w') as f:
-            f.write("%s\n"%ubam)
-            open_files.append(sample)
-        f.close()
-    else:
-        with open(filename,'a') as f:
-            f.write("%s\n"%ubam)
-        f.close()
-
-CODE
->>>
-
-output {
-
-    Array[File] samples_for_merge = glob("*.tsv")
-}
-
-
-}
-
 
 
 workflow quality_control {
@@ -311,17 +263,6 @@ toolpath = toolpath
 
 }
 
-#call stat_files {
-#    input:
-# files_in = ["${bam_depth.glob_cov_stats}","${bam_depth.cov_stats_by_exon}"], 
-# sample_name = bam_depth.sample_Name
-#
-#}
-
-#File glob_cov_stats = "${name}_coverage_statistics.tsv"
-#File Files_global_stats = "${name}.files"
-#File cov_stats_by_name = "${name}_coverage_statistics_by_exon.tsv"
-#String sample_Name = "${name}"
 
 
 call samtools_stat {
@@ -346,9 +287,10 @@ toolpath = toolpath
 }
 
 Array[File] bams_stat_depth_global_coverage_stats = bam_depth.glob_cov_stats
+Array[File] stat_alineamiento = samtools_reports_file.output_global_report
 
 
- #Create a file with a list of the generated ubams
+ #Create a file with a list of the generated bam_depth.glob_cov_stats
   call CreateFoFN {
     input:
       array_of_files = bams_stat_depth_global_coverage_stats,
@@ -356,27 +298,31 @@ Array[File] bams_stat_depth_global_coverage_stats = bam_depth.glob_cov_stats
      
   }
 
-  #call Create_inputs_for_preprocesing {
-  #  input:
-  #    ubams_paths = CreateFoFN.fofn_list,
-  #    bams_sample_names = read_file_of_tabulated_inputs.samplenames,
+ #Create a file with a list of the generated output_global_report
+  call CreateFoFN as CreateFoFN_samtools{
+    input:
+      array_of_files = stat_alineamiento,
+      fofn_name = Tso_name
+     
+  }
 
-  #}
 
 ####### esto mergea archivos de distintas muestras
 call merge_coverage_global_reports {
 
 input:  
-#toolpath = toolpath,
 coverage_global_files = CreateFoFN.fofn_list,
 TSO_name = Tso_name
 
-#sample_Name = bam_depth.sample_Name
-#coverage_stats = bam_depth.cov_stats_by_name
-
 } 
 
-#Array[File] stat_alineamiento = ["${samtools_reports_file.output_global_report}"]
+call merge_coverage_global_reports as merge_samtools_reports{
+
+input:  
+coverage_global_files = CreateFoFN_samtools.fofn_list,
+TSO_name = Tso_name
+
+} 
 
 
 
