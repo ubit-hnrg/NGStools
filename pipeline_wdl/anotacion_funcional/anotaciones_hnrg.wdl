@@ -339,7 +339,7 @@ input:
 }
 
 #Step 13: Annotate with PharmGKB
-call Snpsift as step13_final_annot{
+call Snpsift as final_annot{
 input:
     sample_name = sample_name,
     parametros = "annotate -v -info PGKB_INDEX,PGKB_GENE,PGKB_DRUG,PGKB_TYPE,PGKB_EVIDENCE,PGKB_DISEASE,PGKB_RACE",
