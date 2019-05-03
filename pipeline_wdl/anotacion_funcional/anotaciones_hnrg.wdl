@@ -350,7 +350,7 @@ input:
 
 }
 
-Step 14: Annotate with ExAC
+#Step 14: Annotate with ExAC
 call Snpsift as final_annot{
 input:
     sample_name = sample_name,
