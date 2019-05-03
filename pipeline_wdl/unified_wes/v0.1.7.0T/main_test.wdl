@@ -64,6 +64,14 @@ task subset_array_glob {
   }
 }
 
+task symlink_important_files {
+    File output_to_save
+    String path_save
+    command{
+       ln -s ${output_to_save} ${path_save}
+    }
+}
+
 
 
 
@@ -324,7 +332,14 @@ input:
 }
     
 
-
+Array[File] salidas = ["${ConvertPairedFastQsToUnmappedBamWf.fastp_json}","${ConvertPairedFastQsToUnmappedBamWf.fastp_html}"]
+scatter (paths in salidas) {
+    call symlink_important_files {
+        input:
+        output_to_save = paths,
+        path_save = mkdir_samplename.path_out_softlink
+    }
+}
 
  call qual_control.quality_control {
  
