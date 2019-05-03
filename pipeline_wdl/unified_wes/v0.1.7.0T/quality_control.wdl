@@ -345,7 +345,7 @@ toolpath = toolpath
 
 }
 
-Array[File] bams_stat_depth_global_coverage_stats = ["${bam_depth.glob_cov_stats}"]
+Array[File] bams_stat_depth_global_coverage_stats = bam_depth.glob_cov_stats
 
 
  #Create a file with a list of the generated ubams
