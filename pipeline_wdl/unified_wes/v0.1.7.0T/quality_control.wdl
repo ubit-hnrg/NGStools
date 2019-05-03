@@ -170,7 +170,7 @@ File output_global_report = "${sampleID}_samtools_report.tsv"
 }
 
 
-#README_run_merge_coverage_global_reports.sh
+#README_run_merge_reports.sh
 #task merge coverage_global_reports
 # /home/hnrg/NGStools/pipeline_wdl/qualityControl/merge_sample_reports.py coveerage_global_statistics.files TSO20190328_coverage_statistics.tsv
 
@@ -178,9 +178,9 @@ File output_global_report = "${sampleID}_samtools_report.tsv"
 #########este script es alimentado por un archivo que tiene  nombre_reporte.tsv por cada linea. y se llama en uno de los ultimos pasos 
 
 #####
-task merge_coverage_global_reports {
+task merge_reports {
 ####inputs del paso1 
-File coverage_global_files
+File files_to_merge
 String TSO_name
 #String toolpath
 #File coverage_stats 
@@ -188,11 +188,11 @@ String TSO_name
 #gvcfs = ['${sep="','" input_gvcfs}']
 
 command<<<
-/home/hnrg/NGStools/pipeline_wdl/qualityControl/merge_sample_reports.py -i ${coverage_global_files} -o ${TSO_name}.merged_global_report
+/home/hnrg/NGStools/pipeline_wdl/qualityControl/merge_sample_reports.py -i ${files_to_merge} -o ${TSO_name}.merged_report
 >>>
 
 output {
-File merged_glob_report = "${TSO_name}.merged_global_report"
+File merged_report = "${TSO_name}.merged_report"
 
 }
 
@@ -229,6 +229,27 @@ task CreateFoFN {
   output {
     File fofn_list = "${fofn_name}.list"
   }
+}
+
+task make_excel {
+String Tso_name
+File tabla1
+String pestana1
+File tabla2
+String pestana2
+File tabla3
+String pestana3
+
+command{
+/home/hnrg/repos/NGStools/pipeline_wdl/qualityControl/make_excel_report.py ${tabla1}:${pestana1} ${tabla2}:${pestana2} ${tabla3}:${pestana3} ${Tso_name}_qual_report.xlsx
+ 
+}
+
+output {
+File reporte_excel = "${Tso_name}_qual_report.xlsx"
+
+}
+
 }
 
 
@@ -308,34 +329,44 @@ Array[File] stat_alineamiento = samtools_reports_file.output_global_report
 
 
 ####### esto mergea archivos de distintas muestras
-call merge_coverage_global_reports {
+call merge_reports {
 
 input:  
-coverage_global_files = CreateFoFN.fofn_list,
+files_to_merge = CreateFoFN.fofn_list,
 TSO_name = Tso_name
 
 } 
 
-call merge_coverage_global_reports as merge_samtools_reports{
+call merge_reports as merge_samtools_reports{
 
 input:  
-coverage_global_files = CreateFoFN_samtools.fofn_list,
+files_to_merge = CreateFoFN_samtools.fofn_list,
 TSO_name = Tso_name
 
 } 
 
 
 
+call make_excel {
+input:
+Tso_name = Tso_name,
+tabla1 = fastp_qual.fastp_stats,
+pestana1 = "Filtrado",
+tabla2 = merge_samtools_reports.merged_report, 
+pestana2 = "Alineamiento",
+tabla3 = merge_reports.merged_report,
+pestana3 = "Profundidad"
 
+}
 
 
 
 output {
 Array[File] depth_global_cov_stats = bam_depth.glob_cov_stats ###estadistica del alineamiento...
 Array[File] by_exon_depth = bam_depth.cov_stats_by_exon
-#File coverage_merged_report = merge_coverage_global_reports.merged_report
+#File coverage_merged_report = merge_reports.merged_report
 Array[File] reporte_final = samtools_reports_file.output_global_report ### archivo para mergear... estadistica en la libreria del experimento
-
+File excel_qual_report = make_excel.reporte_excel
 Array[File] Samt_bam_stat = samtools_stat.samtools_stat_original_bam 
 Array[File] Samt_TSO_stat = samtools_stat.samtools_stat_TSO_bam
 
@@ -343,3 +374,8 @@ Array[File] Samt_TSO_stat = samtools_stat.samtools_stat_TSO_bam
 }
 
 }
+
+
+
+
+
