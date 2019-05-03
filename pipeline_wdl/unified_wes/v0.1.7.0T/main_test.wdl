@@ -333,11 +333,13 @@ input:
     
 
 Array[File] salidas = ["${ConvertPairedFastQsToUnmappedBamWf.fastp_json}","${ConvertPairedFastQsToUnmappedBamWf.fastp_html}"]
-scatter (paths in salidas) {
+Array[String]+ array_path_save = mkdir_samplename.path_out_softlink
+Array[Pair[String,File]] samples_x_files = cross (array_path_save, salidas)
+scatter (pairs in samples_x_files) {
     call symlink_important_files {
         input:
-        output_to_save = paths,
-        path_save = mkdir_samplename.path_out_softlink
+        output_to_save = pairs.right,
+        path_save = pairs.left
     }
 }
 
