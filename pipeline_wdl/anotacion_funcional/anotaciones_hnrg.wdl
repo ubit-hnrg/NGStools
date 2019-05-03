@@ -93,7 +93,7 @@ String annovar_dbpath
 
 command <<<
 
-perl ${path_herramientas}/annovar/table_annovar.pl ${vcf_in} ${annovar_dbpath} -vcfinput  -buildver hg19 -remove -out ${out_prefix} -protocol dbnsfp35a,gnomad_exome,gnomad_genome -operation f,f,f -nastring . 
+perl ${path_herramientas}/annovar/table_annovar.pl ${vcf_in} ${annovar_dbpath} -vcfinput  -buildver hg19 -remove -out ${out_prefix} -protocol dbnsfp35a,gnomad_exome,gnomad_genome,intervar_20180118 -operation f,f,f,f -nastring . 
 
 >>>
 
