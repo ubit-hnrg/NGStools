@@ -43,7 +43,7 @@ workflow ConvertPairedFastQsToUnmappedBamWf {
   String platform_model
   String read_lenght
 
-  String path_save
+  #String path_save
 
 
   String ubam_list_name
@@ -138,19 +138,22 @@ workflow ConvertPairedFastQsToUnmappedBamWf {
  }
 
 
- Array[File] salidas = ["${fastp.fastp_json_report}","${fastp.fastp_html_report}"]
- scatter (paths in salidas) {
-    call symlink_important_files {
-        input:
-        output_to_save = paths,
-        path_save = path_save
-    }
- }
+ #Array[File] salidas = ["${fastp.fastp_json_report}","${fastp.fastp_html_report}"]
+ #scatter (paths in salidas) {
+ #   call symlink_important_files {
+ #       input:
+ #       output_to_save = paths,
+ #       path_save = path_save
+ #   }
+ #}
   # Outputs that will be retained when execution is complete
   output {
     #String path_borrado = write_lines(fastp.fastq_cleaned_R1)
     File p_borrar1 = path_borrado.path_borrar1 
     File p_borrar2 = path_borrado.path_borrar2
+
+    Array[File] fastp_json = fastp.fastp_json_report
+    Array[File] fastp_html = fastp.fastp_html_report
 
     Array[String] output_ubams_sample_names =  read_file_of_tabulated_inputs.array_of_samples
 
