@@ -14,7 +14,7 @@ reports = args.report_files
 outfile = args.output_merged_report
 merged_report = []
 
-reports = pd.read_csv(reports).values.flatten()
+reports = pd.read_csv(reports,header=None).values.flatten()
 for rep in reports:
     print rep
     sample = os.path.basename(rep).split('_')[0]
