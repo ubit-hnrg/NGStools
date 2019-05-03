@@ -210,14 +210,14 @@ String toolpath
 
 
 command {
-    ${toolpath}fastp -i ${R1_fastq_gz} -I ${R2_fastq_gz} -o ${R1_stripped_basename}_cleaned.fastq.gz -O ${R2_stripped_basename}_cleaned.fastq.gz -h ${report_name}.html -j ${report_name}.json
+    ${toolpath}fastp -i ${R1_fastq_gz} -I ${R2_fastq_gz} -o ${R1_stripped_basename}_cleaned.fastq.gz -O ${R2_stripped_basename}_cleaned.fastq.gz -h ${report_name}_fastp.html -j ${report_name}_fastp.json
 }
 
 output {
     File fastq_cleaned_R1 = "${R1_stripped_basename}_cleaned.fastq.gz"
     File fastq_cleaned_R2 = "${R2_stripped_basename}_cleaned.fastq.gz"
-    File fastp_json_report = "${report_name}.json"
-    File fastp_html_report = "${report_name}.html"
+    File fastp_json_report = "${report_name}_fastp.json"
+    File fastp_html_report = "${report_name}_fastp.html"
     
     }
 
