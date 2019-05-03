@@ -219,7 +219,7 @@ File merged_st_report = "${TSO_name}.merged_st_report"
 
 task CreateFoFN {
   # Command parameters
-  Array[String] array_of_files
+  Array[File] array_of_files
   String fofn_name
   
   command {
