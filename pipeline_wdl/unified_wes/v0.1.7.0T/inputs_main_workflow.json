@@ -62,5 +62,11 @@
   "main_workflow.break_bands_at_multiples_of": "1000000",
   "main_workflow.compression_level": "1",
   "main_workflow.contamination": "0"
+   
+  "##COMMENT9":"ARCHIVOS PARA EL CONTROL DE CALIDAD",
+  
+  "main_workflow.tso_bed":"FILE",
+  "main_workflow.exon_coords":"FILE"
+
 }
 

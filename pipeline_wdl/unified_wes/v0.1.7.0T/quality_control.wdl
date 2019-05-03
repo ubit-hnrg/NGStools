@@ -252,6 +252,14 @@ File reporte_excel = "${Tso_name}_qual_report.xlsx"
 }
 
 
+task symlink_important_files {
+    File output_to_save
+    String path_save
+    command{
+       ln -s ${output_to_save} ${path_save}
+    }
+}
+
 
 workflow quality_control {
 
@@ -260,7 +268,8 @@ String toolpath
 File exon_coords
 File tso_bed
 File fastp_json_files
-String Tso_name 
+String Tso_name
+String path_save
 
 call fastp_qual {
 input:
@@ -354,10 +363,18 @@ pestana1 = "Filtrado",
 tabla2 = merge_samtools_reports.merged_report, 
 pestana2 = "Alineamiento",
 tabla3 = merge_reports.merged_report,
-pestana3 = "Profundidad"
+pestana3 = "Profundidad-en-libreria"
 
 }
 
+Array[File] reportes_salidas = ["${make_excel.reporte_excel}"]
+scatter (paths in reportes_salidas) {
+    call symlink_important_files {
+        input:
+        output_to_save = paths,
+        path_save = path_save
+    }
+}
 
 
 output {
@@ -368,6 +385,7 @@ Array[File] reporte_final = samtools_reports_file.output_global_report ### archi
 File excel_qual_report = make_excel.reporte_excel
 Array[File] Samt_bam_stat = samtools_stat.samtools_stat_original_bam 
 Array[File] Samt_TSO_stat = samtools_stat.samtools_stat_TSO_bam
+
 
 
 }
