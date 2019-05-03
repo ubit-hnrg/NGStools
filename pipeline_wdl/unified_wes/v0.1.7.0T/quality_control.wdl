@@ -240,7 +240,7 @@ File tabla3
 String pestana3
 
 command{
-/home/hnrg/repos/NGStools/pipeline_wdl/qualityControl/make_excel_report.py ${tabla1}:${pestana1} ${tabla2}:${pestana2} ${tabla3}:${pestana3} ${Tso_name}_qual_report.xlsx
+/home/hnrg/NGStools/pipeline_wdl/qualityControl/make_excel_report.py ${tabla1}:${pestana1} ${tabla2}:${pestana2} ${tabla3}:${pestana3} ${Tso_name}_qual_report.xlsx
  
 }
 
