@@ -43,6 +43,7 @@ workflow ConvertPairedFastQsToUnmappedBamWf {
   String platform_model
   String read_lenght
 
+  String path_save
 
 
   String ubam_list_name
@@ -136,6 +137,15 @@ workflow ConvertPairedFastQsToUnmappedBamWf {
      path2 = fastp.fastq_cleaned_R2
  }
 
+
+ Array[File] salidas = ["${fastp.fastp_json_report}","${fastp.fastp_html_report}"]
+ scatter (paths in salidas) {
+    call symlink_important_files {
+        input:
+        output_to_save = paths,
+        path_save = path_save
+    }
+ }
   # Outputs that will be retained when execution is complete
   output {
     #String path_borrado = write_lines(fastp.fastq_cleaned_R1)
@@ -375,4 +385,12 @@ File path_borrar2 = "${temp2}.txt"
 }
 
 
+}
+
+task symlink_important_files {
+    File output_to_save
+    String path_save
+    command{
+       ln -s ${output_to_save} ${path_save}
+    }
 }

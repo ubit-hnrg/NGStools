@@ -82,6 +82,8 @@ workflow main_workflow {
   String readlenght
   String platformmodel
  
+  File exon_coords
+  File tso_bed
 
 #inputs for preprocesing ( ubam2gvcf)
 
@@ -328,10 +330,12 @@ input:
  
  input: 
  fastp_json_files = ConvertPairedFastQsToUnmappedBamWf.fastp_reports,
- analysis_readybam = bam2gvcf.bams_ready,
+ path_save = mkdir_samplename.path_out_softlink,
+ analysis_readybam = bam2gvcf.analysis_ready_bam,
  toolpath = toolpath,
- exon_coords = ,
- tso_bed = 
+ Tso_name = basename(tabulatedSampleFilePaths, ".txt"),
+ exon_coords = exon_coords,
+ tso_bed = tso_bed
 
 
  }
