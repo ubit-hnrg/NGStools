@@ -339,28 +339,28 @@ input:
 }
 
 #Step 13: Annotate with PharmGKB
-call Snpsift as step13_pharmGKB{
+call Snpsift as step13_final_annot{
 input:
     sample_name = sample_name,
     parametros = "annotate -v -info PGKB_INDEX,PGKB_GENE,PGKB_DRUG,PGKB_TYPE,PGKB_EVIDENCE,PGKB_DISEASE,PGKB_RACE",
     input_vcf = step12_clinVar.salida_Snpsift,
     path_herramientas = path_herramientas,
     java_heap_memory_initial = java_heap_memory_initial,
-    nombre_step = "step13_pharmGKB"
+    nombre_step = "final_annot"
 
 }
 
 #Step 14: Annotate with ExAC
-call Snpsift as final_annot{
-input:
-    sample_name = sample_name,
-    parametros = "annotate -v -info AN_Adj,AC_Adj,AC_Het,AC_Hom,AC_Hemi,POPMAX,VQSLOD,GQ_MEAN,GQ_STDDEV,HWP",
-    input_vcf = step13_pharmGKB.salida_Snpsift,
-    path_herramientas = path_herramientas,
-    java_heap_memory_initial = java_heap_memory_initial,
-    nombre_step = "final_annot"
+#call Snpsift as final_annot{
+#input:
+#    sample_name = sample_name,
+#    parametros = "annotate -v -info AN_Adj,AC_Adj,AC_Het,AC_Hom,AC_Hemi,POPMAX,VQSLOD,GQ_MEAN,GQ_STDDEV,HWP",
+#    input_vcf = step13_pharmGKB.salida_Snpsift,
+#    path_herramientas = path_herramientas,
+#    java_heap_memory_initial = java_heap_memory_initial,
+#    nombre_step = "final_annot"
 
-}
+#}
 
 }
 
