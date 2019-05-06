@@ -331,8 +331,8 @@ input:
      input_gvcfs_indices = bam2gvcf.output_vcf_index
 }
     
-
-Array[File] salidas = ["${ConvertPairedFastQsToUnmappedBamWf.fastp_json}","${ConvertPairedFastQsToUnmappedBamWf.fastp_html}"]
+#,"${ConvertPairedFastQsToUnmappedBamWf.fastp_html}"]
+Array[File]+ salidas = ConvertPairedFastQsToUnmappedBamWf.fastp_json
 Array[String]+ array_path_save = mkdir_samplename.path_out_softlink
 Array[Pair[String,File]] samples_x_files = cross (array_path_save, salidas)
 scatter (pairs in samples_x_files) {
