@@ -29,11 +29,15 @@ def main():
     multianno_tsv=args.multianno_tsv
     output=args.output
     multianno=pd.read_table(multianno_tsv)
-    
+    print multianno.head(2)
+
     multianno = process_InterVar(multianno)
+    print multianno.head(3)
     #print multianno.columns
     cols = ['Chr','Start','End','Ref','Alt','InterVarVeredict','InterVarEvidence']
     multianno_db = multianno[cols]
+    print multianno_db.head(2)
+    
     multianno_db.to_csv(output,sep='\t',index=False)
 
 if __name__ == "__main__":
