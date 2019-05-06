@@ -220,6 +220,7 @@ task check_mkdir {
 
 command<<<
 python <<CODE
+# -*- coding: utf-8 -*-
 import os
 
 with open("${unique_samples_id}") as fp:  
