@@ -1,5 +1,6 @@
 import pandas as pd
 import argparse
+import numpy as np
 
 def parse_args():
     parser = argparse.ArgumentParser(prog='left_join_multianno_and_multisampleVCF', usage='%(prog)s [options] > outputfile.tsv')
