@@ -24,9 +24,9 @@ def process_InterVar(multianno):
     multianno['InterVarVeredict'] = veredict
     return(multianno)
 
-def load_annovar_txt(anovar_txt):
-    cols = pd.read_csv(annovar_txt,sep='\t',header=None,nrows=1).iloc[0,:][:-1]
-    body = pd.read_csv(annovar_txt,sep='\t',header=None,skiprows=1).iloc[:,0:len(cols)]
+def load_annovar_txt(multianno_txt):
+    cols = pd.read_csv(multianno_txt,sep='\t',header=None,nrows=1).iloc[0,:][:-1]
+    body = pd.read_csv(multianno_txt,sep='\t',header=None,skiprows=1).iloc[:,0:len(cols)]
     body.columns = cols
     return body
 
