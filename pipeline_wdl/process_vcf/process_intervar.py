@@ -39,7 +39,7 @@ def main():
     #print multianno.columns
     cols = ['Chr','Start','End','Ref','Alt','InterVarVeredict','InterVarEvidence']
     multianno_db = multianno[cols]
-    multianno_db.to_csv(output,sep='\t',index=False)
+    multianno_db.to_csv(output,index=False)
 
 if __name__ == "__main__":
     main()
