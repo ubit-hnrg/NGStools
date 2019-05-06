@@ -218,19 +218,20 @@ task check_mkdir {
     String path_softlink
     File unique_samples_id 
 
-    command{
-        set -e
+    command<<<
+    python <<CODE
+    import os
 
     with open(${unique_samples_id}) as fp:  
     content = fp.readlines()
     content = [x.strip() for x in content] 
     for y in range(len(content)):
-        if [ -f ${path_softlink}content[y]]
-        then 
-        echo "El directorio ${path_softlink}content[y] ya existe"
-        exit
-        fi
-    }
+        if os.path.isdir(${path_softlink}content[y]):
+        print("Ya existe el directorio... cambie el nombre o elimínelo")
+        exit()
+        
+    CODE
+    >>>
 }
 
 
