@@ -31,7 +31,9 @@ def main():
     multianno=pd.read_table(multianno_tsv)
     
     multianno = process_InterVar(multianno)
-    db = multianno[['#CHROM','POS','ID','REF','ALT','InterVarVeredict','InterVarEvidence']]
+    print multianno.columns
+    subset = ['#CHROM','POS','ID','REF','ALT','InterVarVeredict','InterVarEvidence']
+    db = multianno.iloc[:,subset]
     db.to_csv(output,sep='\t',index=False)
 
 if __name__ == "__main__":
