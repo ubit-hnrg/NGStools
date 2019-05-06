@@ -219,6 +219,7 @@ task check_mkdir {
     File unique_samples_id 
 
     command{
+        set -e
 
     with open(${unique_samples_id}) as fp:  
     content = fp.readlines()
@@ -227,6 +228,7 @@ task check_mkdir {
         if [ -f ${path_softlink}content[y]]
         then 
         echo "El directorio ${path_softlink}content[y] ya existe"
+        exit
         fi
     }
 }
