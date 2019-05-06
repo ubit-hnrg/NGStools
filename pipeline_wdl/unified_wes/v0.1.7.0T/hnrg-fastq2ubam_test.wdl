@@ -222,7 +222,7 @@ task check_mkdir {
     python <<CODE
     import os
 
-    with open(${unique_samples_id}) as fp:  
+    with open("${unique_samples_id}") as fp:  
     content = fp.readlines()
     content = [x.strip() for x in content] 
     for y in range(len(content)):
