@@ -43,7 +43,7 @@ workflow ConvertPairedFastQsToUnmappedBamWf {
   String platform_model
   String read_lenght
 
-  #String path_save
+  String path_softlink
 
 
   String ubam_list_name
@@ -54,7 +54,12 @@ workflow ConvertPairedFastQsToUnmappedBamWf {
       input:
       tabulatedSampleFilePaths = tabulatedSampleFilePaths
   }
-    
+
+  call check_mkdir {
+      input:
+    path_softlink =path_softlink,
+    unique_samples_id = read_file_of_tabulated_inputs.unique_samples
+    }
 
   # Convert multiple pairs of input fastqs in parallel
   scatter (i in range(length(read_file_of_tabulated_inputs.array_of_samples ))) {
@@ -207,6 +212,23 @@ task read_file_of_tabulated_inputs {
         File unique_samples = 'unique_sample_id.list'
 
     }  
+}
+
+task check_mkdir {
+    String path_softlink
+    File unique_samples_id 
+
+    command{
+
+    with open(${unique_samples_id}) as fp:  
+    content = fp.readlines()
+    content = [x.strip() for x in content] 
+    for y in range(len(content)):
+        if [ -f ${path_softlink}content[y]]
+        then 
+        echo "El directorio ${path_softlink}content[y] ya existe"
+        fi
+    }
 }
 
 

@@ -163,6 +163,7 @@ workflow main_workflow {
       ubam_list_name = ubam_list_name,
       sequencing_center = sequencing_center,
       read_lenght = readlenght,
+      path_softlink = path_softlink,
       platform_model = platformmodel
 
       }
@@ -332,11 +333,22 @@ input:
 }
     
 #,"${ConvertPairedFastQsToUnmappedBamWf.fastp_html}"]
-Array[File]+ salidas = ConvertPairedFastQsToUnmappedBamWf.fastp_json
-Array[String]+ array_path_save = mkdir_samplename.path_out_softlink
-Array[Pair[String,File]] samples_x_files = cross (array_path_save, salidas)
-scatter (pairs in samples_x_files) {
+Array[File] salidas_json = ConvertPairedFastQsToUnmappedBamWf.fastp_json
+Array[String] array_path_save_json = mkdir_samplename.path_out_softlink
+Array[Pair[String,File]] samples_x_files_json = cross (array_path_save_json, salidas_json)
+scatter (pairs in samples_x_files_json) {
     call symlink_important_files {
+        input:
+        output_to_save = pairs.right,
+        path_save = pairs.left
+    }
+}
+
+Array[File] salidas_html = ConvertPairedFastQsToUnmappedBamWf.fastp_html
+Array[String] array_path_save_html = mkdir_samplename.path_out_softlink
+Array[Pair[String,File]] samples_x_files_html = cross (array_path_save_html, salidas_html)
+scatter (pairs in samples_x_files_html) {
+    call symlink_important_files as save_html{
         input:
         output_to_save = pairs.right,
         path_save = pairs.left
