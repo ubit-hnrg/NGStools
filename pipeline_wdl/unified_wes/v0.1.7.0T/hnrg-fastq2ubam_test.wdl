@@ -226,7 +226,7 @@ with open("${unique_samples_id}") as fp:
     content = fp.readlines()
     content = [x.strip() for x in content] 
     for y in range(len(content)):
-        if os.path.isdir(${path_softlink}content[y]):
+        if os.path.isdir("${path_softlink}content[y]"):
             print("Ya existe el directorio... cambie el nombre o elimínelo")
             exit()
         
