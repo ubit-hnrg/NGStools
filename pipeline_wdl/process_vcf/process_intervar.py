@@ -5,7 +5,7 @@ import numpy as np
 def parse_args():
     parser = argparse.ArgumentParser(prog='left_join_multianno_and_multisampleVCF', usage='%(prog)s [options] > outputfile.tsv')
 
-    parser.add_argument('--multianno_tsv', help='modified annovar output (with removed unammed fields)')
+    parser.add_argument('--multianno_txt', help='modified annovar output (with removed unammed fields)')
     parser.add_argument('--output', help='output file')
 
     args = parser.parse_args()
@@ -17,27 +17,28 @@ def process_InterVar(multianno):
            'BS1', 'BS2', 'BS3', 'BS4', 'BP1', 'BP2', 'BP3', 'BP4', 'BP5', 'BP6',
            'BP7']
     multianno['InterVarEvidence'] =multianno[evidence_cols].apply(lambda x: ','.join(list(x.keys()[x=='1'])) if any(x=='1') else np.nan,axis =1)
-    multianno.drop(evidence_cols,axis =1,inplace = True)
+    #multianno.drop(evidence_cols,axis =1,inplace = True)
 
     veredict = multianno['InterVar_automated']
     multianno.drop(['InterVar_automated'],inplace = True,axis=1)
     multianno['InterVarVeredict'] = veredict
     return(multianno)
 
+def load_annovar_txt(anovar_txt):
+    cols = pd.read_csv(annovar_txt,sep='\t',header=None,nrows=1).iloc[0,:][:-1]
+    body = pd.read_csv(annovar_txt,sep='\t',header=None,skiprows=1).iloc[:,0:len(cols)]
+    body.columns = cols
+    return body
+
 def main():
     args = parse_args()
-    multianno_tsv=args.multianno_tsv
+    multianno_txt=args.multianno_txt
     output=args.output
-    multianno=pd.read_table(multianno_tsv)
-    print multianno.head(2)
-
+    multianno=load_annovar_txt(multianno_txt)
     multianno = process_InterVar(multianno)
-    print multianno.head(3)
     #print multianno.columns
     cols = ['Chr','Start','End','Ref','Alt','InterVarVeredict','InterVarEvidence']
     multianno_db = multianno[cols]
-    print multianno_db.head(2)
-    
     multianno_db.to_csv(output,sep='\t',index=False)
 
 if __name__ == "__main__":
