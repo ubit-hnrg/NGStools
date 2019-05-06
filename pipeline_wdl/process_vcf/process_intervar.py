@@ -32,9 +32,9 @@ def main():
     
     multianno = process_InterVar(multianno)
     #print multianno.columns
-    subset = [u'Chr', u'Start', u'End', u'Ref', u'Alt','InterVarVeredict','InterVarEvidence']
-    db = multianno[subset]
-    db.to_csv(output,sep='\t',index=False)
+    cols = ['Chr','Start','End','Ref','Alt','InterVarVeredict','InterVarEvidence']
+    multianno_db = multianno[cols]
+    multianno_db.to_csv(output,sep='\t',index=False)
 
 if __name__ == "__main__":
     main()
