@@ -7,7 +7,7 @@ import os
 
 parser = argparse.ArgumentParser(prog='create_InterVarDB.py',description='Create vcf database for intervar annotation')
 
-parser.add_argument('-i','--multianno_txt', help='raw annovar output in tabulated format)
+parser.add_argument('-i','--multianno_txt', help='raw annovar output in tabulated format')
 parser.add_argument('-o','--output_vcf', default='./intervar.vcf')
 args =  parser.parse_args()
 inputfile = args.multianno_txt
