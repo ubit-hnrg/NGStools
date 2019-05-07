@@ -263,26 +263,28 @@ task symlink_important_files {
 
 workflow quality_control {
 
-File analysis_readybam 
+Array[File]+ analysis_readybam 
 String toolpath
 File exon_coords
 File tso_bed
-File fastp_json_files
+Array[File]+ fastp_json_files
 String Tso_name
 String path_save
 
+scatter (fastp in fastp_json_files){
 call fastp_qual {
 input:
-inputs_json_report = fastp_json_files,
+inputs_json_report = fastp,
 Tso_name = Tso_name
 
 }
+}
 
-Array[File] bambam = read_lines(analysis_readybam)
+#Array[File] bambam = 
 
 ######################scatter por los bams... analysis_readybam
 
-scatter (bams_ready in bambam)  {
+scatter (bams_ready in read_lines(analysis_readybam))  {
 
 call bam_depth {
 input: 
