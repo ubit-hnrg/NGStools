@@ -1,12 +1,9 @@
 
 import argparse
 import pandas as pd
-from xlrd import open_workbook
-import csv
-import os
+import numpy as np
 
 parser = argparse.ArgumentParser(prog='create_InterVarDB.py',description='Create vcf database for intervar annotation')
-
 parser.add_argument('-i','--multianno_txt', help='raw annovar output in tabulated format')
 parser.add_argument('-o','--output_vcf', default='./intervar.vcf')
 args =  parser.parse_args()
@@ -26,6 +23,18 @@ def load_annovar_txt_for_vcf_body(multianno_txt):
     Body.columns = list(cols1) + cols2
     return Body
 
+def process_InterVar(multianno):
+    evidence_cols = ['PVS1', 'PS1', 'PS2', 'PS3', 'PS4', 'PM1', 'PM2',
+           'PM3', 'PM4', 'PM5', 'PM6', 'PP1', 'PP2', 'PP3', 'PP4', 'PP5', 'BA1',
+           'BS1', 'BS2', 'BS3', 'BS4', 'BP1', 'BP2', 'BP3', 'BP4', 'BP5', 'BP6',
+           'BP7']
+    multianno['InterVarEvidence'] =multianno[evidence_cols].apply(lambda x: ','.join(list(x.keys()[x=='1'])) if any(x=='1') else np.nan,axis =1)
+    #multianno.drop(evidence_cols,axis =1,inplace = True)
+
+    veredict = multianno['InterVar_automated']
+    multianno.drop(['InterVar_automated'],inplace = True,axis=1)
+    multianno['InterVarVeredict'] = veredict
+    return(multianno)
 
 
 def main():
