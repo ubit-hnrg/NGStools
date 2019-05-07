@@ -269,7 +269,7 @@ File exon_coords
 File tso_bed
 Array[File]+ fastp_json_files
 String Tso_name
-String path_save
+Array[String] path_save
 
 scatter (fastp in fastp_json_files){
 call fastp_qual {
@@ -370,13 +370,27 @@ pestana3 = "Profundidad-en-libreria"
 }
 
 Array[File] reportes_salidas = ["${make_excel.reporte_excel}"]
-scatter (paths in reportes_salidas) {
+Array[Pair[String,File]] samples_x_files = cross (path_save, reportes_salidas)
+scatter (pairs in samples_x_files) {
     call symlink_important_files {
         input:
-        output_to_save = paths,
-        path_save = path_save
+        output_to_save = pairs.right,
+        path_save = pairs.left
     }
 }
+
+
+
+#scatter (paths in reportes_salidas) {
+#    call symlink_important_files {
+#        input:
+#        output_to_save = paths,
+#        path_save = path_save
+#    }
+#}
+
+
+
 
 
 output {
