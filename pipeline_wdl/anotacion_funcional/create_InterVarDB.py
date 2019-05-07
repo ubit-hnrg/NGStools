@@ -46,9 +46,12 @@ def main():
     body['FILTER']='PASS'
     body['INFO']=info
     body.drop(['InterVarVeredict','InterVarEvidence'],axis = 1,inplace = True)
+    
+    with open(outfile,'wb') as f:
+        for x in header:
+            f.write('%s\n'%x)
+        f.close()
+    body.to_csv(outfile,sep ='\t',mode='a',index = False)    
 
-with open(outfile,'wb') as f:
-    for x in header:
-        f.write('%s\n'%x)
-    f.close()
-body.to_csv(outfile,sep ='\t',mode='a',index = False)    
+if __name__ == "__main__":
+    main()
