@@ -2,15 +2,15 @@
 
 task fastp_qual {
 File inputs_json_report
-String Tso_name
+String report_name = basename(inputs_json_report, ".txt")
 
 #${sep=' -I ' input_bqsr_reports}
 command <<<
-/home/hnrg/NGStools/pipeline_wdl/qualityControl/estadistica_fastp.py -i ${inputs_json_report} -o ${Tso_name}_fastp_report.tsv
+/home/hnrg/NGStools/pipeline_wdl/qualityControl/estadistica_fastp.py -i ${inputs_json_report} -o ${report_name}_fastp_report.tsv
 >>>
 
 output {
-File fastp_stats = "${Tso_name}_fastp_report.tsv"
+File fastp_stats = "${report_name}_fastp_report.tsv"
 
 }
 }
@@ -319,6 +319,7 @@ toolpath = toolpath
 
 Array[File] bams_stat_depth_global_coverage_stats = bam_depth.glob_cov_stats
 Array[File] stat_alineamiento = samtools_reports_file.output_global_report
+Array[File] fastp_rep = fastp_qual.fastp_stats
 
 
  #Create a file with a list of the generated bam_depth.glob_cov_stats
@@ -337,6 +338,12 @@ Array[File] stat_alineamiento = samtools_reports_file.output_global_report
      
   }
 
+ call CreateFoFN as CreateFoFN_fastp{
+    input:
+      array_of_files = fastp_rep,
+      fofn_name = Tso_name
+     
+  }
 
 ####### esto mergea archivos de distintas muestras
 call merge_reports {
@@ -355,12 +362,22 @@ TSO_name = Tso_name
 
 } 
 
+fastp_stats
+
+call merge_reports as merge_fastp_reports{
+
+input:  
+files_to_merge = CreateFoFN_fastp.fofn_list,
+TSO_name = Tso_name
+
+} 
+
 
 
 call make_excel {
 input:
 Tso_name = Tso_name,
-tabla1 = fastp_qual.fastp_stats,
+tabla1 = merge_fastp_reports.merged_report,
 pestana1 = "Filtrado",
 tabla2 = merge_samtools_reports.merged_report, 
 pestana2 = "Alineamiento",
