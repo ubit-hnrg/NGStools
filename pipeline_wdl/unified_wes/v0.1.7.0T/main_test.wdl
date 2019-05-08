@@ -362,7 +362,7 @@ scatter (pairs in samples_x_files_html) {
  path_save = mkdir_samplename.path_out_softlink,
  analysis_readybam = bam2gvcf.analysis_ready_bam,
  toolpath = toolpath,
- #Tso_name = basename(tabulatedSampleFilePaths, ".txt"),
+ Tso_name = basename(tabulatedSampleFilePaths, ".txt"),
  exon_coords = exon_coords,
  tso_bed = tso_bed
 
