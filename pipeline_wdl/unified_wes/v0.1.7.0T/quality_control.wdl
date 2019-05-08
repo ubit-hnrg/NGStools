@@ -268,7 +268,7 @@ String toolpath
 File exon_coords
 File tso_bed
 Array[File]+ fastp_json_files
-#String Tso_name
+String Tso_name
 Array[String] path_save
 
 scatter (fastp in fastp_json_files){
