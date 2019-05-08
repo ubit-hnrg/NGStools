@@ -179,6 +179,15 @@ output {
 
 }
 
+
+task symlink_important_files {
+    File output_to_save
+    String path_save
+    command{
+       ln -s ${output_to_save} ${path_save}
+    }
+}
+
 workflow FuncionalAnnotation {
 
 File input_vcf 
@@ -186,6 +195,7 @@ String path_herramientas
 String sample_name
 String java_heap_memory_initial
 String reference_version
+String path_save
 
 
 call bptools as step_0_bptools_mma {
@@ -394,6 +404,15 @@ input:
     nombre_step = "final_annot"
 
 }
+
+
+call symlink_important_files {
+        input:
+        output_to_save = final_annot.salida_Snpsift,
+        path_save = path_save
+    }
+
+
 
 }
 

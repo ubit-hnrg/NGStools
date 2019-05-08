@@ -1,0 +1,56 @@
+{
+ "##_COMENTARIO": "json de prueba para anotar variantes Noviembre 2018.",
+  "FuncionalAnnotation.java_heap_memory_initial": "12g",
+  "FuncionalAnnotation.input_vcf": "__input__",
+  "FuncionalAnnotation.reference_version": "GRCh37.75",
+  "FuncionalAnnotation.path_herramientas": "/home/hnrg/HNRG-pipeline-V0.1/tools",
+  "FuncionalAnnotation.sample_name": "__samplename__",
+  "##_COMENTARIO": "Base de datos actualizada Noviembre 2018.",
+  "FuncionalAnnotation.step3_dbSNP151.database": "/home/hnrg/HNRG-pipeline-V0.1/dbs/GRCh37_snpsift/All_20180423.vcf.gz",
+  "FuncionalAnnotation.step3_dbSNP151.database_index": "/home/hnrg/HNRG-pipeline-V0.1/dbs/GRCh37_snpsift/All_20180423.vcf.gz.tbi",
+
+  "##_COMENTARIO": "Base de datos actualizada Noviembre 2018(no cambia desde 8/12/13) .",
+  "FuncionalAnnotation.step4_1000Genomes.database": "/home/hnrg/HNRG-pipeline-V0.1/dbs/GRCh37_snpsift/1000G_omni2.5.b37.vcf.gz",
+  "FuncionalAnnotation.step4_1000Genomes.database_index": "/home/hnrg/HNRG-pipeline-V0.1/dbs/GRCh37_snpsift/1000G_omni2.5.b37.vcf.gz.tbi",
+
+  "##_COMENTARIO": "Base de datos actualizada Noviembre 2018.(no cambia desde 8/12/13)",
+  "FuncionalAnnotation.step5_hapmap.database": "/home/hnrg/HNRG-pipeline-V0.1/dbs/GRCh37_snpsift/hapmap_3.3.b37.vcf",
+  "FuncionalAnnotation.step5_hapmap.database_index": "/home/hnrg/HNRG-pipeline-V0.1/dbs/GRCh37_snpsift/hapmap_3.3.b37.vcf.idx",
+
+  "##_COMENTARIO": "Base de datos actualizada Noviembre 2018 (29 de oct de 2018)",
+  "FuncionalAnnotation.step6_Snpsift_GWASCat.database": "/home/bitgenia/samples/HNRG-pipeline-V0.1/dbs/GRCh37_snpsift/gwas_catalog_v1.0.2-associations_e96_r2019-04-06.tsv",
+
+  "##_COMENTARIO": "Base de datos actualizada Noviembre 2018.(no cambia desde agot2017)",
+  "FuncionalAnnotation.step7_dbNSFP.database": "/home/hnrg/HNRG-pipeline-V0.1/dbs/GRCh37_snpsift/hg19_dbnsfp35a.txt",
+  "FuncionalAnnotation.step7_dbNSFP.database_index": "/home/hnrg/HNRG-pipeline-V0.1/dbs/GRCh37_snpsift/hg19_dbnsfp35a.txt.idx",
+   
+  "FuncionalAnnotation.annovar.annovar_dbpath": "/home/hnrg/HNRG-pipeline-V0.1/dbs/hg19_annovar/",
+  
+  "##_COMENTARIO": "Base de datos actualizada Noviembre 2018 (no cambia desde nov/2014).",
+  "FuncionalAnnotation.step9_EVS.database": "/home/bitgenia/samples/HNRG-pipeline-V0.1/dbs/GRCh37_snpsift/ESP6500SI-V2-SSA137.snps_indels.vcf",
+  "FuncionalAnnotation.step9_EVS.database_index": "/home/bitgenia/samples/HNRG-pipeline-V0.1/dbs/GRCh37_snpsift/ESP6500SI-V2-SSA137.snps_indels.vcf.idx",
+
+
+  "##_COMENTARIO": "Base de datos actualizada Noviembre 2018.(ultima version nov2018)",
+  "FuncionalAnnotation.step11_CADD.database": "/home/agus/referencias/b37/whole_genome_SNVs.txt.gz",
+  "FuncionalAnnotation.step11_CADD.database_index": "/home/agus/referencias/b37/whole_genome_SNVs.txt.gz.tbi",
+
+  "##_COMENTARIO": "Base de datos actualizada Abril 2019.(ultima version 19/2/19)",
+  "FuncionalAnnotation.step12_clinVar.database": "/home/bitgenia/samples/HNRG-pipeline-V0.1/dbs/GRCh37_snpsift/clinvar_20190219.vcf.gz",
+  "FuncionalAnnotation.step12_clinVar.database_index": "/home/bitgenia/samples/HNRG-pipeline-V0.1/dbs/GRCh37_snpsift/clinvar_20190219.vcf.gz.tbi",
+ 
+  "##_COMENTARIO": "Base de datos sacada del bundle de bitgenia... (ACTUALIZAR).",
+  "FuncionalAnnotation.step13_pharmGKB.database": "/home/hnrg/HNRG-pipeline-V0.1/dbs/GRCh37_snpsift/PharmGKBvcf_2016.vcf",
+  "FuncionalAnnotation.step13_pharmGKB.database_index": "/home/hnrg/HNRG-pipeline-V0.1/dbs/GRCh37_snpsift/PharmGKBvcf_2016.vcf.sidx",
+
+  "##_COMENTARIO": "Base de datos actualizada Noviembre 2018.(no cambia desde 27/2/17)",
+  "FuncionalAnnotation.final_annot.database": "/home/hnrg/HNRG-pipeline-V0.1/dbs/GRCh37_snpsift/ExAC.r1.sites.vep.vcf.gz",
+  "FuncionalAnnotation.final_annot.database_index": "/home/hnrg/HNRG-pipeline-V0.1/dbs/GRCh37_snpsift/ExAC.r1.sites.vep.vcf.gz.tbi",
+
+  "path_save":"__path_save__"
+
+
+
+
+}
+
