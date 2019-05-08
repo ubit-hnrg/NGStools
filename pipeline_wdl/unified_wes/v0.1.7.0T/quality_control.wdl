@@ -362,7 +362,6 @@ TSO_name = Tso_name
 
 } 
 
-fastp_stats
 
 call merge_reports as merge_fastp_reports{
 
