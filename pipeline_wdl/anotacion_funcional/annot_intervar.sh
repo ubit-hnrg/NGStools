@@ -6,7 +6,7 @@ vcfDB='intervar_sample_BD.vcf'
 
 
 base=$(basename $vcfinput)
-BASE="${BASE%.*}"
+BASE=${base%.*}
 DIR=$(readlink -f $(dirname {$file}))
 echo $DIR/$base'_intervar.vcf'
 
