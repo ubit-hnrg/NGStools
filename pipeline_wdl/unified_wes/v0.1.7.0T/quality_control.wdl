@@ -284,7 +284,7 @@ Tso_name = Tso_name
 
 ######################scatter por los bams... analysis_readybam
 
-scatter (bams_ready in read_lines(analysis_readybam))  {
+scatter (bams_ready in analysis_readybam)  {
 
 call bam_depth {
 input: 
