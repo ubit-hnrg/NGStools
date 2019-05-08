@@ -67,6 +67,7 @@ for q in range(len(content)):
     for i in range(lenght):
 
         jsonfilename=lines[i].strip('\n')
+        print(jsonfilename)
         json=pd.read_json(jsonfilename)
         
         #update observables.
