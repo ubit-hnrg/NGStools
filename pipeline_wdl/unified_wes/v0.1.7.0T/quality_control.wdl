@@ -6,7 +6,7 @@ String Tso_name
 
 #${sep=' -I ' input_bqsr_reports}
 command <<<
-/home/hnrg/NGStools/pipeline_wdl/unified_wes/v0.1.7.0T/estadistica_fastp.py -i ${inputs_json_report} -o ${Tso_name}_fastp_report.tsv
+/home/hnrg/NGStools/pipeline_wdl/qualityControl/estadistica_fastp.py -i ${inputs_json_report} -o ${Tso_name}_fastp_report.tsv
 >>>
 
 output {
@@ -269,7 +269,7 @@ File exon_coords
 File tso_bed
 Array[File]+ fastp_json_files
 String Tso_name
-String path_save
+Array[String] path_save
 
 scatter (fastp in fastp_json_files){
 call fastp_qual {
@@ -284,7 +284,7 @@ Tso_name = Tso_name
 
 ######################scatter por los bams... analysis_readybam
 
-scatter (bams_ready in read_lines(analysis_readybam))  {
+scatter (bams_ready in analysis_readybam)  {
 
 call bam_depth {
 input: 
@@ -370,13 +370,27 @@ pestana3 = "Profundidad-en-libreria"
 }
 
 Array[File] reportes_salidas = ["${make_excel.reporte_excel}"]
-scatter (paths in reportes_salidas) {
+Array[Pair[String,File]] samples_x_files = cross (path_save, reportes_salidas)
+scatter (pairs in samples_x_files) {
     call symlink_important_files {
         input:
-        output_to_save = paths,
-        path_save = path_save
+        output_to_save = pairs.right,
+        path_save = pairs.left
     }
 }
+
+
+
+#scatter (paths in reportes_salidas) {
+#    call symlink_important_files {
+#        input:
+#        output_to_save = paths,
+#        path_save = path_save
+#    }
+#}
+
+
+
 
 
 output {
