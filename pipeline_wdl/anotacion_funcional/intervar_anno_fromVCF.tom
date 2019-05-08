@@ -1,0 +1,5 @@
+[[annotation]]
+file="intervar.vcf.gz"
+fields = ["InterVarVeredict","InterVarEvidence"]
+names=["InterVarVeredict","InterVarEvidence"]
+ops=["first","first"]
