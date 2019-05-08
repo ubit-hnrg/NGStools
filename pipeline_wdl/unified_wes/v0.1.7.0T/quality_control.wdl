@@ -6,7 +6,7 @@ String Tso_name
 
 #${sep=' -I ' input_bqsr_reports}
 command <<<
-/home/hnrg/NGStools/pipeline_wdl/unified_wes/v0.1.7.0T/estadistica_fastp.py -i ${inputs_json_report} -o ${Tso_name}_fastp_report.tsv
+/home/hnrg/NGStools/pipeline_wdl/qualityControl/estadistica_fastp.py -i ${inputs_json_report} -o ${Tso_name}_fastp_report.tsv
 >>>
 
 output {
