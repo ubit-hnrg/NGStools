@@ -12,6 +12,6 @@ python NGStools/pipeline_wdl/anotacion_funcional/create_InterVarDB.py -i=$input 
 bgzip $out
 tabix $out.gz
 
-sed -e "s|__vcfDB__|$out|g" /home/hnrg/NGStools/pipeline_wdl/anotacion_funcional/intervar_vcfanno_template_fromVCF.tom > config_vcfanno.tom
+sed -e "s|__vcfDB__|$out.gz|g" /home/hnrg/NGStools/pipeline_wdl/anotacion_funcional/intervar_vcfanno_template_fromVCF.tom > config_vcfanno.tom
 #java -Xmx4G -jar /home/bitgenia/samples/HNRG-pipeline-V0.1/tools/SnpSift.jar annotate -v -info InterVarEvidence,InterVarVeredict $out.gz $vcf > $vcf'intervar.vcf'
 /home/hnrg/HNRG-pipeline-V0.1/tools/vcfanno_linux64 -p 4 config_vcfanno.tom $vcf > $DIR/$base'_intervar.vcf'
