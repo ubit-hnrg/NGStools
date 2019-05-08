@@ -107,6 +107,32 @@ output {
 
 }
 
+task intervar_postprocessing {
+    File vcfinput
+    File multianno_txt
+    String srcpath = '/home/hnrg/NGStools/pipeline_wdl/anotacion_funcional'
+    String path_herramientas
+    String sample_name
+    command<<<
+    vcfDB='intervar_sample_BD.vcf'
+
+    # multianno to vcf db file
+    python ${srcpath}/create_InterVarDB.py -i=${multianno_txt} -o $vcfDB
+
+    # index
+    bgzip $vcfDB
+    tabix $vcfDB.gz
+
+    sed -e "s|__vcfDB__|$vcfDB.gz|g" ${srcpath}/intervar_vcfanno_template_fromVCF.tom > config_vcfanno.tom
+    ${path_herramientas}/vcfanno_linux64 -p 4 config_vcfanno.tom ${vcfinput} > ${sample_name}_intervar.vcf
+
+    >>>
+    output {
+        File salida_intervar = "${sample_name}_intervar.vcf"
+    }
+
+
+}
 
 task Snpsift_GWASCat {
 
@@ -268,8 +294,14 @@ path_herramientas = path_herramientas
 }
 
 
+call intervar_postprocessing {
+    input:
+        vcfinput = annovar.multianno_vcf,
+        multianno_txt = annovar.multianno_txt,
+        path_herramientas = path_herramientas,
+        sample_name = sample_name
 
-
+}
 
 #Step 8: Annotate with VarType
 #### no lleva database
