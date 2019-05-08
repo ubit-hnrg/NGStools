@@ -47,7 +47,7 @@
   "FuncionalAnnotation.final_annot.database": "/home/hnrg/HNRG-pipeline-V0.1/dbs/GRCh37_snpsift/ExAC.r1.sites.vep.vcf.gz",
   "FuncionalAnnotation.final_annot.database_index": "/home/hnrg/HNRG-pipeline-V0.1/dbs/GRCh37_snpsift/ExAC.r1.sites.vep.vcf.gz.tbi",
 
-  "path_save":"__path_save__"
+  "FuncionalAnnotation.path_save":"__path_save__"
 
 
 
