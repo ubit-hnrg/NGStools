@@ -60,46 +60,45 @@ for q in range(len(content)):
 
     
     
-    lines = tuple(open(content[q], 'r'))
-    lenght = len(lines)
+    #lines = tuple(open(content[q], 'r'))
+    #lenght = len(lines)
 
 
-    for i in range(lenght):
+    
+    jsonfilename=content[q]
+    
+    json=pd.read_json(jsonfilename)
+    
+    #update observables.
+    ####campos importantes before filtering
+    total_reads_bef1.append(json.summary.before_filtering['total_reads'])
+    total_bases_bef1.append(json.summary.before_filtering['total_bases'])
+    q20_rates_bef1.append(json.summary.before_filtering['q20_rate'])
+    q30_rates_bef1.append(json.summary.before_filtering['q30_rate'])
+    read1_mean_length_bef1.append(json.summary.before_filtering['read1_mean_length'])
+    read2_mean_length_bef1.append(json.summary.before_filtering['read2_mean_length'])
+    
 
-        jsonfilename=lines[i].strip('\n')
-        print(jsonfilename)
-        json=pd.read_json(jsonfilename)
-        
-        #update observables.
-        ####campos importantes before filtering
-        total_reads_bef1.append(json.summary.before_filtering['total_reads'])
-        total_bases_bef1.append(json.summary.before_filtering['total_bases'])
-        q20_rates_bef1.append(json.summary.before_filtering['q20_rate'])
-        q30_rates_bef1.append(json.summary.before_filtering['q30_rate'])
-        read1_mean_length_bef1.append(json.summary.before_filtering['read1_mean_length'])
-        read2_mean_length_bef1.append(json.summary.before_filtering['read2_mean_length'])
-       
+    ####campos importantes after filtering
+    total_reads_aft.append(json.summary.after_filtering['total_reads'])
+    total_bases_aft.append(json.summary.before_filtering['total_bases'])
+    q20_rates_aft.append(json.summary.after_filtering['q20_rate'])
+    q30_rates_aft.append(json.summary.after_filtering['q30_rate'])
+    read1_mean_length_aft.append(json.summary.after_filtering['read1_mean_length'])
+    read2_mean_length_aft.append(json.summary.after_filtering['read2_mean_length'])
     
-        ####campos importantes after filtering
-        total_reads_aft.append(json.summary.after_filtering['total_reads'])
-        total_bases_aft.append(json.summary.before_filtering['total_bases'])
-        q20_rates_aft.append(json.summary.after_filtering['q20_rate'])
-        q30_rates_aft.append(json.summary.after_filtering['q30_rate'])
-        read1_mean_length_aft.append(json.summary.after_filtering['read1_mean_length'])
-        read2_mean_length_aft.append(json.summary.after_filtering['read2_mean_length'])
-      
+
+    ####campos importantes filtering_results
+
+    passed_filter_reads.append(json.filtering_result['passed_filter_reads'])
+    low_quality_reads.append(json.filtering_result['low_quality_reads'])
+    too_many_N_reads.append(json.filtering_result['too_many_N_reads'])
+    too_short_reads.append(json.filtering_result['too_short_reads'])
+    too_long_reads.append(json.filtering_result['too_long_reads'])
     
-        ####campos importantes filtering_results
+    sample_name=os.path.basename(content[q]).strip('.txt')
     
-        passed_filter_reads.append(json.filtering_result['passed_filter_reads'])
-        low_quality_reads.append(json.filtering_result['low_quality_reads'])
-        too_many_N_reads.append(json.filtering_result['too_many_N_reads'])
-        too_short_reads.append(json.filtering_result['too_short_reads'])
-        too_long_reads.append(json.filtering_result['too_long_reads'])
-        
-        sample_name=os.path.basename(content[q]).strip('.txt')
-        
-        
+    
     total_lecturas=sum(total_reads_bef1)
     total_lecturas_passTrue=sum(total_reads_aft)
     porcentaje_passed = round((total_lecturas_passTrue*100)/total_lecturas,2)
@@ -131,43 +130,42 @@ for q in range(len(content)):
     lectura_media_r2_aftNP = round(np.average(read2_mean_length_aft,weights=total_bases_aft),2)
     
     
-    results_dict.update({"total de lecturas antes del filtrado":int(total_lecturas)})
-    results_dict.update({"total de lecturas despues del filtrado":int(total_lecturas_passTrue)})
-    results_dict.update({"total de lecturas despues del filtrado[%]":porcentaje_passed})
-    results_dict.update({"lecturas lowqual[%]":porcentaje_low_qual})
-    results_dict.update({"lecturas NNNNN[%]":porcentaje_too_many_N})
-    results_dict.update({"lecturas muy cortas[%]":porcentaje_too_short_reads})
-    results_dict.update({"lecturas muy largas[%]":porcentaje_too_long_reads})
-    results_dict.update({"longitud media R1 antes del filtrado":lectura_media_r1_befNP})
-    results_dict.update({"longitud media R2 antes del filtrado":lectura_media_r2_befNP})
-    results_dict.update({"longitud media R1 despues del filtrado":lectura_media_r1_aftNP})
-    results_dict.update({"longitud media R2 despues del filtrado":lectura_media_r2_aftNP})
-    results_dict.update({"q30 despues del filtrado[%]":porc_q30_rates_aft})
-    results_dict.update({"q20 despues del filtrado[%]":porc_q20_rates_aft})
-    results_dict.update({"q30 antes del filtrado[%]":porc_q30_rates_bef1})
-    results_dict.update({"q20 antes del filtrado[%]":porc_q20_rates_bef1})
-
-    res=pd.Series(results_dict).to_frame()
-    res.columns = [sample_name]
-        #res.index
-    reportes.append(res.loc[[u'total de lecturas antes del filtrado',
-                 u'total de lecturas despues del filtrado',
-                 u'total de lecturas despues del filtrado[%]',
-                 u'lecturas lowqual[%]',
-                 u'lecturas NNNNN[%]',
-                 u'lecturas muy cortas[%]',
-                 u'lecturas muy largas[%]',
-                
-                 u'q30 antes del filtrado[%]',
-                 u'q30 despues del filtrado[%]',
-                 u'q20 antes del filtrado[%]',
-                 u'q20 despues del filtrado[%]',
-                             
-                 u'longitud media R1 antes del filtrado',
-                 u'longitud media R2 antes del filtrado',
-                 u'longitud media R1 despues del filtrado',
-                 u'longitud media R2 despues del filtrado'],:])
-        
+results_dict.update({"total de lecturas antes del filtrado":int(total_lecturas)})
+results_dict.update({"total de lecturas despues del filtrado":int(total_lecturas_passTrue)})
+results_dict.update({"total de lecturas despues del filtrado[%]":porcentaje_passed})
+results_dict.update({"lecturas lowqual[%]":porcentaje_low_qual})
+results_dict.update({"lecturas NNNNN[%]":porcentaje_too_many_N})
+results_dict.update({"lecturas muy cortas[%]":porcentaje_too_short_reads})
+results_dict.update({"lecturas muy largas[%]":porcentaje_too_long_reads})
+results_dict.update({"longitud media R1 antes del filtrado":lectura_media_r1_befNP})
+results_dict.update({"longitud media R2 antes del filtrado":lectura_media_r2_befNP})
+results_dict.update({"longitud media R1 despues del filtrado":lectura_media_r1_aftNP})
+results_dict.update({"longitud media R2 despues del filtrado":lectura_media_r2_aftNP})
+results_dict.update({"q30 despues del filtrado[%]":porc_q30_rates_aft})
+results_dict.update({"q20 despues del filtrado[%]":porc_q20_rates_aft})
+results_dict.update({"q30 antes del filtrado[%]":porc_q30_rates_bef1})
+results_dict.update({"q20 antes del filtrado[%]":porc_q20_rates_bef1})
+res=pd.Series(results_dict).to_frame()
+res.columns = [sample_name]
+    #res.index
+reportes.append(res.loc[[u'total de lecturas antes del filtrado',
+             u'total de lecturas despues del filtrado',
+             u'total de lecturas despues del filtrado[%]',
+             u'lecturas lowqual[%]',
+             u'lecturas NNNNN[%]',
+             u'lecturas muy cortas[%]',
+             u'lecturas muy largas[%]',
+            
+             u'q30 antes del filtrado[%]',
+             u'q30 despues del filtrado[%]',
+             u'q20 antes del filtrado[%]',
+             u'q20 despues del filtrado[%]',
+                         
+             u'longitud media R1 antes del filtrado',
+             u'longitud media R2 antes del filtrado',
+             u'longitud media R1 despues del filtrado',
+             u'longitud media R2 despues del filtrado'],:])
+    
 pd.options.display.float_format = '{:.2f}'.format
 #display(pd.concat(reportes, axis=1).round(2))
 pd.concat(reportes, axis=1).round(2).to_csv(out,sep='\t')
