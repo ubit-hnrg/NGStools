@@ -310,7 +310,7 @@ call Snpsift_nodb as step8_VarType{
 input:
     sample_name = sample_name,
     parametros = "varType",
-    input_vcf = annovar.multianno_vcf,
+    input_vcf = intervar_postprocessing.salida_intervar,
     #input_vcf = step7_dbNSFP.salida_Snpsift, #####salida annovar
     path_herramientas = path_herramientas,
     java_heap_memory_initial = java_heap_memory_initial,
