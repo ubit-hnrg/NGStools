@@ -271,7 +271,7 @@ command {
 output {
     File fastq_cleaned_R1 = "${R1_stripped_basename}_cleaned.fastq.gz"
     File fastq_cleaned_R2 = "${R2_stripped_basename}_cleaned.fastq.gz"
-    File fastp_json_report = "${report_name}.json"
+    File fastp_json_report = "${report_name}_fastp.json"
     File fastp_html_report = "${report_name}_fastp.html"
     
     }
