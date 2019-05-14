@@ -354,16 +354,16 @@ scatter (pairs in samples_x_files_json) {
     }
 }
 
-Array[File] salidas_html = ConvertPairedFastQsToUnmappedBamWf.fastp_html_reports
-Array[String] array_path_save_html = mkdir_samplename.path_out_softlink
-Array[Pair[String,File]] samples_x_files_html = zip (array_path_save_html, salidas_html)
-scatter (pairs in samples_x_files_html) {
-    call symlink_important_files as save_fastp_html{
-        input:
-        output_to_save = pairs.right,
-        path_save = pairs.left
-    }
-}
+#Array[File] salidas_html = ConvertPairedFastQsToUnmappedBamWf.fastp_html_reports
+#Array[String] array_path_save_html = mkdir_samplename.path_out_softlink
+#Array[Pair[String,File]] samples_x_files_html = zip (array_path_save_html, salidas_html)
+#scatter (pairs in samples_x_files_html) {
+#    call symlink_important_files as save_fastp_html{
+#        input:
+#        output_to_save = pairs.right,
+#        path_save = pairs.left
+#    }
+#}
 
  call qual_control.quality_control {
  
