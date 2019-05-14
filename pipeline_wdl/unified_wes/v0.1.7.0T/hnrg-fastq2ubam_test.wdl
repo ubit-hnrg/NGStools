@@ -113,13 +113,20 @@ workflow ConvertPairedFastQsToUnmappedBamWf {
   }
 
    #Create a file with a list of the generated fastp_json file
-  call CreateFoFN as FoFN_fastp {
+  call CreateFoFN as FoFN_fastp_json {
     input:
       array_of_files = fastp.fastp_json_report,
       fofn_name = "fastp_reports"
      
   }
 
+  #Create a file with a list of the generated fastp_json file
+  call CreateFoFN as FoFN_fastp_html {
+    input:
+      array_of_files = fastp.fastp_html_report,
+      fofn_name = "fastp_reports"
+     
+  }
   
   call Create_inputs_for_preprocesing {
     input:
@@ -130,7 +137,14 @@ workflow ConvertPairedFastQsToUnmappedBamWf {
 
     call Create_inputs_for_preprocesing as fastp_report_files {
     input:
-      ubams_paths = FoFN_fastp.fofn_list,
+      ubams_paths = FoFN_fastp_json.fofn_list,
+      bams_sample_names = read_file_of_tabulated_inputs.samplenames,
+
+  }
+
+      call Create_inputs_for_preprocesing as fastp_html_report_files {
+    input:
+      ubams_paths = FoFN_fastp_html.fofn_list,
       bams_sample_names = read_file_of_tabulated_inputs.samplenames,
 
   }
@@ -170,7 +184,8 @@ workflow ConvertPairedFastQsToUnmappedBamWf {
     Array[File] muestras  =  Create_inputs_for_preprocesing.ubam_samples ###array de samples: S1,S2,..,Sn
 
     ####fastp_report
-    Array[File] fastp_reports  =  fastp_report_files.ubam_samples ###array de reportes_fastp
+    Array[File] fastp_json_reports  =  fastp_report_files.ubam_samples ###array de reportes_fastp
+    Array[File] fastp_html_reports  =  fastp_html_report_files.ubam_samples ###array de reportes_fastp
 
 
   }
@@ -256,7 +271,7 @@ command {
 output {
     File fastq_cleaned_R1 = "${R1_stripped_basename}_cleaned.fastq.gz"
     File fastq_cleaned_R2 = "${R2_stripped_basename}_cleaned.fastq.gz"
-    File fastp_json_report = "${report_name}_fastp.json"
+    File fastp_json_report = "${report_name}.json"
     File fastp_html_report = "${report_name}_fastp.html"
     
     }

@@ -333,7 +333,7 @@ input:
 }
     
 #,"${ConvertPairedFastQsToUnmappedBamWf.fastp_html}"]
-Array[File] salidas_json = ConvertPairedFastQsToUnmappedBamWf.fastp_json
+Array[File] salidas_json = ConvertPairedFastQsToUnmappedBamWf.fastp_json_reports
 Array[String] array_path_save_json = mkdir_samplename.path_out_softlink
 Array[Pair[String,File]] samples_x_files_json = cross (array_path_save_json, salidas_json)
 scatter (pairs in samples_x_files_json) {
@@ -344,7 +344,7 @@ scatter (pairs in samples_x_files_json) {
     }
 }
 
-Array[File] salidas_html = ConvertPairedFastQsToUnmappedBamWf.fastp_html
+Array[File] salidas_html = ConvertPairedFastQsToUnmappedBamWf.fastp_html_reports
 Array[String] array_path_save_html = mkdir_samplename.path_out_softlink
 Array[Pair[String,File]] samples_x_files_html = cross (array_path_save_html, salidas_html)
 scatter (pairs in samples_x_files_html) {
@@ -358,7 +358,7 @@ scatter (pairs in samples_x_files_html) {
  call qual_control.quality_control {
  
  input: 
- fastp_json_files = ConvertPairedFastQsToUnmappedBamWf.fastp_reports,
+ fastp_json_files = ConvertPairedFastQsToUnmappedBamWf.fastp_json_reports,
  path_save = mkdir_samplename.path_out_softlink,
  analysis_readybam = bam2gvcf.analysis_ready_bam,
  toolpath = toolpath,
