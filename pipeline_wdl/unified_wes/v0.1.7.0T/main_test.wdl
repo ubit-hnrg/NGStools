@@ -331,11 +331,21 @@ input:
      input_gvcfs = bam2gvcf.output_vcf,
      input_gvcfs_indices = bam2gvcf.output_vcf_index
 }
-    
+
+#Array[File] salidas = ["${GatherBamFiles.output_bam}","${GatherBamFiles.output_bam_index}","${MergeVCFs.output_vcf}","${MergeVCFs.output_vcf_index}","${CollectGvcfCallingMetrics.summary_metrics}","${CollectGvcfCallingMetrics.detail_metrics}"]
+
+#scatter (paths in salidas) {
+#    call symlink_important_files {
+#        input:
+#        output_to_save = paths,
+#        path_save = path_save
+#    }
+#}    
+
 #,"${ConvertPairedFastQsToUnmappedBamWf.fastp_html}"]
 Array[File] salidas_json = ConvertPairedFastQsToUnmappedBamWf.fastp_json_reports
 Array[String] array_path_save_json = mkdir_samplename.path_out_softlink
-Array[Pair[String,File]] samples_x_files_json = cross (array_path_save_json, salidas_json)
+Array[Pair[String,File]] samples_x_files_json = zip (array_path_save_json, salidas_json)
 scatter (pairs in samples_x_files_json) {
     call symlink_important_files {
         input:
@@ -346,7 +356,7 @@ scatter (pairs in samples_x_files_json) {
 
 Array[File] salidas_html = ConvertPairedFastQsToUnmappedBamWf.fastp_html_reports
 Array[String] array_path_save_html = mkdir_samplename.path_out_softlink
-Array[Pair[String,File]] samples_x_files_html = cross (array_path_save_html, salidas_html)
+Array[Pair[String,File]] samples_x_files_html = zip (array_path_save_html, salidas_html)
 scatter (pairs in samples_x_files_html) {
     call symlink_important_files as save_fastp_html{
         input:
