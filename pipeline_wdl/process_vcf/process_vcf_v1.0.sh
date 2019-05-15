@@ -42,7 +42,7 @@ echo $id;
 
 #deffine input/outpus
 faceted_one_sample_vcf=/home/hnrg/resultsHNRG/$runID/$i/$i'_TSO_faceted_one_sample_SnpSift.vcf';
-one_smple_vcf=/home/hnrg/resultsHNRG/$runID/$i/$i'_TSO_one_sample_SnpSift.vcf';
+one_sample_vcf=/home/hnrg/resultsHNRG/$runID/$i/$i'_TSO_one_sample_SnpSift.vcf';
 one_sample_prefix_path=/home/hnrg/resultsHNRG/$runID/$i/$i'_TSO_faceted_one_sample_SnpSift';
 output=/home/hnrg/resultsHNRG/$runID/$i/$i'_TSO_one_sample_SnpSift.vcf';
 
