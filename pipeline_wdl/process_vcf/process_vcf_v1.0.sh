@@ -79,7 +79,7 @@ $ngstools_path/pipeline_wdl/annovar/run_annovar.sh $one_smple_vcf $one_sample_pr
     #join one multianno tsv file AND joint genotyped vcf. This script (join_vcf.py) also postprocess Intervar columns.
     python /home/hnrg/NGStools/pipeline_wdl/process_vcf/join_vcfs.py --multianno_tsv=$one_sample_prefix_path.hg19_multianno.tsv --vcf_multisample=$tso_vcf --output=$multianno_multisample_tsv
     #change dots by tabs.
-    sed -i -e "s|\. |   |g" $multianno_multisample_tsv
+    sed -i -e "s|\.	|	|g" $multianno_multisample_tsv
 
 
 
