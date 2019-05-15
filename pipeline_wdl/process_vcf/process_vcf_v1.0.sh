@@ -1,7 +1,9 @@
+#!/bin/bash
+set -e
 toolpath=/home/hnrg/HNRG-pipeline-V0.1/tools
 ngstools_path=/home/hnrg/NGStools
-runID="TSO20192803"
-joint_vcf=/home/hnrg/resultsHNRG/$runID/TSO20192803.vcf
+runID="TSO20190328"
+joint_vcf=/home/hnrg/resultsHNRG/$runID/TSO20190328.vcf
 
 tso_vcf=/home/hnrg/resultsHNRG/$runID/$runID'_TSO.vcf'
 prefix=$runID'_TSO';
