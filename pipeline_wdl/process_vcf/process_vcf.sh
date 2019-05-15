@@ -66,6 +66,7 @@ for i in 1711242 1802140 1804642 1805817 1809341 1809720 1810255 1901364 1901981
     #remplazo columnas
     sed -i "s/Otherinfo/$vcf_header/g" $out_prefix.hg19_multianno.tsv;
     python /home/hnrg/NGStools/pipeline_wdl/process_vcf/join_vcfs.py --multianno_tsv=$out_prefix.hg19_multianno.tsv --vcf_multisample=/home/hnrg/resultsHNRG/TSO20190328/TSO20190328_TSO_renamed.vcf --output=/home/hnrg/resultsHNRG/$i/$i.multiano_multisample.tsv
+    sed -i -e "s|\. |   |g" /home/hnrg/resultsHNRG/$i/$i.multiano_multisample.tsv
     done
 
 #este vcf se puede usar para anotar. 
@@ -79,12 +80,11 @@ for i in 1711242 1802140 1804642 1805817 1809341 1809720 1810255 1901364 1901981
 ## genero listas de genes
 python ~/NGStools/pipeline_wdl/process_vcf/parse-sheets.py -i=/home/hnrg/metadataHNRG/TSO-20190328-bioinfo.xlsx -o=/home/hnrg/metadataHNRG/
 
-
-
 for i in 1711242 1802140 1804642 1805817 1809341 1809720 1810255 1901364 1901981 EB761 EB790 EB802;
     do
     head -n1 /home/hnrg/resultsHNRG/$i/$i.multiano_multisample.tsv > /home/hnrg/resultsHNRG/$i/$i'_geneList'.multiano_multisample.tsv
     grep /home/hnrg/resultsHNRG/$i/$i.multiano_multisample.tsv -f /home/hnrg/metadataHNRG/$i/$i'_genelist.txt' >> /home/hnrg/resultsHNRG/$i/$i'_geneList'.multiano_multisample.tsv
+    sed -i -e "s|\. |   |g" /home/hnrg/resultsHNRG/$i/$i'_geneList'.multiano_multisample.tsv
 done
 
 
@@ -102,4 +102,79 @@ for i in 1711242 1802140 1804642 1805817 1809341 1809720 1810255 1901364 1901981
 for i in 1711242 1802140 1804642 1805817 1809341 1809720 1810255 1901364 1901981 EB761 EB790 EB802;
     do echo $i;
     grep /home/hnrg/metadataHNRG/$i/$i'_genelist.txt' -v -f refGene.list >/home/hnrg/metadataHNRG/$i/$i'NotIn_refGene.txt';
+    done
+
+
+
+
+## use snpsift for splitting multisample files. 
+for i in 1711242 1802140 1804642 1805817 1809341 1809720 1810255 1901364 1901981 EB761 EB790 EB802;
+do
+if [[ $i =~ ^1.* ]]
+then
+    id='ID'$i
+else
+    id=$i
+fi
+echo $id;
+prefix='TSO20190328_TSO_renamed';
+output=/home/hnrg/resultsHNRG/$i/$i'_TSO_renamed_one_sample_SnpSift.vcf';
+
+cat /home/hnrg/resultsHNRG/TSO20190328/TSO20190328_TSO_renamed.vcf | java -jar ~/HNRG-pipeline-V0.1/tools/SnpSift.jar filter "(GEN[$id].GT!='./.')&(GEN[$id].GT != '0/0')" > $output
+done
+
+
+for i in 1802140 1804642 1805817 1809341 1809720 1810255 1901364 1901981 EB761 EB790 EB802;
+    do echo $i;
+    path=/home/ariel/Dropbox/UBIT/TSO/TSO-20190328/ResultsVCFs/$i
+    mkdir $path
+    mv /home/ariel/tmp/$i*xlsx $path/
+    done
+
+
+
+###############  FACETEO EL VCF ANOTADO PARA BPLAT ###############################################
+## use snpsift for splitting multisample files. 
+
+# rename numeric id samples
+renamed_vcf=TSO20190328_TSO_renamed.vcf
+
+for i in 1711242 1802140 1804642 1805817 1809341 1809720 1810255 1901364 1901981 EB761 EB790 EB802;
+do
+if [[ $i =~ ^1.* ]]
+then
+    id='ID'$i
+else
+    id=$i
+fi
+echo $id;
+output=/home/hnrg/resultsHNRG/$i/$i'_TSO20190328_TSO_renamed_one_sample_SnpSift.vcf';
+cat $renamed_vcf | java -jar ~/HNRG-pipeline-V0.1/tools/SnpSift.jar filter "(GEN[$id].GT!='./.')&(GEN[$id].GT != '0/0')" > aux.vcf
+cat <(grep '^##' aux.vcf) <(grep -v '^##' aux.vcf| csvcut -t -c '#CHROM',POS,ID,REF,ALT,QUAL,FILTER,INFO,FORMAT,$id | csvformat -T) > $output
+rm aux.vcf
+done
+
+
+
+
+for i in 1805817 EB802;
+do
+inputvcf=/home/hnrg/resultsHNRG/$i/$i'_TSO20190328_TSO_renamed_one_sample_SnpSift.vcf';
+annotat
+sed -e "s|__input__|$vcf|g" template_hnrg-anotacion_funcional_sin_CADD.json > $i'_hnrg-anotacion_funcional_sin_CADD.json'
+
+
+##### NOT RUN
+for i in 1711242 1802140 1804642 1805817 1809341 1809720 1810255 1901364 1901981 EB761 EB790 EB802;
+    do
+    if [[ $i =~ ^1.* ]]
+    then
+        id='ID'$i
+    else
+        id=$i
+    fi
+    echo $id;
+    
+    sed -i -e "s|\. |   |g" /home/hnrg/resultsHNRG/$i/$i.multiano_multisample.tsv
+    sed -i -e "s|\. |   |g" /home/hnrg/resultsHNRG/$i/$i'_geneList'.multiano_multisample.tsv
     done
