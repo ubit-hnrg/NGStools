@@ -51,7 +51,7 @@ multianno_multisample_tsv=/home/hnrg/resultsHNRG/$runID/$i/$i.multiano_multisamp
 
 
 # split vcf according to $i sample. This file contain all samples but only those relevant for $i one
-cat /home/hnrg/resultsHNRG/$runID/tso_vcf | java -jar /home/hnrg/HNRG-pipeline-V0.1/tools/SnpSift.jar filter "(GEN[$id].GT!='./.')&(GEN[$id].GT != '0/0')" > $faceted_one_sample_vcf
+cat /home/hnrg/resultsHNRG/$runID/$tso_vcf | java -jar /home/hnrg/HNRG-pipeline-V0.1/tools/SnpSift.jar filter "(GEN[$id].GT!='./.')&(GEN[$id].GT != '0/0')" > $faceted_one_sample_vcf
 #these steps remove the remaining samples of the vcf.
 cat <(grep '^##' $faceted_one_sample_vcf) <(grep -v '^##' $faceted_one_sample_vcf| csvcut -t -c '#CHROM',POS,ID,REF,ALT,QUAL,FILTER,INFO,FORMAT,$id | csvformat -T) > $one_sample_vcf
 rm $faceted_one_sample_vcf
