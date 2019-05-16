@@ -35,12 +35,13 @@ zcat $joint_vcf | java -jar $toolpath/SnpSift.jar intervals $tso_padded > $tso_v
 
 for i in "${samples[@]}";
 # rename numeric id samples
-do echo $i;sed -i -e"s/$i/ID$i/g" $tso_vcf;
+do echo $i;
 
 # prepare id  ## This is only for supportting samplenames starting with numbers. (SnpSift compatibility)
-if [[ $i =~ ^1.* ]]
+if [[ $i =~ ^[0-9].* ]]
 then
     id='ID'$i
+    sed -i -e"s/$i/ID$i/g" $tso_vcf;
 else
     id=$i
 fi
