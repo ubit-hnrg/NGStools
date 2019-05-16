@@ -18,7 +18,7 @@
   "FuncionalAnnotation.step5_hapmap.database_index": "/home/hnrg/HNRG-pipeline-V0.1/dbs/GRCh37_snpsift/hapmap_3.3.b37.vcf.idx",
 
   "##_COMENTARIO": "Base de datos actualizada Noviembre 2018 (29 de oct de 2018)",
-  "FuncionalAnnotation.step6_Snpsift_GWASCat.database": "/home/bitgenia/samples/HNRG-pipeline-V0.1/dbs/GRCh37_snpsift/gwas_catalog_v1.0.2-associations_e96_r2019-04-06.tsv",
+  "FuncionalAnnotation.step6_Snpsift_GWASCat.database": "/home/hnrg/HNRG-pipeline-V0.1/dbs/GRCh37_snpsift/gwas_catalog_v1.0.2-associations_e96_r2019-04-06.tsv",
 
   "##_COMENTARIO": "Base de datos actualizada Noviembre 2018.(no cambia desde agot2017)",
   "FuncionalAnnotation.step7_dbNSFP.database": "/home/hnrg/HNRG-pipeline-V0.1/dbs/GRCh37_snpsift/hg19_dbnsfp35a.txt",
@@ -27,8 +27,8 @@
   "FuncionalAnnotation.annovar.annovar_dbpath": "/home/hnrg/HNRG-pipeline-V0.1/dbs/hg19_annovar/",
   
   "##_COMENTARIO": "Base de datos actualizada Noviembre 2018 (no cambia desde nov/2014).",
-  "FuncionalAnnotation.step9_EVS.database": "/home/bitgenia/samples/HNRG-pipeline-V0.1/dbs/GRCh37_snpsift/ESP6500SI-V2-SSA137.snps_indels.vcf",
-  "FuncionalAnnotation.step9_EVS.database_index": "/home/bitgenia/samples/HNRG-pipeline-V0.1/dbs/GRCh37_snpsift/ESP6500SI-V2-SSA137.snps_indels.vcf.idx",
+  "FuncionalAnnotation.step9_EVS.database": "/home/hnrg/HNRG-pipeline-V0.1/dbs/GRCh37_snpsift/ESP6500SI-V2-SSA137.snps_indels.vcf",
+  "FuncionalAnnotation.step9_EVS.database_index": "/home/hnrg/HNRG-pipeline-V0.1/dbs/GRCh37_snpsift/ESP6500SI-V2-SSA137.snps_indels.vcf.idx",
 
 
   "##_COMENTARIO": "Base de datos actualizada Noviembre 2018.(ultima version nov2018)",
@@ -36,8 +36,8 @@
   "FuncionalAnnotation.step11_CADD.database_index": "/home/agus/referencias/b37/whole_genome_SNVs.txt.gz.tbi",
 
   "##_COMENTARIO": "Base de datos actualizada Abril 2019.(ultima version 19/2/19)",
-  "FuncionalAnnotation.step12_clinVar.database": "/home/bitgenia/samples/HNRG-pipeline-V0.1/dbs/GRCh37_snpsift/clinvar_20190219.vcf.gz",
-  "FuncionalAnnotation.step12_clinVar.database_index": "/home/bitgenia/samples/HNRG-pipeline-V0.1/dbs/GRCh37_snpsift/clinvar_20190219.vcf.gz.tbi",
+  "FuncionalAnnotation.step12_clinVar.database": "/home/hnrg/HNRG-pipeline-V0.1/dbs/GRCh37_snpsift/clinvar_20190219.vcf.gz",
+  "FuncionalAnnotation.step12_clinVar.database_index": "/home/hnrg/HNRG-pipeline-V0.1/dbs/GRCh37_snpsift/clinvar_20190219.vcf.gz.tbi",
  
   "##_COMENTARIO": "Base de datos sacada del bundle de bitgenia... (ACTUALIZAR).",
   "FuncionalAnnotation.step13_pharmGKB.database": "/home/hnrg/HNRG-pipeline-V0.1/dbs/GRCh37_snpsift/PharmGKBvcf_2016.vcf",
