@@ -22,7 +22,7 @@ declare -a samples=("CC1807815" "CH1803670" "CH1805038" "CO1886835" "CT1802289" 
 
 
 # 1rst step restrict VCF to regions in bedfile. 
-cat $joint_vcf | java -jar $toolpath/SnpSift.jar intervals $tso_padded > $tso_vcf
+zcat $joint_vcf | java -jar $toolpath/SnpSift.jar intervals $tso_padded > $tso_vcf
 
 # 2nd step prepare the Joint VCF file to be renamed and splited into multiple ones. 
 #tso_renamed=$runID'_TSO_renamed.vcf'
