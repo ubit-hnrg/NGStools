@@ -31,7 +31,7 @@ for i in range(1, wb.nsheets):
        #get column values
        cells = sheet.col(0)[1:]
        values = [x.value for x in cells if x.value is not '']
-
+       values = [x.strip().upper() for x in values]
 #       l = len(values)-1;
 #       k=0
        with open(outfile, 'w') as f:
