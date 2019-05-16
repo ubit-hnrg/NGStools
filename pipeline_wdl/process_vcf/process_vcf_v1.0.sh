@@ -41,12 +41,12 @@ fi
 echo $id;
 
 #deffine input/outpus
-faceted_one_sample_vcf=/home/hnrg/resultsHNRG/$runID/$i/$i'_TSO_faceted_one_sample_SnpSift.vcf';
-one_sample_vcf=/home/hnrg/resultsHNRG/$runID/$i/$i'_TSO_one_sample_SnpSift.vcf';
-one_sample_prefix_path=/home/hnrg/resultsHNRG/$runID/$i/$i'_TSO_faceted_one_sample_SnpSift';
-output=/home/hnrg/resultsHNRG/$runID/$i/$i'_TSO_one_sample_SnpSift.vcf';
+faceted_one_sample_vcf=/home/hnrg/resultsHNRG/$runID/$i/$i'_TSO_faceted_one_sample_SnpSift.vcf'; # este sigue teniendo info de las otras muestras (pero solo las variantes de $i).
+one_sample_vcf=/home/hnrg/resultsHNRG/$runID/$i/$i'_TSO_one_sample_SnpSift.vcf'; # este solo tiene a la muestra $i. Se usa para anotar
 
-one_sample_prefix_basename=$i'_TSO_one_sample_SnpSift'
+one_sample_prefix_path=/home/hnrg/resultsHNRG/$runID/$i/$i'_TSO_one_sample_SnpSift';  #
+
+#one_sample_prefix_basename=$i'_TSO_one_sample_SnpSift'
 multianno_multisample_tsv=/home/hnrg/resultsHNRG/$runID/$i/$i.multiano_multisample.tsv
 
 
@@ -71,11 +71,11 @@ $ngstools_path/pipeline_wdl/annovar/run_annovar.sh $one_sample_vcf $one_sample_p
 
     # meto header (dejando el campo 'Otherinfo' que despues va a aser remplazado por las columnas del vcf original)
     head -n1 $one_sample_prefix_path.hg19_multianno.txt > $one_sample_prefix_path.hg19_multianno.tsv
-    tail -n+2 $one_sample_prefix_path.hg19_multianno.txt|cut -f$nl0,$nl1,$nl2 --complement >>  $one_sample_prefix.hg19_multianno.tsv;
+    tail -n+2 $one_sample_prefix_path.hg19_multianno.txt|cut -f$nl0,$nl1,$nl2 --complement >>  $one_sample_prefix_path.hg19_multianno.tsv;
     vcf_header=$(grep '#CH' $one_sample_vcf);
 
     #remplazo columnas
-    sed -i "s/Otherinfo/$vcf_header/g" $one_sample_prefix.hg19_multianno.tsv;
+    sed -i "s/Otherinfo/$vcf_header/g" $one_sample_prefix_path.hg19_multianno.tsv;
 
     #join one multianno tsv file AND joint genotyped vcf. This script (join_vcf.py) also postprocess Intervar columns.
     python /home/hnrg/NGStools/pipeline_wdl/process_vcf/join_vcfs.py --multianno_tsv=$one_sample_prefix_path.hg19_multianno.tsv --vcf_multisample=$tso_vcf --output=$multianno_multisample_tsv
