@@ -30,8 +30,9 @@ with open(json_in) as fp:
     content = [x.strip() for x in content] 
 
 ######################
-for q in range(len(content)):
-    array_reports = []
+
+
+array_reports = []
     total_reads_bef1 = []
     q20_rates_bef1 = [] 
     q30_rates_bef1 = [] 
@@ -47,10 +48,14 @@ for q in range(len(content)):
     low_quality_reads = []
     too_many_N_reads = []
     too_short_reads = []
-    too_long_reads = []
+    too_long_reads = []    
     total_bases_bef1 = []
     total_bases_aft = []
     #results_dict = []
+
+for q in range(len(content)):
+
+
     
     lectura_media_r1_bef = 0
     lectura_media_r2_bef = 0
@@ -97,37 +102,31 @@ for q in range(len(content)):
     too_long_reads.append(json.filtering_result['too_long_reads'])
     
     sample_name=os.path.basename(content[q]).strip('.txt')
-    
-    
-    total_lecturas=sum(total_reads_bef1)
-    total_lecturas_passTrue=sum(total_reads_aft)
-    porcentaje_passed = round((total_lecturas_passTrue*100)/total_lecturas,2)
-    porcentaje_low_qual = round((sum(low_quality_reads)*100)/total_lecturas,2)
-    porcentaje_too_many_N = round((sum(too_many_N_reads)*100)/total_lecturas,2)
-    porcentaje_too_short_reads = round((sum(too_short_reads)*100)/total_lecturas,2)
-    porcentaje_too_long_reads = round((sum (too_long_reads)*100)/total_lecturas,2)
 
-        #############q20 y q30
-    #porc_q30_bases_aft = round((sum(q30_bases_aft))/sum(total_bases_aft),2)
-   # porc_q20_bases_aft = round((sum(q20_bases_aft)*100)/sum(total_bases_aft),2)
-   # porc_q30_bases_bef1 = round((sum(q30_bases_bef1)*100)/sum(total_bases_bef),2)
-   # porc_q20_bases_bef1 = round((sum(q20_bases_bef1)*100)/sum(total_bases_bef),2)
 
-    porc_q30_rates_aft = round(np.average(q30_rates_aft,weights=total_bases_aft),2)
-    porc_q20_rates_aft = round(np.average(q20_rates_aft,weights=total_bases_aft),2)
-    porc_q30_rates_bef1 = round(np.average(q30_rates_bef1,weights=total_bases_bef1),2)
-    porc_q20_rates_bef1 = round(np.average(q20_rates_bef1,weights=total_bases_bef1),2)
-    
-    #for x in range(lenght):
-        #lectura_media_r1_bef += (total_reads_bef1[x]/total_lecturas)*read1_mean_length_bef1[x]
-        #lectura_media_r2_bef += (total_reads_bef1[x]/total_lecturas)*read2_mean_length_bef1[x]
-       # lectura_media_r1_aft += (total_reads_aft[x]/total_lecturas_passTrue)*read1_mean_length_aft[x]
-        #lectura_media_r2_aft += (total_reads_aft[x]/total_lecturas_passTrue)*read2_mean_length_aft[x]
-    
-    lectura_media_r1_befNP = round(np.average(read1_mean_length_bef1,weights=total_bases_bef1),2)
-    lectura_media_r2_befNP = round(np.average(read2_mean_length_bef1,weights=total_bases_bef1),2)
-    lectura_media_r1_aftNP = round(np.average(read1_mean_length_aft,weights=total_bases_aft),2)
-    lectura_media_r2_aftNP = round(np.average(read2_mean_length_aft,weights=total_bases_aft),2)
+total_lecturas=sum(total_reads_bef1)
+total_lecturas_passTrue=sum(total_reads_aft)
+porcentaje_passed = round((total_lecturas_passTrue*100)/total_lecturas,2)
+porcentaje_low_qual = round((sum(low_quality_reads)*100)/total_lecturas,2)
+porcentaje_too_many_N = round((sum(too_many_N_reads)*100)/total_lecturas,2)
+porcentaje_too_short_reads = round((sum(too_short_reads)*100)/total_lecturas,2)
+porcentaje_too_long_reads = round((sum (too_long_reads)*100)/total_lecturas,2)
+
+#############q20 y q30
+#porc_q30_bases_aft = round((sum(q30_bases_aft)*100)/sum(total_bases_aft),2)
+#porc_q20_bases_aft = round((sum(q20_bases_aft)*100)/sum(total_bases_aft),2)
+#porc_q30_bases_bef1 = round((sum(q30_bases_bef1)*100)/sum(total_bases_bef),2)
+#porc_q20_bases_bef1 = round((sum(q20_bases_bef1)*100)/sum(total_bases_bef),2)
+porc_q30_rates_aft = round(np.average(q30_rates_aft,weights=total_bases_aft),2)
+porc_q20_rates_aft = round(np.average(q20_rates_aft,weights=total_bases_aft),2)
+porc_q30_rates_bef1 = round(np.average(q30_rates_bef1,weights=total_bases_bef1),2)
+porc_q20_rates_bef1 = round(np.average(q20_rates_bef1,weights=total_bases_bef1),2)
+
+
+lectura_media_r1_befNP = round(np.average(read1_mean_length_bef1,weights=total_bases_bef1),2)
+lectura_media_r2_befNP = round(np.average(read2_mean_length_bef1,weights=total_bases_bef1),2)
+lectura_media_r1_aftNP = round(np.average(read1_mean_length_aft,weights=total_bases_aft),2)
+lectura_media_r2_aftNP = round(np.average(read2_mean_length_aft,weights=total_bases_aft),2)
     
     
 results_dict.update({"total de lecturas antes del filtrado":int(total_lecturas)})
