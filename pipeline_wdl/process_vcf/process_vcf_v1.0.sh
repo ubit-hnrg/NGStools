@@ -1,9 +1,15 @@
 #!/bin/bash
 set -e
+joint_vcf=$1
+runID=$2
+
+#joint_vcf=/home/hnrg/resultsHNRG/$runID/TSO20190328.vcf
+#runID="TSO20190328"
 toolpath=/home/hnrg/HNRG-pipeline-V0.1/tools
 ngstools_path=/home/hnrg/NGStools
-runID="TSO20190328"
-joint_vcf=/home/hnrg/resultsHNRG/$runID/TSO20190328.vcf
+
+
+
 
 tso_vcf=/home/hnrg/resultsHNRG/$runID/$runID'_TSO.vcf'
 prefix=$runID'_TSO';
@@ -12,7 +18,7 @@ tso_padded=/home/hnrg/HNRG-pipeline-V0.1/libraries/GRCh37/TruSight_One_v1_padded
 
 #output=one_smple_vcf
 
-declare -a samples=("1711242" "1802140" "1804642" "1805817" "1809341" "1809720" "1810255" "1901364" "1901981" "EB761" "EB790" "EB802")
+declare -a samples=("CC1807815" "CH1803670" "CH1805038" "CO1886835" "CT1802289" "CT1900424" "EB456" "EB665" "EB666" "ECM1803301" "ECM1803562" "IDP1902830")
 
 
 # 1rst step restrict VCF to regions in bedfile. 
