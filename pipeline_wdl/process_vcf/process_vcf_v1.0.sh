@@ -56,7 +56,8 @@ cat $tso_vcf | java -jar /home/hnrg/HNRG-pipeline-V0.1/tools/SnpSift.jar filter 
 cat <(grep '^##' $faceted_one_sample_vcf) <(grep -v '^##' $faceted_one_sample_vcf| csvcut -t -c '#CHROM',POS,ID,REF,ALT,QUAL,FILTER,INFO,FORMAT,$id | csvformat -T) > $one_sample_vcf
 rm $faceted_one_sample_vcf
 
-
+echo  $one_smple_vcf
+echo $one_sample_prefix_path
 #run annovar over this file.
 $ngstools_path/pipeline_wdl/annovar/run_annovar.sh $one_smple_vcf $one_sample_prefix_path
 
