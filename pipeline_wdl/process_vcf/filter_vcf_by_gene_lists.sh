@@ -24,7 +24,7 @@ python $parseshets -i=/home/hnrg/metadataHNRG/$runID/TSO-$date'-bioinfo.xlsx' -o
 
 #scatter
 for i in "${samples[@]}";
-    do echo $id; 
+    do echo $i; 
     # prepare id  ## This is only for supportting samplenames starting with numbers. (SnpSift compatibility)
     if [[ $i =~ ^[0-9].* ]]
     then
