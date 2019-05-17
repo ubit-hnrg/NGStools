@@ -2,6 +2,7 @@
 set -e
 runID=$1
 declare -a samples=("CC1807815" "CH1803670" "CH1805038" "CO1886835" "CT1802289" "CT1900424" "EB456" "EB665" "EB666" "ECM1803301" "ECM1803562" "IDP1902830")
+
 #runID="TSO20190328"
 toolpath=/home/hnrg/HNRG-pipeline-V0.1/tools
 ngstools_path=/home/hnrg/NGStools
@@ -23,7 +24,7 @@ python $parseshets -i=/home/hnrg/metadataHNRG/$runID/TSO-$date'-bioinfo.xlsx' -o
 
 #scatter
 for i in "${samples[@]}";
-    do 
+    do echo $id; 
     # prepare id  ## This is only for supportting samplenames starting with numbers. (SnpSift compatibility)
     if [[ $i =~ ^[0-9].* ]]
     then
@@ -31,7 +32,6 @@ for i in "${samples[@]}";
     else
         id=$i
     fi
-    echo $id;
     
     filtered=/home/hnrg/resultsHNRG/$runID/$i/$i'_geneList'.multiano_multisample.tsv
     variants=/home/hnrg/resultsHNRG/$runID/$i/$i.multiano_multisample.tsv
@@ -52,4 +52,6 @@ for i in "${samples[@]}";
 
     #check if any gene do not mach with our list
     grep $metadata_path'_genelist.txt' -v -f $refGenelist > $out_bad_genes;
+
+
 done
