@@ -18,7 +18,7 @@ exon_coverage=/home/hnrg/resultsHNRG/$runID/$i/$i'_coverage_statistics_by_exon.t
 
 
 ## task1: genero listas de genes 
-python $parseshets -i=/home/hnrg/metadataHNRG/$runID/TSO$date-bioinfo.xlsx -o=/home/hnrg/metadataHNRG/$runID/
+python $parseshets -i=/home/hnrg/metadataHNRG/$runID/TSO-$date'-bioinfo.xlsx' -o=/home/hnrg/metadataHNRG/$runID/
 
 
 #scatter
