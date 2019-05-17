@@ -10,8 +10,8 @@ date=$(echo $runID|sed 's|TSO||')
 
 parseshets=/home/hnrg/NGStools/pipeline_wdl/process_vcf/parse-sheets.py
 make_excel=/home/hnrg/NGStools/pipeline_wdl/qualityControl/make_excel_report.py
-exon_coverage=/home/hnrg/resultsHNRG/$runID/$i/$i'_coverage_statistics_by_exon.tsv'
-
+#exon_coverage=/home/hnrg/resultsHNRG/$runID/$i/$i'_coverage_statistics_by_exon.tsv'
+exon_coverage=/home/hnrg/executionsHNRG/$runID/cromwell-executions/main_workflow/7b733377-eb59-4ea3-81e7-13f9594d2d5b/call-quality_control/qual_control.quality_control/ffc1d0a9-f582-4a47-a47e-9e46961817cf/call-bam_depth/*/execution/$i'_coverage_statistics_by_exon.tsv'
 #############################
 #iterate across samples. 
 #################################
