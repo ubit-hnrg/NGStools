@@ -37,7 +37,7 @@ do
     variants=/home/hnrg/resultsHNRG/$runID/$i/$i.multiano_multisample.tsv
     output_xlsx=/home/hnrg/resultsHNRG/$runID/$i/$i.variants.xlsx
     metadata_path=/home/hnrg/metadataHNRG/$runID/$i/$i
-    exon_coverage==$(readlink -f /home/hnrg/executionsHNRG/$runID/cromwell-executions/main_workflow/7b733377-eb59-4ea3-81e7-13f9594d2d5b/call-quality_control/qual_control.quality_control/ffc1d0a9-f582-4a47-a47e-9e46961817cf/call-bam_depth/*/execution/$i'_coverage_statistics_by_exon.tsv')
+    exon_coverage=$(readlink -f /home/hnrg/executionsHNRG/$runID/cromwell-executions/main_workflow/7b733377-eb59-4ea3-81e7-13f9594d2d5b/call-quality_control/qual_control.quality_control/ffc1d0a9-f582-4a47-a47e-9e46961817cf/call-bam_depth/*/execution/$i'_coverage_statistics_by_exon.tsv')
 
 
     head -n1 /home/hnrg/resultsHNRG/$runID/$i/$i.multiano_multisample.tsv > $filtered
