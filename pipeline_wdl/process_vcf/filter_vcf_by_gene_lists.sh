@@ -10,6 +10,7 @@ date=$(echo $runID|sed 's|TSO||')
 
 parseshets=/home/hnrg/NGStools/pipeline_wdl/process_vcf/parse-sheets.py
 make_excel=/home/hnrg/NGStools/pipeline_wdl/qualityControl/make_excel_report.py
+refGenelist=/home/hnrg/metadataHNRG/refGene.list
 #exon_coverage=/home/hnrg/resultsHNRG/$runID/$i/$i'_coverage_statistics_by_exon.tsv'
 #############################
 #iterate across samples. 
@@ -38,7 +39,7 @@ do
     output_xlsx=/home/hnrg/resultsHNRG/$runID/$i/$i.variants.xlsx
     metadata_path=/home/hnrg/metadataHNRG/$runID/$i/$i
     exon_coverage=$(readlink -f /home/hnrg/executionsHNRG/$runID/cromwell-executions/main_workflow/7b733377-eb59-4ea3-81e7-13f9594d2d5b/call-quality_control/qual_control.quality_control/ffc1d0a9-f582-4a47-a47e-9e46961817cf/call-bam_depth/*/execution/$i'_coverage_statistics_by_exon.tsv')
-
+    
 
     head -n1 /home/hnrg/resultsHNRG/$runID/$i/$i.multiano_multisample.tsv > $filtered
     grep /home/hnrg/resultsHNRG/$runID/$i/$i.multiano_multisample.tsv -f $metadata_path'_genelist.txt' >> $filtered
@@ -50,5 +51,5 @@ do
 
 
     #check if any gene do not mach with our list
-    grep $metadata_path'_genelist.txt' -v -f refGene.list > $metadata_path'NotIn_refGene.txt';
+    grep $metadata_path'_genelist.txt' -v -f $refGenelist > $metadata_path'NotIn_refGene.txt';
 done
