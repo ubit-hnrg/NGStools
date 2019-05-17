@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 runID=$1
-declare -a samples=("CH1803670" "CH1805038" "CO1886835" "CT1802289" "CT1900424" "EB456" "EB665" "EB666" "ECM1803301" "ECM1803562" "IDP1902830")
+declare -a samples=("CC1807815" "CH1803670" "CH1805038" "CO1886835" "CT1802289" "CT1900424" "EB456" "EB665" "EB666" "ECM1803301" "ECM1803562" "IDP1902830")
 
 #runID="TSO20190328"
 toolpath=/home/hnrg/HNRG-pipeline-V0.1/tools
@@ -51,7 +51,13 @@ for i in "${samples[@]}";
 
 
     #check if any gene do not mach with our list
-    grep $metadata_path'_genelist.txt' -v -f $refGenelist > $out_bad_genes;
 
+    wr=$(grep $metadata_path'_genelist.txt' -v -f $refGenelist |wc -l)> $out_bad_genes;
 
+    if [[ $wr =~ 0 ]]
+        then
+            touch $out_bad_genes
+        else
+            grep $metadata_path'_genelist.txt' -v -f $refGenelist > $out_bad_genes;
+        fi
 done
