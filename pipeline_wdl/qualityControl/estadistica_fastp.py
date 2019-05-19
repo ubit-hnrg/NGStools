@@ -32,7 +32,7 @@ with open(json_in) as fp:
 ######################
 
 
-array_reports = []
+    array_reports = []
     total_reads_bef1 = []
     q20_rates_bef1 = [] 
     q30_rates_bef1 = [] 
