@@ -450,6 +450,15 @@ rm ${path1}
 >>>
 }
 
+task borrado {
+File archivo_borrar
+
+command <<<
+rm ${archivo_borrar}
+>>>
+}
+
+
 task symlink_important_files {
     File output_to_save
     String path_save
@@ -567,10 +576,11 @@ workflow bam2gvcf {
       toolpath = toolpath      
   }
 
-  call path_borrado as borrar_Markdup {
+
+  call borrado as borrar_Markdup {
 #
    input:
-     path1 = MarkDuplicates.output_bam
+     archivo_borrar = MarkDuplicates.output_bam
  }
 
 
@@ -637,12 +647,17 @@ scatter (subgroup in CreateSequenceGroupingTSV.sequence_grouping_with_unmapped) 
 
 } 
 
-  call path_borrado as borrar_SortandFix {
+  #call path_borrado as borrar_SortandFix {
+#
+#   input:
+#     path1 = SortAndFixTags.output_bam
+# }
+
+ call borrado as borrar_SortandFix {
 #
    input:
-     path1 = SortAndFixTags.output_bam
+     archivo_borrar = SortAndFixTags.output_bam
  }
-
 
 # Merge the recalibrated BAM files resulting from by-interval recalibration
   call GatherBamFiles {
@@ -658,10 +673,10 @@ scatter (subgroup in CreateSequenceGroupingTSV.sequence_grouping_with_unmapped) 
 }
 
 scatter (paths in ApplyBQSR.recalibrated_bam){
-call path_borrado as borrar_Applybqsr {
+call borrado as borrar_Applybqsr {
 
   input:
-    path1 = paths
+    archivo_borrar = paths
 }
 }
 
