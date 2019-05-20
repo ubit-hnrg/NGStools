@@ -632,7 +632,7 @@ scatter (subgroup in CreateSequenceGroupingTSV.sequence_grouping_with_unmapped) 
         
     }
 #
-Array[File] borrado_apply = ["${ApplyBQSR.recalibrated_bam}"]
+#Array[File] borrado_apply = ["${ApplyBQSR.recalibrated_bam}"]
 
 
 } 
@@ -657,13 +657,13 @@ Array[File] borrado_apply = ["${ApplyBQSR.recalibrated_bam}"]
       
 }
 
-scatter (paths in borrado_apply){
+#scatter (paths in borrado_apply){
 call path_borrado as borrar_Applybqsr {
 
   input:
-    path1 = paths
+    path1 = ApplyBQSR.recalibrated_bam
 }
-}
+#}
 
 ############################ fin data preprocessing ##############################
 ## Output :
