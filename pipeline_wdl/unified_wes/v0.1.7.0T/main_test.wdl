@@ -342,7 +342,6 @@ input:
 #    }
 #}    
 
-#,"${ConvertPairedFastQsToUnmappedBamWf.fastp_html}"]
 Array[File] salidas_json = ConvertPairedFastQsToUnmappedBamWf.fastp_json_reports
 Array[String] array_path_save_json = mkdir_samplename.path_out_softlink
 Array[Pair[String,File]] samples_x_files_json = zip (array_path_save_json, salidas_json)
@@ -378,6 +377,10 @@ scatter (pairs in samples_x_files_json) {
 
 
  }
+
+
+
+
 
 
     # Outputs that will be retained when execution is complete
