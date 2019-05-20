@@ -657,13 +657,13 @@ scatter (subgroup in CreateSequenceGroupingTSV.sequence_grouping_with_unmapped) 
       
 }
 
-#scatter (paths in borrado_apply){
+scatter (paths in ApplyBQSR.recalibrated_bam){
 call path_borrado as borrar_Applybqsr {
 
   input:
-    path1 = ApplyBQSR.recalibrated_bam
+    path1 = paths
 }
-#}
+}
 
 ############################ fin data preprocessing ##############################
 ## Output :
