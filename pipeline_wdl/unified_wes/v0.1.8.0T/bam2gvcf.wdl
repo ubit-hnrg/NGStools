@@ -553,14 +553,6 @@ workflow bam2gvcf {
         toolpath = toolpath
   }
 
-  #  call path_borrado as borrar_Mergebam{
-  #      input:
-  #      path1 = MergeBamAlignment.output_bam
-      
-  #  }
-
-
-
 # Sort aggregated+deduped BAM file and fix tags
 ############### hay una version de wdl en la web que usa SamtoolsSort as SortSampleBam
   call SortAndFixTags {
@@ -575,7 +567,11 @@ workflow bam2gvcf {
       toolpath = toolpath      
   }
 
-
+  call path_borrado as borrar_Markdup {
+#
+   input:
+     path1 = MarkDuplicates.output_bam
+ }
 
 
   # Create list of sequences for scatter-gather parallelization 
@@ -585,11 +581,6 @@ workflow bam2gvcf {
     
   }
 
-  call path_borrado as borrar_SortandFix {
-#
-   input:
-     path1 = SortAndFixTags.output_bam
- }
 
   # Perform Base Quality Score Recalibration (BQSR) on the sorted BAM in parallel
   scatter (subgroup in CreateSequenceGroupingTSV.sequence_grouping) {
@@ -640,15 +631,18 @@ scatter (subgroup in CreateSequenceGroupingTSV.sequence_grouping_with_unmapped) 
         toolpath = toolpath    
         
     }
-#call path_borrado as borrar_Applybqsr {
 #
-#  input:
-#    path1 = ApplyBQSR.recalibrated_bam
-#}
 Array[File] borrado_apply = ["${ApplyBQSR.recalibrated_bam}"]
 
 
 } 
+
+  call path_borrado as borrar_SortandFix {
+#
+   input:
+     path1 = SortAndFixTags.output_bam
+ }
+
 
 # Merge the recalibrated BAM files resulting from by-interval recalibration
   call GatherBamFiles {
@@ -663,7 +657,13 @@ Array[File] borrado_apply = ["${ApplyBQSR.recalibrated_bam}"]
       
 }
 
+scatter (paths in borrado_apply){
+call path_borrado as borrar_Applybqsr {
 
+  input:
+    path1 = paths
+}
+}
 
 ############################ fin data preprocessing ##############################
 ## Output :
@@ -769,28 +769,11 @@ scatter (paths in salidas) {
     }
 }
 
-Array[File] borrado = ["${MarkDuplicates.output_bam}","${SortAndFixTags.output_bam}"]
-scatter (paths in borrado) {
-    call path_borrado {
-        input:
-        path1 = paths
-      
-    }
-}
-
-# 
-
-
 
 # Outputs that will be retained when execution is complete  
   output {
 
-    ####paths para borrar archivos intermedios
-   #Array[File] path_mergebam = borrar_Mergebam.path_borrar1
-   #File path_markdup = borrar_Markdup.path_borrar1
-   #File path_sortandfix = borrar_SortandFix.path_borrar1
-   #Array[File] path_applybqsr = borrar_Applybqsr.path_borrar1
-   #File path_gatherbams = borrar_GatherBams.path_borrar1
+
 
   #####outputs workflow ubam2gvcf
 

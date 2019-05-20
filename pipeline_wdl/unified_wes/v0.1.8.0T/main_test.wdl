@@ -1,6 +1,5 @@
 #### main para unir workflows
 
-
 import './hnrg-fastq2ubam_test.wdl' as fastq2ubam 
 import './bam2gvcf.wdl' as bamtogvcf
 import './ubam2bwa.wdl' as ubam2bwa
@@ -384,7 +383,7 @@ Array[File] prof_by_exon = quality_control.by_exon_depth
 Array[String] array_path_save_byexon = mkdir_samplename.path_out_softlink
 Array[Pair[String,File]] samples_by_exon = zip (array_path_save_byexon, prof_by_exon)
 scatter (pairs in samples_by_exon) {
-    call symlink_important_files {
+    call symlink_important_files as byexon{
         input:
         output_to_save = pairs.right,
         path_save = pairs.left
