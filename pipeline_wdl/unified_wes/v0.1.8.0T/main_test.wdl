@@ -384,7 +384,7 @@ scatter (pairs in samples_by_exon) {
     }
 }
 
-Array[File] archivos_a_borrar = ["${bam2gvcf.borrar_Markdup}","${bam2gvcf.borrar_SortandFix}"]
+Array[File] archivos_a_borrar = bam2gvcf.borrar_Markdup}#,"${bam2gvcf.borrar_SortandFix}"]
 
 scatter (archivos in archivos_a_borrar){
 call borrado as borrado_markdup {
@@ -393,7 +393,7 @@ archivo_borrar = archivos
 }
 }
 
-Array[File] archivos_Apply = ["${bam2gvcf.borrar_Applybqsr}"]
+Array[File] archivos_Apply = bam2gvcf.borrar_Applybqsr
 scatter (archivos_app in archivos_Apply ){
 call borrado as borrado_Apply{
 input:
