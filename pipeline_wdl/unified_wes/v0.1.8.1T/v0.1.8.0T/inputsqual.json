@@ -1,0 +1,7 @@
+{
+  "quality_control.exon_coords": "/home/hnrg/HNRG-pipeline-V0.1/libraries/GRCh37/exon_coords_in_TSO_V1_padded.bed",
+  "quality_control.toolpath": "/home/hnrg/HNRG-pipeline-V0.1/tools/",
+  "quality_control.tso_bed": "/home/hnrg/HNRG-pipeline-V0.1/libraries/GRCh37/TruSight_One_v1_padded_100_GRCh37.bed",
+  "quality_control.analysis_readybam": "/home/bitgenia/samples/resultsHNRG/EB790/EB790.bam"
+}
+
