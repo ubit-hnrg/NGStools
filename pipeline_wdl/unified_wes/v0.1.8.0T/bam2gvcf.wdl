@@ -439,22 +439,22 @@ task CollectGvcfCallingMetrics {
   }
 }
 
-task path_borrado {
-File path1
+#task path_borrado {
+#File path1
 #Array[String] path2 
 #String temp1 = "temp1"
 #String temp2 = "temp2"
 #mv ${write_lines(path1)}  ${temp1}.tsv
-command <<<
-mv ${write_lines(path1)}  ${temp1}.txt
+#command <<<
+#mv ${write_lines(path1)}  ${temp1}.txt
 
->>>
+#>>>
 
-output {
-File path_borrar1 = "${temp1}.txt"
+#output {
+#File path_borrar1 = "${temp1}.txt"
 
-}
-}
+#}
+#}
 
 task borrado {
 File archivo_borrar
@@ -682,7 +682,7 @@ scatter (paths in ApplyBQSR.recalibrated_bam){
 call borrado as borrar_Applybqsr {
 
   input:
-    path1 = paths
+    archivo_borrar = paths
 }
 }
 
