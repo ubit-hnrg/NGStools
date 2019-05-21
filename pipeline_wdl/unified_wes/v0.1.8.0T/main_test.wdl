@@ -384,9 +384,9 @@ scatter (pairs in samples_by_exon) {
     }
 }
 
-Array[File] archivos_a_borrar = ["bam2gvcf.borrar_Markdup","bam2gvcf.borrar_SortandFix"]
+Array[File] archivos_a_borrar = ["bam2gvcf.borrar_Markdup"]#,"bam2gvcf.borrar_SortandFix"]
 scatter (archivos in archivos_a_borrar){
-call borrado as borrado_markdup_and_tags{
+call borrado as borrado_markdup {
 input:
 archivo_borrar = archivos
 }
