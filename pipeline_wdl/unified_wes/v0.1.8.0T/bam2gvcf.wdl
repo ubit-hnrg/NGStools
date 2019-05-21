@@ -446,7 +446,7 @@ File path1
 #String temp2 = "temp2"
 #mv ${write_lines(path1)}  ${temp1}.tsv
 command <<<
-rm ${path1}
+mv ${write_lines(path1)} | rm /dev/stdout
 >>>
 }
 
