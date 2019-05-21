@@ -446,15 +446,21 @@ File path1
 #String temp2 = "temp2"
 #mv ${write_lines(path1)}  ${temp1}.tsv
 command <<<
-mv ${write_lines(path1)} | rm /dev/stdout
+mv ${write_lines(path1)}  ${temp1}.txt
+
 >>>
+
+output {
+File path_borrar1 = "${temp1}.txt"
+
+}
 }
 
 task borrado {
 File archivo_borrar
 
 command <<<
-rm ${archivo_borrar}
+readlink -f ${archivo_borrar} | xargs rm
 >>>
 }
 
@@ -676,7 +682,7 @@ scatter (paths in ApplyBQSR.recalibrated_bam){
 call borrado as borrar_Applybqsr {
 
   input:
-    archivo_borrar = paths
+    path1 = paths
 }
 }
 
