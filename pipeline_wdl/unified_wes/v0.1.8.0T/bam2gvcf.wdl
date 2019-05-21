@@ -1,3 +1,21 @@
+task reduce_bam {
+  File input_bam
+  String toolpath
+  String output_bam_basename
+  File lib_resctricted 
+ 
+
+
+command <<<
+${toolpath}bedtools2/bin/intersectBed -a ${input_bam} -b ${lib_resctricted} > ${output_bam_basename}_lib_resctricted.bam
+
+>>>
+  output {
+    File output_reduced_bam = "${output_bam_basename}_lib_resctricted.bam"
+    
+}
+}
+
 # Mark duplicate reads to avoid counting non-independent observations
 task MarkDuplicates {
 
@@ -539,16 +557,33 @@ workflow bam2gvcf {
   
   String base_file_name
   #Array[File] flowcell_unmapped_bams = read_lines(flowcell_unmapped_bams_list)
-  
+  File lib_resctricted
+ #./TruSight_One_v1_padded_100_GRCh37.bed 
+
  
  Array[File] bams_entrada
 # Aggregate aligned+merged flowcell BAM files and mark duplicates
   # We take advantage of the tool's ability to take multiple BAM inputs and write out a single output
   # to avoid having to spend time just merging BAM files.
+  
+  scatter (bams in bams_entrada) {
+  call reduce_bam {
+  input:
+  input_bam = bams, 
+  toolpath = toolpath,
+  output_bam_basename = base_file_name, 
+  lib_resctricted = lib_resctricted
+ #./TruSight_One_v1_padded_100_GRCh37.bed 
+  }
+  }
+
+ Array[File] reduced_bams = reduce_bam.output_reduced_bam
+  
   call MarkDuplicates {
     input:
       
-      input_bams = bams_entrada,
+      #input_bams = bams_entrada,
+      input_bams = reduced_bams,
       output_bam_basename = base_file_name + ".aligned.unsorted.duplicates_marked",
       metrics_filename = base_file_name + ".duplicate_metrics",
       # The merged bam will be smaller than the sum of the parts so we need to account for the unmerged inputs

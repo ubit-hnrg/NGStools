@@ -220,7 +220,9 @@ Array[File] array_of_samples_txt = ConvertPairedFastQsToUnmappedBamWf.muestras
    call bamtogvcf.bam2gvcf {
       input:
     #base_file_name =  ubamtobwa.nombre_base,
-    base_file_name =  sample_name,                                          #### ARTEFACTO PARA PROBAR EL WORKFLOW ANTERIOR, ESTO HAY QUE TRABAJRLO Y ARTICULARLO BIEN. 
+    base_file_name =  sample_name,
+    lib_resctricted = tso_bed,
+                                          #### ARTEFACTO PARA PROBAR EL WORKFLOW ANTERIOR, ESTO HAY QUE TRABAJRLO Y ARTICULARLO BIEN. 
     #inputs_ubams = ConvertPairedFastQsToUnmappedBamWf.muestras,
     #uniquesample_name = ConvertPairedFastQsToUnmappedBamWf.samplesnames,
     path_save = mkdir_samplename.path_out_softlink,
@@ -393,13 +395,13 @@ archivo_borrar = archivos
 }
 }
 
-Array[File] archivos_Apply = bam2gvcf.borrar_Applybqsr
-scatter (archivos_app in archivos_Apply ){
-call borrado as borrado_Apply{
-input:
-archivo_borrar = archivos_app
-}
-}
+#Array[File] archivos_Apply = bam2gvcf.borrar_Applybqsr
+#scatter (archivos_app in archivos_Apply ){
+#call borrado as borrado_Apply{
+#input:
+#archivo_borrar = archivos_app
+#}
+#}
 
     # Outputs that will be retained when execution is complete
   output {
