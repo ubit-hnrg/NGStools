@@ -456,14 +456,6 @@ task CollectGvcfCallingMetrics {
 #}
 #}
 
-task borrado {
-File archivo_borrar
-
-command <<<
-readlink -f ${archivo_borrar} | xargs rm
->>>
-}
-
 
 task symlink_important_files {
     File output_to_save
@@ -583,11 +575,11 @@ workflow bam2gvcf {
   }
 
 
-  call borrado as borrar_Markdup {
+#  call borrado as borrar_Markdup {
 #
-   input:
-     archivo_borrar = MarkDuplicates.output_bam
- }
+#   input:
+#     archivo_borrar = MarkDuplicates.output_bam
+# }
 
 
   # Create list of sequences for scatter-gather parallelization 
@@ -659,11 +651,6 @@ scatter (subgroup in CreateSequenceGroupingTSV.sequence_grouping_with_unmapped) 
 #     path1 = SortAndFixTags.output_bam
 # }
 
- call borrado as borrar_SortandFix {
-#
-   input:
-     archivo_borrar = SortAndFixTags.output_bam
- }
 
 # Merge the recalibrated BAM files resulting from by-interval recalibration
   call GatherBamFiles {
@@ -678,13 +665,13 @@ scatter (subgroup in CreateSequenceGroupingTSV.sequence_grouping_with_unmapped) 
       
 }
 
-scatter (paths in ApplyBQSR.recalibrated_bam){
-call borrado as borrar_Applybqsr {
-
-  input:
-    archivo_borrar = paths
-}
-}
+#scatter (paths in ApplyBQSR.recalibrated_bam){
+#call borrado as borrar_Applybqsr {
+#
+#  input:
+#    archivo_borrar = paths
+#}
+#}
 
 ############################ fin data preprocessing ##############################
 ## Output :
@@ -807,6 +794,10 @@ scatter (paths in salidas) {
    File gvcf_detail_metrics = CollectGvcfCallingMetrics.detail_metrics
    File output_vcf = MergeVCFs.output_vcf
    File output_vcf_index = MergeVCFs.output_vcf_index
+
+   Array[File] borrar_Applybqsr = ApplyBQSR.recalibrated_bam 
+   File borrar_Markdup = MarkDuplicates.output_bam
+   File borrar_SortandFix = SortAndFixTags.output_bam
 
 
 } 

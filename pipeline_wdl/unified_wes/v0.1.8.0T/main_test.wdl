@@ -6,7 +6,7 @@ import './ubam2bwa.wdl' as ubam2bwa
 import './jointgenotype_sinrecalibracion.wdl' as joint_genotype
 import './quality_control.wdl' as qual_control 
 
-task borrado {
+task borrado_fastp {
 File path1
 File path2
 
@@ -23,18 +23,12 @@ done < "${path2}"
 
 }
 
-task borrado_single {
-Array[File] path1 
-#File path2
+task borrado {
+File archivo_borrar
 
-#command <<<
-#mv ${write_lines(path)}  ${t}.txt;
 command <<<
-while read -r line; do
-rm "$line"
-done < "${path1}"
+readlink -f ${archivo_borrar} | xargs rm
 >>>
-
 }
 
 task mkdir_samplename {
@@ -167,7 +161,7 @@ workflow main_workflow {
 
       }
 
-  call borrado {
+  call borrado_fastp {
     input:
      path1 = ConvertPairedFastQsToUnmappedBamWf.p_borrar1,
      path2 = ConvertPairedFastQsToUnmappedBamWf.p_borrar2
@@ -390,7 +384,20 @@ scatter (pairs in samples_by_exon) {
     }
 }
 
+Array[File] archivos_a_borrar = ["bam2gvcf.borrar_Markdup","SortAndFixTags.output_bam"]
+scatter (archivos in archivos_a_borrar){
+call borrado as borrado_markdup_and_tags{
+input:
+archivo_borrar = archivos
+}
+}
 
+scatter (archivos_app in bam2gvcf.borrar_Applybqsr){
+call borrado as borrado_Apply{
+input:
+archivo_borrar = archivos_app
+}
+}
 
     # Outputs that will be retained when execution is complete
   output {
