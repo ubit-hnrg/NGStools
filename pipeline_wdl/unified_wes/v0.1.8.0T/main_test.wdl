@@ -42,7 +42,7 @@ task mkdir_samplename {
     String samplename
 
     command{
-        mkdir  ${path_softlink}${samplename}
+        mkdir -p ${path_softlink}${samplename}
     }
 
     output {
