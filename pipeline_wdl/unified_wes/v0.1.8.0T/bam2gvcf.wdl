@@ -566,25 +566,25 @@ workflow bam2gvcf {
   # We take advantage of the tool's ability to take multiple BAM inputs and write out a single output
   # to avoid having to spend time just merging BAM files.
   
-  
-  #scatter (bams in bams_entrada) {
-  #call reduce_bam {
-  #input:
-  #input_bam = bams, 
-  #toolpath = toolpath,
-  #output_bam_basename = base_file_name, 
-  #lib_resctricted = lib_resctricted
- #./TruSight_One_v1_padded_100_GRCh37.bed 
-  #}
-  #}
 
- #Array[File] reduced_bams = reduce_bam.output_reduced_bam
+  scatter (bams in bams_entrada) {
+  call reduce_bam {
+  input:
+  input_bam = bams, 
+  toolpath = toolpath,
+  output_bam_basename = base_file_name, 
+  lib_resctricted = lib_resctricted
+ #./TruSight_One_v1_padded_100_GRCh37.bed 
+  }
+  }
+
+ Array[File] reduced_bams = reduce_bam.output_reduced_bam
   
   call MarkDuplicates {
     input:
       
-      input_bams = bams_entrada,
-      #input_bams = reduced_bams,
+      #input_bams = bams_entrada,
+      input_bams = reduced_bams,
       output_bam_basename = base_file_name + ".aligned.unsorted.duplicates_marked",
       metrics_filename = base_file_name + ".duplicate_metrics",
       # The merged bam will be smaller than the sum of the parts so we need to account for the unmerged inputs
