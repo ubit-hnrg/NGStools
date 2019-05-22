@@ -7,7 +7,7 @@ task reduce_bam {
 
 
 command <<<
-${toolpath}bedtools2/bin/intersectBed -a ${input_bam} -b ${lib_resctricted} > ${output_bam_basename}_lib_resctricted.bam
+${toolpath}bedtools2/bin/intersectBed -a ${input_bam} -b ${lib_resctricted} -wa > ${output_bam_basename}_lib_resctricted.bam
 
 >>>
   output {
