@@ -270,6 +270,28 @@ Array[File] array_of_samples_txt = ConvertPairedFastQsToUnmappedBamWf.muestras
 
   }
 
+Array[File] archivos_a_borrar1 = ubamtobwa.output_mergedbam_files#,"${bam2gvcf.borrar_SortandFix}"]
+
+scatter (archivos in archivos_a_borrar1){
+call borrado as borrado_merged_bam {
+input:
+archivo_borrar = archivos
+}
+}
+
+
+
+#Array[File] archivos_a_borrar2 = subset_array_glob.subArray_input_ubam2gvcf#,"${bam2gvcf.borrar_SortandFix}"]
+
+#scatter (archivos in archivos_a_borrar2){
+#call borrado as borrado_subset_glob {
+#input:
+#archivo_borrar = archivos
+#}
+#}
+
+
+
 #Array[File] paths2symb = ["${pepe.dummy_outfile}","${juan.dummy_outfile}"]
 #scatter (paths in paths2symb) {
 #    call symlink_a_lo_guapo {
@@ -305,6 +327,26 @@ Array[File] array_of_samples_txt = ConvertPairedFastQsToUnmappedBamWf.muestras
 #    path1 = paths3
 #}
 #}
+
+
+Array[File] archivos_a_borrar = bam2gvcf.borrar_Markdup#,"${bam2gvcf.borrar_SortandFix}"]
+
+scatter (archivos in archivos_a_borrar){
+call borrado as borrado_markdup {
+input:
+archivo_borrar = archivos
+}
+}
+
+Array[File] archivos_a_borrar3 = bam2gvcf.borrar_SortandFix#,"${}"]
+
+scatter (archivos in archivos_a_borrar3){
+call borrado as borrado_Sort_and_Fix {
+input:
+archivo_borrar = archivos
+}
+}
+
 Array[String] uniquesample_name =read_lines(ConvertPairedFastQsToUnmappedBamWf.samplesnames)
 
 
@@ -386,14 +428,7 @@ scatter (pairs in samples_by_exon) {
     }
 }
 
-Array[File] archivos_a_borrar = bam2gvcf.borrar_Markdup#,"${bam2gvcf.borrar_SortandFix}"]
 
-scatter (archivos in archivos_a_borrar){
-call borrado as borrado_markdup {
-input:
-archivo_borrar = archivos
-}
-}
 
 #Array[File] archivos_Apply = bam2gvcf.borrar_Applybqsr
 #scatter (archivos_app in archivos_Apply ){

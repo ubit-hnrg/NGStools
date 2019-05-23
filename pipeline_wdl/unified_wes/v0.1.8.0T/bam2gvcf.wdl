@@ -364,16 +364,46 @@ task HaplotypeCaller {
       --native-pair-hmm-threads ${gatk_gkl_pairhmm_threads} \
       --smith-waterman ${smith_waterman_implementation} \
       --use-new-qual-calculator ${newqual} \
+      --bam-output= ${gvcf_basename}_haplotype.bam
+
        
 >>>
 
   output {
     File output_gvcf = "${gvcf_basename}.vcf.gz"
     File output_gvcf_index = "${gvcf_basename}.vcf.gz.tbi"
+    File bam_haplotypecaller = "${gvcf_basename}_haplotype.bam"
+
   }
 }
 
 
+task GatherBamFilesHaplotype {
+  Array[File] input_bams
+  String output_bam_basename
+  Int compression_level
+  
+  ##### son 3g, cambiar dps en el json
+  #String java_heap_memory_initial
+String gatk_jar
+  String toolpath
+  
+  command {
+    java -Dsamjdk.compression_level=${compression_level} -Xmx3g -jar ${toolpath}${gatk_jar} \
+      GatherBamFiles \
+      -I=${sep=' -I=' input_bams} \
+      -O=${output_bam_basename}_haplotype.bam \
+      --CREATE_INDEX=true \
+      --CREATE_MD5_FILE=true
+    }
+  
+  output {
+    File output_bam = "${output_bam_basename}_haplotype.bam"
+    File output_bam_index = "${output_bam_basename}_haplotype.bai"
+    File output_bam_md5 = "${output_bam_basename}_haplotype.bam.md5"
+  }
+
+}
 
 # Combine multiple VCFs or GVCFs from scattered HaplotypeCaller runs
 task MergeVCFs {
@@ -563,35 +593,35 @@ workflow bam2gvcf {
 
  
  
-#Array[File] bams_entrada
+Array[File] bams_entrada
 
 # Aggregate aligned+merged flowcell BAM files and mark duplicates
   # We take advantage of the tool's ability to take multiple BAM inputs and write out a single output
   # to avoid having to spend time just merging BAM files.
   
-File bam_markdup
+#File bam_markdup
   
-  #call MarkDuplicates {
-  #  input:
+  call MarkDuplicates {
+    input:
       
-  #    input_bams = bams_entrada,
-  #    #input_bams = reduced_bams,
-  #    output_bam_basename = base_file_name + ".aligned.unsorted.duplicates_marked",
-  #    metrics_filename = base_file_name + ".duplicate_metrics",
+      input_bams = bams_entrada,
+      #input_bams = reduced_bams,
+      output_bam_basename = base_file_name + ".aligned.unsorted.duplicates_marked",
+      metrics_filename = base_file_name + ".duplicate_metrics",
       # The merged bam will be smaller than the sum of the parts so we need to account for the unmerged inputs
       # and the merged output.
       #disk_size = (md_disk_multiplier * SumFloats.total_size) + small_additional_disk,
-  #    compression_level = compression_level,
-  #    java_heap_memory_initial = java_heap_memory_initial,
-  #    gatk_jar = gatk_jar,
-  #      toolpath = toolpath
-  #}
+      compression_level = compression_level,
+      java_heap_memory_initial = java_heap_memory_initial,
+      gatk_jar = gatk_jar,
+        toolpath = toolpath
+  }
 
 
   call reduce_bam {
   input:
-  #input_bam = MarkDuplicates.output_bam, 
-  input_bam = bam_markdup,
+  input_bam = MarkDuplicates.output_bam, 
+  #input_bam = bam_markdup,
   toolpath = toolpath,
   output_bam_basename = base_file_name, 
   lib_resctricted = lib_resctricted
@@ -615,11 +645,11 @@ File bam_markdup
   }
 
 
-#  call borrado as borrar_Markdup {
-#
-#   input:
-#     archivo_borrar = MarkDuplicates.output_bam
-# }
+  #call borrado as borrar_Markdup {
+
+   #input:
+   #  archivo_borrar = MarkDuplicates.output_bam
+ #}
 
 
   # Create list of sequences for scatter-gather parallelization 
@@ -763,6 +793,18 @@ call ScatterIntervalList {
      }
 }
 
+  call GatherBamFilesHaplotype {
+    input:
+      input_bams = HaplotypeCaller.bam_haplotypecaller,
+      output_bam_basename = base_file_name,
+      # Multiply the input bam size by two to account for the input and output
+      #disk_size = (2 * agg_bam_size) + small_additional_disk,
+      compression_level = compression_level,
+      gatk_jar = gatk_jar,
+      toolpath = toolpath     
+      
+}
+
 # Combine by-interval GVCFs into a single sample GVCF file
   call MergeVCFs {
     input:
@@ -807,7 +849,7 @@ call ScatterIntervalList {
   
 
 
-Array[File] salidas = ["${GatherBamFiles.output_bam}","${GatherBamFiles.output_bam_index}","${MergeVCFs.output_vcf}","${MergeVCFs.output_vcf_index}","${CollectGvcfCallingMetrics.summary_metrics}","${CollectGvcfCallingMetrics.detail_metrics}"]
+Array[File] salidas = ["${GatherBamFilesHaplotype.output_bam}","${GatherBamFilesHaplotype.output_bam_index}","${GatherBamFiles.output_bam}","${GatherBamFiles.output_bam_index}","${MergeVCFs.output_vcf}","${MergeVCFs.output_vcf_index}","${CollectGvcfCallingMetrics.summary_metrics}","${CollectGvcfCallingMetrics.detail_metrics}"]
 
 scatter (paths in salidas) {
     call symlink_important_files {
@@ -825,7 +867,7 @@ scatter (paths in salidas) {
 
   #####outputs workflow ubam2gvcf
 
-   #File duplication_metrics = MarkDuplicates.duplicate_metrics
+   File duplication_metrics = MarkDuplicates.duplicate_metrics
    File bqsr_report = GatherBqsrReports.output_bqsr_report
    File analysis_ready_bam = GatherBamFiles.output_bam
    File analysis_ready_bam_index = GatherBamFiles.output_bam_index
@@ -836,7 +878,7 @@ scatter (paths in salidas) {
    File output_vcf_index = MergeVCFs.output_vcf_index
 
    Array[File] borrar_Applybqsr = ApplyBQSR.recalibrated_bam 
-   #File borrar_Markdup = MarkDuplicates.output_bam
+   File borrar_Markdup = MarkDuplicates.output_bam
    File borrar_SortandFix = SortAndFixTags.output_bam
 
 
