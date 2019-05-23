@@ -38,8 +38,9 @@ task MarkDuplicates {
  # Task is assuming query-sorted input so that the Secondary and Supplementary reads get marked correctly
  # This works because the output of BWA is query-grouped and therefore, so is the output of MergeBamAlignment.
  # While query-grouped isn't actually query-sorted, it's good enough for MarkDuplicates with ASSUME_SORT_ORDER="queryname"
+ #-Xmx${java_heap_memory_initial}
   command {
-    java -Dsamjdk.compression_level=${compression_level} -Xmx${java_heap_memory_initial} -jar ${toolpath}${gatk_jar} \
+    java -Dsamjdk.compression_level=${compression_level} -Xms4000m -jar ${toolpath}${gatk_jar} \
       MarkDuplicates \
       --INPUT=${sep=' --INPUT=' input_bams} \
       --OUTPUT=${output_bam_basename}.bam \
@@ -561,46 +562,49 @@ workflow bam2gvcf {
  #./TruSight_One_v1_padded_100_GRCh37.bed 
 
  
- Array[File] bams_entrada
+ 
+#Array[File] bams_entrada
+
 # Aggregate aligned+merged flowcell BAM files and mark duplicates
   # We take advantage of the tool's ability to take multiple BAM inputs and write out a single output
   # to avoid having to spend time just merging BAM files.
   
+File bam_markdup
+  
+  #call MarkDuplicates {
+  #  input:
+      
+  #    input_bams = bams_entrada,
+  #    #input_bams = reduced_bams,
+  #    output_bam_basename = base_file_name + ".aligned.unsorted.duplicates_marked",
+  #    metrics_filename = base_file_name + ".duplicate_metrics",
+      # The merged bam will be smaller than the sum of the parts so we need to account for the unmerged inputs
+      # and the merged output.
+      #disk_size = (md_disk_multiplier * SumFloats.total_size) + small_additional_disk,
+  #    compression_level = compression_level,
+  #    java_heap_memory_initial = java_heap_memory_initial,
+  #    gatk_jar = gatk_jar,
+  #      toolpath = toolpath
+  #}
 
-  scatter (bams in bams_entrada) {
+
   call reduce_bam {
   input:
-  input_bam = bams, 
+  #input_bam = MarkDuplicates.output_bam, 
+  input_bam = bam_markdup,
   toolpath = toolpath,
   output_bam_basename = base_file_name, 
   lib_resctricted = lib_resctricted
  #./TruSight_One_v1_padded_100_GRCh37.bed 
   }
-  }
-
- Array[File] reduced_bams = reduce_bam.output_reduced_bam
   
-  call MarkDuplicates {
-    input:
-      
-      #input_bams = bams_entrada,
-      input_bams = reduced_bams,
-      output_bam_basename = base_file_name + ".aligned.unsorted.duplicates_marked",
-      metrics_filename = base_file_name + ".duplicate_metrics",
-      # The merged bam will be smaller than the sum of the parts so we need to account for the unmerged inputs
-      # and the merged output.
-      #disk_size = (md_disk_multiplier * SumFloats.total_size) + small_additional_disk,
-      compression_level = compression_level,
-      java_heap_memory_initial = java_heap_memory_initial,
-      gatk_jar = gatk_jar,
-        toolpath = toolpath
-  }
 
 # Sort aggregated+deduped BAM file and fix tags
 ############### hay una version de wdl en la web que usa SamtoolsSort as SortSampleBam
   call SortAndFixTags {
     input:
-      input_bam = MarkDuplicates.output_bam,
+      #input_bam = MarkDuplicates.output_bam,
+      input_bam = reduce_bam.output_reduced_bam,
       output_bam_basename = base_file_name + ".aligned.duplicate_marked.sorted",
       ref_dict = ref_dict,
       ref_fasta = ref_fasta,
@@ -821,7 +825,7 @@ scatter (paths in salidas) {
 
   #####outputs workflow ubam2gvcf
 
-   File duplication_metrics = MarkDuplicates.duplicate_metrics
+   #File duplication_metrics = MarkDuplicates.duplicate_metrics
    File bqsr_report = GatherBqsrReports.output_bqsr_report
    File analysis_ready_bam = GatherBamFiles.output_bam
    File analysis_ready_bam_index = GatherBamFiles.output_bam_index
@@ -832,7 +836,7 @@ scatter (paths in salidas) {
    File output_vcf_index = MergeVCFs.output_vcf_index
 
    Array[File] borrar_Applybqsr = ApplyBQSR.recalibrated_bam 
-   File borrar_Markdup = MarkDuplicates.output_bam
+   #File borrar_Markdup = MarkDuplicates.output_bam
    File borrar_SortandFix = SortAndFixTags.output_bam
 
 
