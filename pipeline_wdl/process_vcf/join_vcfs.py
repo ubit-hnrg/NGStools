@@ -60,9 +60,12 @@ sample = multianno.columns[-1]
 vcf=read_vcf(vcf_file)
 vcf = vcf.iloc[:,~vcf.columns.isin(['QUAL','FILTER','INFO','FORMAT',sample])]
 vcf.rename(columns={'ALT':'ALTERNATIVES'},inplace=True)
+vcf['#CHROM'] = vcf['#CHROM'].astype(str).str.strip() # fuerzo a string la columna de cromosoma (mix type) para evitar mistmaching entre enteros y chr de un mismo cromosoma
 
 multianno = process_genotipo(multianno) 
 multianno = process_InterVar(multianno)
+multianno['#CHROM']= multianno['#CHROM'].astype(str).str.strip() # fuerzo a string la columna de cromosoma (mix type) para evitar mistmaching entre enteros y chr de un mismo cromosoma
+
 df = pd.merge(multianno,vcf,how='left',on=['#CHROM','POS','ID','REF'])
 
 ## reorganize columns
