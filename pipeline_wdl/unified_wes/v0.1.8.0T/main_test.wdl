@@ -270,14 +270,14 @@ Array[File] array_of_samples_txt = ConvertPairedFastQsToUnmappedBamWf.muestras
 
   }
 
-Array[File] archivos_a_borrar1 = ubamtobwa.output_mergedbam_files#,"${bam2gvcf.borrar_SortandFix}"]
+#Array[File] archivos_a_borrar1 = ubamtobwa.output_mergedbam_files#,"${bam2gvcf.borrar_SortandFix}"]
 
-scatter (archivos in archivos_a_borrar1){
-call borrado as borrado_merged_bam {
-input:
-archivo_borrar = archivos
-}
-}
+#scatter (archivos in archivos_a_borrar1){
+#call borrado as borrado_merged_bam {
+#input:
+#archivo_borrar = archivos
+#}
+#}
 
 
 
