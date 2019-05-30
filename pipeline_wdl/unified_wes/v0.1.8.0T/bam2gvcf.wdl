@@ -510,7 +510,7 @@ task symlink_important_files {
     File output_to_save
     String path_save
     command{
-       ln ${output_to_save} ${path_save}
+       ln -s ${output_to_save} ${path_save}
     }
 }
 
@@ -878,7 +878,7 @@ scatter (paths in salidas) {
    File output_vcf_index = MergeVCFs.output_vcf_index
 
    Array[File] borrar_Applybqsr = ApplyBQSR.recalibrated_bam 
-   File borrar_Markdup = MarkDuplicates.output_bam
+   #File borrar_Markdup = MarkDuplicates.output_bam
    File borrar_SortandFix = SortAndFixTags.output_bam
 
 
