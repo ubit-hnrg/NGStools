@@ -329,14 +329,14 @@ Array[File] array_of_samples_txt = ConvertPairedFastQsToUnmappedBamWf.muestras
 #}
 
 
-Array[File] archivos_a_borrar = bam2gvcf.borrar_Markdup#,"${bam2gvcf.borrar_SortandFix}"]
+#Array[File] archivos_a_borrar = bam2gvcf.borrar_Markdup#,"${bam2gvcf.borrar_SortandFix}"]
 
-scatter (archivos in archivos_a_borrar){
-call borrado as borrado_markdup {
-input:
-archivo_borrar = archivos
-}
-}
+#scatter (archivos in archivos_a_borrar){
+#call borrado as borrado_markdup {
+#input:
+#archivo_borrar = archivos
+#}
+#}
 
 Array[File] archivos_a_borrar3 = bam2gvcf.borrar_SortandFix#,"${}"]
 
