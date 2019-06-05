@@ -1,7 +1,7 @@
 {
   "processJointVCF.multisampleVCF": "/home/hnrg/resultsHNRG/TSO20190328/TSO20192803.vcf.gz",
   "processJointVCF.region_padded_bed": "/home/hnrg/HNRG-pipeline-V0.1/libraries/GRCh37/TruSight_One_v1_padded_100_GRCh37.bed.gz",
-  "processJointVCF.toolpath": "/home/ariel/repos/HNRG-pipeline-V0.1/tools",
+  "processJointVCF.toolpath": "/home/hnrg/HNRG-pipeline-V0.1/tools",
   "processJointVCF.annovar_table_pl": "/home/hnrg/HNRG-pipeline-V0.1/tools/annovar/table_annovar.pl",
   "processJointVCF.db_annovar":"/home/hnrg/HNRG-pipeline-V0.1/dbs/hg19_annovar/"
 }
