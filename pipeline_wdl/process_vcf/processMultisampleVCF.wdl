@@ -188,7 +188,7 @@ task get_tsv_from_annovar {
 
 
     # meto header (dejando el campo 'Otherinfo' que despues va a aser remplazado por las columnas del vcf original)
-    head -n1 $${annovar_txt} > ${sample}.hg19_multianno.tsv
+    head -n1 ${annovar_txt} > ${sample}.hg19_multianno.tsv
     # vuelo las tres columnas de otherinfo
     tail -n+2 ${annovar_txt}|cut -f$nl0,$nl1,$nl2 --complement >>  ${sample}.hg19_multianno.tsv;
     vcf_header=$(grep '#CH' ${annovar_vcf});
