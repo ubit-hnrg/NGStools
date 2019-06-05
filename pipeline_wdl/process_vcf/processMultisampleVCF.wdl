@@ -10,6 +10,8 @@ workflow processJointVCF {
     # for annovar prouposes
     String db_annovar
     File annovar_table_pl
+    File joinPY
+
 
 #    Array[String] path_save
 
@@ -39,7 +41,7 @@ workflow processJointVCF {
             toolpath = toolpath
             }
 
-        call run_annovar {
+        call annovar {
             input:
             one_sample_vcf =  get_individual_vcf.one_sample_vcf,
             sample = sample,
@@ -47,13 +49,21 @@ workflow processJointVCF {
             db_annovar = db_annovar
          }
 
+        call get_tsv_from_annovar {
+            input:
+            annovar_txt = annovar.annovar_txt,
+            annovar_vcf = annovar.annovar_vcf,
+            multisampleVCF = rename_samples.multisample_vcf_restricted_renamed,
+            sample = sample,
+            joinPY = joinPY
+        }
     }
+
 #    Array[File] individual_vcfs = get_individual_vcf.one_sample_vcf,
 #    Array[File] annovar_vcfs = run_annovar.annovar_vcf,
     Array[File] annovar_txt = run_annovar.annovar_txt
     
-    
-
+     
 
 
 
@@ -138,7 +148,7 @@ task get_individual_vcf{
     }
 }
 
-task run_annovar{
+task annovar{
     File one_sample_vcf
     File annovar_table_pl
     String db_annovar
@@ -146,7 +156,6 @@ task run_annovar{
     
     command<<<
         #perl ${annovar_table_pl} ${one_sample_vcf} ${db_annovar} -vcfinput -buildver hg19 -remove -out ${sample} -protocol refGene,avsnp150,esp6500siv2_all,1000g2015aug_all,exac03,gnomad_exome,gnomad_genome,clinvar_20180603,intervar_20180118,dbscsnv11,dbnsfp35a,rmsk,tfbsConsSites,cytoBand,wgRna,targetScanS,genomicSuperDups,dgvMerged,gwasCatalog,ensGene,knownGene -operation  g,f,f,f,f,f,f,f,f,f,f,r,r,r,r,r,r,r,r,g,g -nastring . -otherinfo
-
         perl ${annovar_table_pl} ${one_sample_vcf} ${db_annovar} -vcfinput -buildver hg19 -remove -out ${sample} -protocol refGene,knownGene -operation  g,g -nastring . -otherinfo
 
     >>>
@@ -157,9 +166,43 @@ task run_annovar{
     }
 
 }
-#scatter (fastp in fastp_json_files){
-#    call fastp_qual {
-#        input:
-#        inputs_json_report = fastp
-#    }
-#}
+
+ # prepare final multianno.tsv for deliver (do not forget postprocess InterVar)
+ #1) localizo las 3 columnas de Otherinfo para volarlas. 
+ #2) modifico el header agregando las columnas que faltan del vcf (remplazo x otherinfo)
+ #3) joineo al archivo multinanno las columnas de genotipo de las restantes muestras de  la corrida.
+
+task get_tsv_from_annovar {
+    File annovar_txt
+    File annovar_vcf
+    File multisampleVCF
+    String sample
+    File joinPY    #this file merge the multianno.tsv file with the original multisample vcf
+
+
+    command <<<
+    #columnas a cortar (localizando Otherinfo column y las 2 siguientes)
+    nl0=$(head -n1 ${annovar_txt}|tr '\t' '\n'|nl|grep 'Otherinfo'|cut -f1)
+    nl1=$((nl0 + 1))
+    nl2=$((nl0 + 2))
+
+
+    # meto header (dejando el campo 'Otherinfo' que despues va a aser remplazado por las columnas del vcf original)
+    head -n1 $${annovar_txt} > ${sample}.hg19_multianno.tsv
+    # vuelo las tres columnas de otherinfo
+    tail -n+2 ${annovar_txt}|cut -f$nl0,$nl1,$nl2 --complement >>  ${sample}.hg19_multianno.tsv;
+    vcf_header=$(grep '#CH' ${annovar_vcf});
+
+    #remplazo el header
+    sed -i "s/Otherinfo/$vcf_header/g" ${sample}.hg19_multianno.tsv;
+
+    #join one multianno tsv file AND joint genotyped vcf. This script (join_vcf.py) also postprocess Intervar columns.
+    python ${joinPY} --multianno_tsv=${sample}.hg19_multianno.tsv --vcf_multisample=${multisampleVCF} --output=${sample}.multianno_multisample.tsv
+    #change dots by tabs.
+    sed -i -e "s|\.	|	|g" ${sample}.multianno_multisample.tsv
+
+    >>>
+    output{
+        File annovar_tsv =  '${sample}.multianno_multisample.tsv'
+    }
+}

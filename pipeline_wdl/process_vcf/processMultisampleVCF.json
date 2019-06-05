@@ -3,5 +3,6 @@
   "processJointVCF.region_padded_bed": "/home/hnrg/HNRG-pipeline-V0.1/libraries/GRCh37/TruSight_One_v1_padded_100_GRCh37.bed.gz",
   "processJointVCF.toolpath": "/home/hnrg/HNRG-pipeline-V0.1/tools",
   "processJointVCF.annovar_table_pl": "/home/hnrg/HNRG-pipeline-V0.1/tools/annovar/table_annovar.pl",
-  "processJointVCF.db_annovar":"/home/hnrg/HNRG-pipeline-V0.1/dbs/hg19_annovar/"
+  "processJointVCF.db_annovar":"/home/hnrg/HNRG-pipeline-V0.1/dbs/hg19_annovar/",
+  "processJointVCF.joinPY": "/home/hnrg/NGStools/pipeline_wdl/process_vcf/join_vcfs.py"  
 }
