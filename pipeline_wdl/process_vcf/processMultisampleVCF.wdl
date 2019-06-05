@@ -61,7 +61,7 @@ workflow processJointVCF {
 
 #    Array[File] individual_vcfs = get_individual_vcf.one_sample_vcf,
 #    Array[File] annovar_vcfs = run_annovar.annovar_vcf,
-    Array[File] annovar_txt = run_annovar.annovar_txt
+    Array[File] annovar_txt = annovar.annovar_txt
     
      
 
