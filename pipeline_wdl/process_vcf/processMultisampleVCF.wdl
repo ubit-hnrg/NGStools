@@ -6,6 +6,11 @@ workflow processJointVCF {
     File multisampleVCF
     String toolpath
     File region_padded_bed
+
+    # for annovar prouposes
+    String db_annovar
+    File annovar_table_pl
+
 #    Array[String] path_save
 
     call restrict_multisample_vcf{
