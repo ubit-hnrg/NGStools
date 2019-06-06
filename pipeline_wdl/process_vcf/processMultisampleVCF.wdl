@@ -12,6 +12,8 @@ workflow processJointVCF {
     File annovar_table_pl
     File joinPY
 
+    File build_excell_py
+    Array[File] exon_coverage_reports
 
 #    Array[String] path_save
 
@@ -32,19 +34,25 @@ workflow processJointVCF {
 
 
 
-    scatter (sample in rename_samples.renamed_samples){
-        
+    scatter (sample in rename_samples.original_samples){
+
+        call idsample{
+            input:
+            sample = sample
+        }
+
         call get_individual_vcf {
             input:
             multisampleVCF = rename_samples.multisample_vcf_restricted_renamed,
-            sample = sample,
-            toolpath = toolpath
+            sample = idsample.idsample,
+            toolpath = toolpath,
+            original_sample = sample
             }
 
         call annovar {
             input:
             one_sample_vcf =  get_individual_vcf.one_sample_vcf,
-            sample = sample,
+            sample = idsample.idsample,
             annovar_table_pl = annovar_table_pl,
             db_annovar = db_annovar
          }
@@ -54,16 +62,22 @@ workflow processJointVCF {
             annovar_txt = annovar.annovar_txt,
             annovar_vcf = annovar.annovar_vcf,
             multisampleVCF = rename_samples.multisample_vcf_restricted_renamed,
-            sample = sample,
+            sample = idsample.idsample,
             joinPY = joinPY
         }
+
+        #call build_excell_report{
+        #    input:
+        #    annovar_tsv = get_tsv_from_annovar.annovar_tsv,
+        #    exon_coverage_report =  prefix(sample,exon_coverage_reports)[0],
+        #    sample=idsample.idsample,
+        #    build_excell_py = build_excell_py
+        #}    
+        
     }
 
-#    Array[File] individual_vcfs = get_individual_vcf.one_sample_vcf,
-#    Array[File] annovar_vcfs = run_annovar.annovar_vcf,
-    Array[File] annovar_txt = annovar.annovar_txt
+
     
-     
 
 
 
@@ -72,12 +86,29 @@ workflow processJointVCF {
     output{
         File multisampleVCF_restricted = restrict_multisample_vcf.multisampleVCF_restricted
         Array[File] individual_vcfs_notAnnotated = get_individual_vcf.one_sample_vcf
+        Array[File] individual_vcfs_annovar = annovar.annovar_vcf
+        #Array[File] individual_excell_reports = build_excell_report.excell_report
+
         #File multisampleVCF_restricted_renamed = rename_samples.multisample_vcf_restricted_renamed
     }
 
 }
 
+task idsample{
+    String sample
+    command<<<
+        if [[ ${sample} =~ ^[0-9].* ]]
+        then
+            echo 'ID'${sample}
+        else
+            echo ${sample}
+        fi
+    >>>
 
+    output{
+        String idsample = read_string(stdout())
+    }
+} 
 
 task restrict_multisample_vcf{
     File multisampleVCF
@@ -117,13 +148,14 @@ task rename_samples{
                     id=$i
                 fi
             done
-        cat ${base}'_renamed.vcf' |grep '^#C'|cut -f10- |tr '\t' '\n'
-
+        #cat ${base}'_renamed.vcf' |grep '^#C'|cut -f10- |tr '\t' '\n'
+        cat ${multisampleVCF_restricted} |grep '^#C'|cut -f10- |tr '\t' '\n'
     >>>
 
     output {
         File multisample_vcf_restricted_renamed = "${base}_renamed.vcf"
-        Array[String] renamed_samples = read_lines(stdout())
+        #Array[String] renamed_samples = read_lines(stdout())
+        Array[String] original_samples = read_lines(stdout())
     }
 
 }
@@ -132,6 +164,7 @@ task get_individual_vcf{
     File multisampleVCF
     String sample
     String toolpath
+    String original_sample
     
 
     command<<<
@@ -139,12 +172,12 @@ task get_individual_vcf{
         cat ${multisampleVCF} | java -jar ${toolpath}/SnpSift.jar filter "(GEN[${sample}].GT!='./.')&(GEN[${sample}].GT != '0/0')" >  faceted_one_sample_vcf
 
         ##these steps remove the remaining samples of the vcf.
-        cat <(grep '^##' faceted_one_sample_vcf) <(grep -v '^##' faceted_one_sample_vcf| csvcut -t -c '#CHROM',POS,ID,REF,ALT,QUAL,FILTER,INFO,FORMAT,${sample} | csvformat -T) > ${sample}.vcf
+        cat <(grep '^##' faceted_one_sample_vcf) <(grep -v '^##' faceted_one_sample_vcf| csvcut -t -c '#CHROM',POS,ID,REF,ALT,QUAL,FILTER,INFO,FORMAT,${sample} | csvformat -T) > ${original_sample}.vcf
         rm faceted_one_sample_vcf
     >>>
 
     output{
-    File one_sample_vcf = '${sample}.vcf'
+    File one_sample_vcf = '${original_sample}.vcf'
     }
 }
 
@@ -206,3 +239,20 @@ task get_tsv_from_annovar {
         File annovar_tsv =  '${sample}.multianno_multisample.tsv'
     }
 }
+
+task build_excell_report{
+    File annovar_tsv
+    File exon_coverage_report
+    String sample
+    String original_sample
+    File build_excell_py
+    
+    command{
+        ${build_excell_py} ${annovar_tsv}:Variants ${exon_coverage_report}:ExonCoverage ${sample}.output_xlsx
+    }     
+
+    output{
+        File excell_report = '${sample}.variants.xlsx'
+    }
+}    
+

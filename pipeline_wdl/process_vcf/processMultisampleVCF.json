@@ -4,5 +4,5 @@
   "processJointVCF.toolpath": "/home/hnrg/HNRG-pipeline-V0.1/tools",
   "processJointVCF.annovar_table_pl": "/home/hnrg/HNRG-pipeline-V0.1/tools/annovar/table_annovar.pl",
   "processJointVCF.db_annovar":"/home/hnrg/HNRG-pipeline-V0.1/dbs/hg19_annovar/",
-  "processJointVCF.joinPY": "/home/hnrg/NGStools/pipeline_wdl/process_vcf/join_vcfs.py"  
+  "processJointVCF.joinPY": "/home/hnrg/NGStools/pipeline_wdl/process_vcf/join_vcfs.py"
 }
