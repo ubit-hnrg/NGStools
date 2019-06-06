@@ -7,7 +7,7 @@ task reduce_bam {
 
 
 command <<<
-${toolpath}bedtools2/bin/intersectBed -a ${input_bam} -b ${lib_resctricted} > ${output_bam_basename}_lib_resctricted.bam
+${toolpath}bedtools2/bin/intersectBed -a ${input_bam} -b ${lib_resctricted} -wa > ${output_bam_basename}_lib_resctricted.bam
 
 >>>
   output {
@@ -38,8 +38,9 @@ task MarkDuplicates {
  # Task is assuming query-sorted input so that the Secondary and Supplementary reads get marked correctly
  # This works because the output of BWA is query-grouped and therefore, so is the output of MergeBamAlignment.
  # While query-grouped isn't actually query-sorted, it's good enough for MarkDuplicates with ASSUME_SORT_ORDER="queryname"
+ #-Xmx${java_heap_memory_initial}
   command {
-    java -Dsamjdk.compression_level=${compression_level} -Xmx${java_heap_memory_initial} -jar ${toolpath}${gatk_jar} \
+    java -Dsamjdk.compression_level=${compression_level} -Xms4000m -jar ${toolpath}${gatk_jar} \
       MarkDuplicates \
       --INPUT=${sep=' --INPUT=' input_bams} \
       --OUTPUT=${output_bam_basename}.bam \
@@ -267,38 +268,6 @@ String gatk_jar
   }
 
 }
-
-
-
-task GatherBamFilesHaplotype {
-  Array[File] input_bams
-  String output_bam_basename
-  Int compression_level
-  
-  ##### son 3g, cambiar dps en el json
-  #String java_heap_memory_initial
-String gatk_jar
-  String toolpath
-  
-  command {
-    java -Dsamjdk.compression_level=${compression_level} -Xmx3g -jar ${toolpath}${gatk_jar} \
-      GatherBamFiles \
-      -I=${sep=' -I=' input_bams} \
-      -O=${output_bam_basename}_haplotype.bam \
-      --CREATE_INDEX=true \
-      --CREATE_MD5_FILE=true
-    }
-  
-  output {
-    File output_bam = "${output_bam_basename}_haplotype.bam"
-    File output_bam_index = "${output_bam_basename}_haplotype.bai"
-    File output_bam_md5 = "${output_bam_basename}_haplotype.bam.md5"
-  }
-
-}
-
-
-
 ########################################3 fin de pre processing#######################
 
 # This task calls picard's IntervalListTools to scatter the input interval list into scatter_count sub interval lists
@@ -404,10 +373,37 @@ task HaplotypeCaller {
     File output_gvcf = "${gvcf_basename}.vcf.gz"
     File output_gvcf_index = "${gvcf_basename}.vcf.gz.tbi"
     File bam_haplotypecaller = "${gvcf_basename}_haplotype.bam"
+
   }
 }
 
 
+task GatherBamFilesHaplotype {
+  Array[File] input_bams
+  String output_bam_basename
+  Int compression_level
+  
+  ##### son 3g, cambiar dps en el json
+  #String java_heap_memory_initial
+String gatk_jar
+  String toolpath
+  
+  command {
+    java -Dsamjdk.compression_level=${compression_level} -Xmx3g -jar ${toolpath}${gatk_jar} \
+      GatherBamFiles \
+      -I=${sep=' -I=' input_bams} \
+      -O=${output_bam_basename}_haplotype.bam \
+      --CREATE_INDEX=true \
+      --CREATE_MD5_FILE=true
+    }
+  
+  output {
+    File output_bam = "${output_bam_basename}_haplotype.bam"
+    File output_bam_index = "${output_bam_basename}_haplotype.bai"
+    File output_bam_md5 = "${output_bam_basename}_haplotype.bam.md5"
+  }
+
+}
 
 # Combine multiple VCFs or GVCFs from scattered HaplotypeCaller runs
 task MergeVCFs {
@@ -596,29 +592,20 @@ workflow bam2gvcf {
  #./TruSight_One_v1_padded_100_GRCh37.bed 
 
  
- Array[File] bams_entrada
+ 
+Array[File] bams_entrada
+
 # Aggregate aligned+merged flowcell BAM files and mark duplicates
   # We take advantage of the tool's ability to take multiple BAM inputs and write out a single output
   # to avoid having to spend time just merging BAM files.
   
-  scatter (bams in bams_entrada) {
-  call reduce_bam {
-  input:
-  input_bam = bams, 
-  toolpath = toolpath,
-  output_bam_basename = base_file_name, 
-  lib_resctricted = lib_resctricted
- #./TruSight_One_v1_padded_100_GRCh37.bed 
-  }
-  }
-
- Array[File] reduced_bams = reduce_bam.output_reduced_bam
+#File bam_markdup
   
   call MarkDuplicates {
     input:
       
-      #input_bams = bams_entrada,
-      input_bams = reduced_bams,
+      input_bams = bams_entrada,
+      #input_bams = reduced_bams,
       output_bam_basename = base_file_name + ".aligned.unsorted.duplicates_marked",
       metrics_filename = base_file_name + ".duplicate_metrics",
       # The merged bam will be smaller than the sum of the parts so we need to account for the unmerged inputs
@@ -630,11 +617,24 @@ workflow bam2gvcf {
         toolpath = toolpath
   }
 
+
+  call reduce_bam {
+  input:
+  input_bam = MarkDuplicates.output_bam, 
+  #input_bam = bam_markdup,
+  toolpath = toolpath,
+  output_bam_basename = base_file_name, 
+  lib_resctricted = lib_resctricted
+ #./TruSight_One_v1_padded_100_GRCh37.bed 
+  }
+  
+
 # Sort aggregated+deduped BAM file and fix tags
 ############### hay una version de wdl en la web que usa SamtoolsSort as SortSampleBam
   call SortAndFixTags {
     input:
-      input_bam = MarkDuplicates.output_bam,
+      #input_bam = MarkDuplicates.output_bam,
+      input_bam = reduce_bam.output_reduced_bam,
       output_bam_basename = base_file_name + ".aligned.duplicate_marked.sorted",
       ref_dict = ref_dict,
       ref_fasta = ref_fasta,
@@ -645,11 +645,11 @@ workflow bam2gvcf {
   }
 
 
-#  call borrado as borrar_Markdup {
-#
-#   input:
-#     archivo_borrar = MarkDuplicates.output_bam
-# }
+  #call borrado as borrar_Markdup {
+
+   #input:
+   #  archivo_borrar = MarkDuplicates.output_bam
+ #}
 
 
   # Create list of sequences for scatter-gather parallelization 
@@ -793,7 +793,6 @@ call ScatterIntervalList {
      }
 }
 
-# Merge the recalibrated BAM files resulting from by-interval recalibration
   call GatherBamFilesHaplotype {
     input:
       input_bams = HaplotypeCaller.bam_haplotypecaller,
@@ -879,9 +878,8 @@ scatter (paths in salidas) {
    File output_vcf_index = MergeVCFs.output_vcf_index
 
    Array[File] borrar_Applybqsr = ApplyBQSR.recalibrated_bam 
-   File borrar_Markdup = MarkDuplicates.output_bam
+   #File borrar_Markdup = MarkDuplicates.output_bam
    File borrar_SortandFix = SortAndFixTags.output_bam
-   #File haplotypecaller_bam = HaplotypeCaller.bam_haplotypecaller
 
 
 } 

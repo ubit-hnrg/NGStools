@@ -156,7 +156,7 @@ String toolpath
 #String path_salida 
 
 command {
-/home/hnrg/NGStools/pipeline_wdl/qualityControl/samtools_stats_report.py -g=${samtools_global_report} -l=${samtools_library_report} -o=${sampleID}_samtools_report.tsv
+/home/hnrg/NGStools/pipeline_wdl/qualityControl/samtools_stats_report_v1.0.py -l=${samtools_library_report} -o=${sampleID}_samtools_report.tsv
 
 }
 
