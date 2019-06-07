@@ -148,15 +148,15 @@ File samtools_stat_TSO_bam = "${name}_TSO_samtools.stats"
 task samtools_reports_file {
 
 String sampleID
-Int N_total_reads_bam
+#Int N_total_reads_bam =
 #File samtools_global_report ##no va mas, necesita el numero total de reads
 File samtools_library_report
 String toolpath
 
-#String path_salida 
+#String path_salida -T=${N_total_reads_bam}
 
 command {
-/home/hnrg/NGStools/pipeline_wdl/qualityControl/samtools_stats_report.py -T=${N_total_reads_bam} -l=${samtools_library_report} -o=${sampleID}_samtools_report.tsv
+/home/hnrg/NGStools/pipeline_wdl/qualityControl/samtools_stats_report.py -l=${samtools_library_report} -o=${sampleID}_samtools_report.tsv
 
 }
 
