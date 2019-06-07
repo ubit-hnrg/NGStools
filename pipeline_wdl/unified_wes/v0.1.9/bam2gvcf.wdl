@@ -11,7 +11,7 @@ task bams_reads {
 
    output {
    String sampl = sample_name
-   Int N_reads = read_int(stdout())
+   String N_reads = stdout()
    }
 
   }
@@ -909,7 +909,7 @@ scatter (paths in salidas) {
    #File borrar_Markdup = MarkDuplicates.output_bam
    File borrar_SortandFix = SortAndFixTags.output_bam
    String sampl_name_bam = bams_reads.sampl 
-   Int N_reads_bam = bams_reads.N_reads 
+   String N_reads_bam = bams_reads.N_reads 
 
 
 } 

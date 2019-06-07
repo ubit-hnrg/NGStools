@@ -261,7 +261,7 @@ task symlink_important_files {
 }
 
 task mostrar_map {
-Map[String,Int] bams_N_reads_input
+Map[String,String] bams_N_reads_input
 
 command <<<
 echo '["bams_N_reads_input.left" , "bams_N_reads_input.right"]'
@@ -279,7 +279,7 @@ File tso_bed
 Array[File]+ fastp_json_files
 String Tso_name
 Array[String] path_save
-Map[String,Int] bams_N_reads
+Map[String,String] bams_N_reads
 
 scatter (fastp in fastp_json_files){
 call fastp_qual {
