@@ -1,0 +1,2 @@
+v1.7.0: agregado de reportes de calidad 
+v1.8.0: agregado de borrados de archivos intermedios, reduccion de bam a la salida de markduplicates, poder modificar parametros de trimmeado de fastp desde json 

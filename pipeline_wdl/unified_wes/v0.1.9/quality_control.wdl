@@ -148,15 +148,15 @@ File samtools_stat_TSO_bam = "${name}_TSO_samtools.stats"
 task samtools_reports_file {
 
 String sampleID
-#File sample
-File samtools_global_report
+#Int N_total_reads_bam =
+#File samtools_global_report ##no va mas, necesita el numero total de reads
 File samtools_library_report
 String toolpath
 
-#String path_salida 
+#String path_salida -T=${N_total_reads_bam}
 
 command {
-/home/hnrg/NGStools/pipeline_wdl/qualityControl/samtools_stats_report.py -g=${samtools_global_report} -l=${samtools_library_report} -o=${sampleID}_samtools_report.tsv
+/home/hnrg/NGStools/pipeline_wdl/qualityControl/samtools_stats_report.py -l=${samtools_library_report} -o=${sampleID}_samtools_report.tsv
 
 }
 
@@ -260,6 +260,15 @@ task symlink_important_files {
     }
 }
 
+task mostrar_map {
+Map[String,String] bams_N_reads_input
+
+command <<<
+echo '["bams_N_reads_input.left" , "bams_N_reads_input.right"]'
+>>>
+
+}
+
 
 workflow quality_control {
 
@@ -270,6 +279,7 @@ File tso_bed
 Array[File]+ fastp_json_files
 String Tso_name
 Array[String] path_save
+Map[String,String] bams_N_reads
 
 scatter (fastp in fastp_json_files){
 call fastp_qual {
@@ -304,12 +314,16 @@ input_orig_bam = bams_ready
 
 }
 
+call mostrar_map {
+input:
+bams_N_reads_input = bams_N_reads
 
+}
 call samtools_reports_file {
 
 input: 
 sampleID = bam_depth.sample_Name,
-samtools_global_report = samtools_stat.samtools_stat_original_bam,
+#samtools_global_report = samtools_stat.samtools_stat_original_bam,
 samtools_library_report = samtools_stat.samtools_stat_TSO_bam,
 toolpath = toolpath
 
