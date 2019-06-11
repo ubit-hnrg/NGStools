@@ -123,7 +123,7 @@ task symlink_important_files2 {
     String path_save
     String sample
     command{
-       ln -s ${output_to_save1} ${path_save}${sample} \
+       ln -s ${output_to_save1} ${path_save}${sample} 
        ln -s ${output_to_save2} ${path_save}${sample}
     }
 }
