@@ -1,8 +1,67 @@
+#####task del summary_metrics de samtools
+task samtools_stat{
+
+###herramientas
+#String gatk_jar
+
+String toolpath
+File TSO_bed #./TruSight_One_v1_padded_100_GRCh37.bed
+File input_bam_reducido
+String name
+
+command {
+
+
+##input es el bam recortado  y el intervalo de captura
+${toolpath}samtools stats ${input_bam_reducido} -t ${TSO_bed} > ${name}_TSO_samtools.stats
+
+}
+output {
+
+#File samtools_stats = 
+#File samtools_reduced_bam = $name'_samtools_reduced.stats'
+#File samtools_stat_original_bam = "${name}_orig_samtools.stats"
+File samtools_stat_TSO_bam = "${name}_TSO_samtools.stats"
+
+#File 
+
+}
+
+}
+
+
+task samtools_reports_file {
+
+String sampleID
+#Int N_total_reads_bam =
+#File samtools_global_report ##no va mas, necesita el numero total de reads
+File samtools_library_report
+String toolpath
+
+#String path_salida -T=${N_total_reads_bam}
+
+command {
+/home/hnrg/NGStools/pipeline_wdl/qualityControl/samtools_stats_report_v1.0.py -l=${samtools_library_report} -o=${sampleID}_samtools_report.tsv
+
+}
+
+output {
+ 
+File output_global_report = "${sampleID}_samtools_report.tsv" 
+
+}
+
+}
+
+
+
+
+
 task bams_reads {
    File bam
    String toolpath
    String sample_name
-#  echo ${sample_name}\t$({toolpath}samtools view -c ${bam})
+   #  echo ${sample_name}\t$({toolpath}samtools view -c ${bam})
 
    command {
   
@@ -17,48 +76,45 @@ task bams_reads {
   }
 
 
-task reduce_bam {
-  File input_bam
-  String toolpath
-  String output_bam_basename
-  File lib_resctricted 
+  task reduce_bam {
+   File input_bam
+   String toolpath
+   String output_bam_basename
+   File lib_resctricted 
  
 
 
-command <<<
-${toolpath}bedtools2/bin/intersectBed -a ${input_bam} -b ${lib_resctricted} -wa > ${output_bam_basename}_lib_resctricted.bam
+   command <<<
+   ${toolpath}bedtools2/bin/intersectBed -a ${input_bam} -b ${lib_resctricted} -wa > ${output_bam_basename}_lib_resctricted.bam
 
->>>
-  output {
+   >>>
+    output {
     File output_reduced_bam = "${output_bam_basename}_lib_resctricted.bam"
     
-}
-}
+   }
+  }
 
-# Mark duplicate reads to avoid counting non-independent observations
-task MarkDuplicates {
+  # Mark duplicate reads to avoid counting non-independent observations
+  task MarkDuplicates {
 
-  Array[File] input_bams
-  String output_bam_basename
-  String metrics_filename
-  Int compression_level
-  String java_heap_memory_initial
+   Array[File] input_bams
+   String output_bam_basename
+   String metrics_filename
+   Int compression_level
+   String java_heap_memory_initial
   
-  String gatk_jar
-  String toolpath
+   String gatk_jar
+   String toolpath
   
+   # Aggregate aligned+merged flowcell BAM files and mark duplicates
+   # We take advantage of the tool's ability to take multiple BAM inputs and write out a single output
+   # to avoid having to spend time just merging BAM files. 
 
-
-
- # Aggregate aligned+merged flowcell BAM files and mark duplicates
-  # We take advantage of the tool's ability to take multiple BAM inputs and write out a single output
-  # to avoid having to spend time just merging BAM files. 
-
- # Task is assuming query-sorted input so that the Secondary and Supplementary reads get marked correctly
- # This works because the output of BWA is query-grouped and therefore, so is the output of MergeBamAlignment.
- # While query-grouped isn't actually query-sorted, it's good enough for MarkDuplicates with ASSUME_SORT_ORDER="queryname"
- #-Xmx${java_heap_memory_initial}
-  command {
+   # Task is assuming query-sorted input so that the Secondary and Supplementary reads get marked correctly
+   # This works because the output of BWA is query-grouped and therefore, so is the output of MergeBamAlignment.
+   # While query-grouped isn't actually query-sorted, it's good enough for MarkDuplicates with ASSUME_SORT_ORDER="queryname"
+   #-Xmx${java_heap_memory_initial}
+   command {
     java -Dsamjdk.compression_level=${compression_level} -Xms4000m -jar ${toolpath}${gatk_jar} \
       MarkDuplicates \
       --INPUT=${sep=' --INPUT=' input_bams} \
@@ -69,60 +125,60 @@ task MarkDuplicates {
       --ASSUME_SORT_ORDER="queryname" \
       --CREATE_MD5_FILE=true \
     }
-  output {
+   output {
     File output_bam = "${output_bam_basename}.bam"
     File duplicate_metrics = "${metrics_filename}"
+   }
   }
-}
 
-# Sort BAM file by coordinate order and fix tag values for NM and UQ
-task SortAndFixTags {
-  File input_bam
-  String output_bam_basename
-  File ref_dict
-  File ref_fasta
-  File ref_fasta_index
-  String gatk_jar
-  String toolpath
+  # Sort BAM file by coordinate order and fix tag values for NM and UQ
+  task SortAndFixTags {
+   File input_bam
+   String output_bam_basename
+   File ref_dict
+   File ref_fasta
+   File ref_fasta_index
+   String gatk_jar
+   String toolpath
   
-  Int compression_level
+   Int compression_level
 
 
-  command {
-    set -o pipefail
+    command {
+     set -o pipefail
 
-    java -Dsamjdk.compression_level=${compression_level} -Xms4000m -jar ${toolpath}${gatk_jar} \
+     java -Dsamjdk.compression_level=${compression_level} -Xms4000m -jar ${toolpath}${gatk_jar} \
       SortSam \
       --INPUT ${input_bam} \
       --OUTPUT /dev/stdout \
       --SORT_ORDER "coordinate" \
       --CREATE_INDEX false \
       --CREATE_MD5_FILE false \
-    | \
-    java -Dsamjdk.compression_level=${compression_level} -Xms4000m -jar ${toolpath}${gatk_jar} \
+      | \
+     java -Dsamjdk.compression_level=${compression_level} -Xms4000m -jar ${toolpath}${gatk_jar} \
       SetNmMdAndUqTags \
       --INPUT /dev/stdin \
       --OUTPUT ${output_bam_basename}.bam \
       --CREATE_INDEX true \
       --CREATE_MD5_FILE true \
       --REFERENCE_SEQUENCE ${ref_fasta}
-  }
+    }
 
-  output {
+   output {
     File output_bam = "${output_bam_basename}.bam"
     File output_bam_index = "${output_bam_basename}.bai"
     File output_bam_md5 = "${output_bam_basename}.bam.md5"
+    }
   }
-}
 
-# Generate sets of intervals for scatter-gathering over chromosomes
-task CreateSequenceGroupingTSV {
-  File ref_dict  
+ # Generate sets of intervals for scatter-gathering over chromosomes
+ task CreateSequenceGroupingTSV {
+   File ref_dict  
   
-  # Use python to create the Sequencing Groupings used for BQSR and PrintReads Scatter. 
-  # It outputs to stdout where it is parsed into a wdl Array[Array[String]]
-  # e.g. [["1"], ["2"], ["3", "4"], ["5"], ["6", "7", "8"]]
-  command <<<
+   # Use python to create the Sequencing Groupings used for BQSR and PrintReads Scatter. 
+   # It outputs to stdout where it is parsed into a wdl Array[Array[String]]
+   # e.g. [["1"], ["2"], ["3", "4"], ["5"], ["6", "7", "8"]]
+   command <<<
     python <<CODE
     with open("${ref_dict}", "r") as ref_dict_file:
         sequence_tuple_list = []
@@ -157,13 +213,13 @@ task CreateSequenceGroupingTSV {
       tsv_file_with_unmapped.write(tsv_string)
       tsv_file_with_unmapped.close()
     CODE
-  >>>
+   >>>
   
-  output {
+   output {
     Array[Array[String]] sequence_grouping = read_tsv("sequence_grouping.txt")
     Array[Array[String]] sequence_grouping_with_unmapped = read_tsv("sequence_grouping_with_unmapped.txt")
+   }
   }
-}
 
 
 # Generate Base Quality Score Recalibration (BQSR) model
@@ -596,7 +652,8 @@ workflow bam2gvcf {
   #####opt de haplotypecaller
   String smith_waterman_implementation
   Float? contamination
-  String newqual 
+  String newqual
+  File tso_bed
   
 
 
@@ -636,14 +693,17 @@ Array[File] bams_entrada
         toolpath = toolpath
   }
 
+
+
+
  #scatter (bam in bams_N_reads){
-   call bams_reads {
-     input:
-     bam = MarkDuplicates.output_bam,
-     toolpath = toolpath,
-     sample_name = base_file_name
+   #call bams_reads {
+   #  input:
+   # bam = MarkDuplicates.output_bam,
+   #  toolpath = toolpath,
+   #  sample_name = base_file_name
     
-    }
+   # }
     #}
 
   call reduce_bam {
@@ -656,6 +716,26 @@ Array[File] bams_entrada
  #./TruSight_One_v1_padded_100_GRCh37.bed 
   }
   
+    call samtools_stat {
+      input:
+      toolpath = toolpath,
+      name = base_file_name, 
+      TSO_bed = tso_bed, #./TruSight_One_v1_padded_100_GRCh37.bed
+      input_bam_reducido = reduce_bam.output_reduced_bam
+
+  }
+   
+  call samtools_reports_file {
+
+    input: 
+    sampleID = base_file_name,
+    #samtools_global_report = samtools_stat.samtools_stat_original_bam,
+    samtools_library_report = samtools_stat.samtools_stat_TSO_bam,
+    toolpath = toolpath
+
+  }
+
+
 
 # Sort aggregated+deduped BAM file and fix tags
 ############### hay una version de wdl en la web que usa SamtoolsSort as SortSampleBam
@@ -877,7 +957,7 @@ call ScatterIntervalList {
   
 
 
-Array[File] salidas = ["${GatherBamFilesHaplotype.output_bam}","${GatherBamFilesHaplotype.output_bam_index}","${GatherBamFiles.output_bam}","${GatherBamFiles.output_bam_index}","${MergeVCFs.output_vcf}","${MergeVCFs.output_vcf_index}","${CollectGvcfCallingMetrics.summary_metrics}","${CollectGvcfCallingMetrics.detail_metrics}"]
+Array[File] salidas = ["${GatherBamFilesHaplotype.output_bam}","${GatherBamFilesHaplotype.output_bam_index}","${GatherBamFiles.output_bam}","${GatherBamFiles.output_bam_index}","${MergeVCFs.output_vcf}","${MergeVCFs.output_vcf_index}","${CollectGvcfCallingMetrics.summary_metrics}","${CollectGvcfCallingMetrics.detail_metrics}","${samtools_stat.samtools_stat_TSO_bam}","${samtools_reports_file.output_global_report}"]
 
 scatter (paths in salidas) {
     call symlink_important_files {
@@ -908,9 +988,14 @@ scatter (paths in salidas) {
    Array[File] borrar_Applybqsr = ApplyBQSR.recalibrated_bam 
    #File borrar_Markdup = MarkDuplicates.output_bam
    File borrar_SortandFix = SortAndFixTags.output_bam
-   String sampl_name_bam = bams_reads.sampl 
-   String N_reads_bam = bams_reads.N_reads 
+   #String sampl_name_bam = bams_reads.sampl 
+   #String N_reads_bam = bams_reads.N_reads 
+   #File Samt_bam_stat = samtools_stat.samtools_stat_original_bam 
+   File Samt_TSO_stat = samtools_stat.samtools_stat_TSO_bam
+   File reporte_final = samtools_reports_file.output_global_report ### archivo para mergear... estadistica en la libreria del experimento
 
+
+   #"samtools_stat.samtools_stat_TSO_bam","samtools_reports_file.output_global_report"
 
 } 
 

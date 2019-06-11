@@ -156,7 +156,7 @@ String toolpath
 #String path_salida -T=${N_total_reads_bam}
 
 command {
-/home/hnrg/NGStools/pipeline_wdl/qualityControl/samtools_stats_report.py -l=${samtools_library_report} -o=${sampleID}_samtools_report.tsv
+/home/hnrg/NGStools/pipeline_wdl/qualityControl/samtools_stats_report_v1.0.py -l=${samtools_library_report} -o=${sampleID}_samtools_report.tsv
 
 }
 
@@ -260,14 +260,15 @@ task symlink_important_files {
     }
 }
 
-task mostrar_map {
-Map[String,String] bams_N_reads_input
 
-command <<<
-echo '["bams_N_reads_input.left" , "bams_N_reads_input.right"]'
->>>
+#task mostrar_map {
+#Map[String,String] bams_N_reads_input
 
-}
+#command <<<
+#echo '["bams_N_reads_input.left" , "bams_N_reads_input.right"]'
+#>>>
+#
+#}
 
 
 workflow quality_control {
@@ -275,11 +276,11 @@ workflow quality_control {
 Array[File]+ analysis_readybam 
 String toolpath
 File exon_coords
-File tso_bed
+#File tso_bed
 Array[File]+ fastp_json_files
 String Tso_name
 Array[String] path_save
-Map[String,String] bams_N_reads
+#Map[String,String] bams_N_reads
 
 scatter (fastp in fastp_json_files){
 call fastp_qual {
@@ -306,33 +307,36 @@ toolpath = toolpath
 
 
 
-call samtools_stat {
-input:
-toolpath = toolpath,
-TSO_bed = tso_bed, #./TruSight_One_v1_padded_100_GRCh37.bed
-input_orig_bam = bams_ready
+#call samtools_stat {
+#input:
+#toolpath = toolpath,
+#TSO_bed = tso_bed, #./TruSight_One_v1_padded_100_GRCh37.bed
+#input_orig_bam = bams_ready
 
-}
+#}
 
-call mostrar_map {
-input:
-bams_N_reads_input = bams_N_reads
+#call mostrar_map {
+#input:
+#bams_N_reads_input = bams_N_reads
 
-}
-call samtools_reports_file {
+#}
 
-input: 
-sampleID = bam_depth.sample_Name,
+#call samtools_reports_file {
+
+#input: 
+#sampleID = bam_depth.sample_Name,
 #samtools_global_report = samtools_stat.samtools_stat_original_bam,
-samtools_library_report = samtools_stat.samtools_stat_TSO_bam,
-toolpath = toolpath
+#samtools_library_report = samtools_stat.samtools_stat_TSO_bam,
+#toolpath = toolpath
 
-}
+#}
 
 }
 
 Array[File] bams_stat_depth_global_coverage_stats = bam_depth.glob_cov_stats
-Array[File] stat_alineamiento = samtools_reports_file.output_global_report
+Array[File] stat_alineamiento 
+
+#Array[File] stat_alineamiento = samtools_reports_file.output_global_report
 Array[File] fastp_rep = fastp_qual.fastp_stats
 
 
@@ -427,10 +431,10 @@ output {
 Array[File] depth_global_cov_stats = bam_depth.glob_cov_stats ###estadistica del alineamiento...
 Array[File] by_exon_depth = bam_depth.cov_stats_by_exon
 #File coverage_merged_report = merge_reports.merged_report
-Array[File] reporte_final = samtools_reports_file.output_global_report ### archivo para mergear... estadistica en la libreria del experimento
+#Array[File] reporte_final = samtools_reports_file.output_global_report ### archivo para mergear... estadistica en la libreria del experimento
 File excel_qual_report = make_excel.reporte_excel
-Array[File] Samt_bam_stat = samtools_stat.samtools_stat_original_bam 
-Array[File] Samt_TSO_stat = samtools_stat.samtools_stat_TSO_bam
+#Array[File] Samt_bam_stat = samtools_stat.samtools_stat_original_bam 
+#Array[File] Samt_TSO_stat = samtools_stat.samtools_stat_TSO_bam
 
 
 

@@ -5,17 +5,20 @@ workflow processJointVCF {
 
     File multisampleVCF
     String toolpath
-    File region_padded_bed
+    File region_padded_bed ##Tso_bed
+    String path_softlink
+    Array[String] array_path_save
+
 
     # for annovar prouposes
     String db_annovar
     File annovar_table_pl
     File joinPY
 
-    File build_excell_py
-    Array[File] exon_coverage_reports
+    #File build_excell_py
+    #Array[File] exon_coverage_reports
 
-#    Array[String] path_save
+ #    Array[String] path_save
 
     call restrict_multisample_vcf{
         input:
@@ -72,11 +75,31 @@ workflow processJointVCF {
         #    exon_coverage_report =  prefix(sample,exon_coverage_reports)[0],
         #    sample=idsample.idsample,
         #    build_excell_py = build_excell_py
-        #}    
+        #}
+
+
+        call symlink_important_files2 {
+            input: 
+             output_to_save1 = annovar.annovar_vcf,
+             output_to_save2 = get_individual_vcf.one_sample_vcf,
+             path_save = path_softlink, 
+             sample = idsample.idsample
+
+
+
+        }
         
     }
 
-
+Array[File] salidas = ["${restrict_multisample_vcf.multisampleVCF_restricted}"]
+Array[Pair[String,File]] samples_x_files = cross (array_path_save, salidas)
+scatter (pairs in samples_x_files) {
+    call symlink_important_files {
+        input:
+        output_to_save = pairs.right,
+        path_save = pairs.left
+    }
+}
     
 
 
@@ -92,6 +115,27 @@ workflow processJointVCF {
         #File multisampleVCF_restricted_renamed = rename_samples.multisample_vcf_restricted_renamed
     }
 
+}
+
+task symlink_important_files2 {
+    File output_to_save1
+    File output_to_save2
+    String path_save
+    String sample
+    command{
+       ln -s ${output_to_save1} ${path_save}${sample} \
+       ln -s ${output_to_save2} ${path_save}${sample}
+    }
+}
+
+task symlink_important_files {
+    File output_to_save
+    String path_save
+ 
+    command{
+       ln -s ${output_to_save} ${path_save}
+
+    }
 }
 
 task idsample{

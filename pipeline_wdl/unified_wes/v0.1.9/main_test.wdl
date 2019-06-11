@@ -5,6 +5,7 @@ import './bam2gvcf.wdl' as bamtogvcf
 import './ubam2bwa.wdl' as ubam2bwa
 import './jointgenotype_sinrecalibracion.wdl' as joint_genotype
 import './quality_control.wdl' as qual_control 
+import './processMultisampleVCF.wdl' as splitVCF
 
 task borrado_fastp {
 File path1
@@ -145,6 +146,11 @@ workflow main_workflow {
   String newqual = "true"
 
 
+    String db_annovar #path annovar
+    File annovar_table_pl #/home/hnrg/HNRG-pipeline-V0.1/tools/annovar/table_annovar.pl
+    File joinPY #/home/hnrg/NGStools/pipeline_wdl/process_vcf/join_vcfs.py
+
+
   call fastq2ubam.ConvertPairedFastQsToUnmappedBamWf {  
       input: 
       tabulatedSampleFilePaths = tabulatedSampleFilePaths,
@@ -256,7 +262,8 @@ workflow main_workflow {
       smith_waterman_implementation = smith_waterman_implementation,
       contamination = contamination,
       newqual = newqual,
-      java_heap_memory_initial = java_heap_memory_initial
+      java_heap_memory_initial = java_heap_memory_initial,
+      tso_bed = tso_bed
     } 
 
     ####control de calidad... y reducir bams
@@ -365,6 +372,23 @@ workflow main_workflow {
      input_gvcfs_indices = bam2gvcf.output_vcf_index
   }
 
+
+   call splitVCF.processJointVCF {
+     input:
+     multisampleVCF = JointGenotyping.outputvcf,
+     array_path_save = mkdir_samplename.path_out_softlink,
+
+     toolpath = toolpath, 
+     region_padded_bed = tso_bed,##Tso_bed
+     path_softlink = path_softlink,
+
+    # for annovar prouposes
+    db_annovar = db_annovar,#path annovar
+    annovar_table_pl = annovar_table_pl, #/home/hnrg/HNRG-pipeline-V0.1/tools/annovar/table_annovar.pl
+    joinPY = joinPY #/home/hnrg/NGStools/pipeline_wdl/process_vcf/join_vcfs.py
+
+   }
+
  #Array[File] salidas = ["${GatherBamFiles.output_bam}","${GatherBamFiles.output_bam_index}","${MergeVCFs.output_vcf}","${MergeVCFs.output_vcf_index}","${CollectGvcfCallingMetrics.summary_metrics}","${CollectGvcfCallingMetrics.detail_metrics}"]
 
  #scatter (paths in salidas) {
@@ -397,18 +421,19 @@ workflow main_workflow {
  #    }
  #}
   
-Map[String,Int] bams_N_reads = {"bam2gvcf.sampl_name_bam" : "${bam2gvcf.N_reads_bam}"}
+#Map[String,String] bams_N_reads = {"bam2gvcf.sampl_name_bam" : "${am2gvcf.N_reads_bam}"}
 
   call qual_control.quality_control {
    input: 
-   bams_N_reads = bams_N_reads,
+   stat_alineamiento = bam2gvcf.reporte_final,
+   #bams_N_reads = bams_N_reads,
    fastp_json_files = ConvertPairedFastQsToUnmappedBamWf.fastp_json_reports,
    path_save = mkdir_samplename.path_out_softlink,
    analysis_readybam = bam2gvcf.analysis_ready_bam,
    toolpath = toolpath,
    Tso_name = basename(tabulatedSampleFilePaths, ".txt"),
-   exon_coords = exon_coords,
-   tso_bed = tso_bed
+   exon_coords = exon_coords
+   #tso_bed = tso_bed
   }
 
 
@@ -459,6 +484,11 @@ Map[String,Int] bams_N_reads = {"bam2gvcf.sampl_name_bam" : "${bam2gvcf.N_reads_
    File? detail_metrics_file =  JointGenotyping.metrica1
    File? summary_metrics_file = JointGenotyping.metrica2
    File? intervalo = JointGenotyping.inter
+
+   #Array[File] Samt_bam_stat = bam2gvcf.Samt_bam_stat 
+   Array[File] Samt_TSO_stat = bam2gvcf.Samt_TSO_stat
+   Array[File] reporte_final = bam2gvcf.reporte_final ### archivo para mergear... estadistica en la libreria del experimento
+
   
   }
 

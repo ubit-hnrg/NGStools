@@ -68,7 +68,12 @@
   "##COMMENT9":"ARCHIVOS PARA EL CONTROL DE CALIDAD",
   
   "main_workflow.tso_bed":"/home/hnrg/HNRG-pipeline-V0.1/libraries/GRCh37/TruSight_One_v1_padded_100_GRCh37.bed",
-  "main_workflow.exon_coords":"/home/hnrg/HNRG-pipeline-V0.1/libraries/GRCh37/exon_coords_in_TSO_V1_padded.bed"
+  "main_workflow.exon_coords":"/home/hnrg/HNRG-pipeline-V0.1/libraries/GRCh37/exon_coords_in_TSO_V1_padded.bed",
+
+  "##COMMENT10":"programas para dividir vcf",
+  "main_workflow .annovar_table_pl": "/home/hnrg/HNRG-pipeline-V0.1/tools/annovar/table_annovar.pl",
+  "main_workflow.db_annovar": "/home/hnrg/HNRG-pipeline-V0.1/dbs/hg19_annovar/",
+  "main_workflow.joinPY": "/home/hnrg/NGStools/pipeline_wdl/process_vcf/join_vcfs.py"
 
 }
 
