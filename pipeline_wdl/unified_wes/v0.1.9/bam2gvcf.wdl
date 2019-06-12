@@ -12,7 +12,7 @@ String name
 command <<<
     set -e
     set -o pipefail
- bgzip ${input_bam_reducido} > "${input_bam_reducido}.gz"; tabix -p sam "${input_bam_reducido}.gz" ; bgzip -d "${input_bam_reducido}.gz" | 
+ bgzip ${input_bam_reducido} | tabix -p sam /dev/stdout | bgzip -d | 
 #${toolpath}samtools sort ${input_bam_reducido} | 
 ##input es el bam recortado  y el intervalo de captura
 ${toolpath}samtools stats /dev/stdout  -t ${TSO_bed} > ${name}_TSO_samtools.stats
