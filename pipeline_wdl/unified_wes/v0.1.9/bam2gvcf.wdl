@@ -9,13 +9,15 @@ File TSO_bed #./TruSight_One_v1_padded_100_GRCh37.bed
 File input_bam_reducido
 String name
 
-command {
-
+command <<<
+    set -e
+    set -o pipefail
+ bgzip ${input_bam_reducido} > "${input_bam_reducido}.gz"; tabix -p sam "${input_bam_reducido}.gz" ; bgzip -d "${input_bam_reducido}.gz" > "$input_bam"
 
 ##input es el bam recortado  y el intervalo de captura
-${toolpath}samtools stats ${input_bam_reducido} -t ${TSO_bed} > ${name}_TSO_samtools.stats
+${toolpath}samtools stats $input_bam -t ${TSO_bed} > ${name}_TSO_samtools.stats
 
-}
+>>>
 output {
 
 #File samtools_stats = 
@@ -85,7 +87,7 @@ task bams_reads {
 
 
    command <<<
-   ${toolpath}bedtools2/bin/intersectBed -a ${input_bam} -b ${lib_resctricted} -wa > ${output_bam_basename}_lib_resctricted.bam
+   ${toolpath}bedtools2/bin/intersectBed -a ${input_bam} -b ${lib_resctricted} -wa > ${output_bam_basename}_lib_resctricted.bam 
 
    >>>
     output {
@@ -706,24 +708,24 @@ Array[File] bams_entrada
    # }
     #}
 
-  call reduce_bam {
-  input:
-  input_bam = MarkDuplicates.output_bam, 
-  #input_bam = bam_markdup,
-  toolpath = toolpath,
-  output_bam_basename = base_file_name, 
-  lib_resctricted = lib_resctricted
- #./TruSight_One_v1_padded_100_GRCh37.bed 
-  }
+     call reduce_bam {
+       input:
+       input_bam = MarkDuplicates.output_bam, 
+       #input_bam = bam_markdup,
+       toolpath = toolpath,
+       output_bam_basename = base_file_name, 
+       lib_resctricted = lib_resctricted
+       #./TruSight_One_v1_padded_100_GRCh37.bed 
+      }
   
-    call samtools_stat {
+     call samtools_stat {
       input:
       toolpath = toolpath,
       name = base_file_name, 
       TSO_bed = tso_bed, #./TruSight_One_v1_padded_100_GRCh37.bed
       input_bam_reducido = reduce_bam.output_reduced_bam
 
-  }
+     }
    
   call samtools_reports_file {
 
