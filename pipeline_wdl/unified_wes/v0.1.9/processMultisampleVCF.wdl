@@ -83,7 +83,7 @@ workflow processJointVCF {
              output_to_save1 = annovar.annovar_vcf,
              output_to_save2 = get_individual_vcf.one_sample_vcf,
              path_save = path_softlink, 
-             sample = idsample.idsample
+             sample = original_sample
 
 
 
