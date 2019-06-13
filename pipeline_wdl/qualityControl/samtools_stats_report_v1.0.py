@@ -4,12 +4,12 @@ import sys
 import argparse
 
 parser = argparse.ArgumentParser(prog='samtools_stat_report.py',description='Make aligment report from samtools stat reports', usage='%(prog)s  --samtools_global_report --samtools_library_report --output_file')
-#parser.add_argument('-N','--total_reads', type=float,help='Number of total reads that passed quality criteria')
+parser.add_argument('-N','--total_reads', type=float,help='Number of total reads that passed quality criteria')
 parser.add_argument('-l','--samtools_library_report', help='library kit restricted report from samtools stat tool')
 parser.add_argument('-o','--output_file')
 
 args = parser.parse_args()
-#total_reads = args.total_reads
+total_reads = args.total_reads
 samtools_kit_report_file = args.samtools_library_report
 output = args.output_file
 
@@ -41,30 +41,29 @@ def parse_samtools_report_SN(samtools_stat_file):
 samtools_kit_report = parse_samtools_report_SN(samtools_kit_report_file)
 
 
-#percents = 100*samtools_global_report[['reads properly paired','reads duplicated','reads MQ0']]/samtools_global_report['raw total sequences']
-#percents = percents.append(samtools_global_report[['average quality','maximum length']])
-#percents = percents.append(samtools_global_report[['error rate']]*100)
+#absolute_reads_tso = samtools_kit_report['reads properly paired']
+#absolute_reads_tso.rename(columns={'reads properly paired':'Number of reads properly paired'},inplace = True)
 
-#percents_tso = 100*samtools_kit_report[['reads properly paired','reads duplicated','reads MQ0']]/total_reads
-percents_tso = samtools_kit_report[['reads properly paired','reads duplicated','reads MQ0']]
+percents_tso = 100*samtools_kit_report[['reads properly paired','reads duplicated','reads MQ0']]/float(total_reads)
+#percents_tso = samtools_kit_report[['reads properly paired','reads duplicated','reads MQ0']]
 
 percents_tso = percents_tso.append(samtools_kit_report[['average quality','maximum length']])
 percents_tso = percents_tso.append(samtools_kit_report[['error rate']]*100)
 
+percents_tso.rename(index={'reads properly paired':'Percent of reads properly paired'},inplace = True)
+
+#percents_tso = percents_tso.append(absolute_reads_tso)
+
+
+percents_tso = percents_tso.append(pd.Series([total_reads],index=['Number of reads properly paired'])) # !!!! uncomment!!!!
 percents_tso.index = percents_tso.index+' in Library'
-percents_tso.rename(columns={'reads properly paired':'reads properly paired'})
 
-#merge both analysis
-#percents = percents.append(percents_tso)
-
-#percents_tso = percents_tso.append(pd.Series([total_reads],index=['raw total sequences']))  !!!! uncomment!!!!
 percents_tso.index = percents_tso.index.str.replace(' ','-')
-
 
 report = percents_tso.loc[[
 #    u'raw-total-sequences',
-#             u'reads-properly-paired',
-             u'reads-properly-paired-in-Library',
+             u'Number-of-reads-properly-paired-in-Library',
+             u'Percent-of-reads-properly-paired-in-Library',
 #             u'reads-duplicated',
              u'reads-duplicated-in-Library',
 #             u'reads-MQ0',
@@ -73,8 +72,7 @@ report = percents_tso.loc[[
              u'error-rate-in-Library',
              u'maximum-length-in-Library']]
 
-print report
-report.iloc[1:4] = report.iloc[1:4].round(2).map('{:,.2f} %'.format)
+report.iloc[1:5] = report.iloc[1:5].round(2).map('{:,.2f} %'.format)
 report[0] = '{:.0f}'.format(report[0])
 report.to_csv(output,sep='\t')
 
