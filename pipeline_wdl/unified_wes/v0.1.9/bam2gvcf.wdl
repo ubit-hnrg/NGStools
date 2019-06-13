@@ -744,25 +744,7 @@ Array[File] bams_entrada
  #}
 
 
-    call samtools_stat {
-      input:
-      toolpath = toolpath,
-      name = base_file_name, 
-      TSO_bed = tso_bed, #./TruSight_One_v1_padded_100_GRCh37.bed
-      input_bam_reducido = SortAndFixTags.output_bam,
-      #input_bam_reducido = reduce_bam.output_reduced_bam
-
-     }
-   
-  call samtools_reports_file {
-
-    input: 
-    sampleID = base_file_name,
-    #samtools_global_report = samtools_stat.samtools_stat_original_bam,
-    samtools_library_report = samtools_stat.samtools_stat_TSO_bam,
-    toolpath = toolpath
-
-  }
+    
 
 
   # Create list of sequences for scatter-gather parallelization 
@@ -860,6 +842,26 @@ scatter (subgroup in CreateSequenceGroupingTSV.sequence_grouping_with_unmapped) 
 ## Output :
 ## - A clean BAM file and its index, suitable for variant discovery analyses.
 ##################################################################################
+call samtools_stat {
+      input:
+      toolpath = toolpath,
+      name = base_file_name, 
+      TSO_bed = tso_bed, #./TruSight_One_v1_padded_100_GRCh37.bed
+      input_bam_reducido = GatherBamFiles.output_bam,
+      #input_bam_reducido = reduce_bam.output_reduced_bam
+
+     }
+   
+  call samtools_reports_file {
+
+    input: 
+    sampleID = base_file_name,
+    #samtools_global_report = samtools_stat.samtools_stat_original_bam,
+    samtools_library_report = samtools_stat.samtools_stat_TSO_bam,
+    toolpath = toolpath
+
+  }
+
 
 
 

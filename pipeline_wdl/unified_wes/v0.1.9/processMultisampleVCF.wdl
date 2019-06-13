@@ -228,6 +228,11 @@ task get_individual_vcf{
 task annovar{
     File one_sample_vcf
     File annovar_table_pl
+    File convert2annovar
+    File annotate_variation
+    File variants_reduction
+
+
     String db_annovar
     String sample
     

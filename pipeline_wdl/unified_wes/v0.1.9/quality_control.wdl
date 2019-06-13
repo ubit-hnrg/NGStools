@@ -197,24 +197,24 @@ File merged_report = "${TSO_name}.merged_report"
 
 }
 
-task merge_samtools_reports {
+#task merge_samtools_reports {
 ####inputs del paso1 
-Array[File] samtools_reports_files
-String TSO_name
+#Array[File] samtools_reports_files
+#String TSO_name
 #String toolpath
 #File coverage_stats 
 
 
-command{
-/home/hnrg/NGStools/pipeline_wdl/qualityControl/merge_sample_reports.py -i ${samtools_reports_files} -o ${TSO_name}.merged_st_report
-}
+#command{
+#/home/hnrg/NGStools/pipeline_wdl/qualityControl/merge_sample_reports.py -i ${samtools_reports_files} -o ${TSO_name}.merged_st_report
+#}
 
-output {
-File merged_st_report = "${TSO_name}.merged_st_report"
+#output {
+#File merged_st_report = "${TSO_name}.merged_st_report"
 
-}
+#}
 
-}
+#}
 
 task CreateFoFN {
   # Command parameters
