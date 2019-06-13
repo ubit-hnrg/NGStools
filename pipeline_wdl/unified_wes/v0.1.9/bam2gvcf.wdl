@@ -13,9 +13,9 @@ command <<<
     set -e
     set -o pipefail
  #bgzip ${input_bam_reducido} | tabix -p sam /dev/stdout | bgzip -d | 
-${toolpath}samtools sort ${input_bam_reducido} | 
+#${toolpath}samtools sort ${input_bam_reducido} | 
 ##input es el bam recortado  y el intervalo de captura
-${toolpath}samtools stats /dev/stdout  -t ${TSO_bed} > ${name}_TSO_samtools.stats
+${toolpath}samtools stats ${input_bam_reducido}  -t ${TSO_bed} > ${name}_TSO_samtools.stats
 
 >>>
 output {
@@ -718,24 +718,6 @@ Array[File] bams_entrada
        #./TruSight_One_v1_padded_100_GRCh37.bed 
       }
   
-     call samtools_stat {
-      input:
-      toolpath = toolpath,
-      name = base_file_name, 
-      TSO_bed = tso_bed, #./TruSight_One_v1_padded_100_GRCh37.bed
-      input_bam_reducido = reduce_bam.output_reduced_bam
-
-     }
-   
-  call samtools_reports_file {
-
-    input: 
-    sampleID = base_file_name,
-    #samtools_global_report = samtools_stat.samtools_stat_original_bam,
-    samtools_library_report = samtools_stat.samtools_stat_TSO_bam,
-    toolpath = toolpath
-
-  }
 
 
 
@@ -760,6 +742,27 @@ Array[File] bams_entrada
    #input:
    #  archivo_borrar = MarkDuplicates.output_bam
  #}
+
+
+    call samtools_stat {
+      input:
+      toolpath = toolpath,
+      name = base_file_name, 
+      TSO_bed = tso_bed, #./TruSight_One_v1_padded_100_GRCh37.bed
+      input_bam_reducido = SortAndFixTags.output_bam,
+      #input_bam_reducido = reduce_bam.output_reduced_bam
+
+     }
+   
+  call samtools_reports_file {
+
+    input: 
+    sampleID = base_file_name,
+    #samtools_global_report = samtools_stat.samtools_stat_original_bam,
+    samtools_library_report = samtools_stat.samtools_stat_TSO_bam,
+    toolpath = toolpath
+
+  }
 
 
   # Create list of sequences for scatter-gather parallelization 
