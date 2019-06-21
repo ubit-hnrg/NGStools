@@ -91,7 +91,7 @@ workflow processJointVCF {
         
     }
 
-Array[File] salidas = ["${restrict_multisample_vcf.multisampleVCF_restricted}"]
+Array[File] salidas = ["${restrict_multisample_vcf.multisampleVCF_restricted}","${get_tsv_from_annovar.annovar_tsv}"]
 Array[Pair[String,File]] samples_x_files = cross (array_path_save, salidas)
 scatter (pairs in samples_x_files) {
     call symlink_important_files {
