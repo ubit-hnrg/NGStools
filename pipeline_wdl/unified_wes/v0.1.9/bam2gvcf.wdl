@@ -699,13 +699,13 @@ Array[File] bams_entrada
 
 
  #scatter (bam in bams_N_reads){
-   #call bams_reads {
-   #  input:
-   # bam = MarkDuplicates.output_bam,
-   #  toolpath = toolpath,
-   #  sample_name = base_file_name
+   call bams_reads {
+     input:
+    bam = MarkDuplicates.output_bam,
+     toolpath = toolpath,
+     sample_name = base_file_name
     
-   # }
+    }
     #}
 
      call reduce_bam {
