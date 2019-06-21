@@ -35,7 +35,7 @@ File samtools_stat_TSO_bam = "${name}_TSO_samtools.stats"
 task samtools_reports_file {
 
 String sampleID
-String N_total_reads_bam
+Int N_total_reads_bam
 #File samtools_global_report ##no va mas, necesita el numero total de reads
 File samtools_library_report
 String toolpath
@@ -72,7 +72,7 @@ task bams_reads {
 
    output {
    String sampl = sample_name
-   String N_reads = stdout()
+   Int N_reads = read_int(stdout())
    }
 
   }
