@@ -71,7 +71,7 @@ workflow processJointVCF {
 
         #call build_excell_report{
         #    input:
-        #    annovar_tsv = get_tsv_from_annovar.annovar_tsv,
+        #    annovar_tsv = get_tsv_from_annovar.[annovar_tsv],
         #    exon_coverage_report =  prefix(sample,exon_coverage_reports)[0],
         #    sample=idsample.idsample,
         #    build_excell_py = build_excell_py
@@ -91,7 +91,7 @@ workflow processJointVCF {
         
     }
 
-Array[File] salidas = ["${restrict_multisample_vcf.multisampleVCF_restricted}","${get_tsv_from_annovar.annovar_tsv}"]
+Array[File] salidas = [restrict_multisample_vcf.multisampleVCF_restricted, get_tsv_from_annovar.annovar_tsv]
 Array[Pair[String,File]] samples_x_files = cross (array_path_save, salidas)
 scatter (pairs in samples_x_files) {
     call symlink_important_files {
