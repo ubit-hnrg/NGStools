@@ -82,22 +82,13 @@ workflow processJointVCF {
             input: 
              output_to_save1 = annovar.annovar_vcf,
              output_to_save2 = get_individual_vcf.one_sample_vcf,
+             output_to_save3 = get_tsv_from_annovar.annovar_tsv,
              path_save = path_softlink, 
              sample = sample
 
 
 
         }
-
-        call symlink_important_files as link_annovar_tsv {
-        input:
-        output_to_save = get_tsv_from_annovar.annovar_tsv,
-        path_save = path_softlink
-        #output_to_save = pairs,
-        #path_save = array_path_save
-
-
-    }
 
 
 
@@ -140,11 +131,13 @@ scatter (pairs in samples_x_files) {
 task symlink_important_files2 {
     File output_to_save1
     File output_to_save2
+    File output_to_save3
     String path_save
     String sample
     command{
        ln -s ${output_to_save1} ${path_save}${sample} 
        ln -s ${output_to_save2} ${path_save}${sample}
+       ln -s ${output_to_save3} ${path_save}${sample}
     }
 }
 
