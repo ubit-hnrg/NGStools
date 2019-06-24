@@ -479,6 +479,17 @@ Array[File] Tsv_annovar = processJointVCF.annovar_tsv_out
            }
         }
 
+Array[File] reporte_variantes = build_excell_report.excell_report
+#Array[String] array_path_save_byexon = mkdir_samplename.path_out_softlink
+ Array[Pair[String,File]] samples_by_variant = zip (array_path_save_byexon, reporte_variantes)
+  scatter (pairs in samples_by_variant) {
+    call symlink_important_files as byvariants{
+        input:
+        output_to_save = pairs.right,
+        path_save = pairs.left
+    }
+  }
+
  #Array[File] archivos_Apply = bam2gvcf.borrar_Applybqsr
  #scatter (archivos_app in archivos_Apply ){
  #call borrado as borrado_Apply{
