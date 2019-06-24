@@ -66,7 +66,7 @@ task bams_reads {
 
    command {
   
-    ${toolpath}samtools view -c ${bam} | echo
+    echo |${toolpath}samtools view -c ${bam} 
    }
 
    output {
