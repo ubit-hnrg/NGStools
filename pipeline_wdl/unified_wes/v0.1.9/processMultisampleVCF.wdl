@@ -88,6 +88,19 @@ workflow processJointVCF {
 
 
         }
+
+        call symlink_important_files as link_annovar_tsv {
+        input:
+        output_to_save = get_tsv_from_annovar.annovar_tsv,
+        path_save = path_softlink
+        #output_to_save = pairs,
+        #path_save = array_path_save
+
+
+    }
+
+
+
         
     }
 
@@ -104,20 +117,7 @@ scatter (pairs in samples_x_files) {
 
     }
 }
-    
-Array[File] salidas1 = ["${get_tsv_from_annovar.annovar_tsv}"]
-Array[Pair[String,File]] samples_x_files1 = cross (array_path_save, salidas1)
-scatter (pairs in samples_x_files1) {
-    call symlink_important_files as links_a_annovar_tsv {
-        input:
-        output_to_save = pairs.right,
-        path_save = pairs.left
-        #output_to_save = pairs,
-        #path_save = array_path_save
 
-
-    }
-}
 
 
 
