@@ -58,7 +58,6 @@ File output_global_report = "${sampleID}_samtools_report.tsv"
 
 
 
-
 task bams_reads {
    File bam
    String toolpath
@@ -67,7 +66,7 @@ task bams_reads {
 
    command {
   
-    ${toolpath}samtools view -c ${bam}
+    ${toolpath}samtools view -c ${bam} | echo
    }
 
    output {
