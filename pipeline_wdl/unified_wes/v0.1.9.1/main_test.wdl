@@ -28,12 +28,16 @@ task build_excell_report{
     File annovar_tsv
     File exon_coverage_report
     String sample
+    String samplename2
     #String original_sample
   
     
-    command{
+    command<<<
+    if [ "${sample}" == "${samplename2}"]; then 
+
         /home/hnrg/NGStools/pipeline_wdl/qualityControl/make_excel_report.py ${annovar_tsv}:Variants ${exon_coverage_report}:ExonCoverage ${sample}.variants.xlsx
-    }     
+    fi
+    >>>     
 
     output{
         File excell_report = '${sample}.variants.xlsx'
@@ -468,16 +472,23 @@ workflow main_workflow {
     }
   }
 
+#String samplename2 
 Array[File] Tsv_annovar = processJointVCF.annovar_tsv_out
     scatter (idx in range(length(Tsv_annovar))){
+
+           
+
        call build_excell_report {
             input:
             annovar_tsv = Tsv_annovar[idx],
             exon_coverage_report = prof_by_exon[idx],
-            sample=basename(Tsv_annovar[idx],".multianno_multisample.tsv")
-          
+            sample = basename(prof_by_exon[idx],"_coverage_statistics_by_exon.tsv"),
+            samplename2 = basename(prof_by_exon[idx],"_coverage_statistics_by_exon.tsv")
            }
-        }
+      
+      
+
+    }
 
 Array[File] reporte_variantes = build_excell_report.excell_report
 #Array[String] array_path_save_byexon = mkdir_samplename.path_out_softlink
