@@ -480,9 +480,6 @@ workflow main_workflow {
 #String samplename2 
 Array[File] Tsv_annovar = processJointVCF.annovar_tsv_out
     scatter (idx in range(length(Tsv_annovar))){
-
-           
-
        call build_excell_report {
             input:
             annovar_tsv = Tsv_annovar[idx],

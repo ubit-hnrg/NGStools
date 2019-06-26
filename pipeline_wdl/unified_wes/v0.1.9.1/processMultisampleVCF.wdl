@@ -295,13 +295,13 @@ task get_tsv_from_annovar {
     sed -i "s/Otherinfo/$vcf_header/g" ${sample}.hg19_multianno.tsv;
 
     #join one multianno tsv file AND joint genotyped vcf. This script (join_vcf.py) also postprocess Intervar columns.
-    python ${joinPY} --multianno_tsv=${sample}.hg19_multianno.tsv --vcf_multisample=${multisampleVCF} --output=${sample}.multianno_multisample.tsv
+    python ${joinPY} --multianno_tsv=${sample}.hg19_multianno.tsv --vcf_multisample=${multisampleVCF} --output=${sample1}.multianno_multisample.tsv
     #change dots by tabs.
     sed -i -e "s|\.	|	|g" ${sample}.multianno_multisample.tsv
 
     >>>
     output{
-        File annovar_tsv =  '${sample}.multianno_multisample.tsv'
+        File annovar_tsv =  '${sample1}.multianno_multisample.tsv'
     }
 }
 
@@ -309,7 +309,7 @@ task build_excell_report{
     File annovar_tsv
     File exon_coverage_report
     String sample
-    String original_sample
+    #String original_sample
   
     
     command{
