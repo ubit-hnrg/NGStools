@@ -482,7 +482,7 @@ Array[File] Tsv_annovar = processJointVCF.annovar_tsv_out
             input:
             annovar_tsv = Tsv_annovar[idx],
             exon_coverage_report = prof_by_exon[idx],
-            sample = basename(prof_by_exon[idx],"_coverage_statistics_by_exon.tsv"),
+            sample = basename(Tsv_annovar[idx],"_multianno_multisample.tsv"),
             samplename2 = basename(prof_by_exon[idx],"_coverage_statistics_by_exon.tsv")
            }
       
