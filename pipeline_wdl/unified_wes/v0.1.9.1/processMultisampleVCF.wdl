@@ -65,6 +65,7 @@ workflow processJointVCF {
             annovar_vcf = annovar.annovar_vcf,
             multisampleVCF = rename_samples.multisample_vcf_restricted_renamed,
             sample = idsample.idsample,
+            sample1 = sample,
             joinPY = joinPY
         }
 
@@ -273,6 +274,7 @@ task get_tsv_from_annovar {
     File annovar_vcf
     File multisampleVCF
     String sample
+    String sample1
     File joinPY    #this file merge the multianno.tsv file with the original multisample vcf
 
 

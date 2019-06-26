@@ -47,6 +47,9 @@ workflow ConvertPairedFastQsToUnmappedBamWf {
 
 
   String ubam_list_name
+  ####fastp
+  Int trim_front
+  Int trim_tail
 
 
   #obtain array variables from tabulated file
