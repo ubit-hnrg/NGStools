@@ -51,9 +51,10 @@ def main():
     body = multianno_hnrg.sort_values(by=[u'#CHROM','POS'],ascending = [True,True])
     info = 'InterVarVeredict='+multianno_hnrg.InterVarVeredict+';'+'InterVarEvidence='+multianno_hnrg.InterVarEvidence
 
-    body['QUAL']='.'
-    body['FILTER']='PASS'
-    body['INFO']=info
+    body['QUAL'] = '.'
+    body['FILTER'] = 'PASS'
+    body['INFO'] = info
+    body['INFO'] = body['INFO'].str.replace('.','-')
     body.drop(['InterVarVeredict','InterVarEvidence'],axis = 1,inplace = True)
     
     with open(outfile,'wb') as f:
