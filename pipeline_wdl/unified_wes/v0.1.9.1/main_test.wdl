@@ -142,7 +142,10 @@ workflow main_workflow {
   Array[File] known_indels_sites_VCFs
   Array[File] known_indels_sites_indices
 
-    
+  ##### parametros trimmeado fastp
+  Int trim_front_fastp = "5" 
+  Int trim_tail_fastp = "5"
+  ####
   ###Scatter interval
   #archivo de listas de cobertura de intervalos 
   #File wgs_calling_interval_list
@@ -173,6 +176,8 @@ workflow main_workflow {
 
   call fastq2ubam.ConvertPairedFastQsToUnmappedBamWf {  
       input: 
+      trim_front = trim_front_fastp, 
+      trim_tail = trim_tail_fastp,
       tabulatedSampleFilePaths = tabulatedSampleFilePaths,
       run_date = run_date,                   
       library_name = library_name,   
