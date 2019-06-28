@@ -6,6 +6,7 @@ import './ubam2bwa.wdl' as ubam2bwa
 import './jointgenotype_sinrecalibracion.wdl' as joint_genotype
 import './quality_control.wdl' as qual_control 
 import './processMultisampleVCF.wdl' as splitVCF
+import './anotaciones_hnrg.wdl' as anotaciones
 
 task borrado_fastp {
 File path1
@@ -31,16 +32,17 @@ task build_excell_report{
     String samplename2
     #String original_sample
   
-    
-    command<<<
-    if [ "${sample}" == "${samplename2}"]; then 
+     #/home/hnrg/NGStools/pipeline_wdl/qualityControl/make_excel_report.py ${annovar_tsv}:Variants ${exon_coverage_report}:ExonCoverage ${sample}.output_xlsx
 
-        /home/hnrg/NGStools/pipeline_wdl/qualityControl/make_excel_report.py ${annovar_tsv}:Variants ${exon_coverage_report}:ExonCoverage ${sample}.variants.xlsx
+    command<<<
+    if [ "${sample}" = "${samplename2}"]; then 
+       /home/hnrg/NGStools/pipeline_wdl/qualityControl/make_excel_report.py ${annovar_tsv}:Variants ${exon_coverage_report}:ExonCoverage ${samplename2}_variants.xlsx
+   
     fi
     >>>     
 
     output{
-        File excell_report = '${sample}.variants.xlsx'
+        File excell_report = '${samplename2}_variants.xlsx'
     }
 }    
 
@@ -167,6 +169,11 @@ workflow main_workflow {
   String smith_waterman_implementation = "AVX_ENABLED"
   Float? contamination = "0"
   String newqual = "true"
+
+
+  ##################anotacion funcional
+  String reference_version = "GRCh37.75"
+
 
 
     String db_annovar #path annovar
@@ -510,6 +517,24 @@ Array[File] reporte_variantes = build_excell_report.excell_report
  #archivo_borrar = archivos_app
  #} 
  #}
+
+
+
+ ####anotaciones funcionales
+Array[File] vcf_individuales = processJointVCF.individual_vcfs_annovar
+Array[Pair[String,File]] vcf_x_path = zip (array_path_save_byexon, vcf_individuales)
+  scatter (vcf in vcf_x_path) {
+    call anotaciones.FuncionalAnnotation {
+        input:
+        input_vcf = vcf.right,
+        path_save = vcf.left,
+        toolpath = toolpath,
+        samplename1 = basename(vcf.right,".hg19_multianno.vcf"),
+        java_heap_memory_initial = "12g",
+        reference_version = reference_version,
+
+      }
+    }
 
     # Outputs that will be retained when execution is complete
   output {

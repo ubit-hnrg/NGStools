@@ -59,6 +59,8 @@ workflow processJointVCF {
             db_annovar = db_annovar
          }
 
+         
+
         call get_tsv_from_annovar {
             input:
             annovar_txt = annovar.annovar_txt,
