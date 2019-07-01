@@ -34,13 +34,13 @@ task build_excell_report{
   
      #/home/hnrg/NGStools/pipeline_wdl/qualityControl/make_excel_report.py ${annovar_tsv}:Variants ${exon_coverage_report}:ExonCoverage ${sample}.output_xlsx
 
-    command<<<
-    #!/bin/bash
+    command{
+
     if [ "${sample}" = "${samplename2}"]; then 
        /home/hnrg/NGStools/pipeline_wdl/qualityControl/make_excel_report.py ${annovar_tsv}:Variants ${exon_coverage_report}:ExonCoverage ${samplename2}_variants.xlsx
    
     fi
-    >>>     
+   }    
 
     output{
         File excell_report = '${samplename2}_variants.xlsx'
