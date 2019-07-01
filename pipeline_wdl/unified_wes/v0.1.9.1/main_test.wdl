@@ -28,18 +28,16 @@ done < "${path2}"
 task build_excell_report{
     File annovar_tsv
     File exon_coverage_report
-    String sample
-    String samplename2
+    #String sample
+    #String samplename2
     #String original_sample
   
      #/home/hnrg/NGStools/pipeline_wdl/qualityControl/make_excel_report.py ${annovar_tsv}:Variants ${exon_coverage_report}:ExonCoverage ${sample}.output_xlsx
 
     command{
 
-    if [ "${sample}" = "${samplename2}"]; then 
        /home/hnrg/NGStools/pipeline_wdl/qualityControl/make_excel_report.py ${annovar_tsv}:Variants ${exon_coverage_report}:ExonCoverage ${samplename2}_variants.xlsx
    
-    fi
    }    
 
     output{
@@ -488,13 +486,18 @@ workflow main_workflow {
 #String samplename2 
 Array[File] Tsv_annovar = processJointVCF.annovar_tsv_out
     scatter (idx in range(length(Tsv_annovar))){
+       
+       sample = basename(Tsv_annovar[idx],".multianno_multisample.tsv"),
+       samplename2 = basename(prof_by_exon[idx],"_coverage_statistics_by_exon.tsv")
+       
+       if(sample=samplename2){
        call build_excell_report {
             input:
             annovar_tsv = Tsv_annovar[idx],
-            exon_coverage_report = prof_by_exon[idx],
-            sample = basename(Tsv_annovar[idx],".multianno_multisample.tsv"),
-            samplename2 = basename(prof_by_exon[idx],"_coverage_statistics_by_exon.tsv")
+            exon_coverage_report = prof_by_exon[idx]
+            
            }
+          }
       
       
 
