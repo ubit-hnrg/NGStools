@@ -59,7 +59,7 @@ workflow processJointVCF {
             db_annovar = db_annovar
          }
 
-         
+
 
         call get_tsv_from_annovar {
             input:
@@ -139,9 +139,9 @@ task symlink_important_files2 {
     String path_save
     String sample
     command{
-       ln -s ${output_to_save1} ${path_save}${sample} 
-       ln -s ${output_to_save2} ${path_save}${sample}
-       ln -s ${output_to_save3} ${path_save}${sample}
+       cp -r ${output_to_save1} ${path_save}${sample} 
+       cp -r ${output_to_save2} ${path_save}${sample}
+       cp -r ${output_to_save3} ${path_save}${sample}
     }
 }
 
@@ -150,7 +150,7 @@ task symlink_important_files {
     String path_save
  
     command{
-       ln -s ${output_to_save} ${path_save}
+       cp -r ${output_to_save} ${path_save}
 
     }
 }

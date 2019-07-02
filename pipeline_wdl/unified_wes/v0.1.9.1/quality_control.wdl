@@ -256,7 +256,7 @@ task symlink_important_files {
     File output_to_save
     String path_save
     command{
-       ln -s ${output_to_save} ${path_save}
+       cp -r ${output_to_save} ${path_save}
     }
 }
 
