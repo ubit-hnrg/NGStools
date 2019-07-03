@@ -442,6 +442,6 @@ task symlink_important_files {
     File output_to_save
     String path_save
     command{
-       cp -r ${output_to_save} ${path_save}
+       cp -L ${output_to_save} ${path_save}
     }
 }
