@@ -139,9 +139,9 @@ task symlink_important_files2 {
     String path_save
     String sample
     command{
-       cp -r ${output_to_save1} ${path_save}${sample} 
-       cp -r ${output_to_save2} ${path_save}${sample}
-       cp -r ${output_to_save3} ${path_save}${sample}
+       cp -L ${output_to_save1} ${path_save}${sample} 
+       cp -L ${output_to_save2} ${path_save}${sample}
+       cp -L ${output_to_save3} ${path_save}${sample}
     }
 }
 
