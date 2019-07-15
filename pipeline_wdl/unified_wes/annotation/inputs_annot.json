@@ -1,0 +1,50 @@
+{
+
+  "##COMMENT0": "INPUTS PARA PIPELINE PARA EL ANALISIS DE DATOS NGS. UBIT-HNRG MARZO 2019",
+  
+  "##COMMENT1": "MANDATORY INPUTS",
+
+  "functional_annotation.toolpath": "/home/hnrg/HNRG-pipeline-V0.1/tools/",
+  "functional_annotation.joinPY": "/home/hnrg/NGStools/pipeline_wdl/process_vcf/join_vcfs.py",
+  "functional_annotation.db_annovar": "/home/hnrg/HNRG-pipeline-V0.1/dbs/hg19_annovar/",
+  "functional_annotation.gatk_jar": "gatk-package-4.0.8.1-local.jar",
+  "functional_annotation.tso_bed": "/home/hnrg/HNRG-pipeline-V0.1/libraries/GRCh37/TruSight_One_v1_padded_100_GRCh37.bed",
+  "functional_annotation.TSO": "/home/hnrg/executionsHNRG/testing/annotation/TSO20190704_4test.vcf.gz",
+  "functional_annotation.annovar_table_pl": "/home/hnrg/HNRG-pipeline-V0.1/tools/annovar/table_annovar.pl",
+  "functional_annotation.path_softlink": "/data/resultsHNRG/testing/TSO20190704_4test/",
+  "functional_annotation.reference_version": "GRCh37.75",
+
+  "functional_annotation.processJointVCF.annovar.annotate_variation": "/home/hnrg/HNRG-pipeline-V0.1/tools/annovar/annotate_variation.pl",
+  "functional_annotation.processJointVCF.annovar.variants_reduction": "/home/hnrg/HNRG-pipeline-V0.1/tools/annovar/variants_reduction.pl",
+  "functional_annotation.processJointVCF.annovar.convert2annovar": "/home/hnrg/HNRG-pipeline-V0.1/tools/annovar/convert2annovar.pl",
+
+  "functional_annotation.FuncionalAnnotation.annovar.annovar_dbpath": "/home/hnrg/HNRG-pipeline-V0.1/dbs/hg19_annovar/",
+
+  "functional_annotation.FuncionalAnnotation.step3_dbSNP151.database": "/home/hnrg/HNRG-pipeline-V0.1/dbs/GRCh37_snpsift/All_20180423.vcf.gz",
+  "functional_annotation.FuncionalAnnotation.step3_dbSNP151.database_index": "/home/hnrg/HNRG-pipeline-V0.1/dbs/GRCh37_snpsift/All_20180423.vcf.gz.tbi",
+
+  "functional_annotation.FuncionalAnnotation.step4_1000Genomes.database": "/home/hnrg/HNRG-pipeline-V0.1/dbs/GRCh37_snpsift/1000G_omni2.5.b37.vcf.gz",
+  "functional_annotation.FuncionalAnnotation.step4_1000Genomes.database_index": "/home/hnrg/HNRG-pipeline-V0.1/dbs/GRCh37_snpsift/1000G_omni2.5.b37.vcf.gz.tbi",
+  
+  "functional_annotation.FuncionalAnnotation.step5_hapmap.database": "/home/hnrg/HNRG-pipeline-V0.1/dbs/GRCh37_snpsift/hapmap_3.3.b37.vcf",
+  "functional_annotation.FuncionalAnnotation.step5_hapmap.database_index": "/home/hnrg/HNRG-pipeline-V0.1/dbs/GRCh37_snpsift/hapmap_3.3.b37.vcf.idx",
+  
+  "functional_annotation.FuncionalAnnotation.step6_Snpsift_GWASCat.database": "/home/hnrg/HNRG-pipeline-V0.1/dbs/GRCh37_snpsift/gwas_catalog_v1.0.2-associations_e96_r2019-04-06.tsv",
+
+  "functional_annotation.FuncionalAnnotation.step9_EVS.database": "/home/hnrg/HNRG-pipeline-V0.1/dbs/GRCh37_snpsift/ESP6500SI-V2-SSA137.snps_indels.vcf",
+  "functional_annotation.FuncionalAnnotation.step9_EVS.database_index": "/home/hnrg/HNRG-pipeline-V0.1/dbs/GRCh37_snpsift/ESP6500SI-V2-SSA137.snps_indels.vcf.idx",
+
+  "functional_annotation.FuncionalAnnotation.step12_clinVar.database": "/home/hnrg/HNRG-pipeline-V0.1/dbs/GRCh37_snpsift/clinvar_20190219.vcf.gz",
+  "functional_annotation.FuncionalAnnotation.step12_clinVar.database_index": "/home/hnrg/HNRG-pipeline-V0.1/dbs/GRCh37_snpsift/clinvar_20190219.vcf.gz.tbi",
+
+  "functional_annotation.FuncionalAnnotation.step13_pharmGKB.database": "/home/hnrg/HNRG-pipeline-V0.1/dbs/GRCh37_snpsift/PharmGKBvcf_2016.vcf",
+  "functional_annotation.FuncionalAnnotation.step13_pharmGKB.database_index": "/home/hnrg/HNRG-pipeline-V0.1/dbs/GRCh37_snpsift/PharmGKBvcf_2016.vcf.sidx",
+
+  "functional_annotation.FuncionalAnnotation.final_annot.database": "/home/hnrg/HNRG-pipeline-V0.1/dbs/GRCh37_snpsift/ExAC.r1.sites.vep.vcf.gz",
+  "functional_annotation.FuncionalAnnotation.final_annot.database_index": "/home/hnrg/HNRG-pipeline-V0.1/dbs/GRCh37_snpsift/ExAC.r1.sites.vep.vcf.gz.tbi"
+
+
+
+
+}
+
