@@ -13,6 +13,7 @@
   "functional_annotation.annovar_table_pl": "/home/hnrg/HNRG-pipeline-V0.1/tools/annovar/table_annovar.pl",
   "functional_annotation.path_softlink": "/data/resultsHNRG/testing/TSO20190704_4test/",
   "functional_annotation.reference_version": "GRCh37.75",
+  "functional_annotation.version": "v0.1.9",
 
   "functional_annotation.processJointVCF.annovar.annotate_variation": "/home/hnrg/HNRG-pipeline-V0.1/tools/annovar/annotate_variation.pl",
   "functional_annotation.processJointVCF.annovar.variants_reduction": "/home/hnrg/HNRG-pipeline-V0.1/tools/annovar/variants_reduction.pl",
