@@ -24,7 +24,8 @@ workflow processJointVCF {
         input:
         multisampleVCF  = multisampleVCF,
         region_padded_bed = region_padded_bed,
-        toolpath = toolpath
+        toolpath = toolpath,
+        version1 = version
     }
 
 
