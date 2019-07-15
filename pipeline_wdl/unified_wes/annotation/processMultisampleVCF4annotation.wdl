@@ -14,6 +14,7 @@ workflow processJointVCF {
     String db_annovar
     File annovar_table_pl
     File joinPY
+    String version
 
     #Array[File] exon_coverage_reports
 
@@ -48,7 +49,8 @@ workflow processJointVCF {
             multisampleVCF = rename_samples.multisample_vcf_restricted_renamed,
             sample = idsample.idsample,
             toolpath = toolpath,
-            original_sample = sample
+            original_sample = sample,
+            version1 = version
             }
 
         call mkdir_samplename {
@@ -62,7 +64,8 @@ workflow processJointVCF {
             one_sample_vcf =  get_individual_vcf.one_sample_vcf,
             sample = idsample.idsample,
             annovar_table_pl = annovar_table_pl,
-            db_annovar = db_annovar
+            db_annovar = db_annovar,
+            version1 = version
          }
 
 
@@ -74,6 +77,7 @@ workflow processJointVCF {
             multisampleVCF = rename_samples.multisample_vcf_restricted_renamed,
             sample = idsample.idsample,
             sample1 = sample,
+            version1 = version,
             joinPY = joinPY
         }
 
@@ -200,14 +204,15 @@ task restrict_multisample_vcf{
     File region_padded_bed
     String toolpath
     String base = basename(multisampleVCF,'.vcf.gz')
-    
+    String version1
+
     command{
 
         zless ${multisampleVCF} | java -jar ${toolpath}/SnpSift.jar intervals ${region_padded_bed} > ${base}_restricted.vcf
     }
 
     output {
-        File multisampleVCF_restricted = "${base}_restricted.vcf"
+        File multisampleVCF_restricted = '${base}_restricted.'+version1+'.vcf'
     }
 
 }
@@ -250,6 +255,7 @@ task get_individual_vcf{
     String sample
     String toolpath
     String original_sample
+    String version1
     
 
     command<<<
@@ -262,7 +268,7 @@ task get_individual_vcf{
     >>>
 
     output{
-    File one_sample_vcf = '${original_sample}.vcf'
+    File one_sample_vcf = '${original_sample}.'+version1+'.vcf'
     }
 }
 
@@ -272,6 +278,7 @@ task annovar{
     File convert2annovar
     File annotate_variation
     File variants_reduction
+    String version1
 
 
     String db_annovar
@@ -284,8 +291,8 @@ task annovar{
     >>>
 
     output {
-        File annovar_vcf = '${sample}.hg19_multianno.vcf'
-        File annovar_txt = '${sample}.hg19_multianno.txt'
+        File annovar_vcf = '${sample}.hg19_multianno.'+version1+'.vcf'
+        File annovar_txt = '${sample}.hg19_multianno.'+version1+'.txt'
     }
 
 }
@@ -301,6 +308,7 @@ task get_tsv_from_annovar {
     File multisampleVCF
     String sample
     String sample1
+    String version1
     File joinPY    #this file merge the multianno.tsv file with the original multisample vcf
 
 
@@ -327,7 +335,7 @@ task get_tsv_from_annovar {
 
     >>>
     output{
-        File annovar_tsv =  '${sample1}.multianno_multisample.tsv'
+        File annovar_tsv =  '${sample1}.multianno_multisample' + version1 +'.tsv'
     }
 }
 
@@ -335,6 +343,7 @@ task build_excell_report{
     File annovar_tsv
     File exon_coverage_report
     String sample
+    String version1
     #String original_sample
   
     
@@ -343,7 +352,7 @@ task build_excell_report{
     }     
 
     output{
-        File excell_report = '${sample}.variants.xlsx'
+        File excell_report = '${sample}.variants'+ version1 +'.xlsx'
     }
 }    
 

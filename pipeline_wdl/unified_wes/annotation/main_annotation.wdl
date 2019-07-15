@@ -65,6 +65,7 @@ workflow functional_annotation {
      input:
      multisampleVCF = TSO, ###inputs TSO*.vcf.gz
      #array_path_save = mkdir_samplename.path_out_softlink, #### path/softlink + samplename
+     version = version,
 
      toolpath = toolpath, 
      region_padded_bed = tso_bed,##Tso_bed
