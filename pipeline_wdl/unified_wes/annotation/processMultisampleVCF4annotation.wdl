@@ -209,11 +209,11 @@ task restrict_multisample_vcf{
 
     command{
 
-        zless ${multisampleVCF} | java -jar ${toolpath}/SnpSift.jar intervals ${region_padded_bed} > ${base}_restricted.vcf
+        zless ${multisampleVCF} | java -jar ${toolpath}/SnpSift.jar intervals ${region_padded_bed} > ${base}_restricted_${version1}.vcf
     }
 
     output {
-        File multisampleVCF_restricted = '${base}_restricted.'+version1+'.vcf'
+        File multisampleVCF_restricted = '${base}_restricted_'+version1+'.vcf'
     }
 
 }
@@ -264,12 +264,12 @@ task get_individual_vcf{
         cat ${multisampleVCF} | java -jar ${toolpath}/SnpSift.jar filter "(GEN[${sample}].GT!='./.')&(GEN[${sample}].GT != '0/0')" >  faceted_one_sample_vcf
 
         ##these steps remove the remaining samples of the vcf.
-        cat <(grep '^##' faceted_one_sample_vcf) <(grep -v '^##' faceted_one_sample_vcf| csvcut -t -c '#CHROM',POS,ID,REF,ALT,QUAL,FILTER,INFO,FORMAT,${sample} | csvformat -T) > ${original_sample}.vcf
+        cat <(grep '^##' faceted_one_sample_vcf) <(grep -v '^##' faceted_one_sample_vcf| csvcut -t -c '#CHROM',POS,ID,REF,ALT,QUAL,FILTER,INFO,FORMAT,${sample} | csvformat -T) > ${original_sample}_${version1}.vcf
         rm faceted_one_sample_vcf
     >>>
 
     output{
-    File one_sample_vcf = '${original_sample}.'+version1+'.vcf'
+    File one_sample_vcf = '${original_sample}_'+version1+'.vcf'
     }
 }
 
@@ -292,8 +292,8 @@ task annovar{
     >>>
 
     output {
-        File annovar_vcf = '${sample}.hg19_multianno.'+version1+'.vcf'
-        File annovar_txt = '${sample}.hg19_multianno.'+version1+'.txt'
+        File annovar_vcf = '${sample}.hg19_multianno_'+version1+'.vcf'
+        File annovar_txt = '${sample}.hg19_multianno_'+version1+'.txt'
     }
 
 }
@@ -330,13 +330,13 @@ task get_tsv_from_annovar {
     sed -i "s/Otherinfo/$vcf_header/g" ${sample}.hg19_multianno.tsv;
 
     #join one multianno tsv file AND joint genotyped vcf. This script (join_vcf.py) also postprocess Intervar columns.
-    python ${joinPY} --multianno_tsv=${sample}.hg19_multianno.tsv --vcf_multisample=${multisampleVCF} --output=${sample1}.multianno_multisample.tsv
+    python ${joinPY} --multianno_tsv=${sample}.hg19_multianno.tsv --vcf_multisample=${multisampleVCF} --output=${sample1}.multianno_multisample_${version1}.tsv
     #change dots by tabs.
     sed -i -e "s|\.	|	|g" ${sample1}.multianno_multisample.tsv
 
     >>>
     output{
-        File annovar_tsv =  '${sample1}.multianno_multisample' + version1 +'.tsv'
+        File annovar_tsv =  '${sample1}.multianno_multisample_'+version1+'.tsv'
     }
 }
 
@@ -353,7 +353,7 @@ task build_excell_report{
     }     
 
     output{
-        File excell_report = '${sample}.variants'+ version1 +'.xlsx'
+        File excell_report = '${sample}.variants_'+version1+'.xlsx'
     }
 }    
 

@@ -403,7 +403,7 @@ input:
     input_vcf = step13_pharmGKB.salida_Snpsift,
     toolpath = toolpath,
     java_heap_memory_initial = java_heap_memory_initial,
-    nombre_step = "final_annot" 
+    nombre_step = "final_annot"+version1
 
 }
 
