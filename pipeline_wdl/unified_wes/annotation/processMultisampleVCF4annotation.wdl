@@ -57,7 +57,7 @@ workflow processJointVCF {
         call mkdir_samplename {
             input: 
             path_softlink = path_softlink,
-            samplename = basename(get_individual_vcf.one_sample_vcf,'_'+version1+'.vcf")
+            samplename = basename(get_individual_vcf.one_sample_vcf,'_'+version+'.vcf')
             }
 
         call annovar {
