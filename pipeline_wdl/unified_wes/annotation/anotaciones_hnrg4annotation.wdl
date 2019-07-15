@@ -180,7 +180,7 @@ output {
 }
 
 
-task symlink_important_files {
+task copy_important_files {
     File output_to_save
     String path_save
     command{
@@ -197,6 +197,7 @@ String samplename1
 String java_heap_memory_initial
 String reference_version
 String path_save
+String version1
 
 
 call bptools as step_0_bptools_mma {
@@ -402,12 +403,12 @@ input:
     input_vcf = step13_pharmGKB.salida_Snpsift,
     toolpath = toolpath,
     java_heap_memory_initial = java_heap_memory_initial,
-    nombre_step = "final_annot"
+    nombre_step = "final_annot" + version1 
 
 }
 
 
-call symlink_important_files {
+call copy_important_files {
         input:
         output_to_save = final_annot.salida_Snpsift,
         path_save = path_save

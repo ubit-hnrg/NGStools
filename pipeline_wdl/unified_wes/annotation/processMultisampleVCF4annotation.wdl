@@ -92,7 +92,7 @@ workflow processJointVCF {
              output_to_save2 = get_individual_vcf.one_sample_vcf,
              output_to_save3 = get_tsv_from_annovar.annovar_tsv,
              output_to_save4 = restrict_multisample_vcf.multisampleVCF_restricted,
-             path_save = mkdir_samplename.path_out_softlink,#path_softlink, 
+             path_save = mkdir_samplename.path_out_softlink, 
              sample = sample
 
 
@@ -162,10 +162,10 @@ task copy_important_files2 {
     String path_save
     String sample
     command{
-       cp -L ${output_to_save1} ${path_save}${sample} 
-       cp -L ${output_to_save2} ${path_save}${sample}
-       cp -L ${output_to_save3} ${path_save}${sample}
-       cp -L ${output_to_save4} ${path_save}${sample}
+       cp -L ${output_to_save1} ${path_save} 
+       cp -L ${output_to_save2} ${path_save}
+       cp -L ${output_to_save3} ${path_save}
+       cp -L ${output_to_save4} ${path_save}
     }
 }
 

@@ -2,7 +2,7 @@ import './processMultisampleVCF4annotation.wdl' as splitVCF
 import './anotaciones_hnrg4annotation.wdl' as anotaciones
 
 
-task symlink_important_files {
+task copy_important_files {
     File output_to_save
     String path_save
     #ln -s ${output_to_save} ${path_save}
@@ -51,6 +51,7 @@ workflow functional_annotation {
   #File reportes_by_exon #"${name}_coverage_statistics_by_exon.tsv"
   #File exon_coords
   File tso_bed
+  String version = "v0.1.9"
 
  #Array[File] inputs_scatter_by_exon = read_lines(reportes_by_exon)
 
@@ -100,7 +101,7 @@ Array[File] Tsv_annovar = processJointVCF.annovar_tsv_out
 Array[File?] reporte_variantes = build_excell_report.excell_report
 Array[Pair[String,File?]] samples_by_variant = zip (path_save, reporte_variantes)
   scatter (pairs in samples_by_variant) {
-    call symlink_important_files as build_excell_reportbyvariants{
+    call copy_important_files as build_excell_reportbyvariants{
         input:
         output_to_save = pairs.right,
         path_save = pairs.left
@@ -118,6 +119,7 @@ Array[Pair[String,File]] vcf_x_path = zip (path_save, vcf_individuales)
         input_vcf = vcf.right,
         path_save = vcf.left,
         toolpath = toolpath,
+        version1 = version,
         samplename1 = basename(vcf.right,".hg19_multianno.vcf"),
         java_heap_memory_initial = "12g",
         reference_version = reference_version,
