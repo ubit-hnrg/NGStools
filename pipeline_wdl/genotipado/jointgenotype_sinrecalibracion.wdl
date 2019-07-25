@@ -135,7 +135,7 @@ workflow JointGenotyping {
 Array[File] salidas = ["${FinalGatherVcf.output_vcf}","${FinalGatherVcf.output_vcf_index}","${CollectMetricsOnFullVcf.detail_metrics_file}","${CollectMetricsOnFullVcf.summary_metrics_file}"]
 Array[Pair[String,File]] samples_x_files = cross (array_path_save, salidas)
 scatter (pairs in samples_x_files) {
-    call symlink_important_files {
+    call copy_important_files {
         input:
         output_to_save = pairs.right,
         path_save = pairs.left
@@ -160,11 +160,11 @@ scatter (pairs in samples_x_files) {
 }
 
 
-task symlink_important_files {
+task copy_important_files {
     File output_to_save
     String path_save
     command{
-       ln -s ${output_to_save} ${path_save}
+       cp -L ${output_to_save} ${path_save}
     }
 }
 
