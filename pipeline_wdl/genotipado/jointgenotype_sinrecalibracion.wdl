@@ -7,7 +7,7 @@
 workflow JointGenotyping {
   File unpadded_intervals_file ##lista intervalos
   
-  Array[String] array_path_save
+  String array_path_save
   String callset_name
 
   File ref_fasta
@@ -40,6 +40,12 @@ workflow JointGenotyping {
   Int merge_count = if possible_merge_count > 1 then possible_merge_count else 1
 
   
+    call mkdir_samplename {
+    input: 
+     path_softlink = array_path_save,
+     samplename = callset_name
+    }
+
   call DynamicallyCombineIntervals {
     input:
       intervals = unpadded_intervals_file,
@@ -133,12 +139,12 @@ workflow JointGenotyping {
   }
 
 Array[File] salidas = ["${FinalGatherVcf.output_vcf}","${FinalGatherVcf.output_vcf_index}","${CollectMetricsOnFullVcf.detail_metrics_file}","${CollectMetricsOnFullVcf.summary_metrics_file}"]
-Array[Pair[String,File]] samples_x_files = cross (array_path_save, salidas)
-scatter (pairs in samples_x_files) {
+#Array[Pair[String,File]] samples_x_files = cross(array_path_save, salidas)
+scatter (pairs in salidas) {
     call copy_important_files {
         input:
-        output_to_save = pairs.right,
-        path_save = pairs.left
+        output_to_save = pairs,
+        path_save = mkdir_samplename.path_out_softlink
     }
 }
 
@@ -166,6 +172,20 @@ task copy_important_files {
     command{
        cp -L ${output_to_save} ${path_save}
     }
+}
+
+
+task mkdir_samplename {
+    String path_softlink
+    String samplename
+
+    command{
+        mkdir -p ${path_softlink}${samplename}
+    }
+
+    output {
+        String path_out_softlink = "${path_softlink}" + "${samplename}"+"/"
+}
 }
 
 task GetNumberOfSamples {
