@@ -62,7 +62,7 @@ percents_tso.index = percents_tso.index.str.replace(' ','-')
 
 report = percents_tso.loc[[
 #    u'raw-total-sequences',
-             u'Number-of-reads-properly-paired-in-Library',
+             u'Number-of-reads-properly-paired',
              u'Percent-of-reads-properly-paired-in-Library',
 #             u'reads-duplicated',
              u'reads-duplicated-in-Library',
