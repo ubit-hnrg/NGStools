@@ -41,7 +41,7 @@
   "main_workflow.bam2gvcf.wgs_evaluation_interval_list": "/home/hnrg/HNRG-pipeline-V0.1/libraries/GRCh37/TruSight_One_v1_padded_100_merged_50000_preprocessing.interval_list",
   "main_workflow.bam2gvcf.wgs_calling_interval_list": "/home/hnrg/HNRG-pipeline-V0.1/libraries/GRCh37/TruSight_One_v1_padded_100_merged_50000_preprocessing.interval_list",
   "main_workflow.JointGenotyping.eval_interval_list": "/home/hnrg/HNRG-pipeline-V0.1/libraries/GRCh37/TruSight_One_v1_padded_100_merged_50000_preprocessing.interval_list",
-  "main_workflow.JointGenotyping.unpadded_intervals_file": "/home/hnrg/HNRG-pipeline-V0.1/libraries/GRCh37/b37_wgs_consolidated_calling_intervals.list",
+  "main_workflow.JointGenotyping.unpadded_intervals_file": "/home/hnrg/HNRG-pipeline-V0.1/libraries/GRCh37/TruSight_One_v1_padded_100_merged_50000_genotyping.interval_list",
   
   "##COMMENT6": "HAPLOTYPECALLER PARAMETERS",
   "main_workflow.newqual": "true",
