@@ -104,7 +104,7 @@ task coord_generator {
     set -e
     set -o pipefail
     
-    ${toolpath}bedtools2/bin/slopBed -i ${experiment_lib} -g ${chromosome_length} > intervalo_b37_padded.bed
+    ${toolpath}bedtools2/bin/slopBed -i ${experiment_lib} -b ${padding} -g ${chromosome_length} > intervalo_b37_padded.bed
 
     ###merged
     sort -k1,1 -k2,2n intervalo_b37_padded.bed | ${toolpath}bedtools2/bin/mergeBed -d ${merge_tolerance} > intervalo_b37_padded_merged_${merge_tolerance}.bed
