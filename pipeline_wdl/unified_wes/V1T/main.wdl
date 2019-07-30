@@ -104,17 +104,17 @@ task coord_generator {
     set -e
     set -o pipefail
     
-    ${toolpath}bedtools2/bin/slopBed -i ${experiment_lib} -b ${padding} -g ${chromosome_length} > intervalo_b37_padded.bed
+    ${toolpath}bedtools2/bin/slopBed -i ${experiment_lib} -g ${chromosome_length} -b ${padding} > intervalo_b37_padded_${padding}.bed
 
     ###merged
-    sort -k1,1 -k2,2n intervalo_b37_padded.bed | ${toolpath}bedtools2/bin/mergeBed -d ${merge_tolerance} > intervalo_b37_padded_merged_${merge_tolerance}.bed
+    sort -k1,1 -k2,2n intervalo_b37_padded_${padding}.bed | ${toolpath}bedtools2/bin/mergeBed -d ${merge_tolerance} > intervalo_b37_padded_merged_${merge_tolerance}.bed
 
     java -jar ${toolpath}${gatk_jar} BedToIntervalList -I=intervalo_b37_padded_merged_${merge_tolerance}.bed -O=intervalo_b37_padded_merged_${merge_tolerance}_preprocessing.interval_list -SD=${ref_dict}
 
   >>>
 
   output {
-    File padded_coord = "intervalo_b37_padded.bed"
+    File padded_coord = "intervalo_b37_padded_${padding}.bed"
     #File merged_padded_coord = "intervalo_b37_padded_merged_${merge_tolerance}.bed"
     File interval_list = "intervalo_b37_padded_merged_${merge_tolerance}_preprocessing.interval_list"
   }
