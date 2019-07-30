@@ -107,7 +107,7 @@ task coord_generator {
     ${toolpath}bedtools2/bin/slopBed -i ${experiment_lib} -b ${padding} -g ${chromosome_length} > intervalo_b37_padded.bed
 
     ###merged
-    sort -k1,1 -k2,2n /dev/stdout | ${toolpath}bedtools2/bin/mergeBed -d ${merge_tolerance} > intervalo_b37_padded_merged_${merge_tolerance}.bed
+    sort -k1,1 -k2,2n intervalo_b37_padded.bed | ${toolpath}bedtools2/bin/mergeBed -d ${merge_tolerance} > intervalo_b37_padded_merged_${merge_tolerance}.bed
 
     java -jar ${toolpath}${gatk_jar} BedToIntervalList -I=intervalo_b37_padded_merged_${merge_tolerance}.bed -O=intervalo_b37_padded_merged_${merge_tolerance}_preprocessing.interval_list -SD=${ref_dict}
 
