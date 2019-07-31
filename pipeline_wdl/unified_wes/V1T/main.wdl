@@ -117,7 +117,7 @@ task coord_generator {
   output {
     File padded_coord = "intervalo_b37_padded_${padding}.bed"
     #File merged_padded_coord = "intervalo_b37_padded_merged_${merge_tolerance}.bed"
-    File interval_list = "intervalo_b37_padded_${padding}_merged_${merge_tolerance}_preprocessing.interval_list"
+    File interval_list = "intervalo_b37_padded_${padding}_merged_preprocessing.interval_list"
   }
 
 }
