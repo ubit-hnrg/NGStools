@@ -92,8 +92,8 @@ task coord_generator {
 
   File experiment_lib
   File chromosome_length
-  String padding
-  String merge_tolerance 
+  Int padding
+  Int merge_tolerance
   String toolpath
   String gatk_jar
   File ref_dict
@@ -104,12 +104,13 @@ task coord_generator {
     set -e
     set -o pipefail
     
-    ${toolpath}bedtools2/bin/slopBed -i ${experiment_lib} -g ${chromosome_length} -b ${padding} > intervalo_b37_padded_${padding}.bed
+    ${toolpath}bedtools2/bin/slopBed -i ${experiment_lib} -g ${chromosome_length} -b ${padding} | sort -k1,1 -k2,2n > intervalo_b37_padded_${padding}.bed
 
     ###merged
-    sort -k1,1 -k2,2n intervalo_b37_padded_${padding}.bed | ${toolpath}bedtools2/bin/mergeBed -d ${merge_tolerance} > intervalo_b37_padded_${padding}_merged_${merge_tolerance}.bed
+    #sort -k1,1 -k2,2n intervalo_b37_padded_${padding}.bed | ${toolpath}bedtools2/bin/mergeBed -d ${merge_tolerance} > intervalo_b37_padded_${padding}_merged_${merge_tolerance}.bed
 
-    java -jar ${toolpath}${gatk_jar} BedToIntervalList -I=intervalo_b37_padded_${padding}_merged_${merge_tolerance}.bed -O=intervalo_b37_padded_${padding}_merged_${merge_tolerance}_preprocessing.interval_list -SD=${ref_dict}
+    #java -jar ${toolpath}${gatk_jar} BedToIntervalList -I=intervalo_b37_padded_${padding}_merged_${merge_tolerance}.bed -O=intervalo_b37_padded_${padding}_merged_${merge_tolerance}_preprocessing.interval_list -SD=${ref_dict}
+    java -jar ${toolpath}${gatk_jar} BedToIntervalList -I=intervalo_b37_padded_${padding}.bed -O=intervalo_b37_padded_${padding}_merged_${merge_tolerance}_preprocessing.interval_list -SD=${ref_dict}
 
   >>>
 
@@ -223,8 +224,8 @@ workflow main_workflow {
     ###################### inputs para crear intervalo
     File experiment_lib
     File chromosome_length
-    String padding
-    String merge_tolerance 
+    Int padding = "100"
+    Int merge_tolerance 
 
 
   call coord_generator {
@@ -422,8 +423,7 @@ workflow main_workflow {
 
    }
 
- #Array[File] salidas = ["${GatherBamFiles.output_bam}","${GatherBamFiles.output_bam_index}","${MergeVCFs.output_vcf}","${MergeVCFs.output_vcf_index}","${CollectGvcfCallingMetrics.summary_metrics}","${CollectGvcfCallingMetrics.detail_metrics}"]
-
+ #Array[File] salidas = ["${coord_generator.padded_coord}"]
  #scatter (paths in salidas) {
  #    call symlink_important_files {
  #        input:
@@ -474,7 +474,7 @@ workflow main_workflow {
 
    
 
- Array[File] prof_by_exon = quality_control.by_exon_depth #"${name}_coverage_statistics_by_exon.tsv"
+ Array[File] prof_by_exon = [quality_control.by_exon_depth, coord_generator.padded_coord] #"${name}_coverage_statistics_by_exon.tsv"
  Array[String] array_path_save_byexon = mkdir_samplename.path_out_softlink
  Array[Pair[String,File]] samples_by_exon = zip (array_path_save_byexon, prof_by_exon)
   scatter (pairs in samples_by_exon) {
