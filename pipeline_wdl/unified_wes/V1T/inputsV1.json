@@ -75,7 +75,7 @@
 
   "##COMMENT10": "generador de intervalo",
   "main_workflow.padding": "0",
-  "main_workflow.merge_tolerance": "200",
+  "##main_workflow.merge_tolerance": "200",
   "main_workflow.chromosome_length": "/home/hnrg/HNRG-pipeline-V0.1/libraries/GRCh37/chromosome_lengths_hg19.txt",
   "main_workflow.generic_exon_coords": "/home/hnrg/HNRG-pipeline-V0.1/libraries/GRCh37/exon_coords_GRCh37.tsv",
 

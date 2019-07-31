@@ -93,7 +93,7 @@ task coord_generator {
   File experiment_lib
   File chromosome_length
   Int padding
-  Int merge_tolerance
+  #Int merge_tolerance
   String toolpath
   String gatk_jar
   File ref_dict
@@ -225,7 +225,7 @@ workflow main_workflow {
     File experiment_lib
     File chromosome_length
     Int padding = "100"
-    Int merge_tolerance 
+    #Int merge_tolerance 
 
 
   call coord_generator {
@@ -233,7 +233,7 @@ workflow main_workflow {
     experiment_lib = experiment_lib,
     chromosome_length = chromosome_length,
     padding = padding,
-    merge_tolerance = merge_tolerance,
+    #merge_tolerance = merge_tolerance,
     toolpath = toolpath,
     gatk_jar = gatk_jar,
     ref_dict = ref_dict
