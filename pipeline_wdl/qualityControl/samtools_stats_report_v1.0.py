@@ -50,13 +50,14 @@ percents_tso = 100*samtools_kit_report[['reads properly paired','reads duplicate
 percents_tso = percents_tso.append(samtools_kit_report[['average quality','maximum length']])
 percents_tso = percents_tso.append(samtools_kit_report[['error rate']]*100)
 
-percents_tso.rename(index={'reads properly paired':'Percent of reads properly paired'},inplace = True)
 
 #percents_tso = percents_tso.append(absolute_reads_tso)
 
 
 percents_tso = percents_tso.append(pd.Series([total_reads],index=['Number of reads properly paired'])) # !!!! uncomment!!!!
 percents_tso.index = percents_tso.index+' in Library'
+percents_tso.rename(index={'Number of reads properly paired in Library':'Number of reads properly paired'},inplace = True)
+
 
 percents_tso.index = percents_tso.index.str.replace(' ','-')
 
