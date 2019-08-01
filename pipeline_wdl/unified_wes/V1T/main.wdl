@@ -93,11 +93,15 @@ task coord_generator {
   File experiment_lib
   File chromosome_length
   Int padding
-  ##Int merge_tolerance
+  Int merge_tolerance
   String toolpath
   String gatk_jar
   File ref_dict
 
+  
+  #${toolpath}bedtools2/bin/slopBed -i ${experiment_lib} -g ${chromosome_length} -b ${padding} | sort -k1,1 -k2,2n -V > intervalo_b37_padded_${padding}.bed
+    
+  ##java -jar ${toolpath}${gatk_jar} BedToIntervalList -I=intervalo_b37_padded_${padding}.bed -O=intervalo_b37_padded_${padding}_merged_preprocessing.interval_list -SD=${ref_dict}
 
 ##sort -k1,1 -k2,2n intervalo_b37_padded_${padding}.bed | ${toolpath}bedtools2/bin/mergeBed -d ${ merge_tolerance} > intervalo_b37_padded_${padding}_merged_${ merge_tolerance}.bed
     #java -jar ${toolpath}${gatk_jar} BedToIntervalList -I=intervalo_b37_padded_${padding}_merged_${merge_tolerance}.bed -O=intervalo_b37_padded_${padding}_merged_${merge_tolerance}_preprocessing.interval_list -SD=${ref_dict}
@@ -107,17 +111,19 @@ task coord_generator {
     set -e
     set -o pipefail
     
-    ${toolpath}bedtools2/bin/slopBed -i ${experiment_lib} -g ${chromosome_length} -b ${padding} | sort -k1,1 -k2,2n -V > intervalo_b37_padded_${padding}.bed
+    ${toolpath}bedtools2/bin/slopBed -i ${experiment_lib} -g ${chromosome_length} -b ${padding} > intervalo_b37_padded_${padding}.bed
 
     ###merged
-     java -jar ${toolpath}${gatk_jar} BedToIntervalList -I=intervalo_b37_padded_${padding}.bed -O=intervalo_b37_padded_${padding}_merged_preprocessing.interval_list -SD=${ref_dict}
+     
+    sort -k1,1 -k2,2n intervalo_b37_padded_${padding}.bed | ${toolpath}bedtools2/bin/mergeBed -d ${merge_tolerance} > intervalo_b37_padded_${padding}_merged_${merge_tolerance}.bed
+    java -jar ${toolpath}${gatk_jar} BedToIntervalList -I=intervalo_b37_padded_${padding}_merged_${merge_tolerance}.bed -O=intervalo_b37_padded_${padding}_merged_${merge_tolerance}_preprocessing.interval_list -SD=${ref_dict}  
 
   >>>
 
   output {
     File padded_coord = "intervalo_b37_padded_${padding}.bed"
     #File merged_padded_coord = "intervalo_b37_padded_merged_${merge_tolerance}.bed"
-    File interval_list = "intervalo_b37_padded_${padding}_merged_preprocessing.interval_list"
+    File interval_list = "intervalo_b37_padded_${padding}_merged_${merge_tolerance}_preprocessing.interval_list"
   }
 
 }
@@ -225,7 +231,7 @@ workflow main_workflow {
     File experiment_lib
     File chromosome_length
     Int padding = "100"
-    #Int merge_tolerance 
+    Int merge_tolerance = "0"
 
 
   call coord_generator {
@@ -233,7 +239,7 @@ workflow main_workflow {
     experiment_lib = experiment_lib,
     chromosome_length = chromosome_length,
     padding = padding,
-    #merge_tolerance = merge_tolerance,
+    merge_tolerance = merge_tolerance,
     toolpath = toolpath,
     gatk_jar = gatk_jar,
     ref_dict = ref_dict
