@@ -165,7 +165,7 @@ workflow main_workflow {
   String ubam_list_name
   String sequencing_center =  "UIT-HNRG" 
   String readlenght
-  String platformmodeled
+  String platformmodel
  
   File generic_exon_coords
   #File tso_bed
@@ -397,7 +397,7 @@ workflow main_workflow {
   call joint_genotype.JointGenotyping {
    input:
     
-     eval_interval_list = coord_generator.interval_list,
+     eval_interval_list   = coord_generator.interval_list,
      array_path_save = mkdir_samplename.path_out_softlink,
      dbSNP_vcf = dbSNP_vcf,
      dbSNP_vcf_index = dbSNP_vcf_index,
