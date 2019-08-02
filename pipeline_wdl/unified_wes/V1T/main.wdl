@@ -479,7 +479,7 @@ workflow main_workflow {
   }
 
 
- Array[File] prof_by_exon = ["${quality_control.by_exon_depth}","${coord_generator.padded_coord}"] #"${name}_coverage_statistics_by_exon.tsv"
+ Array[File] prof_by_exon = quality_control.by_exon_depth##","${coord_generator.padded_coord}"] #"${name}_coverage_statistics_by_exon.tsv"
  Array[String] array_path_save_byexon = mkdir_samplename.path_out_softlink
  Array[Pair[String,File]] samples_by_exon = zip (array_path_save_byexon, prof_by_exon)
   scatter (pairs in samples_by_exon) {
