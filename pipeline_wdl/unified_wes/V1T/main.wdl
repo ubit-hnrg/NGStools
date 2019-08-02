@@ -165,7 +165,7 @@ workflow main_workflow {
   String ubam_list_name
   String sequencing_center =  "UIT-HNRG" 
   String readlenght
-  String platformmodel
+  String platformmodeled
  
   File generic_exon_coords
   #File tso_bed
@@ -419,7 +419,7 @@ workflow main_workflow {
      array_path_save = mkdir_samplename.path_out_softlink,
 
      toolpath = toolpath, 
-     region_padded_bed = restrict_to_TSO.interval_restricted,##Tso_bed
+     region_padded_bed = coord_generator.padded_coord,##Tso_bed
      path_softlink = path_softlink,
 
     # for annovar prouposes
