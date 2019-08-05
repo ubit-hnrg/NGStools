@@ -66,6 +66,14 @@ task mkdir_samplename {
 }
 }
 
+task copy2data {
+    File output_to_save
+    String path_save
+    command{
+       cp -L ${output_to_save} ${path_save}
+    }
+}
+
 
 task groupingBams_bysample_glob {
   String pattern 
@@ -97,6 +105,7 @@ task coord_generator {
   String toolpath
   String gatk_jar
   File ref_dict
+  String path_save
 
   
   #${toolpath}bedtools2/bin/slopBed -i ${experiment_lib} -g ${chromosome_length} -b ${padding} | sort -k1,1 -k2,2n -V > intervalo_b37_padded_${padding}.bed
@@ -118,6 +127,8 @@ task coord_generator {
     sort -k1,1 -k2,2n -V intervalo_b37_padded_${padding}.bed | ${toolpath}bedtools2/bin/mergeBed -d ${merge_tolerance} > intervalo_b37_padded_${padding}_merged_${merge_tolerance}.bed
     java -jar ${toolpath}${gatk_jar} BedToIntervalList -I=intervalo_b37_padded_${padding}_merged_${merge_tolerance}.bed -O=intervalo_b37_padded_${padding}_merged_${merge_tolerance}_preprocessing.interval_list -SD=${ref_dict}  
 
+    cp -L intervalo_b37_padded_${padding}.bed ${path_save}
+    cp -L intervalo_b37_padded_${padding}_merged_${merge_tolerance}_preprocessing.interval_list ${path_save}
   >>>
 
   output {
@@ -242,7 +253,8 @@ workflow main_workflow {
     merge_tolerance = merge_tolerance,
     toolpath = toolpath,
     gatk_jar = gatk_jar,
-    ref_dict = ref_dict
+    ref_dict = ref_dict,
+    path_save = path_softlink
   }
 
 
@@ -252,6 +264,16 @@ workflow main_workflow {
   generic_exon_coords = generic_exon_coords,
   toolpath = toolpath
 }
+
+# Array[File] intervalos = ["${coord_generator.interval_list}","${coord_generator.padded_coord}"]
+#  scatter (inter in intervalos){
+ # call copy2data {
+#   input: 
+ #  output_to_save = inter,
+#   path_save = path_softlink
+
+ # }
+  #}
 
   call fastq2ubam.ConvertPairedFastQsToUnmappedBamWf {  
       input: 
@@ -489,6 +511,8 @@ workflow main_workflow {
         path_save = pairs.left
     }
   }
+
+ 
 
 #String samplename2 
 Array[File] Tsv_annovar = processJointVCF.annovar_tsv_out
