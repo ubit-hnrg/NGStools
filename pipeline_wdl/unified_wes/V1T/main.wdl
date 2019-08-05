@@ -328,7 +328,7 @@ workflow main_workflow {
      input:
       #base_file_name =  ubamtobwa.nombre_base,
       base_file_name =  sample_name,
-      lib_resctricted = restrict_to_TSO.interval_restricted,
+      lib_resctricted = coord_generator.padded_coord,#restrict_to_TSO.interval_restricted,
                                           #### ARTEFACTO PARA PROBAR EL WORKFLOW ANTERIOR, ESTO HAY QUE TRABAJRLO Y ARTICULARLO BIEN. 
       #inputs_ubams = ConvertPairedFastQsToUnmappedBamWf.muestras,
       #uniquesample_name = ConvertPairedFastQsToUnmappedBamWf.samplesnames,
