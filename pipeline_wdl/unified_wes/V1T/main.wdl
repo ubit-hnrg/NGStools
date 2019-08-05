@@ -265,15 +265,7 @@ workflow main_workflow {
   toolpath = toolpath
 }
 
-# Array[File] intervalos = ["${coord_generator.interval_list}","${coord_generator.padded_coord}"]
-#  scatter (inter in intervalos){
- # call copy2data {
-#   input: 
- #  output_to_save = inter,
-#   path_save = path_softlink
 
- # }
-  #}
 
   call fastq2ubam.ConvertPairedFastQsToUnmappedBamWf {  
       input: 
@@ -400,7 +392,15 @@ workflow main_workflow {
 
   }
 
- 
+  Array[File] intervalos = ["${coord_generator.interval_list}","${coord_generator.padded_coord}"]
+  scatter (inter in intervalos){
+  call copy2data {
+   input: 
+   output_to_save = inter,
+   path_save = path_softlink
+
+  }
+  }
 
  Array[File] archivos_a_borrar3 = bam2gvcf.borrar_SortandFix#,"${}"]
 
