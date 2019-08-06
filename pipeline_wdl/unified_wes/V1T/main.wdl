@@ -53,6 +53,15 @@ readlink -f ${archivo_borrar} | xargs rm
 >>>
 }
 
+
+task mkdir {
+    String path_softlink
+
+    command{
+        mkdir -p ${path_softlink}
+    }
+}
+
 task mkdir_samplename {
     String path_softlink
     String samplename
@@ -120,21 +129,27 @@ task coord_generator {
     set -e
     set -o pipefail
     
-    ${toolpath}bedtools2/bin/slopBed -i ${experiment_lib} -g ${chromosome_length} -b ${padding} > intervalo_b37_padded_${padding}.bed
+    ${toolpath}bedtools2/bin/slopBed -i ${experiment_lib} -g ${chromosome_length} -b ${padding} | sort -k1,1 -k2,2n -V > intervalo_b37_padded_${padding}.bed 
 
     ###merged
      
-    sort -k1,1 -k2,2n -V intervalo_b37_padded_${padding}.bed | ${toolpath}bedtools2/bin/mergeBed -d ${merge_tolerance} > intervalo_b37_padded_${padding}_merged_${merge_tolerance}.bed
+    ${toolpath}bedtools2/bin/mergeBed -i intervalo_b37_padded_${padding}.bed -d ${merge_tolerance} > intervalo_b37_padded_${padding}_merged_${merge_tolerance}.bed
+
     java -jar ${toolpath}${gatk_jar} BedToIntervalList -I=intervalo_b37_padded_${padding}_merged_${merge_tolerance}.bed -O=intervalo_b37_padded_${padding}_merged_${merge_tolerance}_preprocessing.interval_list -SD=${ref_dict}  
+
+    java -jar ${toolpath}${gatk_jar} BedToIntervalList -I=intervalo_b37_padded_${padding}.bed -O=intervalo_b37_padded_${padding}.interval_list -SD=${ref_dict}
+     
 
     cp -L intervalo_b37_padded_${padding}.bed ${path_save}
     cp -L intervalo_b37_padded_${padding}_merged_${merge_tolerance}_preprocessing.interval_list ${path_save}
+    cp -L intervalo_b37_padded_${padding}.interval_list ${path_save}
   >>>
 
   output {
     File padded_coord = "intervalo_b37_padded_${padding}.bed"
     #File merged_padded_coord = "intervalo_b37_padded_merged_${merge_tolerance}.bed"
     File interval_list = "intervalo_b37_padded_${padding}_merged_${merge_tolerance}_preprocessing.interval_list"
+    File eval_interval_list = "intervalo_b37_padded_${padding}.interval_list"
   }
 
 }
@@ -243,6 +258,14 @@ workflow main_workflow {
     File chromosome_length
     Int padding = "100"
     Int merge_tolerance = "0"
+
+  call mkdir {
+    input: 
+    path_softlink = path_softlink,
+
+
+  }
+
 
 
   call coord_generator {
@@ -392,15 +415,15 @@ workflow main_workflow {
 
   }
 
-  Array[File] intervalos = ["${coord_generator.interval_list}","${coord_generator.padded_coord}"]
-  scatter (inter in intervalos){
-  call copy2data {
-   input: 
-   output_to_save = inter,
-   path_save = path_softlink
+  #Array[File] intervalos = ["${coord_generator.interval_list}","${coord_generator.padded_coord}"]
+  #scatter (inter in intervalos){
+  #call copy2data {
+  # input: 
+  # output_to_save = inter,
+  # path_save = path_softlink
 
-  }
-  }
+  #}
+  #}
 
  Array[File] archivos_a_borrar3 = bam2gvcf.borrar_SortandFix#,"${}"]
 
@@ -419,7 +442,7 @@ workflow main_workflow {
   call joint_genotype.JointGenotyping {
    input:
     
-     eval_interval_list   = coord_generator.interval_list,
+     eval_interval_list   = coord_generator.eval_interval_list,
      array_path_save = mkdir_samplename.path_out_softlink,
      dbSNP_vcf = dbSNP_vcf,
      dbSNP_vcf_index = dbSNP_vcf_index,
