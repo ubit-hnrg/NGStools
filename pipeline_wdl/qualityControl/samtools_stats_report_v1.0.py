@@ -37,27 +37,16 @@ def parse_samtools_report_SN(samtools_stat_file):
     return samtools_report
 
 
-#samtools_global_report = parse_samtools_report_SN(samtools_global_report_file)
 samtools_kit_report = parse_samtools_report_SN(samtools_kit_report_file)
-
-
-#absolute_reads_tso = samtools_kit_report['reads properly paired']
-#absolute_reads_tso.rename(columns={'reads properly paired':'Number of reads properly paired'},inplace = True)
-
 percents_tso = 100*samtools_kit_report[['reads properly paired','reads duplicated','reads MQ0']]/float(total_reads)
-#percents_tso = samtools_kit_report[['reads properly paired','reads duplicated','reads MQ0']]
-
-percents_tso = percents_tso.append(samtools_kit_report[['average quality','maximum length']])
+percents_tso = percents_tso.append(samtools_kit_report[['maximum length']])
 percents_tso = percents_tso.append(samtools_kit_report[['error rate']]*100)
 
+percents_tso = percents_tso.append(pd.Series([total_reads],index=['Number of reads properly paired']))
 
-#percents_tso = percents_tso.append(absolute_reads_tso)
-
-
-percents_tso = percents_tso.append(pd.Series([total_reads],index=['Number of reads properly paired'])) # !!!! uncomment!!!!
 percents_tso.index = percents_tso.index+' in Library'
 percents_tso.rename(index={'Number of reads properly paired in Library':'Number of reads properly paired'},inplace = True)
-
+percents_tso.rename(index={'reads properly paired in Library':'Percent of reads properly paired in Library'},inplace = True)
 
 percents_tso.index = percents_tso.index.str.replace(' ','-')
 
