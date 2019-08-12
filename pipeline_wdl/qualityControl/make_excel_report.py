@@ -17,7 +17,7 @@ report_fnames = [i.split(':')[0] for i in report_pairs]
 for report_name, report_fname in zip(report_names,report_fnames):
     print report_name
     worksheet = workbook.add_worksheet(report_name)
-    report_table = pd.read_table(report_fname,header = None,encoding='utf-8')
+    report_table = pd.read_table(report_fname,encoding='utf-8')
     
     shape = report_table.shape
     row_max = shape[0]
