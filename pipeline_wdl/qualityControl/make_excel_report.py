@@ -3,6 +3,7 @@ import pandas as pd
 import os
 import sys
 import openpyxl
+import xlsxwriter
 
 report_pairs =sys.argv[1:-1]
 output = sys.argv[-1]
