@@ -147,7 +147,7 @@ results_dict.update({"q20 antes del filtrado[%]":porc_q20_rates_bef1})
 res=pd.Series(results_dict).to_frame()
 res.columns = [sample_name]
     #res.index
-reportes.append(res.loc[[u'total de lecturas antes del filtrado',
+res = res.loc[[u'total de lecturas antes del filtrado',
              u'total de lecturas despues del filtrado',
              u'total de lecturas despues del filtrado[%]',
              u'lecturas lowqual[%]',
@@ -165,6 +165,7 @@ reportes.append(res.loc[[u'total de lecturas antes del filtrado',
              u'longitud media R1 despues del filtrado',
              u'longitud media R2 despues del filtrado'],:])
     
-pd.options.display.float_format = '{:.2f}'.format
+#pd.options.display.float_format = '{:.2f}'.format
 #display(pd.concat(reportes, axis=1).round(2))
-pd.concat(reportes, axis=1).round(2).to_csv(out,sep='\t')
+res.round(2).to_csv(out,sep = '\t',header =False)
+#pd.concat(reportes, axis=1).round(2).to_csv(out,sep='\t')
