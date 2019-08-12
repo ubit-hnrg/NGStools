@@ -163,7 +163,7 @@ res = res.loc[[u'total de lecturas antes del filtrado',
              u'longitud media R1 antes del filtrado',
              u'longitud media R2 antes del filtrado',
              u'longitud media R1 despues del filtrado',
-             u'longitud media R2 despues del filtrado'],:])
+             u'longitud media R2 despues del filtrado'],:]
     
 #pd.options.display.float_format = '{:.2f}'.format
 #display(pd.concat(reportes, axis=1).round(2))
