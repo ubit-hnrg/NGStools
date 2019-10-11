@@ -1,0 +1,1 @@
+vcfanno -p 4 -lua duplicar.lua single_annot_conf.toml CH1605590.final_annot.vcf > test.vcf
