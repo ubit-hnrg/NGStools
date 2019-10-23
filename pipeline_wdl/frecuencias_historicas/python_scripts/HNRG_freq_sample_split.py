@@ -72,7 +72,7 @@ detailArray = []
 detail = []
 summary = [] 
 #for i in range(vcf['variants/ALT'].shape):
-for i in np.arange(1000):
+for i in np.arange(vcf['variants/ALT'].shape[0]):
     detailArray.append(analyze_alts(vcf=vcf,fila_vcf=i))
     sSummary, sDetail = pathology_freq(detailArray[-1])
     summary.append(sSummary)
