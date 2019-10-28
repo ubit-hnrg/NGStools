@@ -70,7 +70,28 @@ def join_sampleSummary_list(variant_alt,joinpattern='|'):
 
 detailArray = []
 detail = []
-summary = [] 
+summary = []
+
+df_AF = pd.DataFrame(vcf['variants/AF_HNRG'])
+df_AF['AF_HNRG'] = df_AF.apply(
+    lambda x: ','.join(x.dropna().astype(str)),
+    axis=1
+)
+
+df_AC = pd.DataFrame(vcf['variants/AC_HNRG'])
+df_AC['AC_HNRG'] = df_AC.apply(
+    lambda x: ','.join(x.replace(-1,np.nan, regex=True).dropna().astype(int).astype(str)),
+    axis=1
+)
+##x[x!=u'']
+
+
+df_AN = pd.DataFrame(vcf['variants/AN_HNRG'])
+df_AN['AN_HNRG'] = df_AN.apply(
+    lambda x: ','.join(x.dropna().astype(str)),
+    axis=1
+)
+
 #for i in range(vcf['variants/ALT'].shape):
 for i in np.arange(vcf['variants/ALT'].shape[0]):
     detailArray.append(analyze_alts(vcf=vcf,fila_vcf=i))
@@ -87,9 +108,12 @@ vcf2write.update({'CHROM':vcf['variants/CHROM']})
 vcf2write.update({'POS':vcf['variants/POS']})
 vcf2write.update({'REF':vcf['variants/REF']})
 vcf2write.update({'ALT':alt})
+vcf2write.update({'AF_HNRG':df_AF['AF_HNRG']})
+vcf2write.update({'AC_HNRG':df_AC['AC_HNRG']})
+vcf2write.update({'AN_HNRG':df_AN['AN_HNRG']})
 vcf2write.update({'SamplesDetail':sampleDetail})
 vcf2write.update({'SampleSummary':sampleSummary})
 
-df = pd.DataFrame(vcf2write)[['CHROM','POS','REF','ALT','SampleSummary','SamplesDetail']]
+df = pd.DataFrame(vcf2write)[['CHROM','POS','REF','ALT','AF_HNRG','AC_HNRG','AN_HNRG','SampleSummary','SamplesDetail']]
 
 df.to_csv(outfile,sep = '\t', index=False)
