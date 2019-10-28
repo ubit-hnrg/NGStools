@@ -20,7 +20,7 @@ outfile = args.output_report
 ## exploro numero maximo de alternativos
 alternatives = pd.read_csv(path,comment='#',header =None,sep ='\t',usecols = [4])
 maxalt = alternatives[4].str.split(',',expand = True).shape[1]
-vcf = allel.read_vcf(path,alt_number=maxalt)
+vcf = allel.read_vcf(path,alt_number=maxalt, fields=('variants/*','calldata/*','samples'))
 
 def analyze_alts(vcf, fila_vcf):
     alternativos = vcf['variants/ALT']
