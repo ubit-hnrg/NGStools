@@ -113,6 +113,10 @@
   "main_workflow.FuncionalAnnotation.step9_EVS.database_index": "/home/hnrg/HNRG-pipeline-V0.1/dbs/GRCh37_snpsift/ESP6500SI-V2-SSA137.snps_indels.vcf.idx",
 
   "##_COMENTARIO": "step 11 comentado",
+  "##_COMENTARIO":"step 14 bplat format",
+  "main_workflow.FuncionalAnnotation.config_file_vcfanno": "File",
+  "main_workflow.FuncionalAnnotation.funcion_lua": "File",
+
 
   "##_COMENTARIO": "Base de datos actualizada Abril 2019.(ultima version 19/2/19)",
   "main_workflow.FuncionalAnnotation.step12_clinVar.database": "/home/hnrg/HNRG-pipeline-V0.1/dbs/GRCh37_snpsift/clinvar_20190219.vcf.gz",

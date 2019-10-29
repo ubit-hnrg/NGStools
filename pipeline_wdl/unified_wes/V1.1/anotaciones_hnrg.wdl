@@ -420,7 +420,7 @@ input:
 #Step 14: annotate for bplat format
 call bplat_annot {
 
-
+input:
     input_vcf = step13_pharmGKB.salida_Snpsift,
     funcion_lua = funcion_lua, 
     config_file_vcfanno = config_file_vcfanno,
