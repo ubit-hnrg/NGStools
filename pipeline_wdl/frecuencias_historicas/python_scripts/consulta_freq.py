@@ -30,6 +30,7 @@ chrom_pos['pos'] = pd.to_numeric(chrom_pos['pos'])
 chrom_pos['ch_num'] = chrom_pos['ch_num'].map(str)
 
 ind_bool=(open_freq['CHROM'].isin(chrom_pos["ch_num"]))& (open_freq['POS'].isin(chrom_pos["pos"]))
-res = open_freq[ind_bool]   
-res.to_csv(output,sep = '\t', index=False)
+res = open_freq[ind_bool] 
+result = pd.merge(chrom_pos,res, on=('POS','CHROM'), how='left')
+result.to_csv(output,sep = '\t', index=False)
 
