@@ -191,7 +191,7 @@ task bplat_annot {
     
 
     command {
-        ${toolpath}/vcfanno_linux64 -p 4 -lua ${funcion_lua} ${config_file_vcfanno} ${input_vcf} > ${sample_name}.${nombre_step}.vcf
+        ${toolpath}/vcfanno_linux64 -p 4 ${config_file_vcfanno} ${input_vcf} > ${sample_name}.${nombre_step}.vcf
 
     }
 output {
