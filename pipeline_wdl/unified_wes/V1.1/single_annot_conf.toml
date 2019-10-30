@@ -1,24 +1,24 @@
 [[annotation]]
-file="/home/usuario/freq_hnrg.vcf.gz" 
+file="/home/hnrg/HNRG_freq.vcf.gz" 
 # ID and FILTER are special fields that pull the ID and FILTER columns from the VCF
-fields=["AC_HNRG","AN_HNRG","NS_HNRG"]
-ops=["min","min","min"]
-names=["FREQUENCY","SAMPLES_FREQUENCY", "DOMAIN_FREQUENCY"]
+fields=["AC_HNRG","AN_HNRG"]
+ops=["min","min"]
+names=["FREQUENCY","DOMAIN_FREQUENCY=-1,SAMPLES_FREQUENCY"]
 
-[[postannotation]]
-fields=["FREQUENCY"]
-op="lua:dup(FREQUENCY)"
-name="FREQUENCY"
-type="Float"
+#[[postannotation]]
+#fields=["FREQUENCY"]
+#op="lua:dup(FREQUENCY)"
+#name="FREQUENCY"
+#type="Float"
 
-[[postannotation]]
-fields=["SAMPLES_FREQUENCY"]
-op="lua:dup(SAMPLES_FREQUENCY)"
-name="SAMPLES_FREQUENCY"
-type="Float"
+#[[postannotation]]
+#fields=["SAMPLES_FREQUENCY"]
+#op="lua:dup(SAMPLES_FREQUENCY)"
+#name="SAMPLES_FREQUENCY"
+#type="Float"
 
-[[postannotation]]
-fields=["DOMAIN_FREQUENCY"]
-op="lua:domain(DOMAIN_FREQUENCY)"
-name="DOMAIN_FREQUENCY"
-type="Float"
+#[[postannotation]]
+#fields=["DOMAIN_FREQUENCY"]
+#op="lua:domain(DOMAIN_FREQUENCY)"
+#name="DOMAIN_FREQUENCY"
+#type="Float"
