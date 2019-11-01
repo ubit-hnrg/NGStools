@@ -8,7 +8,7 @@ workflow JointGenotyping {
   File unpadded_intervals_file ##lista intervalos
   File eval_interval_list
   
-  Array[String] array_path_save
+  String array_path_save
   String callset_name
 
   File ref_fasta
