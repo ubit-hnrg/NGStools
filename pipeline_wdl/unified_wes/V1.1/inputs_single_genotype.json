@@ -15,7 +15,7 @@
   "main_workflow.chromosome_length": "/home/hnrg/HNRG-pipeline-V0.1/libraries/GRCh37/chromosome_lengths_hg19.txt",
 
   "main_workflow.ubam_list_name": "ubamfile",
-  "main_workflow.JointGenotyping.unpadded_intervals_file": "/home/hnrg/HNRG-pipeline-V0.1/libraries/GRCh37/chromosome_lengths_hg19.txt",
+  "main_workflow.JointGenotyping.unpadded_intervals_file": "/home/hnrg/HNRG-pipeline-V0.1/libraries/GRCh37/b37_wgs_consolidated_calling_intervals.list",
   "main_workflow.generic_exon_coords": "/home/hnrg/HNRG-pipeline-V0.1/libraries/GRCh37/exon_coords_GRCh37.tsv",
   
   "main_workflow.gvcf_list_of_files": "/home/hnrg/genotipado_simple/gvcf.txt",
