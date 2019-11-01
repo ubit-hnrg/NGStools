@@ -191,20 +191,19 @@ workflow main_workflow {
 
 
 
-
-
   Array[File] array_of_gvcfs = read_lines(gvcf_list_of_files)
   Array[File] array_of_gvcfs_idx = read_lines(gvcf_list_of_idx)
+  Array[Pair[File,File]] gvcf_x_idx = zip(array_of_gvcfs,array_of_gvcfs_idx)
 
 
  #inputs_bams is an array of files. Each element is a file containing all the aligned and merged bams of a sample.
- scatter (gvcf in array_of_gvcfs)  {
+ scatter (gvcf in gvcf_x_idx)  {
    #ubamtobwa.output_mergedbam_files
   
    #File flowcell_mapped_bams_listfile = sample_txt
    #Array[File] flowcell_mapped_bams = read_lines(flowcell_mapped_bams_listfile)
 
-   String sample_name = basename(gvcf, ".g.vcf.gz")
+   String sample_name = basename(gvcf.left, ".g.vcf.gz")
 
    #####subworkflow de fastq2bwa
 
@@ -231,8 +230,8 @@ workflow main_workflow {
     gatk_jar = gatk_jar,
     toolpath = toolpath,
     sample_names = sample_name,
-    input_gvcfs = gvcf,
-    input_gvcfs_indices = gvcf_list_of_idx
+    input_gvcfs = gvcf.left,
+    input_gvcfs_indices = gvcf.right
     }
  
   }
