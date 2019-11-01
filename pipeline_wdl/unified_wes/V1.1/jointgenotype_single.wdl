@@ -34,7 +34,7 @@ workflow JointGenotyping {
 
 
   Int num_of_original_intervals = length(read_lines(unpadded_intervals_file))
-  Int num_gvcfs = '1'#length(input_gvcfs)
+  Int num_gvcfs = '59'#length(input_gvcfs)
 
   # Make a 2.5:1 interval number to samples in callset ratio interval list
   Int possible_merge_count = floor(num_of_original_intervals / num_gvcfs / 2.5)
