@@ -20,7 +20,7 @@
   
   "main_workflow.gvcf_list_of_files": "/home/hnrg/genotipado_simple/gvcf.txt",
   "main_workflow.gvcf_list_of_idx": "/home/hnrg/genotipado_simple/gvcf_tbi.txt",
-  "main_workflow.experiment_lib": "/home/hnrg/HNRG-pipeline-V0.1/libraries/GRCh37/S07604624_SureSelectHumanAllExonV6+UTRs_Padded_GRCh37.bed.gz",
+  "main_workflow.experiment_lib": "/home/hnrg/HNRG-pipeline-V0.1/libraries/GRCh37/TruSight_One_v1.1_GRCh37.bed.gz",
   
   "main_workflow.ref_name": ".b37",
   "main_workflow.ref_pac": "/home/hnrg/HNRG-pipeline-V0.1/references/hs37d5/hs37d5.fa.pac",
