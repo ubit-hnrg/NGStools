@@ -18,9 +18,9 @@ workflow JointGenotyping {
   String gatk_jar
   String toolpath
 
-  Array[String] sample_names
-  Array[File] input_gvcfs 
-  Array[File] input_gvcfs_indices 
+  String sample_names
+  File input_gvcfs 
+  File input_gvcfs_indices 
 
   File dbSNP_vcf
   File dbSNP_vcf_index
@@ -34,7 +34,7 @@ workflow JointGenotyping {
 
 
   Int num_of_original_intervals = length(read_lines(unpadded_intervals_file))
-  Int num_gvcfs = length(input_gvcfs)
+  Int num_gvcfs = '1'#length(input_gvcfs)
 
   # Make a 2.5:1 interval number to samples in callset ratio interval list
   Int possible_merge_count = floor(num_of_original_intervals / num_gvcfs / 2.5)
@@ -46,6 +46,7 @@ workflow JointGenotyping {
       intervals = unpadded_intervals_file,
       merge_count = merge_count
   }
+
 
   Array[String] unpadded_intervals = read_lines(DynamicallyCombineIntervals.output_intervals)
 
