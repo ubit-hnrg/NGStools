@@ -134,15 +134,18 @@ workflow JointGenotyping {
     }
   }
 
-Array[File] salidas = ["${FinalGatherVcf.output_vcf}","${FinalGatherVcf.output_vcf_index}","${CollectMetricsOnFullVcf.detail_metrics_file}","${CollectMetricsOnFullVcf.summary_metrics_file}"]
-Array[Pair[String,File]] samples_x_files = cross (array_path_save, salidas)
-scatter (pairs in samples_x_files) {
+#Array[File] salidas = ["${FinalGatherVcf.output_vcf}","${FinalGatherVcf.output_vcf_index}","${CollectMetricsOnFullVcf.detail_metrics_file}","${CollectMetricsOnFullVcf.summary_metrics_file}"]
+#Array[Pair[String,File]] samples_x_files = cross (array_path_save, salidas)
+#scatter (pairs in samples_x_files) {
     call symlink_important_files {
-        input:
-        output_to_save = pairs.right,
-        path_save = pairs.left
-    }
-}
+       input:
+         final_gath = FinalGatherVcf.output_vcf,
+         final_gath_idx = FinalGatherVcf.output_vcf_index,
+         metrica1 = CollectMetricsOnFullVcf.detail_metrics_file,
+         metrica2 = CollectMetricsOnFullVcf.summary_metrics_file,
+        path_save = array_path_save
+   }
+#}
 
   output {
     # outputs from the small callset path through the wdl
@@ -161,12 +164,18 @@ scatter (pairs in samples_x_files) {
   }
 }
 
-
+#["${FinalGatherVcf.output_vcf}","${FinalGatherVcf.output_vcf_index}","${CollectMetricsOnFullVcf.detail_metrics_file}","${CollectMetricsOnFullVcf.summary_metrics_file}"]
 task symlink_important_files {
-    File output_to_save
+    File final_gath
+    File final_gath_idx
+    File metrica1
+    File metrica2
     String path_save
     command{
-       cp -L ${output_to_save} ${path_save}
+       cp -L ${final_gath} ${path_save}
+       cp -L ${final_gath_idx} ${path_save}
+       cp -L ${metrica1} ${path_save}
+       cp -L ${metrica2} ${path_save}
     }
 }
 
