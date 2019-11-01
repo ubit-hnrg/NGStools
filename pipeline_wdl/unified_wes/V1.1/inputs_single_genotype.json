@@ -1,0 +1,35 @@
+{
+  "main_workflow.path_softlink": "/data/results/testing/V1T/",
+  "main_workflow.callset_name": "test_single_genotype",
+
+  "main_workflow.JointGenotyping.excess_het_threshold": "54.69",
+  "main_workflow.padding": "100",
+  "main_workflow.toolpath": "/home/hnrg/HNRG-pipeline-V0.1/tools/",
+  "main_workflow.gatk_jar": "gatk-package-4.0.8.1-local.jar",
+
+  "main_workflow.merge_tolerance": "0",
+  "main_workflow.bwa_commandline": "bwa mem -K 100000000 -p -v 3 -t 4 -Y",
+  "main_workflow.dbSNP_vcf_index": "/home/hnrg/HNRG-pipeline-V0.1/dbs/preprocessing_dbs/All_20180423.vcf.gz.tbi",
+  "main_workflow.dbSNP_vcf": "/home/hnrg/HNRG-pipeline-V0.1/dbs/preprocessing_dbs/All_20180423.vcf.gz",
+
+  "main_workflow.chromosome_length": "/home/hnrg/HNRG-pipeline-V0.1/libraries/GRCh37/chromosome_lengths_hg19.txt",
+
+  "main_workflow.ubam_list_name": "ubamfile",
+  "main_workflow.JointGenotyping.unpadded_intervals_file": "/home/hnrg/HNRG-pipeline-V0.1/libraries/GRCh37/chromosome_lengths_hg19.txt",
+  "main_workflow.generic_exon_coords": "/home/hnrg/HNRG-pipeline-V0.1/libraries/GRCh37/exon_coords_GRCh37.tsv",
+  
+  "main_workflow.gvcf_list_of_files": "/home/hnrg/genotipado_simple/gvcf.txt",
+  "main_workflow.gvcf_list_of_idx": "/home/hnrg/genotipado_simple/gvcf_tbi.txt",
+  "main_workflow.experiment_lib": "/home/hnrg/HNRG-pipeline-V0.1/libraries/GRCh37/S07604624_SureSelectHumanAllExonV6+UTRs_Padded_GRCh37.bed.gz",
+  
+  "main_workflow.ref_name": ".b37",
+  "main_workflow.ref_pac": "/home/hnrg/HNRG-pipeline-V0.1/references/hs37d5/hs37d5.fa.pac",
+  "main_workflow.ref_sa": "/home/hnrg/HNRG-pipeline-V0.1/references/hs37d5/hs37d5.fa.sa",
+  "main_workflow.ref_ann": "/home/hnrg/HNRG-pipeline-V0.1/references/hs37d5/hs37d5.fa.ann",
+  "main_workflow.ref_dict": "/home/hnrg/HNRG-pipeline-V0.1/references/hs37d5/hs37d5.dict",
+  "main_workflow.ref_fasta_index": "/home/hnrg/HNRG-pipeline-V0.1/references/hs37d5/hs37d5.fa.fai",
+  "main_workflow.ref_bwt": "/home/hnrg/HNRG-pipeline-V0.1/references/hs37d5/hs37d5.fa.bwt",
+  "main_workflow.ref_fasta": "/home/hnrg/HNRG-pipeline-V0.1/references/hs37d5/hs37d5.fa",
+  "main_workflow.ref_amb": "/home/hnrg/HNRG-pipeline-V0.1/references/hs37d5/hs37d5.fa.amb"
+}
+
