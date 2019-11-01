@@ -204,7 +204,7 @@ workflow main_workflow {
    #File flowcell_mapped_bams_listfile = sample_txt
    #Array[File] flowcell_mapped_bams = read_lines(flowcell_mapped_bams_listfile)
 
-   String sample_name = basename(gvcf, "g.vcf.gz")
+   String sample_name = basename(gvcf, ".g.vcf.gz")
 
    #####subworkflow de fastq2bwa
 
