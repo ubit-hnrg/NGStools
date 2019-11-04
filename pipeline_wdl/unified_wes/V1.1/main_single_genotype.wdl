@@ -190,7 +190,8 @@ workflow main_workflow {
   # }
 
 
-
+##cantidad de gvcfs
+  Int cantidad_gvcf = length(read_lines(gvcf_list_of_files))
   Array[File] array_of_gvcfs = read_lines(gvcf_list_of_files)
   Array[File] array_of_gvcfs_idx = read_lines(gvcf_list_of_idx)
   Array[Pair[File,File]] gvcf_x_idx = zip(array_of_gvcfs,array_of_gvcfs_idx)
@@ -219,6 +220,7 @@ workflow main_workflow {
    ##########################################llamada workflow Joint Genotyping
    call joint_genotype.JointGenotyping {
     input:
+    num_gvcfs= cantidad_gvcf,
     eval_interval_list   = coord_generator.eval_interval_list,
     array_path_save = mkdir_samplename.path_out_softlink,
     dbSNP_vcf = dbSNP_vcf,
