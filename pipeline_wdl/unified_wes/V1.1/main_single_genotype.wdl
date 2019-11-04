@@ -233,7 +233,7 @@ workflow main_workflow {
     toolpath = toolpath,
     sample_names = sample_name,
     input_gvcfs = gvcf.left,
-    gvcf_index = gvcf.right
+    input_gvcfs_indices = gvcf.right
     }
  
   }
@@ -246,7 +246,7 @@ workflow main_workflow {
    Array[File?] outputvcfindex =  JointGenotyping.outputvcfindex
    Array[File?] detail_metrics_file =  JointGenotyping.metrica1
    Array[File?] summary_metrics_file = JointGenotyping.metrica2
-   Array[File?] intervalo = JointGenotyping.inter
+   #Array[File?] intervalo = JointGenotyping.inter
 
   
   }

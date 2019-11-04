@@ -72,6 +72,7 @@ workflow JointGenotyping {
       input:
         #workspace_tar = ImportGVCFs.output_genomicsdb,
         gvcf = input_gvcfs,
+        gvcf_index = input_gvcfs_indices,
     #    input_gvcfs_indices = input_gvcfs_indices,
         interval = unpadded_intervals_file,#unpadded_intervals[idx],
         output_vcf_filename = "output.vcf.gz",
@@ -90,8 +91,10 @@ workflow JointGenotyping {
         vcf = GenotypeGVCFs.output_vcf,
         vcf_index = GenotypeGVCFs.output_vcf_index,
         excess_het_threshold = excess_het_threshold,
-        variant_filtered_vcf_filename = callset_name + "." + idx + ".variant_filtered.vcf.gz",
-        sites_only_vcf_filename = callset_name + "." + idx + ".sites_only.variant_filtered.vcf.gz",
+        #variant_filtered_vcf_filename = callset_name + "." + idx + ".variant_filtered.vcf.gz",
+        variant_filtered_vcf_filename = callset_name + "." + ".variant_filtered.vcf.gz",
+        #sites_only_vcf_filename = callset_name + "." + idx + ".sites_only.variant_filtered.vcf.gz",
+        sites_only_vcf_filename = callset_name + "." + ".sites_only.variant_filtered.vcf.gz",
         gatk_jar = gatk_jar,
         toolpath = toolpath
    
@@ -162,7 +165,7 @@ workflow JointGenotyping {
     #GatherMetrics.summary_metrics_file
 
     # output the interval list generated/used by this run workflow
-    File? inter = DynamicallyCombineIntervals.output_intervals
+    #File? inter = DynamicallyCombineIntervals.output_intervals
   }
 }
 
