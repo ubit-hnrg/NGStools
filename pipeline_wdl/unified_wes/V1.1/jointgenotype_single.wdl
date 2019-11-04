@@ -34,7 +34,7 @@ workflow JointGenotyping {
 
 
   Int num_of_original_intervals = length(read_lines(unpadded_intervals_file))
-  Int num_gvcfs = '59'#length(input_gvcfs)
+  Int num_gvcfs #= '59'#length(input_gvcfs)
 
   # Make a 2.5:1 interval number to samples in callset ratio interval list
   Int possible_merge_count = floor(num_of_original_intervals / num_gvcfs / 2.5)
@@ -55,22 +55,24 @@ workflow JointGenotyping {
     # is the optimal value for the amount of memory allocated
     # within the task; please do not change it without consulting
     # the Hellbender (GATK engine) team!
-    call ImportGVCFs {
-      input:
-        sample_names = sample_names,
-        interval = unpadded_intervals[idx],
-        workspace_dir_name = "genomicsdb",
-        batch_size = 50,
-        input_gvcfs = input_gvcfs,
-        input_gvcfs_indices = input_gvcfs_indices,
-        gatk_jar = gatk_jar,
-        toolpath = toolpath
+    #call ImportGVCFs {
+    #  input:
+    #    sample_names = sample_names,
+    #    interval = unpadded_intervals[idx],
+    #    workspace_dir_name = "genomicsdb",
+    #    batch_size = 50,
+    #    input_gvcfs = input_gvcfs,
+    #    input_gvcfs_indices = input_gvcfs_indices,
+    #    gatk_jar = gatk_jar,
+    #    toolpath = toolpath
     
-    }
+    #}
 
     call GenotypeGVCFs {
       input:
-        workspace_tar = ImportGVCFs.output_genomicsdb,
+        #workspace_tar = ImportGVCFs.output_genomicsdb,
+        gvcf = input_gvcfs,
+    #    input_gvcfs_indices = input_gvcfs_indices,
         interval = unpadded_intervals[idx],
         output_vcf_filename = "output.vcf.gz",
         ref_fasta = ref_fasta,
@@ -247,7 +249,7 @@ task ImportGVCFs {
 }
 
 task GenotypeGVCFs {
-  File workspace_tar
+  #File workspace_tar
   String interval
 
   String output_vcf_filename
@@ -261,12 +263,11 @@ task GenotypeGVCFs {
  
   String gatk_jar
   String toolpath
+  File gvcf
 
   command <<<
     set -e
 
-    tar -xf ${workspace_tar}
-    WORKSPACE=$( basename ${workspace_tar} .tar)
 
     java -Xmx1g -Xms1g -jar ${toolpath}${gatk_jar}\
      GenotypeGVCFs \
@@ -276,7 +277,7 @@ task GenotypeGVCFs {
      -G StandardAnnotation \
      --only-output-calls-starting-in-intervals \
      --use-new-qual-calculator \
-     -V gendb://$WORKSPACE \
+     --variant ${gvcf}
      -L ${interval}
   >>>
 
