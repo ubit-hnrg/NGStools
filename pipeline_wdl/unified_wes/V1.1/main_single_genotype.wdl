@@ -233,7 +233,7 @@ workflow main_workflow {
     toolpath = toolpath,
     sample_names = sample_name,
     input_gvcfs = gvcf.left,
-    input_gvcfs_indices = gvcf.right
+    gvcf_index = gvcf.right
     }
  
   }

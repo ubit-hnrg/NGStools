@@ -264,6 +264,7 @@ task GenotypeGVCFs {
   String gatk_jar
   String toolpath
   File gvcf
+  File gvcf_index
 
   command <<<
     set -e
