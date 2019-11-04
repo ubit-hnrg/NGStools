@@ -279,7 +279,6 @@ task GenotypeGVCFs {
      -O ${output_vcf_filename} \
      -D ${dbSNP_vcf} \
      -G StandardAnnotation \
-     --only-output-calls-starting-in-intervals \
      --use-new-qual-calculator \
      --variant ${gvcf}
      
