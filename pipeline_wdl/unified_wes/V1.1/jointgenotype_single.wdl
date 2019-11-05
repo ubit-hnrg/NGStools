@@ -92,9 +92,9 @@ workflow JointGenotyping {
         vcf_index = GenotypeGVCFs.output_vcf_index,
         excess_het_threshold = excess_het_threshold,
         #variant_filtered_vcf_filename = callset_name + "." + idx + ".variant_filtered.vcf.gz",
-        variant_filtered_vcf_filename = callset_name + "." + ".variant_filtered.vcf.gz",
+        variant_filtered_vcf_filename = callset_name  + ".variant_filtered.vcf.gz",
         #sites_only_vcf_filename = callset_name + "." + idx + ".sites_only.variant_filtered.vcf.gz",
-        sites_only_vcf_filename = callset_name + "." + ".sites_only.variant_filtered.vcf.gz",
+        sites_only_vcf_filename = callset_name + ".sites_only.variant_filtered.vcf.gz",
         gatk_jar = gatk_jar,
         toolpath = toolpath
    
@@ -329,8 +329,8 @@ task HardFilterAndMakeSitesOnlyVcf {
 
 
 task GatherVcfs {
-  Array[File] input_vcfs_fofn
-  Array[File] input_vcf_indexes_fofn
+  File input_vcfs_fofn
+  File input_vcf_indexes_fofn
   String output_vcf_name
   
   String gatk_jar
@@ -395,8 +395,8 @@ task CollectVariantCallingMetrics {
 }
 
 task GatherMetrics {
-  Array[File] input_details_fofn
-  Array[File] input_summaries_fofn
+  File input_details_fofn
+  File input_summaries_fofn
 
   String output_prefix
 
