@@ -25,11 +25,11 @@ open_freq.CHROM = open_freq.CHROM.map(str)
 open_freq.POS = open_freq.POS.map(int)
 
 chrom_pos = open_coord1[0].str.split(':',expand=True)
-chrom_pos.columns=['ch_num','pos']
-chrom_pos['pos'] = pd.to_numeric(chrom_pos['pos'])
-chrom_pos['ch_num'] = chrom_pos['ch_num'].map(str)
+chrom_pos.columns=['CHROM','POS']
+chrom_pos['POS'] = pd.to_numeric(chrom_pos['POS'])
+chrom_pos['CHROM'] = chrom_pos['CHROM'].map(str)
 
-ind_bool=(open_freq['CHROM'].isin(chrom_pos["ch_num"]))& (open_freq['POS'].isin(chrom_pos["pos"]))
+ind_bool=(open_freq['CHROM'].isin(chrom_pos["CHROM"]))& (open_freq['POS'].isin(chrom_pos["POS"]))
 res = open_freq[ind_bool] 
 result = pd.merge(chrom_pos,res, on=('POS','CHROM'), how='left')
 result.to_csv(output,sep = '\t', index=False)
