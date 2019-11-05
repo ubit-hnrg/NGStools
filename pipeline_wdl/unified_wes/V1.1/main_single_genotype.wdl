@@ -225,7 +225,7 @@ workflow main_workflow {
     array_path_save = mkdir_samplename.path_out_softlink,
     dbSNP_vcf = dbSNP_vcf,
     dbSNP_vcf_index = dbSNP_vcf_index,
-    callset_name = callset_name,
+    callset_name = sample_name,
     ref_fasta = ref_fasta,
     ref_fasta_index =ref_fasta_index,
     ref_dict = ref_dict,
