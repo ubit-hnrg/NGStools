@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 bams=$1
 bed=$2
