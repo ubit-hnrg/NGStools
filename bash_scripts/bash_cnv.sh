@@ -17,4 +17,4 @@ Rscript IdentifyFailures.R --Rdata $out/resultado1.RData --mincorr .98 --mincov 
 Rscript makeCNVcalls.R --Rdata $out/resultado1.RData --transProb 0.01 --out $out/resultado3 --plot None \
 
 
-&& while read line; do name=$(basename $line .bam); head -n1 $out/resultado3_all.txt > $out/$name.txt && grep "$name" $out/resultado3_all.txt >> $out/$name.txt; done < $bams
+while read line; do name=$(basename $line .bam); head -n1 $out/resultado3_all.txt > $out/$name.txt && grep "$name" $out/resultado3_all.txt >> $out/$name.txt; done < $bams
