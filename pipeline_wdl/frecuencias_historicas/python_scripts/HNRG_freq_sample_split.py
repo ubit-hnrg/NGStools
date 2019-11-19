@@ -72,13 +72,13 @@ detailArray = []
 detail = []
 summary = []
 
-df_AF = pd.DataFrame(vcf['variants/AF_HNRG'])
+df_AF = pd.DataFrame(vcf['variants/AF'])
 df_AF['AF_HNRG'] = df_AF.apply(
     lambda x: ','.join(x.dropna().astype(str)),
     axis=1
 )
 
-df_AC = pd.DataFrame(vcf['variants/AC_HNRG'])
+df_AC = pd.DataFrame(vcf['variants/AC'])
 df_AC['AC_HNRG'] = df_AC.apply(
     lambda x: ','.join(x.replace(-1,np.nan, regex=True).dropna().astype(int).astype(str)),
     axis=1
@@ -86,7 +86,7 @@ df_AC['AC_HNRG'] = df_AC.apply(
 ##x[x!=u'']
 
 
-df_AN = pd.DataFrame(vcf['variants/AN_HNRG'])
+df_AN = pd.DataFrame(vcf['variants/AN'])
 df_AN['AN_HNRG'] = df_AN.apply(
     lambda x: ','.join(x.dropna().astype(str)),
     axis=1
