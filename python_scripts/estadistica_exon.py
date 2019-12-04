@@ -5,7 +5,7 @@ import numpy as np
 import glob
 import argparse
 import csv
-import sys
+
 
 
 parser = argparse.ArgumentParser(prog='estadistica_exon.py',description='get statistics from *_variants.xlsx exon files.', usage='%(prog)s  --freq_report --output_file')
@@ -26,7 +26,7 @@ def percentile(n):
 
 
 #directory = r'/home/usuario/Escritorio/reporte_exones/'
-files = glob.glob(args.directory + "*_variants.xlsx")
+files = glob.glob(args.directory + "*_variants.xlsx",*,recursive=True)
 
 if not files:
     print('File does not exist: ' + args.directory)
