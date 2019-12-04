@@ -5,14 +5,15 @@ import numpy as np
 import glob
 import argparse
 import csv
+import sys
 
 
 parser = argparse.ArgumentParser(prog='estadistica_exon.py',description='get statistics from *_variants.xlsx exon files.', usage='%(prog)s  --freq_report --output_file')
-parser.add_argument('-d','--directory', help='path of the *_variants.xlsx files')
+parser.add_argument('directory', metavar="path", type=str, help='path of the *_variants.xlsx files')
 parser.add_argument('-o','--output_file', help='a tsv file with exon statistics ')
 args = parser.parse_args()
 
-directory = args.directory
+#directory = args.directory
 out = args.output_file
 
 
@@ -25,7 +26,12 @@ def percentile(n):
 
 
 #directory = r'/home/usuario/Escritorio/reporte_exones/'
-files = glob.glob(directory + "*_variants.xlsx")
+files = glob.glob(args.directory + "*_variants.xlsx")
+
+if not files:
+    print('File does not exist: ' + args.directory, file=sys.stderr)
+for file in files:
+    print('File exists: ' + file)
 #fields = ["geneSymbol","dp1","dp10","dp20","dp30"]
 tablas = []
 #df = pd.DataFrame()
