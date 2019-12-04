@@ -10,7 +10,7 @@ import os
 
 
 parser = argparse.ArgumentParser(prog='estadistica_exon.py',description='get statistics from *_variants.xlsx exon files.', usage='%(prog)s  --freq_report --output_file')
-parser.add_argument('directory', type=os.path.abspath, help='path of the *_variants.xlsx files')
+parser.add_argument('--directory', type=os.path.abspath, help='path of the *_variants.xlsx files')
 parser.add_argument('-o','--output_file', help='a tsv file with exon statistics ')
 args = parser.parse_args()
 
