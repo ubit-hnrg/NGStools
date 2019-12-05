@@ -42,14 +42,12 @@ for f in files:
     temp_df = pd.read_excel(f, sheet_name= "ExonCoverage")
     tablas.append(temp_df)
 tablas = pd.concat(tablas)
-genes = tablas.groupby(['geneSymbol','exon_number'])
+
+genes = tablas.groupby(['geneSymbol','exon_number','exon_start','exon_end'])
 promedios = genes['dp1','dp10','dp20','dp30'].agg([np.min,np.mean,np.std,percentile(25),percentile(75)])
 
-resultado = pd.merge(promedios,temp_df[['geneSymbol','exon_number','chr','exon_start', 'exon_end']], left_index=True ,right_on=['geneSymbol','exon_number'], how='left')
-
-resultado.columns=['dp1_MIN','dp1_MEAN','dp1_STD','dp1_q25','dp1_q75','dp10_MIN','dp10_MEAN','dp10_STD', 'dp10_q25','dp10_q75','dp20_MIN','dp20_MEAN','dp20_STD','dp20_q25', 'dp20_q75','dp30_MIN','dp30_MEAN','dp30_STD','dp30_q25','dp30_q75','geneSymbol','exon_number','chr','exon_start','exon_end']
-resultado=resultado[['geneSymbol','exon_number','chr','exon_start','exon_end','dp1_MEAN','dp1_STD','dp1_MIN','dp1_q25','dp1_q75','dp10_MEAN','dp10_STD','dp10_MIN','dp10_q25','dp10_q75','dp20_MEAN','dp20_STD','dp20_MIN','dp20_q25', 'dp20_q75','dp30_MEAN','dp30_STD','dp30_MIN','dp30_q25','dp30_q75']]
-resultado=resultado.sort_values(by=['chr','exon_start'])
+promedios = promedios.reset_index()
+resultado.columns=['geneSymbol','exon_number','chr','exon_start','exon_end','dp1_MIN','dp1_MEAN','dp1_STD','dp1_q25','dp1_q75','dp10_MIN','dp10_MEAN','dp10_STD', 'dp10_q25','dp10_q75','dp20_MIN','dp20_MEAN','dp20_STD','dp20_q25', 'dp20_q75','dp30_MIN','dp30_MEAN','dp30_STD','dp30_q25','dp30_q75']
 
 
 resultado.to_csv(out,sep = '\t', index=False)
