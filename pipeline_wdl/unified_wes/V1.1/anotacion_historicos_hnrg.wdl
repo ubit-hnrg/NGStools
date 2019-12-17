@@ -72,7 +72,7 @@ scatter (pairs in vcf_x_path) {
  call bplat_annot {
 
  input:
-    input_vcf = vcf,
+    input_vcf = pairs.left,
     funcion_lua = funcion_lua, 
     config_file_vcfanno = config_file_vcfanno,
     sample_name = sample_name1,
