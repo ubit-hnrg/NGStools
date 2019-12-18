@@ -22,14 +22,18 @@ output {
 
 task get_dir {
 String path1
+String path_out
+
+
 
 command <<<
     set -e -o pipefail
-    dirname ${path1}
+    
+    dirname ${path1} > ${path_out}
 
 >>>
 output {
-   String path_dir = stdout()
+   String path_dir = path_out
 }
 
 
