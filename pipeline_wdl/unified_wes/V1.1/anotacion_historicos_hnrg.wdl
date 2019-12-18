@@ -20,24 +20,22 @@ output {
 
 }
 
-task get_dir {
-String path1
-String path_out
+#task get_dir {
+#String path1
+#String path_out
 
-
-
-command <<<
-    set -e -o pipefail
+#command <<<
+#    set -e -o pipefail
     
-    dirname ${path1} > ${path_out}
+#    dirname ${path1} > path_out
 
->>>
-output {
-   String path_dir = path_out
-}
+#>>>
+#output {
+#   String path_dir = path_out
+#}
 
 
-}
+#}
 
 task copy_to_data {
     File output_to_save
@@ -45,7 +43,10 @@ task copy_to_data {
     command{
        set -e -o pipefail
 
-       cp -L ${output_to_save} ${path_save}
+       a=$(dirname ${path_save})
+
+
+       cp -L ${output_to_save} $a
     }
 }
 
@@ -85,17 +86,17 @@ scatter (pairs in vcf_x_path) {
     
  }
 
- call get_dir {
-     input:
-     path1 = pairs.left
+# call get_dir {
+#     input:
+#     path1 = pairs.left
 
- }
+ #}
 
 
  call copy_to_data {
         input:
         output_to_save = bplat_annot.out_vcfanno,
-        path_save = get_dir.path_dir
+        path_save = pairs.left
     }
 
  }
