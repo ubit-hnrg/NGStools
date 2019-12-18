@@ -23,13 +23,13 @@ output {
 task get_dir {
 String path1
 
-command {
+command <<<
     set -e -o pipefail
     dirname ${path1}
 
-}
+>>>
 output {
-   String path = stdout()
+   String path_dir = stdout()
 }
 
 
@@ -91,7 +91,7 @@ scatter (pairs in vcf_x_path) {
  call copy_to_data {
         input:
         output_to_save = bplat_annot.out_vcfanno,
-        path_save = get_dir.path
+        path_save = get_dir.path_dir
     }
 
  }
