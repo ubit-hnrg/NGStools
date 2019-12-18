@@ -59,20 +59,20 @@ File config_file_vcfanno
 
 Array[File] vcf_in = read_lines(list_of_vcf)
 Array[String] path = read_lines(list_of_vcf)
-Array[Pair[File,String]] vcf_x_path = zip(vcf_in, path)
+Array[Pair[String,File]] vcf_x_path = zip(path, vcf_in)
 
 
 scatter (pairs in vcf_x_path) {
 
 
- String sample_name1 = basename(pairs.left, ".vcf")
+ String sample_name1 = basename(pairs.right, ".vcf")
  #String path_save = basename(vcf,sample_name1+".final_annot.vcf")
 
  #annotate for bplat format
  call bplat_annot {
 
  input:
-    input_vcf = pairs.left,
+    input_vcf = pairs.right,
     funcion_lua = funcion_lua, 
     config_file_vcfanno = config_file_vcfanno,
     sample_name = sample_name1,
@@ -83,7 +83,7 @@ scatter (pairs in vcf_x_path) {
 
  call get_dir {
      input:
-     path1 = pairs.right
+     path1 = pairs.left
 
  }
 
