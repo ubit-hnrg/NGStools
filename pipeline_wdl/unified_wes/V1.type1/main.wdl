@@ -248,6 +248,7 @@ workflow main_workflow {
 
   ##################anotacion funcional
   String reference_version = "GRCh37.75"
+  Float excess_het_threshold = 54.69
 
 
 
@@ -335,6 +336,7 @@ workflow main_workflow {
     ref_sa = ref_sa,
     gatk_jar = gatk_jar,
     toolpath = toolpath
+    
   } 
 
 
@@ -409,7 +411,8 @@ workflow main_workflow {
       java_heap_memory_initial = java_heap_memory_initial,
       tso_bed = coord_generator.padded_coord,
       unpadded_intervals_file = unpadded_intervals_file,
-      reference_version = reference_version
+      reference_version = reference_version,
+      excess_het_threshold = excess_het_threshold
     
 
     } 
@@ -462,7 +465,8 @@ workflow main_workflow {
      sample_names = uniquesample_name,
      input_gvcfs = bam2gvcf.output_vcf,
      input_gvcfs_indices = bam2gvcf.output_vcf_index,
-     unpadded_intervals_file = unpadded_intervals_file
+     unpadded_intervals_file = unpadded_intervals_file,
+     excess_het_threshold = excess_het_threshold
   }
 
 

@@ -679,7 +679,7 @@ task HardFilterAndMakeSitesOnlyVcf {
 ##############################################    WORKFLOW
 workflow bam2gvcf {
 
-   Float excess_het_threshold = 54.69
+   Float excess_het_threshold
 
 
    String path_save

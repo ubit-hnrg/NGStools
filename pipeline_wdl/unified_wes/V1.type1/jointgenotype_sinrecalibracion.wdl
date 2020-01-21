@@ -30,7 +30,7 @@ workflow JointGenotyping {
 
   # ExcessHet is a phred-scaled p-value. We want a cutoff of anything more extreme
   # than a z-score of -4.5 which is a p-value of 3.4e-06, which phred-scaled is 54.69
-  Float excess_het_threshold = 54.69
+  Float excess_het_threshold
 
 
   Int num_of_original_intervals = length(read_lines(unpadded_intervals_file))
