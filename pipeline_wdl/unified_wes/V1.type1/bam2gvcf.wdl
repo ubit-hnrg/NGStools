@@ -1,4 +1,5 @@
-import './anotaciones_hnrg_single.wdl' as anotacionesSingle
+
+#import './anotaciones_hnrg_single.wdl' as anotacionesSingle
 
 
 #####task del summary_metrics de samtools
@@ -671,6 +672,17 @@ task HardFilterAndMakeSitesOnlyVcf {
 }
 
 
+###########################33 agrego el workflowde anotaciones_hnrg
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -1064,19 +1076,19 @@ call ScatterIntervalList {
 
      ####anotaciones funcionales sinples
 
-    call anotacionesSingle.FuncionalAnnotationSingle {
-        input:
-        input_vcf = HardFilterAndMakeSitesOnlyVcf.variant_filtered_vcf,
-        path_save = path_save,
-        toolpath = toolpath,
-        #samplename1 = basename(HardFilterAndMakeSitesOnlyVcf.variant_filtered_vcf,".hg19_multianno.vcf"),
+    # call anotacionesSingle.FuncionalAnnotationSingle {
+    #     input:
+    #     input_vcf = HardFilterAndMakeSitesOnlyVcf.variant_filtered_vcf,
+    #     path_save = path_save,
+    #     toolpath = toolpath,
+    #     #samplename1 = basename(HardFilterAndMakeSitesOnlyVcf.variant_filtered_vcf,".hg19_multianno.vcf"),
 
-        samplename1 = base_file_name,
-        java_heap_memory_initial = "12g",
-        reference_version = reference_version,
-        out_name = "single"
+    #     samplename1 = base_file_name,
+    #     java_heap_memory_initial = "12g",
+    #     reference_version = reference_version,
+    #     out_name = "single"
 
-      }
+    #   }
   ####################################################################################################3 termina parte nueva 
 
 
@@ -1133,8 +1145,8 @@ scatter (paths in salidas) {
   #####outputs workflow ubam2gvcf
 
 
-   #Array[File] Joint_simple = HardFilterAndMakeSitesOnlyVcf.variant_filtered_vcf 
-   #Array[File] Joint_simple_idx = HardFilterAndMakeSitesOnlyVcf.variant_filtered_vcf_index
+   File Joint_simple = HardFilterAndMakeSitesOnlyVcf.variant_filtered_vcf 
+   File Joint_simple_idx = HardFilterAndMakeSitesOnlyVcf.variant_filtered_vcf_index
 
    File duplication_metrics = MarkDuplicates.duplicate_metrics
    File bqsr_report = GatherBqsrReports.output_bqsr_report

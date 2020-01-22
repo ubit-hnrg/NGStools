@@ -7,6 +7,7 @@ import './jointgenotype_sinrecalibracion.wdl' as joint_genotype
 import './quality_control.wdl' as qual_control 
 import './processMultisampleVCF.wdl' as splitVCF
 import './anotaciones_hnrg.wdl' as anotaciones
+import './anotaciones_hnrg_single.wdl' as anotacionesSingle
 
 task borrado_fastp {
 File path1
@@ -606,6 +607,25 @@ Array[Pair[String,File]] vcf_x_path = zip (array_path_save_byexon, vcf_individua
 
       }
     }
+
+   
+    #anotaciones funcionales single
+  Array[Pair[String,File]] vcf_x_path2 = zip (array_path_save_byexon, bam2gvcf.Joint_simple)
+  scatter (vcf2 in vcf_x_path2) {
+    call anotacionesSingle.FuncionalAnnotationSingle {
+        input:
+        input_vcf = vcf2.left,
+        path_save = vcf2.right,
+        toolpath = toolpath,
+        #samplename1 = basename(HardFilterAndMakeSitesOnlyVcf.variant_filtered_vcf,".hg19_multianno.vcf"),
+
+        samplename1 = basename(vcf2.left),
+        java_heap_memory_initial = "12g",
+        reference_version = reference_version,
+        out_name = "single"
+
+      }
+      }
 
 
     # Outputs that will be retained when execution is complete
