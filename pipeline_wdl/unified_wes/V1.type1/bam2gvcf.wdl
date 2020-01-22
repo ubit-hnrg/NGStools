@@ -664,9 +664,9 @@ task HardFilterAndMakeSitesOnlyVcf {
 
   output {
     File variant_filtered_vcf = "${variant_filtered_vcf_filename}"
-    File variant_filtered_vcf_index = "${variant_filtered_vcf_filename}.tbi"
+    File variant_filtered_vcf_index = "${variant_filtered_vcf_filename}.idx"
     File sites_only_vcf = "${sites_only_vcf_filename}"
-    File sites_only_vcf_index = "${sites_only_vcf_filename}.tbi"
+    File sites_only_vcf_index = "${sites_only_vcf_filename}.idx"
   }
 }
 
