@@ -76,7 +76,7 @@ workflow singleJointGenotype {
         gvcf_index = input_gvcfs_indices,
         #input_gvcfs_indices = input_gvcfs_indices,
         interval = unpadded_intervals_file,#unpadded_intervals[idx],
-        output_vcf_filename = "single.output.vcf.gz",
+        output_vcf_filename = basename(input_gvcfs) + "single.output.vcf.gz",
         ref_fasta = ref_fasta,
         ref_fasta_index = ref_fasta_index,
         ref_dict = ref_dict,
