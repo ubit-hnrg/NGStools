@@ -994,62 +994,10 @@ call ScatterIntervalList {
         smith_waterman_implementation = smith_waterman_implementation,
         contamination = contamination,
         newqual = newqual
-         
-        
-		
+         }
      }
-     ### joint_genotyping x cada muestra
-
-    call GenotypeGVCFs {
-      input:
-        #workspace_tar = ImportGVCFs.output_genomicsdb,
-        gvcf = HaplotypeCaller.output_gvcf,
-        gvcf_index = HaplotypeCaller.output_gvcf_index,
-    #    input_gvcfs_indices = input_gvcfs_indices,
-        interval = unpadded_intervals_file,#unpadded_intervals[idx],
-        output_vcf_filename = "single.output.vcf.gz",
-        ref_fasta = ref_fasta,
-        ref_fasta_index = ref_fasta_index,
-        ref_dict = ref_dict,
-        dbSNP_vcf = dbSNP_vcf,
-        dbSNP_vcf_index = dbSNP_vcf_index,
-        gatk_jar = gatk_jar,
-        toolpath = toolpath
-    
-    }
 
 
-    call HardFilterAndMakeSitesOnlyVcf {
-      input:
-        vcf = GenotypeGVCFs.output_vcf,
-        vcf_index = GenotypeGVCFs.output_vcf_index,
-        excess_het_threshold = excess_het_threshold,
-        #variant_filtered_vcf_filename = callset_name + "." + idx + ".variant_filtered.vcf.gz",
-        variant_filtered_vcf_filename = base_file_name  + ".single" + ".variant_filtered.vcf",
-        #sites_only_vcf_filename = callset_name + "." + idx + ".sites_only.variant_filtered.vcf.gz",
-        sites_only_vcf_filename = base_file_name + ".single" + ".sites_only.variant_filtered.vcf",
-        gatk_jar = gatk_jar,
-        toolpath = toolpath
-   
-    }
-
-
-     ####anotaciones funcionales sinples
-
-    call anotacionesSingle.FuncionalAnnotationSingle {
-        input:
-        input_vcf = HardFilterAndMakeSitesOnlyVcf.variant_filtered_vcf,
-        path_save = path_save,
-        toolpath = toolpath,
-        #samplename1 = basename(HardFilterAndMakeSitesOnlyVcf.variant_filtered_vcf,".hg19_multianno.vcf"),
-
-        samplename1 = base_file_name,
-        java_heap_memory_initial = "12g",
-        reference_version = reference_version,
-        out_name = "single"
-
-      }
-  }
 
 
   call GatherBamFilesHaplotype {
@@ -1076,6 +1024,62 @@ call ScatterIntervalList {
       toolpath = toolpath
       }
 
+
+
+############################################################################################## parte nueva
+   ### joint_genotyping x cada muestra
+
+    call GenotypeGVCFs {
+      input:
+        #workspace_tar = ImportGVCFs.output_genomicsdb,
+        gvcf = MergeVCFs.output_vcf,
+        gvcf_index = MergeVCFs.output_vcf_index,
+    #    input_gvcfs_indices = input_gvcfs_indices,
+        interval = unpadded_intervals_file,#unpadded_intervals[idx],
+        output_vcf_filename = base_file_name + "single.output.vcf.gz",
+        ref_fasta = ref_fasta,
+        ref_fasta_index = ref_fasta_index,
+        ref_dict = ref_dict,
+        dbSNP_vcf = dbSNP_vcf,
+        dbSNP_vcf_index = dbSNP_vcf_index,
+        gatk_jar = gatk_jar,
+        toolpath = toolpath
+    
+    }
+
+
+    call HardFilterAndMakeSitesOnlyVcf {
+      input:
+        vcf = GenotypeGVCFs.output_vcf,
+        vcf_index = GenotypeGVCFs.output_vcf_index,
+        excess_het_threshold = excess_het_threshold,
+        #variant_filtered_vcf_filename = callset_name + "." + idx + ".variant_filtered.vcf.gz",
+        variant_filtered_vcf_filename = base_file_name  + ".single" + ".variant_filtered.vcf.gz",
+        #sites_only_vcf_filename = callset_name + "." + idx + ".sites_only.variant_filtered.vcf.gz",
+        sites_only_vcf_filename = base_file_name + ".single" + ".sites_only.variant_filtered.vcf.gz",
+        gatk_jar = gatk_jar,
+        toolpath = toolpath
+   
+    }
+
+     ####anotaciones funcionales sinples
+
+    call anotacionesSingle.FuncionalAnnotationSingle {
+        input:
+        input_vcf = HardFilterAndMakeSitesOnlyVcf.variant_filtered_vcf,
+        path_save = path_save,
+        toolpath = toolpath,
+        #samplename1 = basename(HardFilterAndMakeSitesOnlyVcf.variant_filtered_vcf,".hg19_multianno.vcf"),
+
+        samplename1 = base_file_name,
+        java_heap_memory_initial = "12g",
+        reference_version = reference_version,
+        out_name = "single"
+
+      }
+  ####################################################################################################3 termina parte nueva 
+
+
 # Validate the GVCF output of HaplotypeCaller
   call ValidateGVCF {
     input:
@@ -1090,6 +1094,8 @@ call ScatterIntervalList {
       gatk_jar = gatk_jar,
         toolpath = toolpath
     }
+
+
 
 # QC the GVCF
   call CollectGvcfCallingMetrics {
