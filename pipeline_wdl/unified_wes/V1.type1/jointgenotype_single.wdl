@@ -20,7 +20,7 @@ workflow singleJointGenotype {
 
   String sample_names
   File input_gvcfs 
-  File input_gvcfs_indices 
+  #File input_gvcfs_indices 
 
   File dbSNP_vcf
   File dbSNP_vcf_index
@@ -73,7 +73,7 @@ workflow singleJointGenotype {
       input:
         #workspace_tar = ImportGVCFs.output_genomicsdb,
         gvcf = input_gvcfs,
-        gvcf_index = input_gvcfs_indices,
+       # gvcf_index = input_gvcfs_indices,
     #    input_gvcfs_indices = input_gvcfs_indices,
         interval = unpadded_intervals_file,#unpadded_intervals[idx],
         output_vcf_filename = "single.output.vcf.gz",
