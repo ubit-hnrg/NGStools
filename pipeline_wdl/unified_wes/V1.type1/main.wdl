@@ -636,7 +636,7 @@ Array[Pair[String,File]] vcf_x_path = zip (array_path_save_byexon, vcf_individua
         toolpath = toolpath,
         sample_names = basename(vcf2.right),
         input_gvcfs = vcf2.right,
-        #input_gvcfs_indices = vcf_single_index,
+        input_gvcfs_indices = vcf_single_index,
         region_padded_bed = coord_generator.padded_coord,
         unpadded_intervals_file = unpadded_intervals_file
     }
