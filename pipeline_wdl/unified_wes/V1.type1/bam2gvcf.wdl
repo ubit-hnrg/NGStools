@@ -1038,41 +1038,41 @@ call ScatterIntervalList {
 
 
 
-############################################################################################## parte nueva
-   ### joint_genotyping x cada muestra
+# ############################################################################################## parte nueva
+#    ### joint_genotyping x cada muestra
 
-    call GenotypeGVCFs {
-      input:
-        #workspace_tar = ImportGVCFs.output_genomicsdb,
-        gvcf = MergeVCFs.output_vcf,
-        gvcf_index = MergeVCFs.output_vcf_index,
-    #    input_gvcfs_indices = input_gvcfs_indices,
-        interval = unpadded_intervals_file,#unpadded_intervals[idx],
-        output_vcf_filename = base_file_name + ".single.output.vcf",
-        ref_fasta = ref_fasta,
-        ref_fasta_index = ref_fasta_index,
-        ref_dict = ref_dict,
-        dbSNP_vcf = dbSNP_vcf,
-        dbSNP_vcf_index = dbSNP_vcf_index,
-        gatk_jar = gatk_jar,
-        toolpath = toolpath
+#     call GenotypeGVCFs {
+#       input:
+#         #workspace_tar = ImportGVCFs.output_genomicsdb,
+#         gvcf = MergeVCFs.output_vcf,
+#         gvcf_index = MergeVCFs.output_vcf_index,
+#     #    input_gvcfs_indices = input_gvcfs_indices,
+#         interval = unpadded_intervals_file,#unpadded_intervals[idx],
+#         output_vcf_filename = base_file_name + ".single.output.vcf",
+#         ref_fasta = ref_fasta,
+#         ref_fasta_index = ref_fasta_index,
+#         ref_dict = ref_dict,
+#         dbSNP_vcf = dbSNP_vcf,
+#         dbSNP_vcf_index = dbSNP_vcf_index,
+#         gatk_jar = gatk_jar,
+#         toolpath = toolpath
     
-    }
+#     }
 
 
-    call HardFilterAndMakeSitesOnlyVcf {
-      input:
-        vcf = GenotypeGVCFs.output_vcf,
-        vcf_index = GenotypeGVCFs.output_vcf_index,
-        excess_het_threshold = excess_het_threshold,
-        #variant_filtered_vcf_filename = callset_name + "." + idx + ".variant_filtered.vcf.gz",
-        variant_filtered_vcf_filename = base_file_name  + ".single" + ".variant_filtered.vcf",
-        #sites_only_vcf_filename = callset_name + "." + idx + ".sites_only.variant_filtered.vcf.gz",
-        sites_only_vcf_filename = base_file_name + ".single" + ".sites_only.variant_filtered.vcf",
-        gatk_jar = gatk_jar,
-        toolpath = toolpath
+#     call HardFilterAndMakeSitesOnlyVcf {
+#       input:
+#         vcf = GenotypeGVCFs.output_vcf,
+#         vcf_index = GenotypeGVCFs.output_vcf_index,
+#         excess_het_threshold = excess_het_threshold,
+#         #variant_filtered_vcf_filename = callset_name + "." + idx + ".variant_filtered.vcf.gz",
+#         variant_filtered_vcf_filename = base_file_name  + ".single" + ".variant_filtered.vcf",
+#         #sites_only_vcf_filename = callset_name + "." + idx + ".sites_only.variant_filtered.vcf.gz",
+#         sites_only_vcf_filename = base_file_name + ".single" + ".sites_only.variant_filtered.vcf",
+#         gatk_jar = gatk_jar,
+#         toolpath = toolpath
    
-    }
+#     }
 
      ####anotaciones funcionales sinples
 
@@ -1145,8 +1145,8 @@ scatter (paths in salidas) {
   #####outputs workflow ubam2gvcf
 
 
-   File Joint_simple = HardFilterAndMakeSitesOnlyVcf.variant_filtered_vcf 
-   File Joint_simple_idx = HardFilterAndMakeSitesOnlyVcf.variant_filtered_vcf_index
+   #File Joint_simple = HardFilterAndMakeSitesOnlyVcf.variant_filtered_vcf 
+   #File Joint_simple_idx = HardFilterAndMakeSitesOnlyVcf.variant_filtered_vcf_index
 
    File duplication_metrics = MarkDuplicates.duplicate_metrics
    File bqsr_report = GatherBqsrReports.output_bqsr_report

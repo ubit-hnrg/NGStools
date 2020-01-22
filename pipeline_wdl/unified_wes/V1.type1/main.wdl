@@ -4,6 +4,7 @@ import './hnrg-fastq2ubam_test.wdl' as fastq2ubam
 import './bam2gvcf.wdl' as bamtogvcf
 import './ubam2bwa.wdl' as ubam2bwa
 import './jointgenotype_sinrecalibracion.wdl' as joint_genotype
+import './jointgenotype_single.wdl' as single_genotype
 import './quality_control.wdl' as qual_control 
 import './processMultisampleVCF.wdl' as splitVCF
 import './anotaciones_hnrg.wdl' as anotaciones
@@ -610,13 +611,40 @@ Array[Pair[String,File]] vcf_x_path = zip (array_path_save_byexon, vcf_individua
 
    
     #anotaciones funcionales single
-  Array[File] vcf_single = bam2gvcf.Joint_simple
+
+
+  Array[File] vcf_single = bam2gvcf.output_vcf
+  Array[File] vcf_single_index = bam2gvcf.output_vcf_index
   Array[Pair[String,File]] vcf_x_path2 = zip (array_path_save_byexon, vcf_single)
+
+    ##cantidad de gvcfs
+  Int cantidad_gvcf = length(vcf_single)  
   scatter (vcf2 in vcf_x_path2) {
+
+    call single_genotype.singleJointGenotype {
+      input:
+         num_gvcfs= cantidad_gvcf,
+         eval_interval_list   = coord_generator.eval_interval_list,
+         array_path_save =vcf2.left,
+        dbSNP_vcf = dbSNP_vcf,
+        dbSNP_vcf_index = dbSNP_vcf_index,
+        callset_name = sample_name,
+        ref_fasta = ref_fasta,
+        ref_fasta_index =ref_fasta_index,
+        ref_dict = ref_dict,
+        gatk_jar = gatk_jar,
+        toolpath = toolpath,
+        sample_names = basename(vcf2.right),
+        input_gvcfs = vcf2.right,
+        input_gvcfs_indices = vcf_single_index,
+        region_padded_bed = coord_generator.padded_coord
+    }
+
+
     call anotacionesSingle.FuncionalAnnotationSingle {
         input:
-        input_vcf = vcf2.left,
-        path_save = vcf2.right,
+        input_vcf = singleJointGenotype.output_singlevcf,
+        path_save = vcf2.left,
         toolpath = toolpath,
         #samplename1 = basename(HardFilterAndMakeSitesOnlyVcf.variant_filtered_vcf,".hg19_multianno.vcf"),
 
