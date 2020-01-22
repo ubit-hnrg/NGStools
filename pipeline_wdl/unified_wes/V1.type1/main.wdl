@@ -610,7 +610,8 @@ Array[Pair[String,File]] vcf_x_path = zip (array_path_save_byexon, vcf_individua
 
    
     #anotaciones funcionales single
-  Array[Pair[String,File]] vcf_x_path2 = zip (array_path_save_byexon, bam2gvcf.Joint_simple)
+  Array[File] vcf_single = bam2gvcf.Joint_simple
+  Array[Pair[String,File]] vcf_x_path2 = zip (array_path_save_byexon, vcf_single)
   scatter (vcf2 in vcf_x_path2) {
     call anotacionesSingle.FuncionalAnnotationSingle {
         input:
