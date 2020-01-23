@@ -20,7 +20,7 @@ String nombre_step
 command {
 
 set -o pipefail
-inp=$(gzip -9 ${input_vcf})
+inp=$(gzip -d ${input_vcf})
 java -Xmx${java_heap_memory_initial} -jar ${toolpath}/bptools.jar ${parametros} $inp ${samplename1}.${nombre_step}.vcf
 }
 
