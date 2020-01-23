@@ -21,7 +21,8 @@ command {
 
 set -o pipefail
 
-java -Xmx${java_heap_memory_initial} -jar ${toolpath}/bptools.jar ${parametros} ${input_vcf} ${samplename1}.${nombre_step}.vcf
+inpp=$(`gzip -d ${input_vcf}`)
+java -Xmx${java_heap_memory_initial} -jar ${toolpath}/bptools.jar ${parametros} $inpp ${samplename1}.${nombre_step}.vcf
 }
 
 
