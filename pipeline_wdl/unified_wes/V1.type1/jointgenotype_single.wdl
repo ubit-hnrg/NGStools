@@ -76,7 +76,7 @@ workflow singleJointGenotype {
         gvcf_index = input_gvcfs_indices,
         #input_gvcfs_indices = input_gvcfs_indices,
         interval = unpadded_intervals_file,#unpadded_intervals[idx],
-        output_vcf_filename = basename(input_gvcfs) + "single.output.vcf.gz",
+        output_vcf_filename = basename(input_gvcfs,"g.vcf.gz") + "single.output.vcf.gz",
         ref_fasta = ref_fasta,
         ref_fasta_index = ref_fasta_index,
         ref_dict = ref_dict,
@@ -120,7 +120,7 @@ workflow singleJointGenotype {
         #input_vcf_indexes_fofn = HardFilterAndMakeSitesOnlyVcf.sites_only_vcf_index,
         ##input_vcfs_fofn = SitesOnlyGatherVcf.output_vcf,
         ##input_vcf_indexes_fofn = SitesOnlyGatherVcf.output_vcf_index,
-        output_vcf_name = callset_name + ".single" + ".vcf.gz",
+        output_vcf_name = basename(input_gvcfs,"g.vcf.gz") + ".single" + ".vcf.gz",
         gatk_jar = gatk_jar,
         toolpath = toolpath
 
