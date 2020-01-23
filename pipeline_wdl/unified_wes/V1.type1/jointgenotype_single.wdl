@@ -120,7 +120,7 @@ workflow singleJointGenotype {
         #input_vcf_indexes_fofn = HardFilterAndMakeSitesOnlyVcf.sites_only_vcf_index,
         ##input_vcfs_fofn = SitesOnlyGatherVcf.output_vcf,
         ##input_vcf_indexes_fofn = SitesOnlyGatherVcf.output_vcf_index,
-        output_vcf_name = basename(input_gvcfs,"g.vcf.gz") + "single" + ".vcf.gz",
+        output_vcf_name = basename(input_gvcfs,"g.vcf.gz") + "single" + ".vcf",
         gatk_jar = gatk_jar,
         toolpath = toolpath
 
