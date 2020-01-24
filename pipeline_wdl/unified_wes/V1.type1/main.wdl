@@ -644,12 +644,12 @@ Array[Pair[String,File]] vcf_x_path = zip (array_path_save_byexon, vcf_individua
 
     call anotacionesSingle.FuncionalAnnotationSingle {
         input:
-        input_vcf = singleJointGenotype.output_singlevcf,
+        input_vcf = singleJointGenotype.restricted_vcf,
         path_save = vcf2.left,
         toolpath = toolpath,
         #samplename1 = basename(HardFilterAndMakeSitesOnlyVcf.variant_filtered_vcf,".hg19_multianno.vcf"),
 
-        samplename1 = basename(vcf2.left,".single.vcf.gz"),
+        samplename1 = basename(vcf2.left,"_restricted.vcf"),
         java_heap_memory_initial = "12g",
         reference_version = reference_version,
         out_name = "single"

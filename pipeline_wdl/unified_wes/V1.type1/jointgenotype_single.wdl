@@ -167,6 +167,7 @@ workflow singleJointGenotype {
    File? output_singlevcfindex =  FinalGatherVcf.output_vcf_index
    File? metrica1 =  CollectMetricsOnFullVcf.detail_metrics_file
    File? metrica2 = CollectMetricsOnFullVcf.summary_metrics_file
+   File restricted_vcf = restrict_multisample_vcf.multisampleVCF_restricted
 
     # outputs from the large callset path through the wdl
     # (note that we do not list ApplyRecalibration here because it is run in both paths)
