@@ -339,7 +339,7 @@ task GatherVcfs {
 
     java -Xmx6g -Xms6g -jar ${toolpath}${gatk_jar}\
     IndexFeatureFile \
-    --input ${output_vcf_name}
+  --feature-file ${output_vcf_name}
   >>>
  
   output {
