@@ -1,0 +1,4 @@
+v1.7.0: agregado de reportes de calidad 
+v1.8.0: agregado de borrados de archivos intermedios, reduccion de bam a la salida de markduplicates, poder modificar parametros de trimmeado de fastp desde json 
+v1.9: nueva version con vcf separados por muestra, y arreglo de los archivos de control de calidad
+V1: generamos intervalos(bed/interval_list) a partir de un *.bed del experimento (mandatorio),  se cambia el intervalo eval_interval_list del jointgenotyping (metricas VCf) por el nuevo generado  
