@@ -345,8 +345,8 @@ task HardFilterAndMakeSitesOnlyVcf {
 
 
 task GatherVcfs {
-  File input_vcfs_fofn
-  File input_vcf_indexes_fofn
+  Array[File] input_vcfs_fofn
+  Array[File] input_vcf_indexes_fofn
   String output_vcf_name
   
   String gatk_jar
