@@ -42,16 +42,16 @@ workflow singleJointGenotype {
   Int merge_count = if possible_merge_count > 1 then possible_merge_count else 1
 
   
-  #call DynamicallyCombineIntervals {
-  #  input:
-  #    intervals = unpadded_intervals_file,
-  #    merge_count = merge_count
-  #}
+  call DynamicallyCombineIntervals {
+    input:
+      intervals = unpadded_intervals_file,
+      merge_count = merge_count
+  }
 
 
-  #Array[String] unpadded_intervals = read_lines(DynamicallyCombineIntervals.output_intervals)
+  Array[String] unpadded_intervals = read_lines(DynamicallyCombineIntervals.output_intervals)
 
-  #scatter (idx in range(length(unpadded_intervals))) {
+  scatter (idx in range(length(unpadded_intervals))) {
     # the batch_size value was carefully chosen here as it
     # is the optimal value for the amount of memory allocated
     # within the task; please do not change it without consulting
@@ -75,7 +75,7 @@ workflow singleJointGenotype {
         gvcf = input_gvcfs,
         gvcf_index = input_gvcfs_indices,
         #input_gvcfs_indices = input_gvcfs_indices,
-        interval = unpadded_intervals_file,#unpadded_intervals[idx],
+        interval = unpadded_intervals[idx],
         output_vcf_filename = basename(input_gvcfs,"g.vcf.gz") + "single.output.vcf.gz",
         ref_fasta = ref_fasta,
         ref_fasta_index = ref_fasta_index,
@@ -93,15 +93,15 @@ workflow singleJointGenotype {
         vcf = GenotypeGVCFs.output_vcf,
         vcf_index = GenotypeGVCFs.output_vcf_index,
         excess_het_threshold = excess_het_threshold,
-        #variant_filtered_vcf_filename = callset_name + "." + idx + ".variant_filtered.vcf.gz",
-        variant_filtered_vcf_filename = callset_name  + ".single" + ".variant_filtered.vcf.gz",
-        #sites_only_vcf_filename = callset_name + "." + idx + ".sites_only.variant_filtered.vcf.gz",
-        sites_only_vcf_filename = callset_name + ".single" + ".sites_only.variant_filtered.vcf.gz",
+        variant_filtered_vcf_filename = callset_name + "." + idx + ".single.variant_filtered.vcf.gz",
+        #variant_filtered_vcf_filename = callset_name  + ".single" + ".variant_filtered.vcf.gz",
+        sites_only_vcf_filename = callset_name + "." + idx + ".single.sites_only.variant_filtered.vcf.gz",
+        #sites_only_vcf_filename = callset_name + ".single" + ".sites_only.variant_filtered.vcf.gz",
         gatk_jar = gatk_jar,
         toolpath = toolpath
    
     }
-  #}
+  }
 
 
   # For small callsets (fewer than 1000 samples) we can gather the VCF shards and collect metrics directly.
