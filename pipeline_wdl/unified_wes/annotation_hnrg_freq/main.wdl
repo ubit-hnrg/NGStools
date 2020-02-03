@@ -10,11 +10,11 @@ task hnrg_freq {
     
 
     command {
-        ${toolpath}/vcfanno_linux64 -p 4 ${config_file_vcfanno} ${input_vcf} > ${sample_name}.${hnrg}.vcf
+        ${toolpath}/vcfanno_linux64 -p 4 ${config_file_vcfanno} ${input_vcf} > ${sample_name}.${hnrg_freq}.vcf
 
     }
 output {
-    File out_vcfanno = "${sample_name}.${hnrg}.vcf"
+    File out_vcfanno = "${sample_name}.${hnrg_freq}.vcf"
 }
 
 }
