@@ -4,7 +4,7 @@ import './hnrg-fastq2ubam_test.wdl' as fastq2ubam
 import './bam2gvcf.wdl' as bamtogvcf
 import './ubam2bwa.wdl' as ubam2bwa
 import './jointgenotype_sinrecalibracion.wdl' as joint_genotype
-import './jointgenotype_single.wdl' as single_genotype
+import './singleGenotypeGVCFs.wdl' as single_genotype
 import './quality_control.wdl' as qual_control 
 import './processMultisampleVCF.wdl' as splitVCF
 import './anotaciones_hnrg.wdl' as anotaciones
@@ -617,15 +617,12 @@ Array[Pair[String,File]] vcf_x_path = zip (array_path_save_byexon, vcf_individua
   Array[File] vcf_single_index = bam2gvcf.output_vcf_index
   Array[Pair[String,File]] vcf_x_path2 = zip (array_path_save_byexon, vcf_single)
 
-    ##cantidad de gvcfs
-  Int cantidad_gvcf = length(vcf_single)  
   scatter (vcf2 in vcf_x_path2) {
 
-    call single_genotype.singleJointGenotype {
+    call single_genotype.singleGenotypeGVCFs {
       input:
-         num_gvcfs= cantidad_gvcf,
-         eval_interval_list   = coord_generator.eval_interval_list,
-         array_path_save =vcf2.left,
+        eval_interval_list   = coord_generator.eval_interval_list,
+        array_path_save =vcf2.left,
         dbSNP_vcf = dbSNP_vcf,
         dbSNP_vcf_index = dbSNP_vcf_index,
         callset_name = basename(tabulatedSampleFilePaths, ".txt"),
@@ -637,14 +634,13 @@ Array[Pair[String,File]] vcf_x_path = zip (array_path_save_byexon, vcf_individua
         sample_names = basename(vcf2.right),
         input_gvcfs = vcf2.right,
         input_gvcfs_indices = vcf_single_index,
-        region_padded_bed = coord_generator.padded_coord,
-        unpadded_intervals_file = unpadded_intervals_file
+        region_padded_bed = coord_generator.padded_coord
     }
 
 
     call anotacionesSingle.FuncionalAnnotationSingle {
         input:
-        input_vcf = singleJointGenotype.restricted_vcf,
+        input_vcf = singleGenotypeGVCFs.restricted_vcf,
         path_save = vcf2.left,
         toolpath = toolpath,
         #samplename1 = basename(HardFilterAndMakeSitesOnlyVcf.variant_filtered_vcf,".hg19_multianno.vcf"),
