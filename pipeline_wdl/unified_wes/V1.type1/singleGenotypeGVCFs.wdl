@@ -144,7 +144,7 @@ task GetNumberOfSamples {
 
 
 task GenotypeGVCFs {
-  String interval
+  #String interval
 
   String output_vcf_filename
 
