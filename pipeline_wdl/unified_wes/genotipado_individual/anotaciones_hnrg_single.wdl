@@ -433,7 +433,6 @@ input:
 
  input:
     input_vcf = step13_pharmGKB.salida_Snpsift, 
-    config_file_vcfanno = config_file_vcfanno,
     samplename1 = samplename1,
     toolpath = toolpath,
     nombre_step = "step14_HNRG_FREQ"
