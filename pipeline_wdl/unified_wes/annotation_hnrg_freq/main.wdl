@@ -4,17 +4,17 @@ task hnrg_freq {
     #File funcion_lua
     File config_file_vcfanno
     String sample_name
-    String hnrg = "HNRG"
+    String hnrg = "HNRG_freq"
     String toolpath
 
     
 
     command {
-        ${toolpath}/vcfanno_linux64 -p 4 ${config_file_vcfanno} ${input_vcf} > ${sample_name}.${hnrg_freq}.vcf
+        ${toolpath}/vcfanno_linux64 -p 4 ${config_file_vcfanno} ${input_vcf} > ${sample_name}.${hnrg}.vcf
 
     }
 output {
-    File out_vcfanno = "${sample_name}.${hnrg_freq}.vcf"
+    File out_vcfanno = "${sample_name}.${hnrg}.vcf"
 }
 
 }
@@ -40,7 +40,6 @@ workflow freq_hnrg {
 File list_of_vcf 
 String toolpath 
 #String path_save
-File funcion_lua
 File config_file_vcfanno
 
 

@@ -1,0 +1,7 @@
+{
+  "freq_hnrg.config_file_vcfanno": "/home/hnrg/NGStools/pipeline_wdl/unified_wes/annotation_hnrg_freq/single_annot_conf_working.toml",
+  "freq_hnrg.list_of_vcf": "/home/hnrg/executionsHNRG/anotacion_hnrg/input/vcfs.txt",
+  "freq_hnrg.hnrg_freq.hnrg": "HNRG_freq",
+  "freq_hnrg.toolpath": "/home/hnrg/HNRG-pipeline-V0.1/tools/"
+}
+
