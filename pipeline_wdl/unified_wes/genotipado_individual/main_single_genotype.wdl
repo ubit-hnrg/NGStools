@@ -1,6 +1,6 @@
 #### main Version 1
 
-import './jointgenotype_single.wdl' as joint_genotype
+import './jointgenotype_single.wdl' as genotypeGVCF
 import './anotaciones_hnrg_single.wdl' as anotacionesSingle
 
 
@@ -59,13 +59,6 @@ task coord_generator {
   String path_save
 
   
-  #${toolpath}bedtools2/bin/slopBed -i ${experiment_lib} -g ${chromosome_length} -b ${padding} | sort -k1,1 -k2,2n -V > intervalo_b37_padded_${padding}.bed
-    
-  ##java -jar ${toolpath}${gatk_jar} BedToIntervalList -I=intervalo_b37_padded_${padding}.bed -O=intervalo_b37_padded_${padding}_merged_preprocessing.interval_list -SD=${ref_dict}
-
-##sort -k1,1 -k2,2n intervalo_b37_padded_${padding}.bed | ${toolpath}bedtools2/bin/mergeBed -d ${ merge_tolerance} > intervalo_b37_padded_${padding}_merged_${ merge_tolerance}.bed
-    #java -jar ${toolpath}${gatk_jar} BedToIntervalList -I=intervalo_b37_padded_${padding}_merged_${merge_tolerance}.bed -O=intervalo_b37_padded_${padding}_merged_${merge_tolerance}_preprocessing.interval_list -SD=${ref_dict}
-   
   command <<<
     #!/bin/bash
     set -e
@@ -97,27 +90,6 @@ task coord_generator {
 }
 
 
-#task restrict_to_TSO {
-#  File padded_interval
-#  File generic_exon_coords
-#  String toolpath
-
-#  command <<<
-#   #!/bin/bash
-#    set -e
-#    set -o pipefail
-
-#  ${toolpath}bedtools2/bin/intersectBed -wa -a ${generic_exon_coords} -b ${padded_interval} | sort -k1,1 -k2,2n -V | uniq > exon_restricted2interval.bed
-#  >>>
-
-#  output {
-
-#    File interval_restricted = "exon_restricted2interval.bed"
-
-
-#  }
-
-#}
 
 
 workflow main_workflow {
@@ -187,12 +159,12 @@ workflow main_workflow {
   }
 
 
-  # call restrict_to_TSO {
-  #   input:
-  #   padded_interval = coord_generator.padded_coord,
-  #   generic_exon_coords = generic_exon_coords,
-  #   toolpath = toolpath
-  # }
+#   call restrict_to_TSO {
+#     input:
+#     padded_interval = coord_generator.padded_coord,
+#     generic_exon_coords = generic_exon_coords,
+#     toolpath = toolpath
+#   }
 
 
 ##cantidad de gvcfs
@@ -215,11 +187,9 @@ workflow main_workflow {
      samplename = sample_name
     }
 
-  
-
 
    ##########################################llamada workflow Joint Genotyping
-   call joint_genotype.singleJointGenotyping {
+   call genotypeGVCF.singleGenotypeGVCFs {
     input:
     num_gvcfs= cantidad_gvcf,
     eval_interval_list   = coord_generator.eval_interval_list,
@@ -234,17 +204,15 @@ workflow main_workflow {
     toolpath = toolpath,
     sample_names = sample_name,
     input_gvcfs = gvcf.left,
-    input_gvcfs_indices = gvcf.right,
-    region_padded_bed = coord_generator.padded_coord
+    input_gvcfs_indices = gvcf.right
+    #region_padded_bed = coord_generator.padded_coord
     }
  
  call anotacionesSingle.FuncionalAnnotationSingle {
         input:
-        input_vcf = singleJointGenotyping.restricted_vcf,
+        input_vcf = singleGenotypeGVCFs.restricted_vcf,
         path_save = mkdir_samplename.path_out_softlink,
         toolpath = toolpath,
-        #samplename1 = basename(HardFilterAndMakeSitesOnlyVcf.variant_filtered_vcf,".hg19_multianno.vcf"),
-
         samplename1 = basename(gvcf.left,"_restricted.vcf"),
         java_heap_memory_initial = "12g",
         reference_version = reference_version,
@@ -258,13 +226,11 @@ workflow main_workflow {
     # Outputs that will be retained when execution is complete
  output {
 
-   ##### output jointgenotype
    
-   Array[File?] outputvcf = singleJointGenotyping.outputvcf
-   Array[File?] outputvcfindex =  singleJointGenotyping.outputvcfindex
-   Array[File?] detail_metrics_file =  singleJointGenotyping.metrica1
-   Array[File?] summary_metrics_file = singleJointGenotyping.metrica2
-   #Array[File?] intervalo = JointGenotyping.inter
+   Array[File?] outputvcf = singleGenotypeGVCFs.outputvcf
+   Array[File?] outputvcfindex =  singleGenotypeGVCFs.outputvcfindex
+   Array[File?] detail_metrics_file =  singleGenotypeGVCFs.metrica1
+   Array[File?] summary_metrics_file = singleGenotypeGVCFs.metrica2
 
   
   }

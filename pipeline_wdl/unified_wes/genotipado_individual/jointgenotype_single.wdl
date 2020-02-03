@@ -4,7 +4,7 @@
 ##
 
 
-workflow singleJointGenotyping {
+workflow singleGenotypeGVCFs {
   File unpadded_intervals_file ##lista intervalos
   File eval_interval_list
   
@@ -34,40 +34,25 @@ workflow singleJointGenotyping {
   Float excess_het_threshold = 54.69
 
 
-  Int num_of_original_intervals = length(read_lines(unpadded_intervals_file))
+ # Int num_of_original_intervals = length(read_lines(unpadded_intervals_file))
   Int num_gvcfs #= '59'#length(input_gvcfs)
 
   # Make a 2.5:1 interval number to samples in callset ratio interval list
-  Int possible_merge_count = floor(num_of_original_intervals / num_gvcfs / 2.5)
-  Int merge_count = if possible_merge_count > 1 then possible_merge_count else 1
+#  Int possible_merge_count = floor(num_of_original_intervals / num_gvcfs / 2.5)
+# Int merge_count = if possible_merge_count > 1 then possible_merge_count else 1
 
   
-  call DynamicallyCombineIntervals {
-    input:
-      intervals = unpadded_intervals_file,
-      merge_count = merge_count
-  }
+ # call DynamicallyCombineIntervals {
+  #  input:
+#      intervals = unpadded_intervals_file,
+ #     merge_count = merge_count
+# }
 
 
-  Array[String] unpadded_intervals = read_lines(DynamicallyCombineIntervals.output_intervals)
+#  Array[String] unpadded_intervals = read_lines(DynamicallyCombineIntervals.output_intervals)
 
-  scatter (idx in range(length(unpadded_intervals))) {
-    # the batch_size value was carefully chosen here as it
-    # is the optimal value for the amount of memory allocated
-    # within the task; please do not change it without consulting
-    # the Hellbender (GATK engine) team!
-    #call ImportGVCFs {
-    #  input:
-    #    sample_names = sample_names,
-    #    interval = unpadded_intervals[idx],
-    #    workspace_dir_name = "genomicsdb",
-    #    batch_size = 50,
-    #    input_gvcfs = input_gvcfs,
-    #    input_gvcfs_indices = input_gvcfs_indices,
-    #    gatk_jar = gatk_jar,
-    #    toolpath = toolpath
-    
-    #}
+ # scatter (idx in range(length(unpadded_intervals))) {
+
 
     call GenotypeGVCFs {
       input:
@@ -75,7 +60,7 @@ workflow singleJointGenotyping {
         gvcf = input_gvcfs,
         gvcf_index = input_gvcfs_indices,
     #    input_gvcfs_indices = input_gvcfs_indices,
-        interval = unpadded_intervals[idx],
+      #  interval = unpadded_intervals[idx],
         output_vcf_filename = "output.vcf.gz",
         ref_fasta = ref_fasta,
         ref_fasta_index = ref_fasta_index,
@@ -93,15 +78,13 @@ workflow singleJointGenotyping {
         vcf = GenotypeGVCFs.output_vcf,
         vcf_index = GenotypeGVCFs.output_vcf_index,
         excess_het_threshold = excess_het_threshold,
-        variant_filtered_vcf_filename = callset_name + "." + idx + ".single.variant_filtered.vcf.gz",
-        #variant_filtered_vcf_filename = callset_name  + ".variant_filtered.vcf.gz",
-        sites_only_vcf_filename = callset_name + "." + idx + ".single.sites_only.variant_filtered.vcf.gz",
-        #sites_only_vcf_filename = callset_name + ".sites_only.variant_filtered.vcf.gz",
+        variant_filtered_vcf_filename = callset_name + ".single.variant_filtered.vcf.gz",
+        sites_only_vcf_filename = callset_name + ".single.sites_only.variant_filtered.vcf.gz",
         gatk_jar = gatk_jar,
         toolpath = toolpath
    
     }
-  }
+ # }
 
 
   # For small callsets (fewer than 1000 samples) we can gather the VCF shards and collect metrics directly.
@@ -112,14 +95,10 @@ workflow singleJointGenotyping {
   if (is_small_callset) {
     call GatherVcfs as FinalGatherVcf {
       input:
-        ##input_vcfs_fofn = GenotypeGVCFs.output_vcf,
         input_vcfs_fofn  = HardFilterAndMakeSitesOnlyVcf.variant_filtered_vcf,
-        #input_vcfs_fofn = HardFilterAndMakeSitesOnlyVcf.sites_only_vcf,
-        ##input_vcf_indexes_fofn = GenotypeGVCFs.output_vcf_index,
+
         input_vcf_indexes_fofn = HardFilterAndMakeSitesOnlyVcf.variant_filtered_vcf_index,
-        #input_vcf_indexes_fofn = HardFilterAndMakeSitesOnlyVcf.sites_only_vcf_index,
-        ##input_vcfs_fofn = SitesOnlyGatherVcf.output_vcf,
-        ##input_vcf_indexes_fofn = SitesOnlyGatherVcf.output_vcf_index,
+ 
         output_vcf_name = callset_name + ".vcf.gz",
         gatk_jar = gatk_jar,
         toolpath = toolpath
@@ -181,7 +160,6 @@ workflow singleJointGenotyping {
   }
 }
 
-#["${FinalGatherVcf.output_vcf}","${FinalGatherVcf.output_vcf_index}","${CollectMetricsOnFullVcf.detail_metrics_file}","${CollectMetricsOnFullVcf.summary_metrics_file}"]
 task symlink_important_files {
     File final_gath
     File final_gath_idx
