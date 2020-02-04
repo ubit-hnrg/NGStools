@@ -427,7 +427,7 @@ task HaplotypeCaller {
 
   # We use interval_padding 500 below to make sure that the HaplotypeCaller has context on both sides around
   # the interval because the assembly uses them. (no se usa, usa 100)
-  #
+  #  -ip 100 \
   command <<<
       
       java -Xmx2g -jar ${toolpath}${gatk_jar} \
@@ -436,7 +436,7 @@ task HaplotypeCaller {
       -I ${input_bam} \
       -O ${gvcf_basename}.vcf.gz \
       -L ${interval_list} \
-      -ip 100 \
+    
       -contamination ${default=null contamination} \
       --max-alternate-alleles 3 \
       -ERC GVCF \

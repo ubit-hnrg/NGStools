@@ -218,6 +218,7 @@ task ImportGVCFs {
     # a significant amount of non-heap memory for native libraries.
     # Also, testing has shown that the multithreaded reader initialization
     # does not scale well beyond 5 threads, so don't increase beyond that.
+    #-ip 500
     java -Xmx1g -Xms1g -jar ${toolpath}${gatk_jar} \
     GenomicsDBImport \
     --genomicsdb-workspace-path ${workspace_dir_name} \
@@ -225,7 +226,7 @@ task ImportGVCFs {
     -L ${interval} \
     --sample-name-map inputs.list  \
     --reader-threads 4 \
-    -ip 500
+    
 
     tar -cf ${workspace_dir_name}.tar ${workspace_dir_name}
   
