@@ -1,0 +1,63 @@
+{
+  "##COMMENT0": "INPUTS PARA PIPELINE DE ANOTACION DE VARIANTES. UBIT-HNRG FEBRERO 2020",
+  "##COMMENT00": "···············VERSION 1.0·······································",
+
+  
+  "##COMMENT1": "MANDATORY INPUTS",
+
+  "main_workflow.toolpath": "/home/hnrg/HNRG-pipeline-V0.1/tools/",
+  "main_workflow.FuncionalAnnotationSingle.reference_version": "GRCh37.75",
+  "main_workflow.FuncionalAnnotationSingle.config_file_vcfanno_toml": "/home/hnrg/NGStools/pipeline_wdl/unified_wes/anotacion_funcional/anotacion_freq_HNRG.toml",
+
+  "##COMMENT2": "VCF INPUTS 4 ANNOTATION",
+  "main_workflow.list_of_vcf": "File",
+
+  "##COMMENT3": "VERSION DEL JSON DE ANOTACION",
+  "main_workflow.FuncionalAnnotationSingle.db_version": "V1",
+
+  "##COMMENT4": "annovar",
+
+  "main_workflow.FuncionalAnnotationSingle.annovar.annovar_dbpath": "/home/hnrg/HNRG-pipeline-V0.1/dbs/hg19_annovar",
+
+  "##_COMENTARIO": "STEP 3. Base de datos actualizada Noviembre 2018.",
+
+  "main_workflow.FuncionalAnnotationSingle.step3_dbSNP151.database": "/home/hnrg/HNRG-pipeline-V0.1/dbs/GRCh37_snpsift/All_20180423.vcf.gz",
+  "main_workflow.FuncionalAnnotationSingle.step3_dbSNP151.database_index": "/home/hnrg/HNRG-pipeline-V0.1/dbs/GRCh37_snpsift/All_20180423.vcf.gz.tbi",
+ 
+  "##_COMENTARIO": "Base de datos actualizada Noviembre 2018(no cambia desde 8/12/13) .",
+
+  "main_workflow.FuncionalAnnotationSingle.step4_1000Genomes.database": "/home/hnrg/HNRG-pipeline-V0.1/dbs/GRCh37_snpsift/1000G_omni2.5.b37.vcf.gz",
+  "main_workflow.FuncionalAnnotationSingle.step4_1000Genomes.database_index": "/home/hnrg/HNRG-pipeline-V0.1/dbs/GRCh37_snpsift/1000G_omni2.5.b37.vcf.gz.tbi",
+  
+  "##_COMENTARIO": "Base de datos actualizada Noviembre 2018.(no cambia desde 8/12/13)",
+  "main_workflow.FuncionalAnnotationSingle.step5_hapmap.database": "/home/hnrg/HNRG-pipeline-V0.1/dbs/GRCh37_snpsift/hapmap_3.3.b37.vcf",
+  "main_workflow.FuncionalAnnotationSingle.step5_hapmap.database_index": "/home/hnrg/HNRG-pipeline-V0.1/dbs/GRCh37_snpsift/hapmap_3.3.b37.vcf.idx",
+  
+  "##_COMENTARIO": "Base de datos actualizada Noviembre 2018 (29 de oct de 2018)",
+  "main_workflow.FuncionalAnnotationSingle.step6_Snpsift_GWASCat.database": "/home/hnrg/HNRG-pipeline-V0.1/dbs/GRCh37_snpsift/gwas_catalog_v1.0.2-associations_e96_r2019-04-06.tsv",
+
+  "##_COMENTARIO": "Base de datos actualizada Noviembre 2018 (no cambia desde nov/2014).",
+
+  "main_workflow.FuncionalAnnotationSingle.step9_EVS.database": "/home/hnrg/HNRG-pipeline-V0.1/dbs/GRCh37_snpsift/ESP6500SI-V2-SSA137.snps_indels.vcf",
+  "main_workflow.FuncionalAnnotationSingle.step9_EVS.database_index": "/home/hnrg/HNRG-pipeline-V0.1/dbs/GRCh37_snpsift/ESP6500SI-V2-SSA137.snps_indels.vcf.idx",
+
+  "##_COMENTARIO": "Base de datos actualizada Abril 2019.(ultima version 19/2/19)",
+  "main_workflow.FuncionalAnnotationSingle.step12_clinVar.database": "/home/hnrg/HNRG-pipeline-V0.1/dbs/GRCh37_snpsift/clinvar_20190219.vcf.gz",
+  "main_workflow.FuncionalAnnotationSingle.step12_clinVar.database_index": "/home/hnrg/HNRG-pipeline-V0.1/dbs/GRCh37_snpsift/clinvar_20190219.vcf.gz.tbi",
+
+  "##_COMENTARIO": "Base de datos sacada del bundle de bitgenia... (ACTUALIZAR).",
+
+  "main_workflow.FuncionalAnnotationSingle.step13_pharmGKB.database": "/home/hnrg/HNRG-pipeline-V0.1/dbs/GRCh37_snpsift/PharmGKBvcf_2016.vcf",
+  "main_workflow.FuncionalAnnotationSingle.step13_pharmGKB.database_index": "/home/hnrg/HNRG-pipeline-V0.1/dbs/GRCh37_snpsift/PharmGKBvcf_2016.vcf.sidx",
+
+
+  "##_COMENTARIO": "Base de datos actualizada Noviembre 2018.(no cambia desde 27/2/17)",
+
+  "main_workflow.FuncionalAnnotationSingle.final_annot.database": "/home/hnrg/HNRG-pipeline-V0.1/dbs/GRCh37_snpsift/ExAC.r1.sites.vep.vcf.gz",
+  "main_workflow.FuncionalAnnotationSingle.final_annot.database_index": "/home/hnrg/HNRG-pipeline-V0.1/dbs/GRCh37_snpsift/ExAC.r1.sites.vep.vcf.gz.tbi"
+
+ 
+
+
+}
+
