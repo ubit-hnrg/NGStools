@@ -436,7 +436,7 @@ task HaplotypeCaller {
       -I ${input_bam} \
       -O ${gvcf_basename}.vcf.gz \
       -L ${interval_list} \
-    
+      -ip 500
       -contamination ${default=null contamination} \
       --max-alternate-alleles 3 \
       -ERC GVCF \
