@@ -182,6 +182,30 @@ output {
 }
 
 
+
+task hnrg_freq {
+
+    File input_vcf
+    File config_file_vcfanno
+    String samplename1
+    String toolpath
+    String nombre_step
+
+
+    
+
+    command {
+        ${toolpath}/vcfanno_linux64 -p 4 ${config_file_vcfanno} ${input_vcf} > ${samplename1}.${nombre_step}.vcf
+
+    }
+output {
+    File out_vcfanno = "${samplename1}.${nombre_step}.vcf"
+}
+
+}
+
+
+
 task symlink_important_files {
     File output_to_save
     String path_save
@@ -404,12 +428,23 @@ input:
 
 }
 
+ call hnrg_freq {
+
+ input:
+    input_vcf = step13_pharmGKB.salida_Snpsift, 
+    samplename1 = samplename1,
+    toolpath = toolpath,
+    nombre_step = "step14_HNRG_FREQ"
+
+    
+ }
+
 #Step 14: Annotate with ExAC
 call Snpsift as final_annot{
 input:
     samplename1 = samplename1,
     parametros = "annotate -v -info AN_Adj,AC_Adj,AC_Het,AC_Hom,AC_Hemi,POPMAX,VQSLOD,GQ_MEAN,GQ_STDDEV,HWP",
-    input_vcf = step13_pharmGKB.salida_Snpsift,
+    input_vcf = hnrg_freq.out_vcfanno,
     toolpath = toolpath,
     java_heap_memory_initial = java_heap_memory_initial,
     nombre_step = "final_annot_"+out_name
@@ -427,4 +462,5 @@ input:
 #File out_single_vcf_annot = final_annot.salida_Snpsift
 #}
 }
+
 

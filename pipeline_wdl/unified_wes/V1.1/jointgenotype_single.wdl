@@ -24,6 +24,7 @@ workflow JointGenotyping {
 
   File dbSNP_vcf
   File dbSNP_vcf_index
+  File region_padded_bed
 
   
 
@@ -86,6 +87,7 @@ workflow JointGenotyping {
     
     }
 
+
     call HardFilterAndMakeSitesOnlyVcf {
       input:
         vcf = GenotypeGVCFs.output_vcf,
@@ -138,6 +140,13 @@ workflow JointGenotyping {
 
     }
   }
+
+    call restrict_multisample_vcf{
+        input:
+        multisampleVCF  = FinalGatherVcf.output_vcf,
+        region_padded_bed = region_padded_bed,
+        toolpath = toolpath
+    }
 
 #Array[File] salidas = ["${FinalGatherVcf.output_vcf}","${FinalGatherVcf.output_vcf_index}","${CollectMetricsOnFullVcf.detail_metrics_file}","${CollectMetricsOnFullVcf.summary_metrics_file}"]
 #Array[Pair[String,File]] samples_x_files = cross (array_path_save, salidas)
@@ -480,4 +489,21 @@ task DynamicallyCombineIntervals {
   output {
     File output_intervals = "out.intervals"
   }
+}
+
+task restrict_multisample_vcf{
+    File multisampleVCF
+    File region_padded_bed
+    String toolpath
+    String base = basename(multisampleVCF,'.vcf.gz')
+    
+    command{
+
+        zless ${multisampleVCF} | java -jar ${toolpath}/SnpSift.jar intervals ${region_padded_bed} > ${base}_restricted.vcf
+    }
+
+    output {
+        File multisampleVCF_restricted = "${base}_restricted.vcf"
+    }
+
 }

@@ -3,7 +3,7 @@ file="/data/resultsHNRG/genotipado_historico/20190820/GHdb_20190820/GHdb_2019082
 # ID and FILTER are special fields that pull the ID and FILTER columns from the VCF
 fields=["AC","AN","AF"]
 ops=["min","min","min"]
-names=["FREQUENCY","DOMAIN_FREQUENCY=-1,SAMPLES_FREQUENCY","AF_HNRG"]
+names=["FREQUENCY","SAMPLES_FREQUENCY","DOMAIN_FREQUENCY=-1;AF_HNRG"]
 
 #[[postannotation]]
 #fields=["FREQUENCY"]

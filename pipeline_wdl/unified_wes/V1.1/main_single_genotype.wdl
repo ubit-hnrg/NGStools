@@ -233,7 +233,8 @@ workflow main_workflow {
     toolpath = toolpath,
     sample_names = sample_name,
     input_gvcfs = gvcf.left,
-    input_gvcfs_indices = gvcf.right
+    input_gvcfs_indices = gvcf.right,
+    region_padded_bed = coord_generator.padded_coord
     }
  
   }

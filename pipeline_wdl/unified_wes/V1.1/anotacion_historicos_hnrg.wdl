@@ -39,14 +39,14 @@ output {
 
 task copy_to_data {
     File output_to_save
-    String path_save
+    String path_vcf_original
     command{
        set -e -o pipefail
 
-       a=$(dirname ${path_save})
+       path_out=$(dirname ${path_save})
 
 
-       cp -L ${output_to_save} $a
+       cp -L ${output_to_save} $path_out
     }
 }
 
