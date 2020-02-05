@@ -594,7 +594,7 @@ Array[File?] reporte_variantes = build_excell_report.excell_report
 
 
  ####anotaciones funcionales
-Array[File] vcf_individuales = processJointVCF.individual_vcfs_annovar
+Array[File] vcf_individuales = processJointVCF.individual_vcfs_notAnnotated #processJointVCF.individual_vcfs_annovar
 Array[Pair[String,File]] vcf_x_path = zip (array_path_save_byexon, vcf_individuales)
   scatter (vcf in vcf_x_path) {
     call anotaciones.FuncionalAnnotation {

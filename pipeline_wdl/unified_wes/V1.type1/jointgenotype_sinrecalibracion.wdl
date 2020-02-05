@@ -226,7 +226,7 @@ task ImportGVCFs {
     -L ${interval} \
     --sample-name-map inputs.list  \
     --reader-threads 4 \
-    -ip 500
+    -ip 100
 
     
 
