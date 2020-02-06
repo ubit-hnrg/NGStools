@@ -1,7 +1,15 @@
 #####jueves 6 de febrero 2020
 GCF_000001405.25. modificado el 24/7/19 dbSNP153
-gwas_catalog_v1.0.2-associations_e98_r2019-12-16.tsv
-clinvar_20200127.vcf.gz
+  "main_workflow.FuncionalAnnotationSingle.step3_dbSNP.database": "/home/hnrg/HNRG-pipeline-V0.1/new_dbs/GCF_000001405.25.dbSNP153.gz",
+  "main_workflow.FuncionalAnnotationSingle.step3_dbSNP.database_index": "/home/hnrg/HNRG-pipeline-V0.1/new_dbs/GCF_000001405.25.dbSNP153.gz.tbi",
 
-  "main_workflow.FuncionalAnnotationSingle.step3_dbSNP151.database": "/home/hnrg/HNRG-pipeline-V0.1/dbs/GRCh37_snpsift/All_20180423.vcf.gz",
+gwas_catalog_v1.0.2-associations_e98_r2019-12-16.tsv
+  "main_workflow.FuncionalAnnotationSingle.step6_Snpsift_GWASCat.database": "/home/hnrg/HNRG-pipeline-V0.1/new_dbs/gwas_catalog_v1.0.2-associations_e98_r2019-12-16.tsv",
+
+
+
+clinvar_20200127.vcf.gz
+  "main_workflow.FuncionalAnnotationSingle.step12_clinVar.database": "/home/hnrg/HNRG-pipeline-V0.1/new_dbs/clinvar_20200127.vcf.gz",
+  "main_workflow.FuncionalAnnotationSingle.step12_clinVar.database_index": "/home/hnrg/HNRG-pipeline-V0.1/new_dbs/clinvar_20200127.vcf.gz.tbi",
+
 
