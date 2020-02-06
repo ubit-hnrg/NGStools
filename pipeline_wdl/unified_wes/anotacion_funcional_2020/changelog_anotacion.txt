@@ -1,0 +1,7 @@
+#####jueves 6 de febrero 2020
+GCF_000001405.25. modificado el 24/7/19 dbSNP153
+gwas_catalog_v1.0.2-associations_e98_r2019-12-16.tsv
+clinvar_20200127.vcf.gz
+
+  "main_workflow.FuncionalAnnotationSingle.step3_dbSNP151.database": "/home/hnrg/HNRG-pipeline-V0.1/dbs/GRCh37_snpsift/All_20180423.vcf.gz",
+
