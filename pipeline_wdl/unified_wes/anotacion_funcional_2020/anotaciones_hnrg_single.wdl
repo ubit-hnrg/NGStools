@@ -284,7 +284,7 @@ input:
     input_vcf = step_2_bptools_variant_annotation.bptools_out,
     toolpath = toolpath,
     java_heap_memory_initial = java_heap_memory_initial,
-    nombre_step = "step3_dbSNP151"
+    nombre_step = "step3_dbSNP"
     
 }
 
