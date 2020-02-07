@@ -20,7 +20,7 @@ workflow singleGenotypeGVCFs {
 
   String sample_names
   File input_gvcfs 
-  Array[File] input_gvcfs_indices 
+  File input_gvcfs_indices 
 
   File dbSNP_vcf
   File dbSNP_vcf_index
