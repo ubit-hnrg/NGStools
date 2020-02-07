@@ -5,7 +5,7 @@
 
 
 workflow singleGenotypeGVCFs {
-  File unpadded_intervals_file ##lista intervalos
+  #File unpadded_intervals_file ##lista intervalos
   File eval_interval_list
   
   String array_path_save
@@ -20,7 +20,7 @@ workflow singleGenotypeGVCFs {
 
   String sample_names
   File input_gvcfs 
-  File input_gvcfs_indices 
+  Array[File] input_gvcfs_indices 
 
   File dbSNP_vcf
   File dbSNP_vcf_index
@@ -60,7 +60,7 @@ workflow singleGenotypeGVCFs {
         gvcf = input_gvcfs,
         gvcf_index = input_gvcfs_indices,
     #    input_gvcfs_indices = input_gvcfs_indices,
-      #  interval = unpadded_intervals[idx],
+        #interval = unpadded_intervals[idx],
         output_vcf_filename = "output.vcf.gz",
         ref_fasta = ref_fasta,
         ref_fasta_index = ref_fasta_index,
@@ -247,7 +247,7 @@ task ImportGVCFs {
 
 task GenotypeGVCFs {
   #File workspace_tar
-  String interval
+  #String interval
 
   String output_vcf_filename
 
