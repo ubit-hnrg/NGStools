@@ -223,7 +223,7 @@ String samplename1
 String java_heap_memory_initial
 String reference_version
 String path_save
-String out_name
+String version_db
 
 
 
@@ -268,14 +268,14 @@ call bptools as step_2_bptools_variant_annotation {
 }
 
 #Step 3: Annotate with dbSNP151"
-call Snpsift as step3_dbSNP151 {
+call Snpsift as step3_dbSNP {
 input:
     samplename1 = samplename1,
     parametros = "annotate",
     input_vcf = step_2_bptools_variant_annotation.bptools_out,
     toolpath = toolpath,
     java_heap_memory_initial = java_heap_memory_initial,
-    nombre_step = "step3_dbSNP151"
+    nombre_step = "step3_dbSNP"
     
 }
 
@@ -449,7 +449,7 @@ input:
     input_vcf = hnrg_freq.out_vcfanno,
     toolpath = toolpath,
     java_heap_memory_initial = java_heap_memory_initial,
-    nombre_step = "final_annot_"+out_name
+    nombre_step = "final_annot_"+version_db
 
 }
 

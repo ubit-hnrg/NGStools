@@ -216,7 +216,7 @@ workflow main_workflow {
         samplename1 = basename(gvcf.left,"_restricted.vcf"),
         java_heap_memory_initial = "12g",
         reference_version = reference_version,
-        out_name = "single"
+        version_db = "single_V2"
 
       }
 
