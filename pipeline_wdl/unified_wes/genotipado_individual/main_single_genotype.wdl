@@ -213,7 +213,7 @@ workflow main_workflow {
         input_vcf = singleGenotypeGVCFs.restricted_vcf,
         path_save = mkdir_samplename.path_out_softlink,
         toolpath = toolpath,
-        samplename1 = basename(gvcf.left,"_restricted.vcf"),
+        samplename1 = sample_name,
         java_heap_memory_initial = "12g",
         reference_version = reference_version,
         version_db = "single_V2"
