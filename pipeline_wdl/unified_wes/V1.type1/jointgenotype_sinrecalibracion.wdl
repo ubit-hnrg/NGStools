@@ -219,14 +219,15 @@ task ImportGVCFs {
     # Also, testing has shown that the multithreaded reader initialization
     # does not scale well beyond 5 threads, so don't increase beyond that.
     #
-    java -Xmx1g -Xms1g -jar ${toolpath}${gatk_jar} \
+    java -Xmx2g -Xms2g -jar ${toolpath}${gatk_jar} \
     GenomicsDBImport \
     --genomicsdb-workspace-path ${workspace_dir_name} \
     --batch-size ${batch_size} \
     -L ${interval} \
     --sample-name-map inputs.list  \
     --reader-threads 4 \
-    -ip 100
+    --merge-input-intervals \
+    --consolidate
 
     
 
@@ -342,9 +343,9 @@ task GatherVcfs {
 
     java -Xmx6g -Xms6g -jar ${toolpath}${gatk_jar}\
     IndexFeatureFile \
-  --input ${output_vcf_name}
+  --feature-file ${output_vcf_name}
   >>>
- 
+ # --input
   output {
     File output_vcf = "${output_vcf_name}"
     File output_vcf_index = "${output_vcf_name}.tbi"

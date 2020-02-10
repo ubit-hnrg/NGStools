@@ -244,9 +244,9 @@ task GatherVcfs {
 
     java -Xmx6g -Xms6g -jar ${toolpath}${gatk_jar}\
     IndexFeatureFile \
-  --input ${output_vcf_name}
+   --feature-file ${output_vcf_name}
   >>>
- 
+#--input 
   output {
     File output_vcf = "${output_vcf_name}"
     File output_vcf_index = "${output_vcf_name}.tbi"
