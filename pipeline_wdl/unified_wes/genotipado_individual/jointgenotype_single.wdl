@@ -84,15 +84,7 @@ workflow singleGenotypeGVCFs {
         toolpath = toolpath
    
     }
- # }
 
-
-  # For small callsets (fewer than 1000 samples) we can gather the VCF shards and collect metrics directly.
-  # For anything larger, we need to keep the VCF sharded and gather metrics collected from them.
-  Boolean is_small_callset = num_gvcfs <= 1000
-
-  # for small callsets we can gather the VCF shards and then collect metrics on it
-  if (is_small_callset) {
     call GatherVcfs as FinalGatherVcf {
       input:
         input_vcfs_fofn  = HardFilterAndMakeSitesOnlyVcf.variant_filtered_vcf,
@@ -118,7 +110,7 @@ workflow singleGenotypeGVCFs {
         toolpath = toolpath
 
     }
-  }
+  
 
     call restrict_vcf{
         input:
@@ -323,8 +315,8 @@ task HardFilterAndMakeSitesOnlyVcf {
 
 
 task GatherVcfs {
-  Array[File] input_vcfs_fofn
-  Array[File] input_vcf_indexes_fofn
+  File input_vcfs_fofn
+  File input_vcf_indexes_fofn
   String output_vcf_name
   
   String gatk_jar
