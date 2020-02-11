@@ -226,7 +226,6 @@ task ImportGVCFs {
     -L ${interval} \
     --sample-name-map inputs.list  \
     --reader-threads 4 \
-    --merge-input-intervals \
     --consolidate
 
     
