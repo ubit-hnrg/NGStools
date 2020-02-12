@@ -1,0 +1,159 @@
+{
+  "##COMMENT0": "INPUTS PARA PIPELINE PARA EL ANALISIS DE DATOS NGS. UBIT-HNRG MARZO 2019",
+  
+  "##COMMENT1": "MANDATORY INPUTS",
+   "main_workflow.tabulatedSampleFilePaths": "/data/samplesHNRG/fastq_1000/fastq1000.txt",
+   "main_workflow.toolpath": "/home/hnrg/HNRG-pipeline-V0.1/tools/",
+   "main_workflow.gatk_jar": "gatk-package-4.1.4.1-local.jar",
+   "main_workflow.path_softlink": "/data/resultsHNRG/testing/V1.type1/",
+   "main_workflow.platformmodel": "NextSeq-500",
+   "main_workflow.readlenght": "151",
+   
+
+   "##COMMENT2": "uBAM METADATA",
+   "main_workflow.run_date": "2019-12-10",
+   "main_workflow.platform_name": "Illumina",
+   "main_workflow.library_name": "TSO",
+   "main_workflow.sequencing_center": "UIT-HNRG",
+
+   
+   "##COMMENT3": "REQUIRED DBS",
+   "main_workflow.ref_name": ".b37",
+   "main_workflow.dbSNP_vcf": "/home/hnrg/HNRG-pipeline-V0.1/dbs/preprocessing_dbs/All_20180423.vcf.gz",
+   "main_workflow.dbSNP_vcf_index": "/home/hnrg/HNRG-pipeline-V0.1/dbs/preprocessing_dbs/All_20180423.vcf.gz.tbi",
+   "main_workflow.known_indels_sites_VCFs": ["/home/hnrg/HNRG-pipeline-V0.1/dbs/preprocessing_dbs/Mills_and_1000G_gold_standard.indels.b37.vcf.gz"],
+   "main_workflow.known_indels_sites_indices": ["/home/hnrg/HNRG-pipeline-V0.1/dbs/preprocessing_dbs/Mills_and_1000G_gold_standard.indels.b37.vcf.gz.tbi"],
+
+
+  
+ 
+   "##COMMENT4": "REFERENCES",
+   "main_workflow.ref_ann": "/home/hnrg/HNRG-pipeline-V0.1/references/hs37d5/hs37d5.fa.ann",
+   "main_workflow.ref_dict": "/home/hnrg/HNRG-pipeline-V0.1/references/hs37d5/hs37d5.dict",
+   "main_workflow.ref_bwt": "/home/hnrg/HNRG-pipeline-V0.1/references/hs37d5/hs37d5.fa.bwt",
+   "main_workflow.ref_pac": "/home/hnrg/HNRG-pipeline-V0.1/references/hs37d5/hs37d5.fa.pac",
+   "main_workflow.ref_sa": "/home/hnrg/HNRG-pipeline-V0.1/references/hs37d5/hs37d5.fa.sa",
+   "main_workflow.ref_fasta_index": "/home/hnrg/HNRG-pipeline-V0.1/references/hs37d5/hs37d5.fa.fai",
+   "main_workflow.ref_amb": "/home/hnrg/HNRG-pipeline-V0.1/references/hs37d5/hs37d5.fa.amb",
+   "main_workflow.ref_fasta": "/home/hnrg/HNRG-pipeline-V0.1/references/hs37d5/hs37d5.fa",
+   
+   "##COMMENT5": "interval lists",
+   "main_workflow.experiment_lib": "/home/hnrg/HNRG-pipeline-V0.1/libraries/GRCh37/TruSight_One_v1.1_GRCh37_chr22.bed.gz",
+   "main_workflow.unpadded_intervals_file": "/home/hnrg/HNRG-pipeline-V0.1/libraries/GRCh37/b37_wgs_consolidated_calling_intervals.list",
+
+   
+   "##COMMENT6": "HAPLOTYPECALLER PARAMETERS",
+   "main_workflow.newqual": "true",
+   "main_workflow.gatk_gkl_pairhmm_implementation": "LOGLESS_CACHING",
+   "main_workflow.gatk_gkl_pairhmm_threads": "1",
+   "main_workflow.haplotype_scatter_count": "2",
+   "main_workflow.smith_waterman_implementation": "AVX_ENABLED",
+
+ 
+   "##COMMENT7": "BWA PARAMETERS",
+   "main_workflow.bwa_commandline": "bwa mem -K 100000000 -p -v 3 -t 4 -Y",
+
+
+  
+  "main_workflow.annovar_table_pl": "/home/hnrg/HNRG-pipeline-V0.1/tools/annovar/annovar_new/table_annovar.pl",
+  "main_workflow.processJointVCF.annovar.annotate_variation": "/home/hnrg/HNRG-pipeline-V0.1/tools/annovar/annovar_new/annotate_variation.pl",
+
+
+  "main_workflow.processJointVCF.annovar.variants_reduction": "/home/hnrg/HNRG-pipeline-V0.1/tools/annovar/annovar_new/variants_reduction.pl",
+
+
+  "##COMMENT8": "VARIOS",
+  "main_workflow.JointGenotyping.excess_het_threshold": "54.69",
+  "main_workflow.java_heap_memory_initial": "128m",
+  "main_workflow.ubam_list_name": "ubamfiles",
+  "main_workflow.break_bands_at_multiples_of": "1000000",
+  "main_workflow.compression_level": "1",
+  "main_workflow.contamination": "0",
+
+  "##COMMENT9": "trimm fastp",
+  "main_workflow.trim_front_fastp": "5",
+  "main_workflow.trim_tail_fastp": "5",
+
+
+  "##COMMENT10": "generador de intervalo",
+  "main_workflow.padding": "0",
+  "##main_workflow.merge_tolerance": "200",
+  "main_workflow.chromosome_length": "/home/hnrg/HNRG-pipeline-V0.1/libraries/GRCh37/chromosome_lengths_GRCh37.txt",
+  "main_workflow.generic_exon_coords": "/home/hnrg/HNRG-pipeline-V0.1/libraries/GRCh37/exon_coords_GRCh37.tsv",
+
+  "##COMMENT": "annovar", 
+  "main_workflow.db_annovar": "/home/hnrg/HNRG-pipeline-V0.1/dbs/hg19_annovar/",
+  "main_workflow.joinPY": "/home/hnrg/NGStools/pipeline_wdl/process_vcf/join_vcfs.py",
+  "main_workflow.processJointVCF.annovar.convert2annovar": "/home/hnrg/HNRG-pipeline-V0.1/tools/annovar/convert2annovar.pl",
+
+
+  "##COMMENT11":"dbs anotacion",
+  "main_workflow.reference_version": "GRCh37.75",
+
+  "##_COMENTARIO": "Base de datos actualizada Noviembre 2018.",
+  "main_workflow.FuncionalAnnotation.step3_dbSNP151.database": "/home/hnrg/HNRG-pipeline-V0.1/dbs/GRCh37_snpsift/All_20180423.vcf.gz",
+  "main_workflow.FuncionalAnnotation.step3_dbSNP151.database_index": "/home/hnrg/HNRG-pipeline-V0.1/dbs/GRCh37_snpsift/All_20180423.vcf.gz.tbi",
+  "main_workflow.bam2gvcf.FuncionalAnnotationSingle.step3_dbSNP151.database": "/home/hnrg/HNRG-pipeline-V0.1/dbs/GRCh37_snpsift/All_20180423.vcf.gz",
+  "main_workflow.bam2gvcf.FuncionalAnnotationSingle.step3_dbSNP151.database_index": "/home/hnrg/HNRG-pipeline-V0.1/dbs/GRCh37_snpsift/All_20180423.vcf.gz.tbi",
+  
+  "##_COMENTARIO": "Base de datos actualizada Noviembre 2018(no cambia desde 8/12/13) .",
+  "main_workflow.FuncionalAnnotation.step4_1000Genomes.database": "/home/hnrg/HNRG-pipeline-V0.1/dbs/GRCh37_snpsift/1000G_omni2.5.b37.vcf.gz",
+  "main_workflow.FuncionalAnnotation.step4_1000Genomes.database_index": "/home/hnrg/HNRG-pipeline-V0.1/dbs/GRCh37_snpsift/1000G_omni2.5.b37.vcf.gz.tbi",
+  "main_workflow.bam2gvcf.FuncionalAnnotationSingle.step4_1000Genomes.database": "/home/hnrg/HNRG-pipeline-V0.1/dbs/GRCh37_snpsift/1000G_omni2.5.b37.vcf.gz",
+  "main_workflow.bam2gvcf.FuncionalAnnotationSingle.step4_1000Genomes.database_index": "/home/hnrg/HNRG-pipeline-V0.1/dbs/GRCh37_snpsift/1000G_omni2.5.b37.vcf.gz.tbi",
+
+  "##_COMENTARIO": "Base de datos actualizada Noviembre 2018.(no cambia desde 8/12/13)",
+  "main_workflow.FuncionalAnnotation.step5_hapmap.database": "/home/hnrg/HNRG-pipeline-V0.1/dbs/GRCh37_snpsift/hapmap_3.3.b37.vcf",
+  "main_workflow.FuncionalAnnotation.step5_hapmap.database_index": "/home/hnrg/HNRG-pipeline-V0.1/dbs/GRCh37_snpsift/hapmap_3.3.b37.vcf.idx",
+  "main_workflow.bam2gvcf.FuncionalAnnotationSingle.step5_hapmap.database": "/home/hnrg/HNRG-pipeline-V0.1/dbs/GRCh37_snpsift/hapmap_3.3.b37.vcf",
+  "main_workflow.bam2gvcf.FuncionalAnnotationSingle.step5_hapmap.database_index": "/home/hnrg/HNRG-pipeline-V0.1/dbs/GRCh37_snpsift/hapmap_3.3.b37.vcf.idx",
+
+  "##_COMENTARIO": "Base de datos actualizada Noviembre 2018 (29 de oct de 2018)",
+  "main_workflow.FuncionalAnnotation.step6_Snpsift_GWASCat.database": "/home/hnrg/HNRG-pipeline-V0.1/dbs/GRCh37_snpsift/gwas_catalog_v1.0.2-associations_e96_r2019-04-06.tsv",
+  "main_workflow.bam2gvcf.FuncionalAnnotationSingle.step6_Snpsift_GWASCat.database": "/home/hnrg/HNRG-pipeline-V0.1/dbs/GRCh37_snpsift/gwas_catalog_v1.0.2-associations_e96_r2019-04-06.tsv",
+
+
+  "##_COMENTARIO": "step 7 esta comentado",
+  "##_COMENTARIO": "step 8 annovar",
+  "main_workflow.FuncionalAnnotation.annovar.annovar_dbpath": "/home/hnrg/HNRG-pipeline-V0.1/dbs/hg19_annovar/",
+  "main_workflow.bam2gvcf.FuncionalAnnotationSingle.annovar.annovar_dbpath": "/home/hnrg/HNRG-pipeline-V0.1/dbs/hg19_annovar/",
+
+
+
+
+  "##_COMENTARIO": "Base de datos actualizada Noviembre 2018 (no cambia desde nov/2014).",
+  "main_workflow.FuncionalAnnotation.step9_EVS.database": "/home/hnrg/HNRG-pipeline-V0.1/dbs/GRCh37_snpsift/ESP6500SI-V2-SSA137.snps_indels.vcf",
+  "main_workflow.FuncionalAnnotation.step9_EVS.database_index": "/home/hnrg/HNRG-pipeline-V0.1/dbs/GRCh37_snpsift/ESP6500SI-V2-SSA137.snps_indels.vcf.idx",
+  "main_workflow.bam2gvcf.FuncionalAnnotationSingle.step9_EVS.database": "/home/hnrg/HNRG-pipeline-V0.1/dbs/GRCh37_snpsift/ESP6500SI-V2-SSA137.snps_indels.vcf",
+  "main_workflow.bam2gvcf.FuncionalAnnotationSingle.step9_EVS.database_index": "/home/hnrg/HNRG-pipeline-V0.1/dbs/GRCh37_snpsift/ESP6500SI-V2-SSA137.snps_indels.vcf.idx",
+
+  "##_COMENTARIO": "step 11 comentado",
+  "##_COMENTARIO":"step 14 bplat format",
+  "main_workflow.FuncionalAnnotation.config_file_vcfanno": "/home/hnrg/NGStools/pipeline_wdl/unified_wes/V1.1/single_annot_conf.toml",
+  "main_workflow.FuncionalAnnotation.funcion_lua": "/home/hnrg/NGStools/pipeline_wdl/unified_wes/V1.1/duplicar.lua",
+
+
+  "##_COMENTARIO": "Base de datos actualizada Abril 2019.(ultima version 19/2/19)",
+  "main_workflow.FuncionalAnnotation.step12_clinVar.database": "/home/hnrg/HNRG-pipeline-V0.1/dbs/GRCh37_snpsift/clinvar_20190219.vcf.gz",
+  "main_workflow.FuncionalAnnotation.step12_clinVar.database_index": "/home/hnrg/HNRG-pipeline-V0.1/dbs/GRCh37_snpsift/clinvar_20190219.vcf.gz.tbi",
+  "main_workflow.bam2gvcf.FuncionalAnnotationSingle.step12_clinVar.database": "/home/hnrg/HNRG-pipeline-V0.1/dbs/GRCh37_snpsift/clinvar_20190219.vcf.gz",
+"main_workflow.bam2gvcf.FuncionalAnnotationSingle.step12_clinVar.database_index": "/home/hnrg/HNRG-pipeline-V0.1/dbs/GRCh37_snpsift/clinvar_20190219.vcf.gz.tbi",
+
+  "##_COMENTARIO": "Base de datos sacada del bundle de bitgenia... (ACTUALIZAR).",
+  "main_workflow.FuncionalAnnotation.step13_pharmGKB.database": "/home/hnrg/HNRG-pipeline-V0.1/dbs/GRCh37_snpsift/PharmGKBvcf_2016.vcf",
+  "main_workflow.FuncionalAnnotation.step13_pharmGKB.database_index": "/home/hnrg/HNRG-pipeline-V0.1/dbs/GRCh37_snpsift/PharmGKBvcf_2016.vcf.sidx",
+  "main_workflow.bam2gvcf.FuncionalAnnotationSingle.step13_pharmGKB.database": "/home/hnrg/HNRG-pipeline-V0.1/dbs/GRCh37_snpsift/PharmGKBvcf_2016.vcf",
+"main_workflow.bam2gvcf.FuncionalAnnotationSingle.step13_pharmGKB.database_index": "/home/hnrg/HNRG-pipeline-V0.1/dbs/GRCh37_snpsift/PharmGKBvcf_2016.vcf.sidx",
+
+"main_workflow.FuncionalAnnotation.hnrg_freq.config_file_vcfanno": "/home/hnrg/NGStools/pipeline_wdl/unified_wes/annotation_hnrg_freq/single_annot_conf_working.toml",
+"main_workflow.FuncionalAnnotationSingle.hnrg_freq.config_file_vcfanno": "/home/hnrg/NGStools/pipeline_wdl/unified_wes/annotation_hnrg_freq/single_annot_conf_working.toml",
+
+  "##_COMENTARIO": "Base de datos actualizada Noviembre 2018.(no cambia desde 27/2/17)",
+  "main_workflow.FuncionalAnnotation.final_annot.database": "/home/hnrg/HNRG-pipeline-V0.1/dbs/GRCh37_snpsift/ExAC.r1.sites.vep.vcf.gz",
+  "main_workflow.FuncionalAnnotation.final_annot.database_index": "/home/hnrg/HNRG-pipeline-V0.1/dbs/GRCh37_snpsift/ExAC.r1.sites.vep.vcf.gz.tbi",
+  "main_workflow.bam2gvcf.FuncionalAnnotationSingle.final_annot.database": "/home/hnrg/HNRG-pipeline-V0.1/dbs/GRCh37_snpsift/ExAC.r1.sites.vep.vcf.gz",
+"main_workflow.bam2gvcf.FuncionalAnnotationSingle.final_annot.database_index": "/home/hnrg/HNRG-pipeline-V0.1/dbs/GRCh37_snpsift/ExAC.r1.sites.vep.vcf.gz.tbi"
+
+}
+
+
