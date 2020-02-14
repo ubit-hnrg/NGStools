@@ -36,6 +36,7 @@
   "main_workflow.ref_amb": "/home/hnrg/HNRG-pipeline-V0.1/references/hs37d5/hs37d5.fa.amb",
 
   "##_COMENTARIO": "STEP 3. Base de datos actualizada FEBRERO 2020.",
+  "main_workflow.FuncionalAnnotationSingle.version_db": "single_V2",
 
   "main_workflow.FuncionalAnnotationSingle.step3_dbSNP.database": "/home/hnrg/HNRG-pipeline-V0.1/new_dbs/GCF_000001405.25.dbSNP153.gz",
   "main_workflow.FuncionalAnnotationSingle.step3_dbSNP.database_index": "/home/hnrg/HNRG-pipeline-V0.1/new_dbs/GCF_000001405.25.dbSNP153.gz.tbi",

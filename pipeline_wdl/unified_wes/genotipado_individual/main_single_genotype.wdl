@@ -215,8 +215,8 @@ workflow main_workflow {
         toolpath = toolpath,
         samplename1 = sample_name,
         java_heap_memory_initial = "12g",
-        reference_version = reference_version,
-        version_db = "single_V2"
+        reference_version = reference_version
+        
 
       }
 
