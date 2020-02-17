@@ -1,0 +1,11 @@
+{
+  "parche.list_of_exon_rep": "/home/hnrg/executionsHNRG/parche_cenagem/inputs/exon.txt",
+  "parche.annovar_table_pl": "/home/hnrg/HNRG-pipeline-V0.1/tools/annovar/table_annovar.pl",
+  "parche.db_annovar": "/home/hnrg/HNRG-pipeline-V0.1/dbs/hg19_annovar",
+  "parche.annovar.annotate_variation": "/home/hnrg/HNRG-pipeline-V0.1/tools/annovar/annotate_variation.pl",
+  "parche.annovar.variants_reduction": "/home/hnrg/HNRG-pipeline-V0.1/tools/annovar/variants_reduction.pl",
+  "parche.annovar.convert2annovar": "/home/hnrg/HNRG-pipeline-V0.1/tools/annovar/convert2annovar.pl",
+  "parche.list_of_vcf": "/home/hnrg/executionsHNRG/parche_cenagem/inputs/vcf.txt",
+  "parche.toolpath": "/home/hnrg/HNRG-pipeline-V0.1/tools/"
+}
+
