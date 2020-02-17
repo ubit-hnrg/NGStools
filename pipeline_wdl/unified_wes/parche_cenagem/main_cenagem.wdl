@@ -120,7 +120,7 @@ Array[File] exon_coverage_reports = read_lines(list_of_exon_rep)
 #Array[Pair[String,File]] vcf_x_path = zip(path, vcf_in)
 
 
-scatter (idx in length(vcf_in)) {
+scatter (idx in range(length(vcf_in))) {
 
 call annovar {
         input:
