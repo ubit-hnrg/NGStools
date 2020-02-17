@@ -102,9 +102,9 @@ for fl in flags:
     os.system("sed -i -e 's/;%s\t/;%s=1\t/g' %s"%(fl,fl,flagedfile)) 
    
 
-print 'excecuting vcf2tsv - vcflib'
+print 'excecuting vcf2tsv (vcf-to-tab) - vcflib'
 #ejecuto vcf2tsv de vcflib
-os.system('vcf-tsv %s > %s'%(flagedfile,outfile))
+os.system('vcf-to-tab %s > %s'%(flagedfile,outfile))
     
 
 
