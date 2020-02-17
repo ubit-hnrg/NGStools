@@ -85,8 +85,13 @@ task symlink_important_files {
 
     String path_save
     command{
-       cp -L ${output_to_save} ${path_save}
-        cp -L ${output_to_save2} ${path_save}
+       set -e -o pipefail
+
+       path_out=$(dirname ${path_save}) 
+       
+       cp -L ${output_to_save} $path_out
+
+       cp -L ${output_to_save2} $path_out
     }
 }
 
@@ -120,7 +125,7 @@ scatter (idx in range(length(vcf_in))) {
 call annovar {
         input:
             one_sample_vcf =  vcf_in[idx],
-            sample = basename(vcf_in[idx], "final_annot_single_V2.vcf"),
+            sample = basename(vcf_in[idx], ".final_annot_single_V2.vcf"),
             annovar_table_pl = annovar_table_pl,
             db_annovar = db_annovar
         }
@@ -131,14 +136,14 @@ call annovar {
             input:
             annovar_txt = annovar.annovar_txt,
             annovar_vcf = annovar.annovar_vcf,
-            sample = basename(vcf_in[idx], "final_annot_single_V2.vcf")
+            sample = basename(vcf_in[idx], ".final_annot_single_V2.vcf")
             
         }
 
        call build_excell_report {
             input:
             annovar_tsv = get_tsv_from_annovar.annovar_tsv,
-            samplename2 = basename(vcf_in[idx], "final_annot_single_V2.vcf"),
+            samplename2 = basename(vcf_in[idx], ".final_annot_single_V2.vcf"),
             exon_coverage_report = exon_coverage_reports[idx]
             
         }
