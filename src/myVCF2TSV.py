@@ -104,7 +104,7 @@ for fl in flags:
 
 print 'excecuting vcf2tsv - vcflib'
 #ejecuto vcf2tsv de vcflib
-os.system('vcf2tsv %s > %s'%(flagedfile,outfile))
+os.system('vcf-tsv %s > %s'%(flagedfile,outfile))
     
 
 
