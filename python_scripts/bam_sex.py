@@ -41,13 +41,13 @@ sample = os.path.splitext(os.path.basename(bam))[0]#subprocess.call(["basename",
 a = int(y)/int(x)
 if a >= 0.07: 
     sex = 'M'
-    print a
-elif (a>= 0.03 or a < 0.07):
+    #print a
+elif (a >= 0.005 or a < 0.07):
     sex = '?'
-    print a
+    #print a
 else:
     sex = 'F'
-    print a
+    #print a
 
 print ('{} \t {}'.format(sample,sex))
 
