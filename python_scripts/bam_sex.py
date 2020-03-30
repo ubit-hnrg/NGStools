@@ -42,7 +42,7 @@ a = int(y)/int(x)
 if a >= 0.07: 
     sex = 'M'
     #print a
-elif ( 0.03 < a < 0.07):
+elif ( 0.03 <= a < 0.07):
     sex = '?'
     #print a
 else:
