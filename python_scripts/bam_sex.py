@@ -38,7 +38,7 @@ y = subprocess.check_output(['samtools', 'view', bam ,'Y','-c'])
 sample = os.path.splitext(os.path.basename(bam))[0]#subprocess.call(["basename","bam",".bam"],shell = True)# ,stdout=subprocess.PIPE).communicate()[0]
 
 #print sample
-a = int(y)/int(x) >= 0.07
+a = int(y)/int(x)
 if a >= 0.07: 
     sex = 'M'
 elif (a>= 0.03 or a < 0.07):
