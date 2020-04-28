@@ -1,1 +1,3 @@
 sudo java -jar /home/usuario/repos/cromwell-36.1.jar run main.wdl  -i inputs_main_v2.json
+
+java -Dconfig.file=/home/hnrg/NGStools/pipeline_wdl/unified_wes/v0.1.9/cromwell.conf -jar /home/hnrg/HNRG-pipeline-V0.1/tools/cromwell-37.jar run /home/hnrg/NGStools/pipeline_wdl/unified_wes/V1/main.wdl -i inputs/inputsV1.json
