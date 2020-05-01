@@ -3,7 +3,7 @@ set -e
 
 vcf=$1
 vcf_name=$(basename $vcf .final_annot.HNRG_freq.vcf )
-vcf_pwd=$(pwd $vcf)
+vcf_pwd=$(dirname $vcf)
 exon_file=$2
 
 
