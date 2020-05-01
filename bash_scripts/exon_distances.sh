@@ -10,7 +10,7 @@ exon_file=$2
 grep "^#" $vcf > head_vcf.vcf
 grep -v "#" $vcf| sort -k1,1 -k2,2n >> head_vcf.vcf
 
-bedtools closest -a head_vcf.vcf -b $exon_file -D ref | cut -f 1,2,12-17  > $vcf_pwd/$vcf_name'.exon_distance.tsv'
+bedtools closest -a head_vcf.vcf -b $exon_file -D ref | cut -f 1,2,12-17  > $vcf_pwd'/'$vcf_name'.exon_distance.tsv'
 
 rm head_vcf.vcf
 
