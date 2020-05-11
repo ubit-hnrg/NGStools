@@ -15,7 +15,7 @@ parser.add_argument('-e','--excel_file', help='excel file with variants from pip
 parser.add_argument('-o','--output_file', help='an excel file merged, variants and plof constraint. must be .xlsx extension')
 args = parser.parse_args()
 
-plof = args.distance_file
+plof = args.plof_file
 excel = args.excel_file
 out = args.output_file
 
