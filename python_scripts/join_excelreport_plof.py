@@ -23,21 +23,23 @@ plof_df = pd.read_csv(plof,header =0,sep ='\t')
 
 excel_file_variants = pd.read_excel(excel, sheet_name= 'Variants')
 excel_file_coverage = pd.read_excel(excel, sheet_name= 'ExonCoverage')
+#hnrg_soft = {'Plataforma':['Illumina Nextseq500'],'Referencia':['GRCh37.75'],'Software pipeline HNRG':['Gatk-package-4.0.8.1','fastp 0.20.0','Bwa 0.7.15-r1140','bedtools v2.28.0','SAMTOOLS_VERSION 1.9','SnpEff 4.3t','VCFtools (0.1.17)','cromwell-37'],'Anotacion':['dbSNP:All_20180423 v151','indels_site: Mills_and_1000G_gold_standard.indels.b37','hapmap_3.3','1000G_omni2.5.b37','Gwas_catalog_v1.0.2-associations_e96_r2019-04-06','ESP6500SI-V2-SSA137.snps_indels','Clinvar_20190219','PharmGKBvcf_2016','ExAC.r1.sites.vep'],'Annovar':['refGene','avsnp150','esp6500siv2_all','1000g2015aug_all','exac03','gnomad_exome','gnomad_genome','clinvar_20180603','dbscsnv11','dbnsfp35a,rmsk','tfbsConsSites','cytoBand','wgRna','targetScanS','genomicSuperDups','dgvMerged','gwasCatalog','ensGene','knownGene','intervar_20180118']}
+#hnrg = pd.DataFrame(list(hnrg_soft.values()), index=hnrg_soft.keys()).replace(np.nan, '', regex=True)
+
+ultimo_antes_sample = excel_file_variants.columns.get_loc("ALTERNATIVES")
+len_columns_excel_variantes = len(excel_file_variants.columns)
+samples_excel = list(excel_file_variants.columns[ultimo_antes_sample+1:len_columns_excel_variantes])
+columnas_variantes = list(excel_file_variants.columns[0:ultimo_antes_sample+1])
+columnas_plof = list(plof_df.columns)
+index_merge = columnas_variantes + columnas_plof + samples_excel
+
 
 
 merged = pd.merge(left = excel_file_variants, right = plof_df ,left_on = 'Gene.knownGene', right_on = 'gene' , how = 'left' )
 
-columnas_variants = len(excel_file_variants.columns)
-columnas_merged = len(merged.columns)
-#columnas_plof = len(plof_df.columns)
-
-hnrg_soft = {'Plataforma':['Illumina Nextseq500'],'Referencia':['GRCh37.75'],'Software pipeline HNRG':['Gatk-package-4.0.8.1','fastp 0.20.0','Bwa 0.7.15-r1140','bedtools v2.28.0','SAMTOOLS_VERSION 1.9','SnpEff 4.3t','VCFtools (0.1.17)','cromwell-37'],'Anotacion':['dbSNP:All_20180423 v151','indels_site: Mills_and_1000G_gold_standard.indels.b37','hapmap_3.3','1000G_omni2.5.b37','Gwas_catalog_v1.0.2-associations_e96_r2019-04-06','ESP6500SI-V2-SSA137.snps_indels','Clinvar_20190219','PharmGKBvcf_2016','ExAC.r1.sites.vep'],'Annovar':['refGene','avsnp150','esp6500siv2_all','1000g2015aug_all','exac03','gnomad_exome','gnomad_genome','clinvar_20180603','dbscsnv11','dbnsfp35a,rmsk','tfbsConsSites','cytoBand','wgRna','targetScanS','genomicSuperDups','dgvMerged','gwasCatalog','ensGene','knownGene','intervar_20180118']}
-hnrg = pd.DataFrame(list(hnrg_soft.values()), index=hnrg_soft.keys()).replace(np.nan, '', regex=True)
-
-merged_ok = merged.iloc[:,np.r_[0:columnas_variants-19,columnas_variants:columnas_merged,132:columnas_variants]]
-
+merged_ok = merged.reindex(columns=index_merge)
 
 with pd.ExcelWriter(out,engine = 'xlsxwriter') as writer:
     merged_ok.to_excel(writer, sheet_name= 'Variants',index = False)
     excel_file_coverage.to_excel(writer, sheet_name= 'ExonCoverage', index=False)
-    hnrg.to_excel(writer, sheet_name= 'Software', index = True)
+    #hnrg.to_excel(writer, sheet_name= 'Software', index = True)
