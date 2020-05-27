@@ -27,16 +27,15 @@ ${toolpath}bedtools2/bin/intersectBed -a ${Exon_coords} -b ${name}_exon.coverage
 #esto limita la covertura estrictamente al intervalo paddeado.
 # Es decicr, esta linea elimina las grandes zonas del bam con cobertura zero que tenían unas pocas bases de interseccion con el intervalo buscado
 # primero: reordeno las columnas de loj.txt, para que las coordenadas start end no sean las del exon, sino las de la cobertura
-awk -F"\t" '{print $6"\t"$7"\t"$8"\t"$9"\t"$4"\t"$5"\t"$1"\t"$2"\t"$3}' ${name}_loj.txt > ${name}_loj_sorted_cols.tsv
+awk -F"\t" '{print $8"\t"$9"\t"$10"\t"$11"\t"$5"\t"$4"\t"$6"\t"$7"\t"$1"\t"$2"\t"$3}' ${name}_loj.txt > ${name}_loj_sorted_cols.tsv
 ${toolpath}bedtools2/bin/intersectBed -a ${name}_loj_sorted_cols.tsv -b ${Exon_coords}  > ${name}_loj_exon_filtered.coverage
 
-echo -e 'chr\tstart\tend\tcount\tgeneSymbol\texon_number\texon_chr\texon_start\texon_end' > header.tsv
+echo -e 'chr\tstart\tend\tcount\tgeneSymbol\tENSEMBL_ID\texon_number\tstrand\texon_chr\texon_start\texon_end' > header.tsv
 cat header.tsv ${name}_loj_exon_filtered.coverage > ${name}_exon_filtered_coverage.tsv
 rm ${name}_loj_exon_filtered.coverage ${name}_loj_sorted_cols.tsv header.tsv ${name}_exon.coverage ${name}_loj.txt
 
 #####coverage statistics cambio la forma del input... 
 /home/hnrg/NGStools/pipeline_wdl/qualityControl/coverage_statistics_v1.0.py -i ${name}_exon_filtered_coverage.tsv -g ${name}_global_coverage_statistics.tsv -e ${name}_coverage_statistics_by_exon.tsv -s ${name}
-
 
 rm ${name}_exonTSO_reduced.bam ${name}_exon_filtered_coverage.tsv
 >>>
