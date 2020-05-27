@@ -1,0 +1,5 @@
+{
+  "quality_control.toolpath": "String",
+  "quality_control.exon_coords": "File",
+  "quality_control.list_of_bams": "File"
+}
