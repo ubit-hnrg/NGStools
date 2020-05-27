@@ -32,12 +32,12 @@ ${toolpath}bedtools2/bin/intersectBed -a ${name}_loj_sorted_cols.tsv -b ${Exon_c
 
 echo -e 'chr\tstart\tend\tcount\tgeneSymbol\tENSEMBL_ID\texon_number\tstrand\texon_chr\texon_start\texon_end' > header.tsv
 cat header.tsv ${name}_loj_exon_filtered.coverage > ${name}_exon_filtered_coverage.tsv
-rm ${name}_loj_exon_filtered.coverage ${name}_loj_sorted_cols.tsv header.tsv ${name}_exon.coverage ${name}_loj.txt
+#rm ${name}_loj_exon_filtered.coverage ${name}_loj_sorted_cols.tsv header.tsv ${name}_exon.coverage ${name}_loj.txt
 
 #####coverage statistics cambio la forma del input... 
 /home/hnrg/NGStools/pipeline_wdl/qualityControl/coverage_statistics_v1.0_ENS.py -i ${name}_exon_filtered_coverage.tsv -g ${name}_global_coverage_statistics.tsv -e ${name}_coverage_statistics_by_exon.tsv -s ${name}
 
-rm ${name}_exonTSO_reduced.bam ${name}_exon_filtered_coverage.tsv
+rm ${name}_exonTSO_reduced.bam #${name}_exon_filtered_coverage.tsv
 >>>
 output {
 
