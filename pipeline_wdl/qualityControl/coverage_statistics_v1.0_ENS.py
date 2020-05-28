@@ -24,6 +24,7 @@ sample = args.samplename
 output_global_coverage = args.output_global_report
 output_coverage_by_exon = args.output_exon_report
 
+coverage = pd.read_table(ffile)
 
 signif=2
 
