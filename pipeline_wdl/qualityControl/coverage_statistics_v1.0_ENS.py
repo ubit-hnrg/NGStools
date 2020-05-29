@@ -102,7 +102,7 @@ exon_description = coverage[['chr','exon_start','exon_end','geneSymbol','ENSEMBL
 depth_by_exon = pd.merge(depth_by_exon,exon_description,how='left',left_index=True,right_on=['geneSymbol','ENSEMBL_ID','exon_number','strand'])
 depth_by_exon = depth_by_exon[[u'geneSymbol',u'ENSEMBL_ID', u'exon_number',u'strand', u'dp1', u'dp10', u'dp20', u'dp30', u'chr', u'exon_start', u'exon_end']]
 depth_by_exon.sort_values(by=['chr','exon_start','exon_end'],inplace = True)
-depth_by_exon.reset_index(inplace=True)
+#depth_by_exon.reset_index(inplace=True)
 
 
 global_statistics.round(2).to_csv(output_global_coverage,sep='\t')
