@@ -49,6 +49,6 @@ else:
     sex = 'F'
     #print a
 
-print ('{} \t {} x: \t {} y:\t {}'.format(sample,sex, int(x),int(y)))
+print ('{} \t {} \t x: \t {} \t y: \t {}'.format(sample,sex, int(x),int(y)))
 
 
