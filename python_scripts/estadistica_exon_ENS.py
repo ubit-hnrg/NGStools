@@ -30,10 +30,10 @@ def percentile(n):
 #files = glob.glob(args.directory + "*_variants.xlsx")
 files = args.file
 
-if not files:
-    print('File does not exist: ' + args.directory)
-for file in files:
-    print('File exists: ' + file)
+#if not files:
+#    print('File does not exist: ' + args.directory)
+#for file in files:
+#    print('File exists: ' + file)
 #fields = ["geneSymbol","dp1","dp10","dp20","dp30"]
 tablas = []
 #df = pd.DataFrame()
