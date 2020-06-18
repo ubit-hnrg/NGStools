@@ -28,7 +28,7 @@ def percentile(n):
 
 #directory = r'/home/usuario/Escritorio/reporte_exones/'
 #files = glob.glob(args.directory + "*_variants.xlsx")
-files = glob.glob(args.file)
+files = glob.glob(args.file + "_exon_coverage_ENS.xlsx")
 
 #if not files:
 #    print('File does not exist: ' + args.directory)
