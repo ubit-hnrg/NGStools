@@ -30,8 +30,8 @@ def percentile(n):
 #files = glob.glob(args.directory + "*_variants.xlsx")
 #files = glob.glob(args.file + "_exon_coverage_ENS.xlsx")
 
-f = open(args.file, "r")
-files = f.readlines()
+files = open(args.file, "r").read().split('\n')
+#files = f.readlines()
 
 #if not files:
 #    print('File does not exist: ' + args.directory)
