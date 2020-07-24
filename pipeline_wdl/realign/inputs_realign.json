@@ -1,5 +1,11 @@
 {
   "main_workflow.ref_name": ".b37",
+  "main_workflow.dbSNP_vcf": "/home/hnrg/HNRG-pipeline-V0.1/dbs/preprocessing_dbs/All_20180423.vcf.gz",
+  "main_workflow.dbSNP_vcf_index": "/home/hnrg/HNRG-pipeline-V0.1/dbs/preprocessing_dbs/All_20180423.vcf.gz.tbi",
+  "main_workflow.known_indels_sites_VCFs": ["/home/hnrg/HNRG-pipeline-V0.1/dbs/preprocessing_dbs/Mills_and_1000G_gold_standard.indels.b37.vcf.gz"],
+  "main_workflow.known_indels_sites_indices": ["/home/hnrg/HNRG-pipeline-V0.1/dbs/preprocessing_dbs/Mills_and_1000G_gold_standard.indels.b37.vcf.gz.tbi"],
+
+
   "##COMMENT4": "REFERENCES",
   "main_workflow.ref_ann": "/home/hnrg/testing/pedido_chicas/chr2_reference/chr2_hsf37d5.fa.ann",
   "main_workflow.ref_dict": "/home/hnrg/testing/pedido_chicas/chr2_reference/chr2_hsf37d5.dict",
@@ -17,12 +23,12 @@
   "main_workflow.toolpath": "/home/hnrg/HNRG-pipeline-V0.1/tools/",
   "main_workflow.path_softlink": "/data/resultsHNRG/chr2/",
 
-  "main_workflow.library_name": "String",
+  "main_workflow.library_name": "TSO",
   "main_workflow.ubam_list_name": "ubam",
 
   "main_workflow.platformmodel": "NextSeq-500",
 
-  "main_workflow.platform_name": "TSO",
+  "main_workflow.platform_name": "Illumina",
   "main_workflow.run_date": "2019-12-16",
 
   "main_workflow.readlenght": "151",
