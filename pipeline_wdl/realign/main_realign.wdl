@@ -370,7 +370,7 @@ workflow main_workflow {
       known_indels_sites_VCFs = known_indels_sites_VCFs,
       known_indels_sites_indices = known_indels_sites_indices,
       wes_calling_interval_list = coord_generator.interval_list,
-      break_bands_at_multiples_of = break_bands_at_multiples_of,
+     #break_bands_at_multiples_of = break_bands_at_multiples_of,
       #haplotype_scatter_count = haplotype_scatter_count,
       compression_level = compression_level,
       #gatk_gkl_pairhmm_implementation = gatk_gkl_pairhmm_implementation,
