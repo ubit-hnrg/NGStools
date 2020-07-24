@@ -390,17 +390,17 @@ workflow bam2gvcf {
 
     
     ###Scatter interval
-    File wes_calling_interval_list
-    Int break_bands_at_multiples_of
-    Int haplotype_scatter_count
+    #File wes_calling_interval_list
+    #Int break_bands_at_multiples_of
+    #Int haplotype_scatter_count
 
     ##################################
     Int compression_level
     String java_heap_memory_initial
 
     ########optimization flags
-    String gatk_gkl_pairhmm_implementation
-    Int gatk_gkl_pairhmm_threads
+    #String gatk_gkl_pairhmm_implementation
+    #Int gatk_gkl_pairhmm_threads
 
 
   #validate gvcf
@@ -409,16 +409,16 @@ workflow bam2gvcf {
 
   #archivo de listas de cobertura de intervalos 
   #File wgs_coverage_interval_list
-  File wgs_calling_interval_list
+  #File wgs_calling_interval_list
 
-  File wgs_evaluation_interval_list
+  #File wgs_evaluation_interval_list
 
 
   #####opt de haplotypecaller
-  String smith_waterman_implementation
-  Float? contamination
-  String newqual
-  File tso_bed
+  #String smith_waterman_implementation
+  #Float? contamination = '0'
+  #String newqual
+  #File tso_bed
   
 
 

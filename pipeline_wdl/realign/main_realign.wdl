@@ -196,10 +196,10 @@ workflow main_workflow {
   File ref_pac
   File ref_sa
     
- # File dbSNP_vcf
- # File dbSNP_vcf_index
- # Array[File] known_indels_sites_VCFs
- # Array[File] known_indels_sites_indices
+  File dbSNP_vcf
+  File dbSNP_vcf_index
+  Array[File] known_indels_sites_VCFs
+  Array[File] known_indels_sites_indices
 
   ##### parametros trimmeado fastp
   Int trim_front_fastp = "5" 
@@ -217,8 +217,8 @@ workflow main_workflow {
   Int gatk_gkl_pairhmm_threads = "1"
     
  # ####optimizacion haplotypecaller
- # String smith_waterman_implementation = "AVX_ENABLED"
- # Float? contamination = "0"
+  #String smith_waterman_implementation = "AVX_ENABLED"
+  #Float? contamination = "0"
  # String newqual = "true"
 
 
@@ -371,17 +371,17 @@ workflow main_workflow {
       known_indels_sites_indices = known_indels_sites_indices,
       wes_calling_interval_list = coord_generator.interval_list,
       break_bands_at_multiples_of = break_bands_at_multiples_of,
-      haplotype_scatter_count = haplotype_scatter_count,
+      #haplotype_scatter_count = haplotype_scatter_count,
       compression_level = compression_level,
-      gatk_gkl_pairhmm_implementation = gatk_gkl_pairhmm_implementation,
-      gatk_gkl_pairhmm_threads = gatk_gkl_pairhmm_threads,
+      #gatk_gkl_pairhmm_implementation = gatk_gkl_pairhmm_implementation,
+      #gatk_gkl_pairhmm_threads = gatk_gkl_pairhmm_threads,
       wgs_calling_interval_list = coord_generator.interval_list,
       wgs_evaluation_interval_list = coord_generator.interval_list,
       gatk_jar = gatk_jar,
       toolpath = toolpath,
-      smith_waterman_implementation = smith_waterman_implementation,
-      contamination = contamination,
-      newqual = newqual,
+      #smith_waterman_implementation = smith_waterman_implementation,
+      #contamination = contamination,
+      #newqual = newqual,
       java_heap_memory_initial = java_heap_memory_initial,
       tso_bed = coord_generator.padded_coord
     } 
