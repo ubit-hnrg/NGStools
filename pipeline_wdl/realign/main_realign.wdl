@@ -383,7 +383,7 @@ workflow main_workflow {
       #contamination = contamination,
       #newqual = newqual,
       java_heap_memory_initial = java_heap_memory_initial,
-      tso_bed = coord_generator.padded_coord
+      #tso_bed = coord_generator.padded_coord
     } 
 }
 
