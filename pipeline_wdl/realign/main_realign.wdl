@@ -235,7 +235,7 @@ workflow main_workflow {
     ###################### inputs para crear intervalo
     File experiment_lib
     File chromosome_length
-    Int padding = "100"
+    Int padding = "0"
     Int merge_tolerance = "0"
 
   call mkdir {
