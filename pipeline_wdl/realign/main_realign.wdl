@@ -1,7 +1,7 @@
 #### realign main version para pedido de las chicas, mapear a una region acotada de la referencia
 
-import './hnrg-fastq2ubam_test.wdl' as fastq2ubam 
-import './ubam2bwa.wdl' as ubam2bwa
+import './hnrg-fastq2ubam_realing.wdl' as fastq2ubam 
+import './ubam2bwa_realign.wdl' as ubam2bwa
 import './bam2gvcf_realig.wdl' as bamtogvcf
 
 
@@ -84,54 +84,54 @@ task symlink_important_files {
     }
 }
 
-task coord_generator {
+# task coord_generator {
 
-  File experiment_lib
-  File chromosome_length
-  Int padding
-  Int merge_tolerance
-  String toolpath
-  String gatk_jar
-  File ref_dict
-  String path_save
+#   File experiment_lib
+#   File chromosome_length
+#   Int padding
+#   Int merge_tolerance
+#   String toolpath
+#   String gatk_jar
+#   File ref_dict
+#   String path_save
 
   
-  #${toolpath}bedtools2/bin/slopBed -i ${experiment_lib} -g ${chromosome_length} -b ${padding} | sort -k1,1 -k2,2n -V > intervalo_b37_padded_${padding}.bed
+#   #${toolpath}bedtools2/bin/slopBed -i ${experiment_lib} -g ${chromosome_length} -b ${padding} | sort -k1,1 -k2,2n -V > intervalo_b37_padded_${padding}.bed
     
-  ##java -jar ${toolpath}${gatk_jar} BedToIntervalList -I=intervalo_b37_padded_${padding}.bed -O=intervalo_b37_padded_${padding}_merged_preprocessing.interval_list -SD=${ref_dict}
+#   ##java -jar ${toolpath}${gatk_jar} BedToIntervalList -I=intervalo_b37_padded_${padding}.bed -O=intervalo_b37_padded_${padding}_merged_preprocessing.interval_list -SD=${ref_dict}
 
-##sort -k1,1 -k2,2n intervalo_b37_padded_${padding}.bed | ${toolpath}bedtools2/bin/mergeBed -d ${ merge_tolerance} > intervalo_b37_padded_${padding}_merged_${ merge_tolerance}.bed
-    #java -jar ${toolpath}${gatk_jar} BedToIntervalList -I=intervalo_b37_padded_${padding}_merged_${merge_tolerance}.bed -O=intervalo_b37_padded_${padding}_merged_${merge_tolerance}_preprocessing.interval_list -SD=${ref_dict}
+# ##sort -k1,1 -k2,2n intervalo_b37_padded_${padding}.bed | ${toolpath}bedtools2/bin/mergeBed -d ${ merge_tolerance} > intervalo_b37_padded_${padding}_merged_${ merge_tolerance}.bed
+#     #java -jar ${toolpath}${gatk_jar} BedToIntervalList -I=intervalo_b37_padded_${padding}_merged_${merge_tolerance}.bed -O=intervalo_b37_padded_${padding}_merged_${merge_tolerance}_preprocessing.interval_list -SD=${ref_dict}
    
-  command <<<
-    #!/bin/bash
-    set -e
-    set -o pipefail
+#   command <<<
+#     #!/bin/bash
+#     set -e
+#     set -o pipefail
     
-    ${toolpath}bedtools2/bin/slopBed -i ${experiment_lib} -g ${chromosome_length} -b ${padding} | sort -k1,1 -k2,2n -V > intervalo_b37_padded_${padding}.bed 
+#     ${toolpath}bedtools2/bin/slopBed -i ${experiment_lib} -g ${chromosome_length} -b ${padding} | sort -k1,1 -k2,2n -V > intervalo_b37_padded_${padding}.bed 
 
-    ###merged
+#     ###merged
      
-    ${toolpath}bedtools2/bin/mergeBed -i intervalo_b37_padded_${padding}.bed -d ${merge_tolerance} > intervalo_b37_padded_${padding}_merged_${merge_tolerance}.bed
+#     ${toolpath}bedtools2/bin/mergeBed -i intervalo_b37_padded_${padding}.bed -d ${merge_tolerance} > intervalo_b37_padded_${padding}_merged_${merge_tolerance}.bed
 
-    java -jar ${toolpath}${gatk_jar} BedToIntervalList -I=intervalo_b37_padded_${padding}_merged_${merge_tolerance}.bed -O=intervalo_b37_padded_${padding}_merged_${merge_tolerance}_preprocessing.interval_list -SD=${ref_dict}  
+#     java -jar ${toolpath}${gatk_jar} BedToIntervalList -I=intervalo_b37_padded_${padding}_merged_${merge_tolerance}.bed -O=intervalo_b37_padded_${padding}_merged_${merge_tolerance}_preprocessing.interval_list -SD=${ref_dict}  
 
-    java -jar ${toolpath}${gatk_jar} BedToIntervalList -I=intervalo_b37_padded_${padding}.bed -O=intervalo_b37_padded_${padding}.interval_list -SD=${ref_dict}
+#     java -jar ${toolpath}${gatk_jar} BedToIntervalList -I=intervalo_b37_padded_${padding}.bed -O=intervalo_b37_padded_${padding}.interval_list -SD=${ref_dict}
      
 
-    cp -L intervalo_b37_padded_${padding}.bed ${path_save}
-    cp -L intervalo_b37_padded_${padding}_merged_${merge_tolerance}_preprocessing.interval_list ${path_save}
-    cp -L intervalo_b37_padded_${padding}.interval_list ${path_save}
-  >>>
+#     cp -L intervalo_b37_padded_${padding}.bed ${path_save}
+#     cp -L intervalo_b37_padded_${padding}_merged_${merge_tolerance}_preprocessing.interval_list ${path_save}
+#     cp -L intervalo_b37_padded_${padding}.interval_list ${path_save}
+#   >>>
 
-  output {
-    File padded_coord = "intervalo_b37_padded_${padding}.bed"
-    #File merged_padded_coord = "intervalo_b37_padded_merged_${merge_tolerance}.bed"
-    File interval_list = "intervalo_b37_padded_${padding}_merged_${merge_tolerance}_preprocessing.interval_list"
-    File eval_interval_list = "intervalo_b37_padded_${padding}.interval_list"
-  }
+#   output {
+#     File padded_coord = "intervalo_b37_padded_${padding}.bed"
+#     #File merged_padded_coord = "intervalo_b37_padded_merged_${merge_tolerance}.bed"
+#     File interval_list = "intervalo_b37_padded_${padding}_merged_${merge_tolerance}_preprocessing.interval_list"
+#     File eval_interval_list = "intervalo_b37_padded_${padding}.interval_list"
+#   }
 
-}
+# }
 
 
 #task restrict_to_TSO {
@@ -205,16 +205,16 @@ workflow main_workflow {
   Int trim_front_fastp = "5" 
   Int trim_tail_fastp = "5"
     
-  Int break_bands_at_multiples_of = "1000000"
-  Int haplotype_scatter_count = "2"
+ # Int break_bands_at_multiples_of = "1000000"
+ # Int haplotype_scatter_count = "2"
 
   ##################################
   Int compression_level = "1"
   String java_heap_memory_initial = "128m"
 
   ########optimization flags
-  String gatk_gkl_pairhmm_implementation = "LOGLESS_CACHING"
-  Int gatk_gkl_pairhmm_threads = "1"
+  #String gatk_gkl_pairhmm_implementation = "LOGLESS_CACHING"
+  #Int gatk_gkl_pairhmm_threads = "1"
     
  # ####optimizacion haplotypecaller
   #String smith_waterman_implementation = "AVX_ENABLED"
@@ -233,10 +233,10 @@ workflow main_workflow {
 
 
     ###################### inputs para crear intervalo
-    File experiment_lib
-    File chromosome_length
-    Int padding = "0"
-    Int merge_tolerance = "0"
+   # File experiment_lib
+   # File chromosome_length
+   # Int padding = "0"
+   # Int merge_tolerance = "0"
 
   call mkdir {
     input: 
@@ -247,17 +247,17 @@ workflow main_workflow {
 
 
 
-  call coord_generator {
-    input:
-    experiment_lib = experiment_lib,
-    chromosome_length = chromosome_length,
-    padding = padding,
-    merge_tolerance = merge_tolerance,
-    toolpath = toolpath,
-    gatk_jar = gatk_jar,
-    ref_dict = ref_dict,
-    path_save = path_softlink
-  }
+  #call coord_generator {
+  #  input:
+  #  experiment_lib = experiment_lib,
+  #  chromosome_length = chromosome_length,
+  #  padding = padding,
+  #  merge_tolerance = merge_tolerance,
+  #  toolpath = toolpath,
+  #  gatk_jar = gatk_jar,
+  #  ref_dict = ref_dict,
+  #  path_save = path_softlink
+  #}
 
 
 # call restrict_to_TSO {
@@ -344,7 +344,7 @@ workflow main_workflow {
      input:
       #base_file_name =  ubamtobwa.nombre_base,
       base_file_name =  sample_name,
-      lib_resctricted = coord_generator.padded_coord,#restrict_to_TSO.interval_restricted,
+      #lib_resctricted = coord_generator.padded_coord,#restrict_to_TSO.interval_restricted,
                                           #### ARTEFACTO PARA PROBAR EL WORKFLOW ANTERIOR, ESTO HAY QUE TRABAJRLO Y ARTICULARLO BIEN. 
       #inputs_ubams = ConvertPairedFastQsToUnmappedBamWf.muestras,
       #uniquesample_name = ConvertPairedFastQsToUnmappedBamWf.samplesnames,

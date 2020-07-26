@@ -429,7 +429,7 @@ workflow bam2gvcf {
   
   String base_file_name
   #Array[File] flowcell_unmapped_bams = read_lines(flowcell_unmapped_bams_list)
-  File lib_resctricted
+#  File lib_resctricted
  #./TruSight_One_v1_padded_100_GRCh37.bed 
 
  
@@ -455,7 +455,7 @@ Array[File] bams_entrada
       compression_level = compression_level,
       java_heap_memory_initial = java_heap_memory_initial,
       gatk_jar = gatk_jar,
-        toolpath = toolpath
+      toolpath = toolpath
   }
 
 
@@ -471,15 +471,15 @@ Array[File] bams_entrada
     }
     #}
 
-     call reduce_bam {
-       input:
-       input_bam = MarkDuplicates.output_bam, 
-       #input_bam = bam_markdup,
-       toolpath = toolpath,
-       output_bam_basename = base_file_name, 
-       lib_resctricted = lib_resctricted
-       #./TruSight_One_v1_padded_100_GRCh37.bed 
-      }
+   #  call reduce_bam {
+   #    input:
+   #    input_bam = MarkDuplicates.output_bam, 
+   #    #input_bam = bam_markdup,
+   #    toolpath = toolpath,
+   #    output_bam_basename = base_file_name, 
+   #    lib_resctricted = lib_resctricted
+   #    #./TruSight_One_v1_padded_100_GRCh37.bed 
+   #   }
   
 
 
@@ -488,8 +488,8 @@ Array[File] bams_entrada
 ############### hay una version de wdl en la web que usa SamtoolsSort as SortSampleBam
   call SortAndFixTags {
     input:
-      #input_bam = MarkDuplicates.output_bam,
-      input_bam = reduce_bam.output_reduced_bam,
+      input_bam = MarkDuplicates.output_bam,
+      #input_bam = reduce_bam.output_reduced_bam,
       output_bam_basename = base_file_name + ".aligned.duplicate_marked.sorted",
       ref_dict = ref_dict,
       ref_fasta = ref_fasta,
