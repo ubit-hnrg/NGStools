@@ -1,11 +1,12 @@
 #!/usr/bin/python
+from __future__ import division
+
+from statsmodels.stats.weightstats import DescrStatsW
 import sys
 import pandas as pd
 import numpy as np
-from statsmodels.stats.weightstats import DescrStatsW
 import os
 import argparse
-from __future__ import division
 
 
 parser = argparse.ArgumentParser()
