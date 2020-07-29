@@ -5,6 +5,7 @@ import numpy as np
 from statsmodels.stats.weightstats import DescrStatsW
 import os
 import argparse
+from __future__ import division
 
 
 parser = argparse.ArgumentParser()
