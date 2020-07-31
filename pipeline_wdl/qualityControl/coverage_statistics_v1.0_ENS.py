@@ -40,7 +40,10 @@ def depth_fraction(coverage,thr=0,ZeroDepth=False):
         condition = coverage['count']== thr
 
 #    return coverage[condition].count_length.sum()/float(coverage.count_length.sum())
-    return coverage[condition].count_length.sum()/float(coverage.count_length.sum())
+    a = coverage[condition].count_length.sum()
+    b = float(coverage.count_length.sum())
+    #return coverage[condition].count_length.sum()/float(coverage.count_length.sum()) 
+    return a/b if b != 0 else 0
 
 
 # ensure intervals fall inside library kit
