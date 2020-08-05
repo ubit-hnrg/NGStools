@@ -39,12 +39,18 @@ def depth_fraction(coverage,thr=0,ZeroDepth=False):
     else:
         condition = coverage['count']== thr
 
+    
 #    return coverage[condition].count_length.sum()/float(coverage.count_length.sum())
-    a = coverage[condition].count_length.sum()
+    #a = coverage[condition].count_length.sum()
     b = float(coverage.count_length.sum())
+
+    if b!= 0:
+        return coverage[condition].count_length.sum()/b
+    else:
+        return 0
     #c = np.divide(a,b)
 
-    return np.divide(a,b, out=np.zeros_like(a), where=b!=0)#coverage[condition].count_length.sum(),float(coverage.count_length.sum())) # if float(coverage.count_length.sum()) !=0 else 0
+    #return #np.divide(a,b, out=np.zeros_like(a), where=b!=0)#coverage[condition].count_length.sum(),float(coverage.count_length.sum())) # if float(coverage.count_length.sum()) !=0 else 0
     #return  a/b if b != 0 else 0
 
 
