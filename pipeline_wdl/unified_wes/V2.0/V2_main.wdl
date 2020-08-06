@@ -40,7 +40,7 @@ task borrado_fastp {
 }
 
 task borrado {
-String areivo_borrar
+String archivo_borrar
 
 command <<<
 readlink -f ${archivo_borrar} | xargs rm
