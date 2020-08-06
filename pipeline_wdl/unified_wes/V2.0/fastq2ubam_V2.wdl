@@ -42,7 +42,7 @@ workflow ConvertPairedFastQsToUnmappedBamWf {
   }
 
   call check_mkdir {
-      input:
+    input:
     path_softlink =path_softlink,
     unique_samples_id = read_file_of_tabulated_inputs.unique_samples
     }
@@ -211,10 +211,10 @@ task check_mkdir {
     import os
 
     with open("${unique_samples_id}") as fp:  
-    content = fp.readlines()
-    content = [x.strip() for x in content]
-    path="${path_softlink}" 
-    for y in range(len(content)):
+      content = fp.readlines()
+      content = [x.strip() for x in content]
+      path="${path_softlink}" 
+      for y in range(len(content)):
         if os.path.isdir("%s%s"%(path,content[y]) ):
             print("Ya existe el directorio... cambie el nombre o elimínelo")
             exit()
