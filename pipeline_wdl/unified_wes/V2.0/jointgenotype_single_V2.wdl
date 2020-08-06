@@ -502,9 +502,9 @@ task restrict_vcf{
 task annovar{
     File one_sample_vcf
     File annovar_table_pl
-    File convert2annovar
-    File annotate_variation
-    File variants_reduction
+    File convert2annovar = '/home/hnrg/HNRG-pipeline-V0.1/tools/annovar/convert2annovar.pl'
+    File annotate_variation = '/home/hnrg/HNRG-pipeline-V0.1/tools/annovar/annotate_variation.'
+    File variants_reduction = '/home/hnrg/HNRG-pipeline-V0.1/tools/annovar/variants_reduction.pl'
 
 
     String db_annovar
