@@ -384,7 +384,7 @@ workflow main_workflow {
       compression_level = compression_level,
       gatk_gkl_pairhmm_implementation = gatk_gkl_pairhmm_implementation,
       gatk_gkl_pairhmm_threads = gatk_gkl_pairhmm_threads,
-      wgs_calling_interval_list = coord_generator.interval_list,
+      wgs_calling_interval_list = coord_generator.interval_list, 
       wgs_evaluation_interval_list = coord_generator.interval_list,
       gatk_jar = gatk_jar,
       toolpath = toolpath,
@@ -416,7 +416,13 @@ workflow main_workflow {
 
         ####input del anterior jointgenotyping
         input_gvcf = bam2gvcf.output_gvcf,
-        input_gvcf_index = bam2gvcf.output_gvcf_index
+        input_gvcf_index = bam2gvcf.output_gvcf_index,
+
+        ####annovar
+        db_annovar = db_annovar,#path annovar
+        annovar_table_pl = annovar_table_pl, #/home/hnrg/HNRG-pipeline-V0.1/tools/annovar/table_annovar.pl
+        joinPY = joinPY
+        
     }
  ####falta annovar 
 
@@ -443,7 +449,7 @@ workflow main_workflow {
 
  Array[File] archivos_a_borrar3 = bam2gvcf.borrar_SortandFix #,"${}"]
 
- scatter (archivos in archivos_a_borrar3){
+  scatter (archivos in archivos_a_borrar3){
     call borrado as borrado_Sort_and_Fix {
     input:
       archivo_borrar = archivos
