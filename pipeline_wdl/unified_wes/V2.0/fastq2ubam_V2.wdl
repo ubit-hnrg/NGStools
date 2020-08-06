@@ -339,39 +339,39 @@ task Create_inputs_for_preprocesing {
 
 
   command <<<  
-    python <<CODE 
+  python <<CODE 
 
-    with open("${bams_sample_names}", "r") as sf:
+  with open("${bams_sample_names}", "r") as sf:
       samples = sf.readlines()
       samples =[i.strip('\n') for i in samples]
-        if samples[-1]=='':
+      if samples[-1]=='':
           samples = samples[:-1]
         
 
-      with open("${ubams_paths}", "r") as ubf:
-        ubams = ubf.readlines()
+  with open("${ubams_paths}", "r") as ubf:
+      ubams = ubf.readlines()
       ubams =[i.strip('\n') for i in ubams]
-        if ubams[-1]=='':
+      if ubams[-1]=='':
           ubams = ubams[:-1]
       
-    open_files = []
-    for i in range(len(samples)):
+  open_files = []
+  for i in range(len(samples)):
       sample = samples[i]
       ubam = ubams[i]
     
       filename ='%s.txt'%sample
-        if sample not in open_files:
+      if sample not in open_files:
           with open(filename,'w') as f:
             f.write("%s\n"%ubam)
             open_files.append(sample)
           f.close()
-        else:
+      else:
           with open(filename,'a') as f:
             f.write("%s\n"%ubam)
           f.close()
 
-    CODE
-    >>>
+  CODE
+  >>>
 
   output {
     Array[File] ubam_samples = glob("*.txt")
