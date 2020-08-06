@@ -20,6 +20,8 @@ String nombre_step
 command {
 
 set -o pipefail
+
+
 java -Xmx${java_heap_memory_initial} -jar ${toolpath}/bptools.jar ${parametros} ${input_vcf} ${samplename1}.${nombre_step}.vcf
 }
 
@@ -188,7 +190,31 @@ task symlink_important_files {
     }
 }
 
-workflow FuncionalAnnotation {
+
+task hnrg_freq {
+
+    File input_vcf
+    File config_file_vcfanno
+    String samplename1
+    String toolpath
+    String nombre_step
+
+
+    
+
+    command {
+        ${toolpath}/vcfanno_linux64 -p 4 ${config_file_vcfanno} ${input_vcf} > ${samplename1}.${nombre_step}.vcf
+
+    }
+output {
+    File out_vcfanno = "${samplename1}.${nombre_step}.vcf"
+}
+
+}
+
+
+
+workflow FuncionalAnnotationSingle {
 
 File input_vcf 
 ##String path_herramientas#### cambiaar por toolpath
@@ -197,6 +223,14 @@ String samplename1
 String java_heap_memory_initial
 String reference_version
 String path_save
+String version_db = "V2"
+
+
+
+
+
+
+
 
 
 call bptools as step_0_bptools_mma {
@@ -234,14 +268,14 @@ call bptools as step_2_bptools_variant_annotation {
 }
 
 #Step 3: Annotate with dbSNP151"
-call Snpsift as step3_dbSNP151 {
+call Snpsift as step3_dbSNP {
 input:
     samplename1 = samplename1,
     parametros = "annotate",
     input_vcf = step_2_bptools_variant_annotation.bptools_out,
     toolpath = toolpath,
     java_heap_memory_initial = java_heap_memory_initial,
-    nombre_step = "step3_dbSNP151"
+    nombre_step = "step3_dbSNP"
     
 }
 
@@ -250,7 +284,7 @@ call Snpsift as step4_1000Genomes {
 input:
     samplename1 = samplename1,
     parametros = "annotate",
-    input_vcf = step3_dbSNP151.salida_Snpsift,
+    input_vcf = step3_dbSNP.salida_Snpsift,
     toolpath = toolpath,
     java_heap_memory_initial = java_heap_memory_initial,
     nombre_step = "step4_1000Genomes"
@@ -394,26 +428,40 @@ input:
 
 }
 
+
+ call hnrg_freq {
+
+ input:
+    input_vcf = step13_pharmGKB.salida_Snpsift, 
+    samplename1 = samplename1,
+    toolpath = toolpath,
+    nombre_step = "step14_HNRG_FREQ"
+
+    
+ }
+
+
 #Step 14: Annotate with ExAC
 call Snpsift as final_annot{
 input:
     samplename1 = samplename1,
     parametros = "annotate -v -info AN_Adj,AC_Adj,AC_Het,AC_Hom,AC_Hemi,POPMAX,VQSLOD,GQ_MEAN,GQ_STDDEV,HWP",
-    input_vcf = step13_pharmGKB.salida_Snpsift,
+    input_vcf = hnrg_freq.out_vcfanno,
     toolpath = toolpath,
     java_heap_memory_initial = java_heap_memory_initial,
-    nombre_step = "final_annot"
+    nombre_step = "final_annot_"+version_db
 
 }
 
-
-call symlink_important_files {
-        input:
+ call symlink_important_files {
+         input:
         output_to_save = final_annot.salida_Snpsift,
         path_save = path_save
     }
 
 
-
+#output {
+#File out_single_vcf_annot = final_annot.salida_Snpsift
+#}
 }
 

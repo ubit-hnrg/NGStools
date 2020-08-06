@@ -12,7 +12,6 @@ workflow ubamtobwa {
     String toolpath
     ####### Reference name, .b37 , .hg19, etc. 
     String ref_name
-    #String base_file_name
     ########################command line para el bwa 
     String bwa_commandline
     ########## referencia
@@ -38,28 +37,27 @@ workflow ubamtobwa {
     # Map reads to reference
     call Serial_SamToFastq_BwaMem_MergeBamAlignment {
       input:
-        array_input_ubams = array_unmapped_bams,
-        bwa_commandline = bwa_commandline,
-        compression_level = compression_level,
-        bwa_version = GetBwaVersion.version,
-        java_heap_memory_initial = java_heap_memory_initial,
-        #output_bam_basename = bam_basename + ".unmerged",
-        ref_fasta = ref_fasta,
-        ref_fasta_index = ref_fasta_index,
-        ref_dict = ref_dict,
-        ref_amb = ref_amb,
-        ref_ann = ref_ann,
-        ref_bwt = ref_bwt,
-        ref_pac = ref_pac,
-        ref_sa = ref_sa,
-        gatk_jar = gatk_jar,
-        toolpath = toolpath
+      array_input_ubams = array_unmapped_bams,
+      bwa_commandline = bwa_commandline,
+      compression_level = compression_level,
+      bwa_version = GetBwaVersion.version,
+      java_heap_memory_initial = java_heap_memory_initial,
+      ref_fasta = ref_fasta,
+      ref_fasta_index = ref_fasta_index,
+      ref_dict = ref_dict,
+      ref_amb = ref_amb,
+      ref_ann = ref_ann,
+      ref_bwt = ref_bwt,
+      ref_pac = ref_pac,
+      ref_sa = ref_sa,
+      gatk_jar = gatk_jar,
+      toolpath = toolpath
     }
 
-output {
+  output {
     Array[File] output_mergedbam_files = Serial_SamToFastq_BwaMem_MergeBamAlignment.output_mergedbam_files
 
-}
+  }
 
 }
 
@@ -89,8 +87,8 @@ String toolpath
 
 #All in one task
 task Serial_SamToFastq_BwaMem_MergeBamAlignment {
-  Array[File] array_input_ubams
   
+  Array[File] array_input_ubams  
   String gatk_jar
   String toolpath
   String bwa_commandline

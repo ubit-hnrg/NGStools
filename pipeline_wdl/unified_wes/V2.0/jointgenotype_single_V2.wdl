@@ -1,4 +1,8 @@
 
+## Requirements/expectations :
+## - One or more human whole-genome per-sample GVCF files
+##
+
 
 workflow singleGenotypeGVCFs {
   #File unpadded_intervals_file ##lista intervalos
@@ -14,9 +18,9 @@ workflow singleGenotypeGVCFs {
   String gatk_jar
   String toolpath
 
-  String sample_names
-  File input_gvcf
-  File input_gvcf_index 
+  String sample_name
+  File input_gvcf 
+  File input_gvcf_index
 
   File dbSNP_vcf
   File dbSNP_vcf_index
@@ -29,105 +33,93 @@ workflow singleGenotypeGVCFs {
   # than a z-score of -4.5 which is a p-value of 3.4e-06, which phred-scaled is 54.69
   Float excess_het_threshold = 54.69
 
-
- # Int num_of_original_intervals = length(read_lines(unpadded_intervals_file))
-  Int num_gvcfs #= '59'#length(input_gvcfs)
-
-  # Make a 2.5:1 interval number to samples in callset ratio interval list
-#  Int possible_merge_count = floor(num_of_original_intervals / num_gvcfs / 2.5)
-# Int merge_count = if possible_merge_count > 1 then possible_merge_count else 1
-
-  
- # call DynamicallyCombineIntervals {
+  # call DynamicallyCombineIntervals {
   #  input:
-#      intervals = unpadded_intervals_file,
- #     merge_count = merge_count
-# }
+  #      intervals = unpadded_intervals_file,
+  #     merge_count = merge_count
+  # }
 
 
-#  Array[String] unpadded_intervals = read_lines(DynamicallyCombineIntervals.output_intervals)
+  #  Array[String] unpadded_intervals = read_lines(DynamicallyCombineIntervals.output_intervals)
 
- # scatter (idx in range(length(unpadded_intervals))) {
+  # scatter (idx in range(length(unpadded_intervals))) {
 
 
-    call GenotypeGVCFs {
-      input:
-        #workspace_tar = ImportGVCFs.output_genomicsdb,
-        gvcf = input_gvcf,
-        gvcf_index = input_gvcf_index,
-    #    input_gvcfs_indices = input_gvcfs_indices,
-        #interval = unpadded_intervals[idx],
-        output_vcf_filename = "output.vcf.gz",
-        ref_fasta = ref_fasta,
-        ref_fasta_index = ref_fasta_index,
-        ref_dict = ref_dict,
-        dbSNP_vcf = dbSNP_vcf,
-        dbSNP_vcf_index = dbSNP_vcf_index,
-        gatk_jar = gatk_jar,
-        toolpath = toolpath
+  call GenotypeGVCFs {
+    input:
+      #workspace_tar = ImportGVCFs.output_genomicsdb,
+    gvcf = input_gvcf,
+    gvcf_index = input_gvcf_index,
+    #interval = unpadded_intervals[idx],
+    output_vcf_filename = "output.vcf.gz",
+    ref_fasta = ref_fasta,
+    ref_fasta_index = ref_fasta_index,
+    ref_dict = ref_dict,
+    dbSNP_vcf = dbSNP_vcf,
+    dbSNP_vcf_index = dbSNP_vcf_index,
+    gatk_jar = gatk_jar,
+    toolpath = toolpath
     
     }
 
 
-    call HardFilterAndMakeSitesOnlyVcf {
-      input:
-        vcf = GenotypeGVCFs.output_vcf,
-        vcf_index = GenotypeGVCFs.output_vcf_index,
-        excess_het_threshold = excess_het_threshold,
-        variant_filtered_vcf_filename = callset_name + ".single.variant_filtered.vcf.gz",
-        sites_only_vcf_filename = callset_name + ".single.sites_only.variant_filtered.vcf.gz",
-        gatk_jar = gatk_jar,
-        toolpath = toolpath
+  call HardFilterAndMakeSitesOnlyVcf {
+    input:
+    vcf = GenotypeGVCFs.output_vcf,
+    vcf_index = GenotypeGVCFs.output_vcf_index,
+    excess_het_threshold = excess_het_threshold,
+    variant_filtered_vcf_filename = callset_name + ".single.variant_filtered.vcf.gz",
+    sites_only_vcf_filename = callset_name + ".single.sites_only.variant_filtered.vcf.gz",
+    gatk_jar = gatk_jar,
+    toolpath = toolpath
    
-    }
+  }
 
-    call GatherVcfs as FinalGatherVcf {
-      input:
-        input_vcfs_fofn  = HardFilterAndMakeSitesOnlyVcf.variant_filtered_vcf,
+  call GatherVcfs as FinalGatherVcf {
+    input:
+    input_vcfs_fofn  = HardFilterAndMakeSitesOnlyVcf.variant_filtered_vcf,
+    input_vcf_indexes_fofn = HardFilterAndMakeSitesOnlyVcf.variant_filtered_vcf_index,
+    output_vcf_name = callset_name + ".vcf.gz",
+    gatk_jar = gatk_jar,
+    toolpath = toolpath
 
-        input_vcf_indexes_fofn = HardFilterAndMakeSitesOnlyVcf.variant_filtered_vcf_index,
- 
-        output_vcf_name = callset_name + ".vcf.gz",
-        gatk_jar = gatk_jar,
-        toolpath = toolpath
+  }
 
-    }
+  call CollectVariantCallingMetrics as CollectMetricsOnFullVcf {
+    input:
+    input_vcf = FinalGatherVcf.output_vcf,
+    input_vcf_index = FinalGatherVcf.output_vcf_index,
+    metrics_filename_prefix = callset_name,
+    dbSNP_vcf = dbSNP_vcf,
+    dbSNP_vcf_index = dbSNP_vcf_index,
+    interval_list = eval_interval_list,
+    ref_dict = ref_dict,
+    gatk_jar = gatk_jar,
+    toolpath = toolpath
 
-    call CollectVariantCallingMetrics as CollectMetricsOnFullVcf {
-      input:
-        input_vcf = FinalGatherVcf.output_vcf,
-        input_vcf_index = FinalGatherVcf.output_vcf_index,
-        metrics_filename_prefix = callset_name,
-        dbSNP_vcf = dbSNP_vcf,
-        dbSNP_vcf_index = dbSNP_vcf_index,
-        interval_list = eval_interval_list,
-        ref_dict = ref_dict,
-        gatk_jar = gatk_jar,
-        toolpath = toolpath
-
-    }
+  }
   
 
-    call restrict_vcf{
-        input:
-        singlesampleVCF  = FinalGatherVcf.output_vcf,
-        region_padded_bed = region_padded_bed,
-        toolpath = toolpath
-    }
+  call restrict_vcf{
+    input:
+    VCF  = FinalGatherVcf.output_vcf,
+    region_padded_bed = region_padded_bed,
+    toolpath = toolpath
+  }
 
-#Array[File] salidas = ["${FinalGatherVcf.output_vcf}","${FinalGatherVcf.output_vcf_index}","${CollectMetricsOnFullVcf.detail_metrics_file}","${CollectMetricsOnFullVcf.summary_metrics_file}"]
-#Array[Pair[String,File]] samples_x_files = cross (array_path_save, salidas)
-#scatter (pairs in samples_x_files) {
-    call symlink_important_files {
-       input:
-         final_gath = FinalGatherVcf.output_vcf,
-         final_gath_idx = FinalGatherVcf.output_vcf_index,
-         restricted_vcf = restrict_vcf.VCF_restricted,
+  #Array[File] salidas = ["${FinalGatherVcf.output_vcf}","${FinalGatherVcf.output_vcf_index}","${CollectMetricsOnFullVcf.detail_metrics_file}","${CollectMetricsOnFullVcf.summary_metrics_file}"]
+  #Array[Pair[String,File]] samples_x_files = cross (array_path_save, salidas)
+  #scatter (pairs in samples_x_files) {
+  call symlink_important_files {
+    input:
+    final_gath = FinalGatherVcf.output_vcf,
+    final_gath_idx = FinalGatherVcf.output_vcf_index,
+    restricted_vcf = restrict_vcf.VCF_restricted,
 
-         metrica1 = CollectMetricsOnFullVcf.detail_metrics_file,
-         metrica2 = CollectMetricsOnFullVcf.summary_metrics_file,
-        path_save = array_path_save
-   }
+    metrica1 = CollectMetricsOnFullVcf.detail_metrics_file,
+    metrica2 = CollectMetricsOnFullVcf.summary_metrics_file,
+    path_save = array_path_save
+  }
 
 
   output {
@@ -179,9 +171,9 @@ task GetNumberOfSamples {
 }
 
 task ImportGVCFs {
-  Array[String] sample_names
-  Array[File] input_gvcf
-  Array[File] input_gvcf_index
+  String sample_name
+  File input_gvcf
+  File input_gvcf_index
 
 
   String interval
@@ -198,15 +190,15 @@ task ImportGVCFs {
     set -o pipefail
     
     python << CODE
-    gvcfs = ['${sep="','" input_gvcf}']
-    sample_names = ['${sep="','" sample_names}']
+    gvcf = ['${sep="','" input_gvcf}']
+    sample_name = ['${sep="','" sample_name}']
 
-    if len(gvcfs)!= len(sample_names):
+    if len(gvcf)!= len(sample_name):
       exit(1)
 
     with open("inputs.list", "w") as fi:
-      for i in range(len(gvcfs)):
-       fi.write(sample_names[i] + "\t" + gvcfs[i] + "\n") 
+      for i in range(len(gvcf)):
+       fi.write(sample_name[i] + "\t" + gvcf[i] + "\n") 
     
     CODE
     
@@ -465,14 +457,14 @@ task DynamicallyCombineIntervals {
 }
 
 task restrict_vcf{
-    File singlesampleVCF
+    File VCF
     File region_padded_bed
     String toolpath
-    String base = basename(singlesampleVCF,'.vcf.gz')
+    String base = basename(VCF,'.vcf.gz')
     
     command{
 
-        zless ${singlesampleVCF} | java -jar ${toolpath}/SnpSift.jar intervals ${region_padded_bed} > ${base}_restricted.vcf
+        zless ${VCF} | java -jar ${toolpath}/SnpSift.jar intervals ${region_padded_bed} > ${base}_restricted.vcf
     }
 
     output {
