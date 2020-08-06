@@ -554,9 +554,9 @@ task get_tsv_from_annovar {
     sed -i "s/Otherinfo/$vcf_header/g" ${sample}.hg19_multianno.tsv;
 
     #join one multianno tsv file AND joint genotyped vcf. This script (join_vcf.py) also postprocess Intervar columns.
-    python ${joinPY} --multianno_tsv=${sample}.hg19_multianno.tsv --vcf_multisample=${restrictedVCF} --output=${sample}.multianno_restric.tsv
+    python ${joinPY} --multianno_tsv=${sample}.hg19_multianno.tsv --vcf_multisample=${restrictedVCF} --output=${sample}.multianno_restrict.tsv
     #change dots by tabs.
-    sed -i -e "s|\.	|	|g" ${sample}.multianno_restric.tsv
+    sed -i -e "s|\.	|	|g" ${sample}.multianno_restrict.tsv
 
     >>>
     output{
