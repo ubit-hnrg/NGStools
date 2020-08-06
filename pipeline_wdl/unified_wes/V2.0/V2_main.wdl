@@ -40,7 +40,7 @@ task borrado_fastp {
 }
 
 task borrado {
-String archivo_borrar
+String areivo_borrar
 
 command <<<
 readlink -f ${archivo_borrar} | xargs rm
@@ -205,7 +205,7 @@ workflow main_workflow {
   ########## referencia
   File ref_fasta = "/home/hnrg/HNRG-pipeline-V0.1/references/hs37d5/hs37d5.fa.ann"
   File ref_fasta_index = "/home/hnrg/HNRG-pipeline-V0.1/references/hs37d5/hs37d5.fa.fai"
-  File ref_dict = "/home/hnrg/HNRG-pipeline-V0.1/references/hs37d5/hs37d5.fa.dict"
+  File ref_dict = "/home/hnrg/HNRG-pipeline-V0.1/references/hs37d5/hs37d5.dict"
   File ref_amb = "/home/hnrg/HNRG-pipeline-V0.1/references/hs37d5/hs37d5.fa.amb"
   File ref_ann = "/home/hnrg/HNRG-pipeline-V0.1/references/hs37d5/hs37d5.fa.ann"
   File ref_bwt = "/home/hnrg/HNRG-pipeline-V0.1/references/hs37d5/hs37d5.fa.bwt"
@@ -309,13 +309,6 @@ workflow main_workflow {
         path_softlink = path_softlink,
         platform_model = platformmodel
     }
-
-    ##borrado de archivos de fastp para liberar espacio
-    call borrado_fastp {
-        input:
-        path1 = ConvertPairedFastQsToUnmappedBamWf.p_borrar1,
-        path2 = ConvertPairedFastQsToUnmappedBamWf.p_borrar2
-    }
  
     ##alineamiento y mapeo a la referencia.
     call ubam2bwa.ubamtobwa {
@@ -339,6 +332,12 @@ workflow main_workflow {
 
   Array[File] array_of_samples_txt = ConvertPairedFastQsToUnmappedBamWf.muestras
 
+  ##borrado de archivos de fastp para liberar espacio
+    call borrado_fastp {
+        input:
+        path1 = ConvertPairedFastQsToUnmappedBamWf.p_borrar1,
+        path2 = ConvertPairedFastQsToUnmappedBamWf.p_borrar2
+    }
  #inputs_bams is an array of files. Each element is a file containing all the aligned and merged bams of a sample.
  scatter (sample_txt in array_of_samples_txt)  {
 
