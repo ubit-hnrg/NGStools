@@ -22,7 +22,7 @@ command {
 set -o pipefail
 
 
-java -Xmx${java_heap_memory_initial} -jar ${toolpath}/bptools.jar ${parametros} ${input_vcf} ${samplename1}.${nombre_step}.vcf
+java -Xmx${java_heap_memory_initial} -jar ${toolpath}bptools.jar ${parametros} ${input_vcf} ${samplename1}.${nombre_step}.vcf
 }
 
 
@@ -44,8 +44,8 @@ String reference_version
 command {
 
 set -o pipefail
-java -Xmx${java_heap_memory_initial} -jar ${toolpath}/snpEff.jar ${reference_version} -hgvs \
--t -lof -noStats -canon -onlyProtein -c ${toolpath}/snpEff.config \
+java -Xmx${java_heap_memory_initial} -jar ${toolpath}snpEff.jar ${reference_version} -hgvs \
+-t -lof -noStats -canon -onlyProtein -c ${toolpath}snpEff.config \
 ${input_vcf} > ${samplename1}.step1_SnpEff.vcf 
 }
 
@@ -71,7 +71,7 @@ String parametros
 
 command {
 set -o pipefail
-java -Xmx${java_heap_memory_initial} -jar ${toolpath}/SnpSift.jar ${parametros} ${database} \
+java -Xmx${java_heap_memory_initial} -jar ${toolpath}SnpSift.jar ${parametros} ${database} \
 ${input_vcf} > ${samplename1}.${nombre_step}.vcf
 
 }
@@ -95,8 +95,8 @@ String annovar_dbpath
 
 command <<<
 
-#perl ${toolpath}/annovar/table_annovar.pl ${vcf_in} ${annovar_dbpath} -vcfinput  -buildver hg19 -remove -out ${out_prefix} -protocol dbnsfp35a,gnomad_exome,gnomad_genome,intervar_20180118 -operation f,f,f,f -nastring . 
-perl ${toolpath}/annovar/table_annovar.pl ${vcf_in} ${annovar_dbpath} -vcfinput  -buildver hg19 -remove -out ${out_prefix} -protocol dbnsfp35a,gnomad_exome,gnomad_genome,intervar_20180118 -operation f,f,f,f 
+#perl ${toolpath}annovar/table_annovar.pl ${vcf_in} ${annovar_dbpath} -vcfinput  -buildver hg19 -remove -out ${out_prefix} -protocol dbnsfp35a,gnomad_exome,gnomad_genome,intervar_20180118 -operation f,f,f,f -nastring . 
+perl ${toolpath}annovar/table_annovar.pl ${vcf_in} ${annovar_dbpath} -vcfinput  -buildver hg19 -remove -out ${out_prefix} -protocol dbnsfp35a,gnomad_exome,gnomad_genome,intervar_20180118 -operation f,f,f,f 
 
 >>>
 
@@ -126,7 +126,7 @@ task intervar_postprocessing {
     tabix $vcfDB.gz
 
     sed -e "s|__vcfDB__|$vcfDB.gz|g" ${srcpath}/intervar_vcfanno_template_fromVCF.tom > config_vcfanno.tom
-    ${toolpath}/vcfanno_linux64 -p 4 config_vcfanno.tom ${vcfinput} > ${samplename1}_intervar.vcf
+    ${toolpath}vcfanno_linux64 -p 4 config_vcfanno.tom ${vcfinput} > ${samplename1}_intervar.vcf
 
     >>>
     output {
@@ -148,7 +148,7 @@ File database
 
 command {
 set -o pipefail
-java -Xmx${java_heap_memory_initial} -jar ${toolpath}/SnpSift.jar ${parametros} ${database} \
+java -Xmx${java_heap_memory_initial} -jar ${toolpath}SnpSift.jar ${parametros} ${database} \
 ${input_vcf} > ${samplename1}.${nombre_step}.vcf
 
 }
@@ -170,7 +170,7 @@ String parametros
 
 command {
 set -o pipefail
-java -Xmx${java_heap_memory_initial} -jar ${toolpath}/SnpSift.jar ${parametros} \
+java -Xmx${java_heap_memory_initial} -jar ${toolpath}SnpSift.jar ${parametros} \
 ${input_vcf} > ${samplename1}.${nombre_step}.vcf
 
 }
@@ -203,7 +203,7 @@ task hnrg_freq {
     
 
     command {
-        ${toolpath}/vcfanno_linux64 -p 4 ${config_file_vcfanno} ${input_vcf} > ${samplename1}.${nombre_step}.vcf
+        ${toolpath}vcfanno_linux64 -p 4 ${config_file_vcfanno} ${input_vcf} > ${samplename1}.${nombre_step}.vcf
 
     }
 output {
