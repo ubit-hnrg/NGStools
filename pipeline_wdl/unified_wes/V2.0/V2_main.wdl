@@ -511,22 +511,41 @@ call qual_control.quality_control_V2 {
 
 
 
- Array[Array[File]] salidas = [quality_control_V2.bams_stat_depth_global_coverage_stats_out,quality_control_V2.fastp_rep_out]#quality_control_V2.bams_sex_prediction_out
- 
+ Array[File] test1 = quality_control_V2.bams_stat_depth_global_coverage_stats_out
+ Array[File] test2 = quality_control_V2.fastp_rep_out
+ #Array[File] test3= quality_control_V2.bams_sex_prediction_out
+
+
  
  ##descomentar abajo y borrar la de arriba
  Array[File] prof_by_exon = quality_control_V2.by_exon_depth##","${coord_generator.padded_coord}"] #"${name}_coverage_statistics_by_exon.tsv"
  Array[String] array_path_save_byexon = mkdir_samplename.path_out_softlink
  
 
- Array[Pair[String,File]] test_save = zip (array_path_save_byexon, flatten(salidas))
-  scatter (pairs in test_save) {
+ Array[Pair[String,File]] test_save1 = zip (array_path_save_byexon, test1)
+  scatter (pairs in test_save1) {
     call symlink_important_files as test{
         input:
         output_to_save = pairs.right,
         path_save = pairs.left
     }
   }
+ Array[Pair[String,File]] test_save2 = zip (array_path_save_byexon, test2)
+  scatter (pairs in test_save2) {
+    call symlink_important_files as test_2{
+        input:
+        output_to_save = pairs.right,
+        path_save = pairs.left
+    }
+  }
+#  Array[Pair[String,File]] test_save3 = zip (array_path_save_byexon, test3)
+#   scatter (pairs in test_save3) {
+#     call symlink_important_files as test_3{
+#         input:
+#         output_to_save = pairs.right,
+#         path_save = pairs.left
+#     }
+#   }
 
 
  #Array[Pair[String,File]] samples_by_exon = zip (array_path_save_byexon, prof_by_exon)
