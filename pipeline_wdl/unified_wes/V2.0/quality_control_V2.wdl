@@ -38,7 +38,7 @@ task bam_depth {
   ${toolpath}bedtools2/bin/intersectBed -a ${input_bam} -b ${Exon_coords} > ${name}_exonTSO_reduced.bam
 
   ###ya que estamos, prediccion de sexo:
-  /home/hnrg/NGStools/python_scripts/bam_sex_xy.py -b ${name}_exonTSO_reduced.bam > ${name}_sex.txt
+  #/home/hnrg/NGStools/python_scripts/bam_sex_xy.py -b ${name}_exonTSO_reduced.bam > ${name}_sex.txt
 
   #Bam coverage. No está estrictamente limitado al intervalo porque contiene grandes zonas con cobertura CERO 
   #que están presentes por una mínima interseccion con el intervalo buscado)
@@ -75,7 +75,7 @@ task bam_depth {
   output {
     File cov_stats_by_exon = "${name}_coverage_statistics_by_exon_${pipeline_version}.tsv"
     File glob_cov_stats = "${name}_global_coverage_statistics_${pipeline_version}.tsv"
-    File sex_prediction = "${name}_sex.txt"
+   # File sex_prediction = "${name}_sex.txt"
     String sample_Name = "${name}"
   }
 
@@ -356,7 +356,7 @@ Array[File] by_exon_depth = bam_depth.cov_stats_by_exon
 
 ###test 
   Array[File] bams_stat_depth_global_coverage_stats_out = bam_depth.glob_cov_stats
-  Array[File] bams_sex_prediction_out = bam_depth.sex_prediction
+ # Array[File] bams_sex_prediction_out = bam_depth.sex_prediction
   Array[File] fastp_rep_out = fastp_qual.fastp_stats
 
 #File coverage_merged_report = merge_reports.merged_report

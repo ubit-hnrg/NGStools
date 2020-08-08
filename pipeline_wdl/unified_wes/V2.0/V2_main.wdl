@@ -511,7 +511,7 @@ call qual_control.quality_control_V2 {
 
 
 
- Array[Array[File]] salidas = [quality_control_V2.bams_stat_depth_global_coverage_stats_out,quality_control_V2.bams_sex_prediction_out,quality_control_V2.fastp_rep_out,]
+ Array[Array[File]] salidas = [quality_control_V2.bams_stat_depth_global_coverage_stats_out,quality_control_V2.fastp_rep_out]#quality_control_V2.bams_sex_prediction_out
  
  
  ##descomentar abajo y borrar la de arriba
