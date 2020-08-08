@@ -162,6 +162,25 @@ task coord_generator {
 
 # }
 
+task build_excell_report{
+    File annovar_tsv
+    File exon_coverage_report
+    #String sample
+    String samplename2
+    #String original_sample
+  
+     #/home/hnrg/NGStools/pipeline_wdl/qualityControl/make_excel_report.py ${annovar_tsv}:Variants ${exon_coverage_report}:ExonCoverage ${sample}.output_xlsx
+
+    command{
+
+       /home/hnrg/NGStools/pipeline_wdl/qualityControl/make_excel_report.py ${annovar_tsv}:Variants ${exon_coverage_report}:ExonCoverage ${samplename2}_variants.xlsx
+   
+   }    
+
+    output{
+        File excell_report = '${samplename2}_variants.xlsx'
+    }
+}    
 
 
 
@@ -177,6 +196,9 @@ workflow main_workflow {
   ###inputs for fastq2ubam workflows
   
   File tabulatedSampleFilePaths ##samples
+
+  String pipeline_version = "V2.0"
+
 
   ####metadata
   String run_date                   
@@ -417,6 +439,7 @@ workflow main_workflow {
         ####input del anterior jointgenotyping
         input_gvcf = bam2gvcf.output_gvcf,
         input_gvcf_index = bam2gvcf.output_gvcf_index,
+        pipeline_v = pipeline_version,
 
         ####annovar
         db_annovar = db_annovar,#path annovar
@@ -424,7 +447,7 @@ workflow main_workflow {
         joinPY = joinPY
         
     }
- ####falta annovar 
+
 
 
     call anotacionesSingle.FuncionalAnnotationSingle {
@@ -434,13 +457,13 @@ workflow main_workflow {
         toolpath = toolpath,
         samplename1 = sample_name,
         java_heap_memory_initial = "12g",
+        pipeline_v = pipeline_version,
+        exon_coordinates = coord_generator.interval_restricted,
         reference_version = reference_version
         
 
       }
 
-
- 
    } ###fin scatter gvcf
 
 
@@ -456,7 +479,7 @@ workflow main_workflow {
     }
   } 
 
- Array[String] uniquesample_name =read_lines(ConvertPairedFastQsToUnmappedBamWf.samplesnames)
+ #Array[String] uniquesample_name =read_lines(ConvertPairedFastQsToUnmappedBamWf.samplesnames)
 
 Array[File] salidas_json = ConvertPairedFastQsToUnmappedBamWf.fastp_json_reports
  Array[String] array_path_save_json = mkdir_samplename.path_out_softlink
@@ -479,12 +502,34 @@ call qual_control.quality_control_V2 {
    analysis_readybam = bam2gvcf.analysis_ready_bam,
    toolpath = toolpath,
    Tso_name = basename(tabulatedSampleFilePaths, ".txt"),
-   exon_coords = coord_generator.interval_restricted
+   exon_coords = coord_generator.interval_restricted,
+   pipeline_v = pipeline_version
    #tso_bed = tso_bed
   }
 
+
+
+
+
+ Array[Array[File]] salidas = [quality_control_V2.bams_stat_depth_global_coverage_stats_out,quality_control_V2.bams_sex_prediction_out,quality_control_V2.fastp_rep_out,]
+ 
+ 
+ ##descomentar abajo y borrar la de arriba
  Array[File] prof_by_exon = quality_control_V2.by_exon_depth##","${coord_generator.padded_coord}"] #"${name}_coverage_statistics_by_exon.tsv"
  Array[String] array_path_save_byexon = mkdir_samplename.path_out_softlink
+ 
+
+ Array[Pair[String,File]] test_save = zip (array_path_save_byexon, flatten(salidas))
+  scatter (pairs in test_save) {
+    call symlink_important_files as test{
+        input:
+        output_to_save = pairs.right,
+        path_save = pairs.left
+    }
+  }
+
+
+ #Array[Pair[String,File]] samples_by_exon = zip (array_path_save_byexon, prof_by_exon)
  Array[Pair[String,File]] samples_by_exon = zip (array_path_save_byexon, prof_by_exon)
   scatter (pairs in samples_by_exon) {
     call symlink_important_files as byexon{
@@ -493,6 +538,45 @@ call qual_control.quality_control_V2 {
         path_save = pairs.left
     }
   }
+
+### poner el exon_distance con el vcf anotado_hnrg freq
+## anotar con plof, gnomad /home/hnrg/HNRG-pipeline-V0.1/libraries/GRCh37/gnomad_plof_HNRG.tsv
+
+ ####excel_report
+Array[File] Tsv_annovar = singleGenotypeGVCFs.annovar_tsv_out
+    scatter (idx in range(length(Tsv_annovar))){
+       
+       String sample = basename(Tsv_annovar[idx],"multianno_restrict.tsv")
+       String samplename2 = basename(prof_by_exon[idx],"_coverage_statistics_by_exon.tsv")
+       
+       if(sample==samplename2){
+       call build_excell_report {
+            input:
+            annovar_tsv = Tsv_annovar[idx],
+            samplename2 = samplename2,
+            exon_coverage_report = prof_by_exon[idx]
+            
+           }
+          }
+      
+      
+
+    }
+
+Array[File?] reporte_variantes = build_excell_report.excell_report
+#Array[String] array_path_save_byexon = mkdir_samplename.path_out_softlink
+ Array[Pair[String,File?]] samples_by_variant = zip (array_path_save_byexon, reporte_variantes)
+  scatter (pairs in samples_by_variant) {
+    call symlink_important_files as build_excell_reportbyvariants{
+        input:
+        output_to_save = pairs.right,
+        path_save = pairs.left
+    }
+  }
+
+
+
+
 
    # Outputs that will be retained when execution is complete
   output {

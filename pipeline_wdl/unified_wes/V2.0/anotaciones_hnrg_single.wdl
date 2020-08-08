@@ -184,9 +184,11 @@ output {
 
 task symlink_important_files {
     File output_to_save
+    File output_to_save2
     String path_save
     command{
        cp -L ${output_to_save} ${path_save}
+       cp -L ${output_to_save2} ${path_save}
     }
 }
 
@@ -212,6 +214,28 @@ output {
 
 }
 
+task exon_distance {
+File vcf_ok
+File exon_coord
+String sample_name
+
+command{
+    #!/bin/bash
+    set -e
+
+    grep "^#" ${vcf_ok} > head_vcf.vcf
+    grep -v "#" ${vcf_ok}| sort -k1,1 -k2,2n >> head_vcf.vcf
+
+    bedtools closest -a head_vcf.vcf -b ${exon_coord} -D ref | cut -f 1,2,12-17  > ${sample_name}.exon_distance.tsv
+
+    rm head_vcf.vcf
+    }
+
+output {
+File exon_dist = "${sample_name}.exon_distance.tsv"
+
+}
+}
 
 
 workflow FuncionalAnnotationSingle {
@@ -224,6 +248,7 @@ String java_heap_memory_initial
 String reference_version
 String path_save
 String pipeline_v
+File exon_coordinates
 
 
 
@@ -453,15 +478,24 @@ input:
 
 }
 
+call exon_distance {
+    input:
+    vcf_ok = final_annot.salida_Snpsift,
+    exon_coord = exon_coordinates,
+    sample_name = samplename1
+}
+
  call symlink_important_files {
          input:
         output_to_save = final_annot.salida_Snpsift,
+        output_to_save2 = exon_distance.exon_dist,
         path_save = path_save
     }
 
 
-#output {
-#File out_single_vcf_annot = final_annot.salida_Snpsift
-#}
+####tsv file to merge excel file.
+output {
+File vcf_exon_distance = exon_distance.exon_dist 
+}
 }
 

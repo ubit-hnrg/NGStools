@@ -353,6 +353,12 @@ workflow quality_control_V2 {
 output {
 Array[File] depth_global_cov_stats = bam_depth.glob_cov_stats ###estadistica del alineamiento...
 Array[File] by_exon_depth = bam_depth.cov_stats_by_exon
+
+###test 
+  Array[File] bams_stat_depth_global_coverage_stats_out = bam_depth.glob_cov_stats
+  Array[File] bams_sex_prediction_out = bam_depth.sex_prediction
+  Array[File] fastp_rep_out = fastp_qual.fastp_stats
+
 #File coverage_merged_report = merge_reports.merged_report
 #Array[File] reporte_final = samtools_reports_file.output_global_report ### archivo para mergear... estadistica en la libreria del experimento
 File excel_qual_report = make_excel.reporte_excel
