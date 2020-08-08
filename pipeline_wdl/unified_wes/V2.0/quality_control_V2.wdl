@@ -21,10 +21,12 @@ task bam_depth {
 
   File input_bam
   File Exon_coords
+  
 
   ###herramientas
   String name = basename(input_bam, ".bam")
   String toolpath
+  String pipeline_version
 
   command <<<
 
@@ -34,6 +36,9 @@ task bam_depth {
   
   #reduce bam
   ${toolpath}bedtools2/bin/intersectBed -a ${input_bam} -b ${Exon_coords} > ${name}_exonTSO_reduced.bam
+
+  ###ya que estamos, prediccion de sexo:
+  /home/hnrg/NGStools/python_scripts/bam_sex_xy.py -b ${name}_exonTSO_reduced.bam > ${name}_sex.txt
 
   #Bam coverage. No está estrictamente limitado al intervalo porque contiene grandes zonas con cobertura CERO 
   #que están presentes por una mínima interseccion con el intervalo buscado)
@@ -61,15 +66,16 @@ task bam_depth {
   #/home/hnrg/NGStools/pipeline_wdl/qualityControl/coverage_statistics_v1.0.py -i ${name}_exon_filtered_coverage.tsv -g ${name}_global_coverage_statistics.tsv -e ${name}_coverage_statistics_by_exon.tsv -s ${name}
 
   ###usamos este con ENS
-  /home/hnrg/NGStools/pipeline_wdl/qualityControl/coverage_statistics_v1.0_ENS.py -i ${name}_exon_filtered_coverage.tsv -g ${name}_global_coverage_statistics.tsv -e ${name}_coverage_statistics_by_exon.tsv -s ${name}
+  /home/hnrg/NGStools/pipeline_wdl/qualityControl/coverage_statistics_v1.0_ENS.py -i ${name}_exon_filtered_coverage.tsv -g ${name}_global_coverage_statistics_${pipeline_version}.tsv -e ${name}_coverage_statistics_by_exon_${pipeline_version}.tsv -s ${name}
 
   rm ${name}_exonTSO_reduced.bam ${name}_exon_filtered_coverage.tsv
   >>>
 
 
   output {
-    File cov_stats_by_exon = "${name}_coverage_statistics_by_exon.tsv"
-    File glob_cov_stats = "${name}_global_coverage_statistics.tsv"
+    File cov_stats_by_exon = "${name}_coverage_statistics_by_exon_${pipeline_version}.tsv"
+    File glob_cov_stats = "${name}_global_coverage_statistics_${pipeline_version}.tsv"
+    File sex_prediction = "${name}_sex.txt"
     String sample_Name = "${name}"
   }
 
@@ -119,15 +125,16 @@ task samtools_reports_file {
   String sampleID
   File samtools_library_report
   String toolpath
+  String pipeline_version
 
 
   command {
-    /home/hnrg/NGStools/pipeline_wdl/qualityControl/samtools_stats_report_v1.0.py -l=${samtools_library_report} -o=${sampleID}_samtools_report.tsv
+    /home/hnrg/NGStools/pipeline_wdl/qualityControl/samtools_stats_report_v1.0.py -l=${samtools_library_report} -o=${sampleID}_samtools_report_${pipeline_version}.tsv
   }
 
   output {
  
-    File output_global_report = "${sampleID}_samtools_report.tsv" 
+    File output_global_report = "${sampleID}_samtools_report_${pipeline_version}.tsv" 
 
   }
 
@@ -196,6 +203,7 @@ task CreateFoFN {
 }
 
 task make_excel {
+  String pipeline_version
   String Tso_name
   File tabla1
   String pestana1
@@ -205,12 +213,12 @@ task make_excel {
   String pestana3
 
   command{
-    /home/hnrg/NGStools/pipeline_wdl/qualityControl/make_excel_report.py ${tabla1}:${pestana1} ${tabla2}:${pestana2} ${tabla3}:${pestana3} ${Tso_name}_qual_report.xlsx
+    /home/hnrg/NGStools/pipeline_wdl/qualityControl/make_excel_report.py ${tabla1}:${pestana1} ${tabla2}:${pestana2} ${tabla3}:${pestana3} ${Tso_name}_qual_report_${pipeline_version}.xlsx
  
   }
 
   output {
-    File reporte_excel = "${Tso_name}_qual_report.xlsx"
+    File reporte_excel = "${Tso_name}_qual_report_${pipeline_version}.xlsx"
 
   }
 
@@ -236,6 +244,7 @@ workflow quality_control_V2 {
   Array[File]+ fastp_json_files
   String Tso_name
   Array[String] path_save
+  String pipeline_v
   #Map[String,String] bams_N_reads
 
   scatter (fastp in fastp_json_files){
@@ -254,13 +263,14 @@ workflow quality_control_V2 {
       input: 
       input_bam = bams_ready,
       Exon_coords = exon_coords,
-      toolpath = toolpath
+      toolpath = toolpath,
+      pipeline_version = pipeline_v
     }
 
   }
 
 
-
+  #Array[File] bams_sex_prediction = bam_depth.sex_prediction
   Array[File] bams_stat_depth_global_coverage_stats = bam_depth.glob_cov_stats
   Array[File] stat_alineamiento 
   Array[File] fastp_rep = fastp_qual.fastp_stats
@@ -318,6 +328,7 @@ workflow quality_control_V2 {
   call make_excel { 
     input:
     Tso_name = Tso_name,
+    pipeline_version = pipeline_v,
     tabla1 = merge_fastp_reports.merged_report,
     pestana1 = "Filtrado",
     tabla2 = merge_samtools_reports.merged_report, 
