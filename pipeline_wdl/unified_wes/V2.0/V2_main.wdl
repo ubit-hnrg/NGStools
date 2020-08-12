@@ -572,7 +572,7 @@ Array[File] Tsv_annovar = singleGenotypeGVCFs.annovar_tsv_out
     scatter (idx in range(length(Tsv_annovar))){
        
        String sample = basename(Tsv_annovar[idx],"multianno_restrict.tsv")
-       String samplename2 = basename(prof_by_exon[idx],"_coverage_statistics_by_exon.tsv")
+       String samplename2 = basename(prof_by_exon[idx],"_coverage_statistics_by_exon_V2.0.tsv")
        
        if(sample==samplename2){
        call build_excell_report {

@@ -584,6 +584,203 @@ task symlink_important_files {
 }
 
 
+################################################ agrego quality_control 
+###fastp
+
+task fastp_qual {
+  File inputs_json_report
+  String report_name = basename(inputs_json_report, ".txt")
+
+  #${sep=' -I ' input_bqsr_reports}
+  command <<<
+  /home/hnrg/NGStools/pipeline_wdl/qualityControl/estadistica_fastp.py -i ${inputs_json_report} -o ${report_name}_fastp_report.tsv
+  >>>
+
+  output {
+    File fastp_stats = "${report_name}_fastp_report.tsv"
+
+  }
+}
+
+
+# ####paso1 para calidad de bams
+# task bam_depth {
+
+#   File input_bam
+#   File Exon_coords
+  
+
+#   ###herramientas
+#   String name = basename(input_bam, ".bam")
+#   String toolpath
+#   String pipeline_version
+
+#   command <<<
+
+#   #!/bin/bash
+#   set -e
+#   set -o pipefail
+  
+#   #reduce bam
+#   ${toolpath}bedtools2/bin/intersectBed -a ${input_bam} -b ${Exon_coords} > ${name}_exonTSO_reduced.bam
+
+#   ###ya que estamos, prediccion de sexo:
+#   /home/hnrg/NGStools/python_scripts/bam_sex_xy.py -b ${name}_exonTSO_reduced.bam > ${name}_sex.txt
+
+#   #Bam coverage. No está estrictamente limitado al intervalo porque contiene grandes zonas con cobertura CERO 
+#   #que están presentes por una mínima interseccion con el intervalo buscado)
+#   ${toolpath}bedtools2/bin/genomeCoverageBed -ibam ${name}_exonTSO_reduced.bam -bga > ${name}_exon.coverage
+
+#   # Left outer join EXON_coords and BAM coverage. Intermediate file. Incorpora a cada intervalo la covertura, (pero sigue preservando zonas con mínima intersección que traen ruido)
+#   ${toolpath}bedtools2/bin/intersectBed -a ${Exon_coords} -b ${name}_exon.coverage -loj > ${name}_loj.txt
+
+
+#   #esto limita la covertura estrictamente al intervalo paddeado.
+#   # Es decicr, esta linea elimina las grandes zonas del bam con cobertura zero que tenían unas pocas bases de interseccion con el intervalo buscado
+#   # primero: reordeno las columnas de loj.txt, para que las coordenadas start end no sean las del exon, sino las de la cobertura
+#   #awk -F"\t" '{print $6"\t"$7"\t"$8"\t"$9"\t"$4"\t"$5"\t"$1"\t"$2"\t"$3}' ${name}_loj.txt > ${name}_loj_sorted_cols.tsv
+
+#   ### para el intervalo de ENSEMBL usar el de abajo y no el de arriba:
+#   awk -F"\t" '{print $8"\t"$9"\t"$10"\t"$11"\t"$5"\t"$4"\t"$6"\t"$7"\t"$1"\t"$2"\t"$3}' ${name}_loj.txt > ${name}_loj_sorted_cols.tsv
+
+#   ${toolpath}bedtools2/bin/intersectBed -a ${name}_loj_sorted_cols.tsv -b ${Exon_coords}  > ${name}_loj_exon_filtered.coverage
+
+#   echo -e 'chr\tstart\tend\tcount\tgeneSymbol\tENSEMBL_ID\texon_number\tstrand\texon_chr\texon_start\texon_end' > header.tsv
+#   cat header.tsv ${name}_loj_exon_filtered.coverage > ${name}_exon_filtered_coverage.tsv
+#   rm ${name}_loj_exon_filtered.coverage ${name}_loj_sorted_cols.tsv header.tsv ${name}_exon.coverage ${name}_loj.txt
+
+#   #####coverage statistics cambio la forma del input... 
+#   #/home/hnrg/NGStools/pipeline_wdl/qualityControl/coverage_statistics_v1.0.py -i ${name}_exon_filtered_coverage.tsv -g ${name}_global_coverage_statistics.tsv -e ${name}_coverage_statistics_by_exon.tsv -s ${name}
+
+#   ###usamos este con ENS
+#   /home/hnrg/NGStools/pipeline_wdl/qualityControl/coverage_statistics_v1.0_ENS.py -i ${name}_exon_filtered_coverage.tsv -g ${name}_global_coverage_statistics_${pipeline_version}.tsv -e ${name}_coverage_statistics_by_exon_${pipeline_version}.tsv -s ${name}
+
+#   rm ${name}_exonTSO_reduced.bam ${name}_exon_filtered_coverage.tsv
+#   >>>
+
+
+#   output {
+#     File cov_stats_by_exon = "${name}_coverage_statistics_by_exon_${pipeline_version}.tsv"
+#     File glob_cov_stats = "${name}_global_coverage_statistics_${pipeline_version}.tsv"
+#     File sex_prediction = "${name}_sex.txt"
+#     String sample_Name = "${name}"
+#   }
+
+# }
+
+
+
+# #####task del summary_metrics de samtools
+# task samtools_stat{
+
+#   String toolpath
+#   File TSO_bed #./TruSight_One_v1_padded_100_GRCh37.bed
+#   File input_orig_bam
+#   String name = basename(input_orig_bam, ".bam")
+
+#   command {
+
+#   ##paso1
+#   ###$name=$(basename ${input_orig_bam} .bam)
+
+#   ${toolpath}samtools stats ${input_orig_bam}  > ${name}_orig_samtools.stats
+
+#   #paso2
+#   ##input es el bam original  y el intervalo de captura
+#   ${toolpath}samtools stats ${input_orig_bam} -t ${TSO_bed} > ${name}_TSO_samtools.stats
+
+#   }
+#   output {
+
+#     #File samtools_reduced_bam = $name'_samtools_reduced.stats'
+#     File samtools_stat_original_bam = "${name}_orig_samtools.stats"
+#     File samtools_stat_TSO_bam = "${name}_TSO_samtools.stats"
+
+#   }
+
+# }
+
+
+# ##/home/hnrg/NGStools/pipeline_wdl/qualityControl/samtools_stats_report.py
+
+# task samtools_reports_file {
+
+#   String sampleID
+#   File samtools_library_report
+#   String toolpath
+#   String pipeline_version
+
+
+#   command {
+#     /home/hnrg/NGStools/pipeline_wdl/qualityControl/samtools_stats_report_v1.0.py -l=${samtools_library_report} -o=${sampleID}_samtools_report_${pipeline_version}.tsv
+#   }
+
+#   output {
+ 
+#     File output_global_report = "${sampleID}_samtools_report_${pipeline_version}.tsv" 
+
+#   }
+
+# }
+
+
+# #####
+
+# task merge_reports {
+# ####inputs del paso1 
+# File files_to_merge
+# String TSO_name
+
+# command<<<
+# /home/hnrg/NGStools/pipeline_wdl/qualityControl/merge_sample_reports.py -i ${files_to_merge} -o ${TSO_name}.merged_report
+# >>>
+
+# output {
+# File merged_report = "${TSO_name}.merged_report"
+
+# }
+
+# }
+
+# task CreateFoFN {
+#   # Command parameters
+#   Array[File] array_of_files
+#   String fofn_name
+  
+#   command {
+#     mv ${write_lines(array_of_files)}  ${fofn_name}.list \
+   
+#   }
+#   output {
+#     File fofn_list = "${fofn_name}.list"
+#   }
+# }
+
+# task make_excel {
+#   String pipeline_version
+#   String Tso_name
+#   File tabla1
+#   String pestana1
+#   File tabla2
+#   String pestana2
+#   File tabla3
+#   String pestana3
+
+#   command{
+#     /home/hnrg/NGStools/pipeline_wdl/qualityControl/make_excel_report.py ${tabla1}:${pestana1} ${tabla2}:${pestana2} ${tabla3}:${pestana3} ${Tso_name}_qual_report_${pipeline_version}.xlsx
+ 
+#   }
+
+#   output {
+#     File reporte_excel = "${Tso_name}_qual_report_${pipeline_version}.xlsx"
+
+#   }
+
+# }
+
+#################333
+
+
 ##############################################    WORKFLOW
 workflow bam2gvcf {
 
@@ -762,13 +959,6 @@ workflow bam2gvcf {
     }
   } 
 
-  #call path_borrado as borrar_SortandFix {
-  #
-  #   input:
-  #     path1 = SortAndFixTags.output_bam
-  # }
-
-
   # Merge the recalibrated BAM files resulting from by-interval recalibration
   call GatherBamFiles {
     input:
@@ -814,9 +1004,6 @@ workflow bam2gvcf {
   toolpath = toolpath
 
   }
-
-
-
 
   #BQSR bins the qualities which makes a significantly smaller bam
   #Float binned_qual_bam_size = size(GatherBamFiles.output_bam, "GB")
@@ -910,6 +1097,9 @@ workflow bam2gvcf {
   toolpath = toolpath
   }
   
+  #####agrego calls quality control
+
+
 
 
   Array[File] salidas = ["${GatherBamFilesHaplotype.output_bam}","${GatherBamFilesHaplotype.output_bam_index}","${GatherBamFiles.output_bam}","${GatherBamFiles.output_bam_index}","${MergeVCFs.output_vcf}","${MergeVCFs.output_vcf_index}","${CollectGvcfCallingMetrics.summary_metrics}","${CollectGvcfCallingMetrics.detail_metrics}","${samtools_stat.samtools_stat_TSO_bam}","${samtools_reports_file.output_global_report}"]
