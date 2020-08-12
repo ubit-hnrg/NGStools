@@ -30,7 +30,7 @@ sample = os.path.splitext(os.path.basename(bam))[0] #subprocess.call(["basename"
 
 #print sample
 if x!=0:
-    a = int(y)/int(x) 
+    a = y/x 
 else:
     a = 0
     
