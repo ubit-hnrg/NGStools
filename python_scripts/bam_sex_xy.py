@@ -20,25 +20,20 @@ bam = args.bam
 
 #check_output
 #x = subprocess.Popen(['samtools', 'view', bam ,'X','-c'],stdout=subprocess.PIPE)#.communicate()[0]#,shell = True).communicate()[0]#,stderr=subprocess.STDOUT)#.communicate()[0]#,stdout=subprocess.PIPE,stdin=subprocess.PIPE)#.communicate()[0]
-x = subprocess.check_output(['samtools', 'view', bam ,'X','-c'])#,stdout=subprocess.PIPE)#.communicate()[0]#,shell = True).communicate()[0]#,stderr=subprocess.STDOUT)#.communicate()[0]#,stdout=subprocess.PIPE,stdin=subprocess.PIPE)#.communicate()[0]
+#,stdout=subprocess.PIPE)#.communicate()[0]#,shell = True).communicate()[0]#,stderr=subprocess.STDOUT)#.communicate()[0]#,stdout=subprocess.PIPE,stdin=subprocess.PIPE)#.communicate()[0]
+
+x = subprocess.check_output(['samtools', 'view', bam ,'X','-c'])
 y = subprocess.check_output(['samtools', 'view', bam ,'Y','-c'])
 
 
-#y = subprocess.Popen(['samtools', 'view', bam ,'Y','-c'],stdout=subprocess.PIPE)#,stderr=subprocess.STDOUT)#,stderr=subprocess.STDOUT)#.communicate()[0]#shell = True).communicate()[0]#,stderr=subprocess.STDOUT)#.communicate()[0]#,stdout=subprocess.PIPE,stdin=subprocess.PIPE)#.communicate()[0]
-
-#X = x.stdout.read()
-
-#samtools = local['samtools']
-#x = samtools['view',bam, 'X -c']
-
-#y = samtools['view',bam, 'Y -c']
-#print "holo"
-#print x#.communicate()[0]
-#print y#.communicate()[0]
-sample = os.path.splitext(os.path.basename(bam))[0]#subprocess.call(["basename","bam",".bam"],shell = True)# ,stdout=subprocess.PIPE).communicate()[0]
+sample = os.path.splitext(os.path.basename(bam))[0] #subprocess.call(["basename","bam",".bam"],shell = True)# ,stdout=subprocess.PIPE).communicate()[0]
 
 #print sample
-a = int(y)/int(x)
+if x !=0 or y != 0:
+    a = int(y)/int(x)
+else:
+    a=0
+
 if a >= 0.07: 
     sex = 'M'
     #print a
