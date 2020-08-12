@@ -38,7 +38,7 @@ task bam_depth {
   ${toolpath}bedtools2/bin/intersectBed -a ${input_bam} -b ${Exon_coords} > ${name}_exonTSO_reduced.bam
 
   ###ya que estamos, prediccion de sexo:
-  /home/hnrg/NGStools/python_scripts/bam_sex_xy.py -b ${name}_exonTSO_reduced.bam > ${name}_sex.txt
+  /home/hnrg/NGStools/python_scripts/bam_sex_xy.py -b $input_bam > ${name}_sex.txt
 
   #Bam coverage. No está estrictamente limitado al intervalo porque contiene grandes zonas con cobertura CERO 
   #que están presentes por una mínima interseccion con el intervalo buscado)
