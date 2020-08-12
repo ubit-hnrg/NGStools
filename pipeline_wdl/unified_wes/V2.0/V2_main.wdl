@@ -515,6 +515,7 @@ call qual_control.quality_control_V2 {
    fastp_json_files = ConvertPairedFastQsToUnmappedBamWf.fastp_json_reports,
    path_save = mkdir_samplename.path_out_softlink,
    analysis_readybam = bam2gvcf.analysis_ready_bam,
+   analysis_readybam_index = bam2gvcf.analysis_ready_bam_index,
    toolpath = toolpath,
    Tso_name = basename(tabulatedSampleFilePaths, ".txt"),
    exon_coords = coord_generator.interval_restricted,

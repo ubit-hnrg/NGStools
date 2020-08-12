@@ -20,6 +20,7 @@ task fastp_qual {
 task bam_depth {
 
   File input_bam
+  Array[File] input_bam_index
   File Exon_coords
   
 
@@ -237,7 +238,8 @@ task symlink_important_files {
 
 workflow quality_control_V2 {
 
-  Array[File]+ analysis_readybam 
+  Array[File]+ analysis_readybam
+  Array[File]+ analysis_readybam_index 
   String toolpath
   File exon_coords
   #File tso_bed
@@ -257,11 +259,14 @@ workflow quality_control_V2 {
 
   ######################scatter por los bams... analysis_readybam
 
+
+ #Array[Pair[File,File]] analysis_readybam_ok = zip (analysis_readybam, analysis_readybam_index)
   scatter (bams_ready in analysis_readybam) {
 
     call bam_depth {
       input: 
       input_bam = bams_ready,
+      input_bam_index = analysis_readybam_index,
       Exon_coords = exon_coords,
       toolpath = toolpath,
       pipeline_version = pipeline_v
