@@ -41,7 +41,7 @@ if a >= 0.07:
 elif ( 0.02 <= a < 0.07):
     sex = '?'
     #print a
-elif a=0:
+elif a==0:
     sex = '0 lecturas'
 else:
     sex = 'F'
