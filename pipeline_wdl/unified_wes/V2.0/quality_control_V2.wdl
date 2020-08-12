@@ -38,7 +38,7 @@ task bam_depth {
   ${toolpath}bedtools2/bin/intersectBed -a ${input_bam} -b ${Exon_coords} > ${name}_exonTSO_reduced.bam
 
   ###ya que estamos, prediccion de sexo:
-  #/home/hnrg/NGStools/python_scripts/bam_sex_xy.py -b ${name}_exonTSO_reduced.bam > ${name}_sex.txt
+  /home/hnrg/NGStools/python_scripts/bam_sex_xy.py -b ${name}_exonTSO_reduced.bam > ${name}_sex.txt
 
   #Bam coverage. No está estrictamente limitado al intervalo porque contiene grandes zonas con cobertura CERO 
   #que están presentes por una mínima interseccion con el intervalo buscado)
@@ -75,7 +75,7 @@ task bam_depth {
   output {
     File cov_stats_by_exon = "${name}_coverage_statistics_by_exon_${pipeline_version}.tsv"
     File glob_cov_stats = "${name}_global_coverage_statistics_${pipeline_version}.tsv"
-   # File sex_prediction = "${name}_sex.txt"
+    File sex_prediction = "${name}_sex.txt"
     String sample_Name = "${name}"
   }
 
@@ -241,7 +241,7 @@ workflow quality_control_V2 {
   String toolpath
   File exon_coords
   #File tso_bed
-  Array[File]+ fastp_json_files
+  Array[File] fastp_json_files
   String Tso_name
   Array[String] path_save
   String pipeline_v
@@ -271,82 +271,82 @@ workflow quality_control_V2 {
 
 
   #Array[File] bams_sex_prediction = bam_depth.sex_prediction
-  Array[File] bams_stat_depth_global_coverage_stats = bam_depth.glob_cov_stats
-  Array[File] stat_alineamiento 
-  Array[File] fastp_rep = fastp_qual.fastp_stats
+  #Array[File] bams_stat_depth_global_coverage_stats = bam_depth.glob_cov_stats
+
+  Array[File] stat_alineamiento #samtools_reporte_final from bam2gvcf
 
 
  #Create a file with a list of the generated bam_depth.glob_cov_stats
-  call CreateFoFN {
-    input:
-      array_of_files = bams_stat_depth_global_coverage_stats,
-      fofn_name = Tso_name
+  # call CreateFoFN {
+  #   input:
+  #     array_of_files = bams_stat_depth_global_coverage_stats,
+  #     fofn_name = Tso_name
      
-  }
+  # }
 
  #Create a file with a list of the generated output_global_report
-  call CreateFoFN as CreateFoFN_samtools{
-    input:
-      array_of_files = stat_alineamiento,
-      fofn_name = Tso_name
+#   call CreateFoFN as CreateFoFN_samtools{
+#     input:
+#       array_of_files = stat_alineamiento,
+#       fofn_name = Tso_name
      
-  }
+#   }
 
- call CreateFoFN as CreateFoFN_fastp{
-    input:
-      array_of_files = fastp_rep,
-      fofn_name = Tso_name
+#  call CreateFoFN as CreateFoFN_fastp{
+#     input:
+#       array_of_files = fastp_stats,
+#       fofn_name = Tso_name
      
-  }
+#   }
 
   ####### esto mergea archivos de distintas muestras
-  call merge_reports {
+  # call merge_reports {
 
-    input:  
-    files_to_merge = CreateFoFN.fofn_list,
-    TSO_name = Tso_name
+  #   input:  
+  #   files_to_merge = CreateFoFN.fofn_list,
+  #   TSO_name = Tso_name
 
-  } 
+  # } 
 
-  call merge_reports as merge_samtools_reports{
+  # call merge_reports as merge_samtools_reports{
 
-    input:  
-      files_to_merge = CreateFoFN_samtools.fofn_list,
-      TSO_name = Tso_name
-  } 
-
-
-  call merge_reports as merge_fastp_reports{
-
-    input:  
-      files_to_merge = CreateFoFN_fastp.fofn_list,
-      TSO_name = Tso_name
-    } 
+  #   input:  
+  #     files_to_merge = CreateFoFN_samtools.fofn_list,
+  #     TSO_name = Tso_name
+  # } 
 
 
+  #call merge_reports as merge_fastp_reports{
 
-  call make_excel { 
-    input:
-    Tso_name = Tso_name,
-    pipeline_version = pipeline_v,
-    tabla1 = merge_fastp_reports.merged_report,
-    pestana1 = "Filtrado",
-    tabla2 = merge_samtools_reports.merged_report, 
-    pestana2 = "Alineamiento",
-    tabla3 = merge_reports.merged_report,
-    pestana3 = "Profundidad-en-libreria"
+    # input:  
+    #   files_to_merge = CreateFoFN_fastp.fofn_list,
+    #   TSO_name = Tso_name
+    # } 
 
-  }
 
-  Array[File] reportes_salidas = ["${make_excel.reporte_excel}"]
-  Array[Pair[String,File]] samples_x_files = cross (path_save, reportes_salidas)
-  scatter (pairs in samples_x_files) {
-    call symlink_important_files {
-        input:
-        output_to_save = pairs.right,
-        path_save = pairs.left
-    }
-  }  
+
+  # call make_excel { 
+  #   input:
+  #   Tso_name = Tso_name,
+  #   pipeline_version = pipeline_v,
+  #   tabla1 = merge_fastp_reports.merged_report,
+  #   pestana1 = "Filtrado",
+  #   tabla2 = merge_samtools_reports.merged_report, 
+  #   pestana2 = "Alineamiento",
+  #   tabla3 = merge_reports.merged_report,
+  #   pestana3 = "Profundidad-en-libreria"
+
+  # }
+
+  # Array[File] reportes_salidas = ["${make_excel.reporte_excel}"]
+  # Array[Pair[String,File]] samples_x_files = cross (path_save, reportes_salidas)
+  # scatter (pairs in samples_x_files) {
+  #   call symlink_important_files {
+  #       input:
+  #       output_to_save = pairs.right,
+  #       path_save = pairs.left
+  #   }
+  # }  
 
 
 
@@ -354,14 +354,19 @@ output {
 Array[File] depth_global_cov_stats = bam_depth.glob_cov_stats ###estadistica del alineamiento...
 Array[File] by_exon_depth = bam_depth.cov_stats_by_exon
 
-###test 
-  Array[File] bams_stat_depth_global_coverage_stats_out = bam_depth.glob_cov_stats
+####pdf_report
+Array[File] bams_sex_prediction = bam_depth.sex_prediction
+  #Array[File] bams_stat_depth_global_coverage_stats = bam_depth.glob_cov_stats
+  #Array[File] stat_alineamiento #samtools_reporte_final from bam2gvcf
+
+###test  borrar dps de pdf report.
+  #Array[File] bams_stat_depth_global_coverage_stats_out = bam_depth.glob_cov_stats
  # Array[File] bams_sex_prediction_out = bam_depth.sex_prediction
-  Array[File] fastp_rep_out = fastp_qual.fastp_stats
+Array[File] fastp_rep_out = fastp_qual.fastp_stats
 
 #File coverage_merged_report = merge_reports.merged_report
 #Array[File] reporte_final = samtools_reports_file.output_global_report ### archivo para mergear... estadistica en la libreria del experimento
-File excel_qual_report = make_excel.reporte_excel
+#File excel_qual_report = make_excel.reporte_excel
 #Array[File] Samt_bam_stat = samtools_stat.samtools_stat_original_bam 
 #Array[File] Samt_TSO_stat = samtools_stat.samtools_stat_TSO_bam
 

@@ -182,7 +182,23 @@ task build_excell_report{
     }
 }    
 
+task pdf_report {
+  
+  File alineamiento 
+  String name 
+  File glob_rep 
+  File sex 
+  File fastp_rep 
+  String tso 
+  String date
+  String path
 
+  command {
+    /home/hnrg/NGStools/python_scripts/pdf_report_per_sample.py -fq ${fastp_rep} -aq ${alineamiento} -dp ${glob_rep} -s ${sex} -n ${name} -d ${date} -t ${tso} -o ${path}/${name}_qual_report.pdf
+  }
+
+
+}
 
 
 
@@ -481,22 +497,21 @@ workflow main_workflow {
 
  #Array[String] uniquesample_name =read_lines(ConvertPairedFastQsToUnmappedBamWf.samplesnames)
 
-Array[File] salidas_json = ConvertPairedFastQsToUnmappedBamWf.fastp_json_reports
+#Array[File] salidas_json = ConvertPairedFastQsToUnmappedBamWf.fastp_json_reports
  Array[String] array_path_save_json = mkdir_samplename.path_out_softlink
- Array[Pair[String,File]] samples_x_files_json = zip (array_path_save_json, salidas_json)
-  scatter (pairs in samples_x_files_json) {
-     call symlink_important_files {
-       input:
-        output_to_save = pairs.right,
-        path_save = pairs.left
-      }
-  }
+ #Array[Pair[String,File]] samples_x_files_json = zip (array_path_save_json, salidas_json)
+#  scatter (pairs in samples_x_files_json) {
+  #    call symlink_important_files {
+  #      input:
+  #       output_to_save = pairs.right,
+  #       path_save = pairs.left
+  #     }
+  # }
 
 
 call qual_control.quality_control_V2 {
    input: 
    stat_alineamiento = bam2gvcf.reporte_final,
-   #bams_N_reads = bams_N_reads,
    fastp_json_files = ConvertPairedFastQsToUnmappedBamWf.fastp_json_reports,
    path_save = mkdir_samplename.path_out_softlink,
    analysis_readybam = bam2gvcf.analysis_ready_bam,
@@ -511,36 +526,9 @@ call qual_control.quality_control_V2 {
 
 
 
- Array[File] test1 = quality_control_V2.bams_stat_depth_global_coverage_stats_out
- Array[File] test2 = quality_control_V2.fastp_rep_out
- #Array[File] test3= quality_control_V2.bams_sex_prediction_out
-
-
- 
- ##descomentar abajo y borrar la de arriba
- Array[File] prof_by_exon = quality_control_V2.by_exon_depth##","${coord_generator.padded_coord}"] #"${name}_coverage_statistics_by_exon.tsv"
- Array[String] array_path_save_byexon = mkdir_samplename.path_out_softlink
- 
-
- Array[Pair[String,File]] test_save1 = zip (array_path_save_byexon, test1)
-  scatter (pairs in test_save1) {
-    call symlink_important_files as test{
-        input:
-        output_to_save = pairs.right,
-        path_save = pairs.left
-    }
-  }
- Array[Pair[String,File]] test_save2 = zip (array_path_save_byexon, test2)
-  scatter (pairs in test_save2) {
-    call symlink_important_files as test_2{
-        input:
-        output_to_save = pairs.right,
-        path_save = pairs.left
-    }
-  }
-#  Array[Pair[String,File]] test_save3 = zip (array_path_save_byexon, test3)
-#   scatter (pairs in test_save3) {
-#     call symlink_important_files as test_3{
+#  Array[Pair[String,File]] test_save1 = zip (array_path_save_byexon, test1)
+#   scatter (pairs in test_save1) {
+#     call symlink_important_files as test{
 #         input:
 #         output_to_save = pairs.right,
 #         path_save = pairs.left
@@ -548,7 +536,12 @@ call qual_control.quality_control_V2 {
 #   }
 
 
- #Array[Pair[String,File]] samples_by_exon = zip (array_path_save_byexon, prof_by_exon)
+
+ 
+ ##descomentar abajo y borrar la de arriba
+ Array[File] prof_by_exon = quality_control_V2.by_exon_depth##","${coord_generator.padded_coord}"] #"${name}_coverage_statistics_by_exon.tsv"
+ Array[String] array_path_save_byexon = mkdir_samplename.path_out_softlink
+
  Array[Pair[String,File]] samples_by_exon = zip (array_path_save_byexon, prof_by_exon)
   scatter (pairs in samples_by_exon) {
     call symlink_important_files as byexon{
@@ -560,6 +553,18 @@ call qual_control.quality_control_V2 {
 
 ### poner el exon_distance con el vcf anotado_hnrg freq
 ## anotar con plof, gnomad /home/hnrg/HNRG-pipeline-V0.1/libraries/GRCh37/gnomad_plof_HNRG.tsv
+####for pdf purpose 
+  Array[File] alineamiento_rep = bam2gvcf.reporte_final ### archivo para mergear... estadistica en la libreria del experimento
+  Array[File] global = quality_control_V2.depth_global_cov_stats
+  #Array[File] fastp_qual = quality_control_V2.fastp_rep_out
+  Array[File] sex_pred= quality_control_V2.bams_sex_prediction
+ 
+#  scatter (indice in range(length(alineamiento_rep))){
+       
+#        String S1 = basename(alineamiento_rep[indice],"_samtools_report.tsv")
+#        String S2 = basename(prof_by_exon[indice],"_global_coverage_statistics_V2.0.tsv")
+#        String S3 = basename(fastp[indice],"_fastp_report.tsv")
+#        String S4 = basename(sex_pred[indice],"_sex.txt")
 
  ####excel_report
 Array[File] Tsv_annovar = singleGenotypeGVCFs.annovar_tsv_out
@@ -576,9 +581,20 @@ Array[File] Tsv_annovar = singleGenotypeGVCFs.annovar_tsv_out
             exon_coverage_report = prof_by_exon[idx]
             
            }
+        call pdf_report {
+            input:
+            alineamiento = Tsv_annovar[idx],
+            name = samplename2,
+            glob_rep = global[idx],
+            sex = sex_pred[idx],
+            #fastp_rep = fastp_qual[idx],
+            fastp_rep = quality_control_V2.fastp_rep_out[idx],
+            tso = basename(tabulatedSampleFilePaths, ".txt"),
+            date = run_date,
+            path = array_path_save_json[idx]
+            
+           }  
           }
-      
-      
 
     }
 
