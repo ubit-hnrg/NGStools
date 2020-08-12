@@ -22,8 +22,8 @@ bam = args.bam
 #x = subprocess.Popen(['samtools', 'view', bam ,'X','-c'],stdout=subprocess.PIPE)#.communicate()[0]#,shell = True).communicate()[0]#,stderr=subprocess.STDOUT)#.communicate()[0]#,stdout=subprocess.PIPE,stdin=subprocess.PIPE)#.communicate()[0]
 #,stdout=subprocess.PIPE)#.communicate()[0]#,shell = True).communicate()[0]#,stderr=subprocess.STDOUT)#.communicate()[0]#,stdout=subprocess.PIPE,stdin=subprocess.PIPE)#.communicate()[0]
 
-x = subprocess.check_output(['samtools', 'view', bam ,'X','-c'])
-y = subprocess.check_output(['samtools', 'view', bam ,'Y','-c'])
+x = int(subprocess.check_output(['samtools', 'view', bam ,'X','-c']))
+y = int(subprocess.check_output(['samtools', 'view', bam ,'Y','-c']))
 
 
 sample = os.path.splitext(os.path.basename(bam))[0] #subprocess.call(["basename","bam",".bam"],shell = True)# ,stdout=subprocess.PIPE).communicate()[0]
