@@ -584,7 +584,7 @@ call qual_control.quality_control_V2 {
            }
         call pdf_report {
             input:
-            alineamiento = Tsv_annovar[idx],
+            alineamiento = alineamiento_rep[idx],
             name = samplename2,
             glob_rep = global[idx],
             sex = sex_pred[idx],
