@@ -24,8 +24,8 @@ fastp = args.fastq_file
 a_qual = args.alignment_quality
 bam_dp = args.depth_quality
 sex_f = args.sex
-name = args.name
-date = args.date
+sample_id = args.name
+fecha_corrida = args.date
 TSO = args.TSO
 
 outfile = args.pdf_report
@@ -61,6 +61,6 @@ alineamiento = pd.read_csv(a_qual,sep='\t',index_col =0,header = 0).T
 alineamiento_df = alineamiento.iloc[:,0:]
 
 
-html = pug_to_html(pug_template,title=name, genero=sex_df,antes = antes,despues = desp, NNN=NNN, prof1 = prof_df_1, prof2=prof_df_2, TSO = TSO, fecha = fecha, alineamiento = alineamiento_df)#, profundidad= muestra_prof_lib,version= version, N_lecturas_antes = N_lecturas_antes, N_lecturas_dps = N_lecturas_dps, N_lecturas_dps_percent = N_lecturas_dps_percent, lecturas_lowqual = lecturas_lowqual, lecturas_NN = lecturas_NN, short_reading = short_reading, too_long=too_long, q_30_bef=q_30_bef,q_30_aft=q_30_aft, q20_bef= q20_bef, q20_after=q20_after)
+html = pug_to_html(pug_template,title=sample_id, genero=sex_df,antes = antes,despues = desp, NNN=NNN, prof1 = prof_df_1, prof2=prof_df_2, TSO = TSO, fecha = fecha_corrida, alineamiento = alineamiento_df)#, profundidad= muestra_prof_lib,version= version, N_lecturas_antes = N_lecturas_antes, N_lecturas_dps = N_lecturas_dps, N_lecturas_dps_percent = N_lecturas_dps_percent, lecturas_lowqual = lecturas_lowqual, lecturas_NN = lecturas_NN, short_reading = short_reading, too_long=too_long, q_30_bef=q_30_bef,q_30_aft=q_30_aft, q20_bef= q20_bef, q20_after=q20_after)
 write_report(html, outfile)
 
