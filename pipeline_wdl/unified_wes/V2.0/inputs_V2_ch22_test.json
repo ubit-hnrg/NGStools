@@ -106,8 +106,8 @@
   "main_workflow.FuncionalAnnotationSingle.step12_clinVar.database_index": "/home/hnrg/HNRG-pipeline-V0.1/new_dbs/clinvar_20200127.vcf.gz.tbi",
 
   "##_COMENTARIO": "Base de datos sacada del bundle de bitgenia... (ACTUALIZAR).",
-  "main_workflow.FuncionalAnnotationSingle.step13_pharmGKB.database_index": "/home/hnrg/HNRG-pipeline-V0.1/dbs/GRCh37_snpsift/PharmGKBvcf_2016.vcf",
-  "main_workflow.FuncionalAnnotationSingle.step13_pharmGKB.database": "/home/hnrg/HNRG-pipeline-V0.1/dbs/GRCh37_snpsift/PharmGKBvcf_2016.vcf.sidx",
+  "main_workflow.FuncionalAnnotationSingle.step13_pharmGKB.database_index": "/home/hnrg/HNRG-pipeline-V0.1/dbs/GRCh37_snpsift/PharmGKBvcf_2016.vcf.sidx",
+  "main_workflow.FuncionalAnnotationSingle.step13_pharmGKB.database": "/home/hnrg/HNRG-pipeline-V0.1/dbs/GRCh37_snpsift/PharmGKBvcf_2016.vcf",
 
   "##_COMENTARIO": "Base de datos actualizada Noviembre 2018.(no cambia desde 27/2/17)",
   "main_workflow.FuncionalAnnotationSingle.final_annot.database": "/home/hnrg/HNRG-pipeline-V0.1/dbs/GRCh37_snpsift/ExAC.r1.sites.vep.vcf.gz",
