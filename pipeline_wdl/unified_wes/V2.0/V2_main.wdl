@@ -574,7 +574,7 @@ call qual_control.quality_control_V2 {
        String sample = basename(Tsv_annovar[idx],"multianno_restrict.tsv")
        String samplename2 = basename(prof_by_exon[idx],"_coverage_statistics_by_exon_V2.0.tsv")
        
-       if(sample==samplename2){
+       #if(sample==samplename2){
        #call build_excell_report {
        #     input:
        #     annovar_tsv = Tsv_annovar[idx],
@@ -595,7 +595,7 @@ call qual_control.quality_control_V2 {
             path = array_path_save_json[idx]
             
            }  
-        }
+        #}
 
     }
 
