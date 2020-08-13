@@ -185,16 +185,25 @@ task build_excell_report{
 task pdf_report {
   
   File alineamiento 
+  String S1 = basename(alineamiento)
   String name 
   File glob_rep 
+  String S2 = basename(glob_rep)
   File sex 
-  File fastp_rep 
+  String S3 = basename(sex)
+  File fastp_rep
+  String S4 = basename(fastp_rep)
   String tso 
   String date
   String path
 
   command {
+  
     /home/hnrg/NGStools/python_scripts/pdf_report_per_sample.py -fq ${fastp_rep} -aq ${alineamiento} -dq ${glob_rep} -s ${sex} -n ${name} -d ${date} -t ${tso} -o ${path}/${name}_qual_report.pdf
+  echo "${S1}"
+  echo "${S2}"
+  echo "${S3}"
+  echo "${S4}"
   }
 
 
