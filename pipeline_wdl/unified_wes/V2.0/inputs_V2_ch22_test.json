@@ -34,7 +34,7 @@
   "main_workflow.ref_sa": "/home/hnrg/HNRG-pipeline-V0.1/references/hs37d5/hs37d5.fa.sa",
   "main_workflow.ref_ann": "/home/hnrg/HNRG-pipeline-V0.1/references/hs37d5/hs37d5.fa.ann",
   "main_workflow.ref_fasta_index": "/home/hnrg/HNRG-pipeline-V0.1/references/hs37d5/hs37d5.fa.fai",
-  "main_workflow.ref_fasta": "/home/hnrg/HNRG-pipeline-V0.1/references/hs37d5/hs37d5.fa.ann",
+  "main_workflow.ref_fasta": "/home/hnrg/HNRG-pipeline-V0.1/references/hs37d5/hs37d5.fa",
   "main_workflow.ref_amb": "/home/hnrg/HNRG-pipeline-V0.1/references/hs37d5/hs37d5.fa.amb",
 
   "##COMMENT7": "EXPERIMENT LIB, INTERVAL LIST, GENERADOR DE INTERVALO",
