@@ -111,7 +111,7 @@
 
   "##_COMENTARIO": "Base de datos actualizada Noviembre 2018.(no cambia desde 27/2/17)",
   "main_workflow.FuncionalAnnotationSingle.final_annot.database": "/home/hnrg/HNRG-pipeline-V0.1/dbs/GRCh37_snpsift/ExAC.r1.sites.vep.vcf.gz",
-  "main_workflow.FuncionalAnnotationSingle.final_annot.database_index": "/home/hnrg/HNRG-pipeline-V0.1/dbs/GRCh37_snpsift/ExAC.r1.sites.vep.vcf.tbi"
+  "main_workflow.FuncionalAnnotationSingle.final_annot.database_index": "/home/hnrg/HNRG-pipeline-V0.1/dbs/GRCh37_snpsift/ExAC.r1.sites.vep.vcf.gz.tbi"
 
 }
   
