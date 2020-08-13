@@ -52,12 +52,12 @@ desp = filtrado_df[despues_col]#.set_index('total de lecturas despues del filtra
 NNN = filtrado_df[NNN_col]#.set_index('lecturas lowqual[%]')
 
 ###profundidad
-prof = pd.read_csv(global_report, sep='\t',index_col = 0, header = None).T
+prof = pd.read_csv(bam_dp, sep='\t',index_col = 0, header = None).T
 prof_df_1 = prof.iloc[:,1:5]
 prof_df_2 = prof.iloc[:,5:]
 
 ###alineamiento
-alineamiento = pd.read_csv(samtools_rep,sep='\t',index_col =0,header = 0).T
+alineamiento = pd.read_csv(a_qual,sep='\t',index_col =0,header = 0).T
 alineamiento_df = alineamiento.iloc[:,0:]
 
 
