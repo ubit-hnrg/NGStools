@@ -194,7 +194,7 @@ task pdf_report {
   String path
 
   command {
-    /home/hnrg/NGStools/python_scripts/pdf_report_per_sample.py -fq ${fastp_rep} -aq ${alineamiento} -dp ${glob_rep} -s ${sex} -n ${name} -d ${date} -t ${tso} -o ${path}/${name}_qual_report.pdf
+    /home/hnrg/NGStools/python_scripts/pdf_report_per_sample.py -fq ${fastp_rep} -aq ${alineamiento} -dq ${glob_rep} -s ${sex} -n ${name} -d ${date} -t ${tso} -o ${path}/${name}_qual_report.pdf
   }
 
 
