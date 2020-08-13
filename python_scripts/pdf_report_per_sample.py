@@ -20,7 +20,7 @@ parser.add_argument('-o','--pdf_report')
 
 args =  parser.parse_args()
 
-fastq = args.fastq_file
+fastp = args.fastq_file
 a_qual = args.alignment_quality
 bam_dp = args.depth_quality
 sex_f = args.sex
