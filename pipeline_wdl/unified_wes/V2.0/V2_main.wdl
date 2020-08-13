@@ -441,7 +441,7 @@ workflow main_workflow {
         array_path_save = mkdir_samplename.path_out_softlink,
         dbSNP_vcf = dbSNP_vcf,
         dbSNP_vcf_index = dbSNP_vcf_index,
-        callset_name = basename(tabulatedSampleFilePaths, ".txt"),
+        callset_name = sample_name ##basename(tabulatedSampleFilePaths, ".txt"), ###cambio el nombre, antes anotaba con nombre de TSO.
         ref_fasta = ref_fasta,
         ref_fasta_index =ref_fasta_index,
         ref_dict = ref_dict,
@@ -575,11 +575,11 @@ call qual_control.quality_control_V2 {
        String samplename2 = basename(prof_by_exon[idx],"_coverage_statistics_by_exon_V2.0.tsv")
        
        if(sample==samplename2){
-       call build_excell_report {
-            input:
-            annovar_tsv = Tsv_annovar[idx],
-            samplename2 = samplename2,
-            exon_coverage_report = prof_by_exon[idx]
+       #call build_excell_report {
+       #     input:
+       #     annovar_tsv = Tsv_annovar[idx],
+       #     samplename2 = samplename2,
+       #     exon_coverage_report = prof_by_exon[idx]
             
            }
         call pdf_report {
