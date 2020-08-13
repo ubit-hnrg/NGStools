@@ -441,7 +441,7 @@ workflow main_workflow {
         array_path_save = mkdir_samplename.path_out_softlink,
         dbSNP_vcf = dbSNP_vcf,
         dbSNP_vcf_index = dbSNP_vcf_index,
-        callset_name = sample_name ##basename(tabulatedSampleFilePaths, ".txt"), ###cambio el nombre, antes anotaba con nombre de TSO.
+        callset_name = sample_name, ##basename(tabulatedSampleFilePaths, ".txt"), ###cambio el nombre, antes anotaba con nombre de TSO.
         ref_fasta = ref_fasta,
         ref_fasta_index =ref_fasta_index,
         ref_dict = ref_dict,
@@ -581,7 +581,7 @@ call qual_control.quality_control_V2 {
        #     samplename2 = samplename2,
        #     exon_coverage_report = prof_by_exon[idx]
             
-           }
+           #}
         call pdf_report {
             input:
             alineamiento = alineamiento_rep[idx],
@@ -595,20 +595,20 @@ call qual_control.quality_control_V2 {
             path = array_path_save_json[idx]
             
            }  
-          }
+        }
 
     }
 
-Array[File?] reporte_variantes = build_excell_report.excell_report
+#Array[File?] reporte_variantes = build_excell_report.excell_report
 #Array[String] array_path_save_byexon = mkdir_samplename.path_out_softlink
- Array[Pair[String,File?]] samples_by_variant = zip (array_path_save_byexon, reporte_variantes)
-  scatter (pairs in samples_by_variant) {
-    call symlink_important_files as build_excell_reportbyvariants{
-        input:
-        output_to_save = pairs.right,
-        path_save = pairs.left
-    }
-  }
+# Array[Pair[String,File?]] samples_by_variant = zip (array_path_save_byexon, reporte_variantes)
+#  scatter (pairs in samples_by_variant) {
+#    call symlink_important_files as build_excell_reportbyvariants {
+#        input:
+#        output_to_save = pairs.right,
+#        path_save = pairs.left
+#    }
+#  }
 
 
 
