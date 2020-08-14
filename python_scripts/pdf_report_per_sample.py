@@ -44,7 +44,7 @@ sex_df = pd.read_csv(sex_f, sep= '\t', header = None, usecols =[1,3,5])
 sex_df.rename(columns= {1:'SEXO',3:'lecturas_X',5:'lecturas_Y'},inplace =True)
 
 filtrado_df = pd.read_csv(fastp, sep='\t', header = None,index_col = 0).T 
-antes_col = ['total de lecturas antes del filtrado','q30 antes del filtrado[%]','q30 antes del filtrado[%]','longitud media R1 antes del filtrado','longitud media R2 antes del filtrado']
+antes_col = ['total de lecturas antes del filtrado','q30 antes del filtrado[%]','longitud media R1 antes del filtrado','longitud media R2 antes del filtrado']
 despues_col = ['total de lecturas despues del filtrado','total de lecturas despues del filtrado[%]','q30 despues del filtrado[%]','q20 despues del filtrado[%]','longitud media R1 despues del filtrado','longitud media R2 despues del filtrado']
 NNN_col = ['lecturas lowqual[%]', 'lecturas NNNNN[%]', 'lecturas muy cortas[%]','lecturas muy largas[%]']
 antes = filtrado_df[antes_col]#.index('total de lecturas antes del filtrado')
