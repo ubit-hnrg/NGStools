@@ -226,7 +226,7 @@ command{
     grep "^#" ${vcf_ok} > head_vcf.vcf
     grep -v "#" ${vcf_ok}| sort -k1,1 -k2,2n >> head_vcf.vcf
 
-    bedtools closest -a head_vcf.vcf -b ${exon_coord} -D ref | cut -f 1,2,12-17  > ${sample_name}.exon_distance.tsv
+    bedtools closest -a head_vcf.vcf -b ${exon_coord} -D ref | cut -f 1,2,12-18  > ${sample_name}.exon_distance.tsv
 
     rm head_vcf.vcf
     }

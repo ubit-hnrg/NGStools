@@ -477,7 +477,7 @@ workflow main_workflow {
 
     call anotacionesSingle.FuncionalAnnotationSingle {
         input:
-        input_vcf = singleGenotypeGVCFs.restricted_vcf,
+        input_vcf = singleGenotypeGVCFs.individual_vcfs_annovar,#restricted_vcf,
         path_save = mkdir_samplename.path_out_softlink,
         toolpath = toolpath,
         samplename1 = sample_name,
