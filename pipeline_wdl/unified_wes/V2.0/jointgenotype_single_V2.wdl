@@ -566,7 +566,8 @@ task get_tsv_from_annovar {
     
     ####agrego un awk para buscar los genes de annovar y hacer un archivo con la tabla gnomad_plof para esos genes.
     cat ${sample}.multianno_restrict.tsv | cut -f20 | uniq > ${sample}.gene_list_for_plof.list
-    awk 'NR == FNR {gene_list[$1];next} ($1 in gene_list)' ${sample}.gene_list_for_plof.list ${gnomad_plof} > ${sample}_plof.tsv
+    head -n1 ${gnomad_plof} > ${sample}_plof.tsv
+    awk 'NR == FNR {gene_list[$1];next} ($1 in gene_list)' ${sample}.gene_list_for_plof.list ${gnomad_plof} >> ${sample}_plof.tsv
  
     >>>
     output{
