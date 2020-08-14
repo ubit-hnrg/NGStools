@@ -31,6 +31,7 @@ workflow singleGenotypeGVCFs {
     String db_annovar
     File annovar_table_pl
     File joinPY
+    File gnomad_plof_db
   
 
 
@@ -113,6 +114,7 @@ workflow singleGenotypeGVCFs {
 
         call get_tsv_from_annovar {
             input:
+            gnomad_plof = gnomad_plof_db,
             annovar_txt = annovar.annovar_txt,
             annovar_vcf = annovar.annovar_vcf,
             restrictedVCF = restrict_vcf.VCF_restricted,#rename_samples.multisample_vcf_restricted_renamed,
@@ -145,6 +147,8 @@ call symlink_important_files2 {
 
   output {
     # outputs from the small callset path through the wdl
+  
+
    File? restricted_vcf = restrict_vcf.VCF_restricted
    File? outputvcf = FinalGatherVcf.output_vcf
    File? outputvcfindex =  FinalGatherVcf.output_vcf_index
@@ -154,7 +158,8 @@ call symlink_important_files2 {
    File individual_vcfs_annovar = annovar.annovar_vcf
    #Array[File] individual_excell_reports = build_excell_report.excell_report
    File annovar_tsv_out = get_tsv_from_annovar.annovar_tsv
-
+   File annovar_gene_list = get_tsv_from_annovar.gene_list
+   File gene_plof_file = get_tsv_from_annovar.gene_plof
     # outputs from the large callset path through the wdl
     # (note that we do not list ApplyRecalibration here because it is run in both paths)
     #GatherMetrics.detail_metrics_file
@@ -536,7 +541,7 @@ task get_tsv_from_annovar {
     String sample
     #String sample1
     File joinPY    #this file merge the multianno.tsv file with the original multisample vcf
-
+    File gnomad_plof ###gnomad plof for hnrg -> lo usan en brasil.
 
     command <<<
     #columnas a cortar (localizando Otherinfo column y las 2 siguientes)
@@ -558,10 +563,16 @@ task get_tsv_from_annovar {
     python ${joinPY} --multianno_tsv=${sample}.hg19_multianno.tsv --vcf_multisample=${restrictedVCF} --output=${sample}.multianno_restrict.tsv
     #change dots by tabs.
     sed -i -e "s|\.	|	|g" ${sample}.multianno_restrict.tsv
-
+    
+    ####agrego un awk para buscar los genes de annovar y hacer un archivo con la tabla gnomad_plof para esos genes.
+    cat ${sample}.multianno_restrict.tsv | cut -f20 | uniq > ${sample}.gene_list_for_plof.list
+    awk 'NR == FNR {gene_list[$1];next} ($1 in gene_list)' ${sample}.gene_list_for_plof.list ${gnomad_plof} > ${sample}_plof.tsv
+ 
     >>>
     output{
         File annovar_tsv =  '${sample}.multianno_restrict.tsv'
+        File gene_list = '${sample}.gene_list_for_plof.list'
+        File gene_plof = '${sample}_plof.tsv'
     }
 }
 

@@ -58,6 +58,7 @@
   "main_workflow.contamination": "0",
   "main_workflow.compression_level": "1",
   "main_workflow.java_heap_memory_initial": "128m",
+  "main_workflow.singleGenotypeGVCFs.gnomad_plof_db": "/home/hnrg/HNRG-pipeline-V0.1/libraries/GRCh37/gnomad_plof_HNRG.tsv",
   
   "##COMMENT10": "ANNOVAR",
   "main_workflow.db_annovar": "/home/hnrg/HNRG-pipeline-V0.1/dbs/hg19_annovar/",

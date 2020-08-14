@@ -165,7 +165,7 @@ task coord_generator {
 task build_excell_report{
     File annovar_tsv
     File exon_coverage_report
-    #String sample
+    File plof
     String samplename2
     #String original_sample
   
@@ -173,7 +173,7 @@ task build_excell_report{
 
     command{
 
-       /home/hnrg/NGStools/pipeline_wdl/qualityControl/make_excel_report.py ${annovar_tsv}:Variants ${exon_coverage_report}:ExonCoverage ${samplename2}_variants.xlsx
+       /home/hnrg/NGStools/pipeline_wdl/qualityControl/make_excel_report.py ${annovar_tsv}:Variants ${exon_coverage_report}:ExonCoverage ${plof}:GnomAD PLOF ${samplename2}_variants.xlsx
    
    }    
 
@@ -576,7 +576,11 @@ call qual_control.quality_control_V2 {
 #        String S3 = basename(fastp[indice],"_fastp_report.tsv")
 #        String S4 = basename(sex_pred[indice],"_sex.txt")
 
+   Array[File] gene_list = singleGenotypeGVCFs.annovar_gene_list 
+   Array[File] plof = singleGenotypeGVCFs.gene_plof_file 
+
  ####excel_report
+
     Array[File] Tsv_annovar = singleGenotypeGVCFs.annovar_tsv_out
     scatter (idx in range(length(Tsv_annovar))){
        
@@ -587,6 +591,7 @@ call qual_control.quality_control_V2 {
        call build_excell_report {
             input:
             annovar_tsv = Tsv_annovar[idx],
+            plof = plof[idx],
             samplename2 = samplename2,
             exon_coverage_report = prof_by_exon[idx]
             
