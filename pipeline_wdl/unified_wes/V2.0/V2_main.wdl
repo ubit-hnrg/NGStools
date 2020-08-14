@@ -584,13 +584,13 @@ call qual_control.quality_control_V2 {
        String samplename2 = basename(prof_by_exon[idx],"_coverage_statistics_by_exon_V2.0.tsv")
        
        #if(sample==samplename2){
-       #call build_excell_report {
-       #     input:
-       #     annovar_tsv = Tsv_annovar[idx],
-       #     samplename2 = samplename2,
-       #     exon_coverage_report = prof_by_exon[idx]
+       call build_excell_report {
+            input:
+            annovar_tsv = Tsv_annovar[idx],
+            samplename2 = samplename2,
+            exon_coverage_report = prof_by_exon[idx]
             
-           #}
+           }
         call pdf_report {
             input:
             alineamiento = alineamiento_rep[idx],
