@@ -77,7 +77,7 @@ weighted_stats = DescrStatsW(coverage['count'], weights=coverage.count_length, d
 
 
 global_depth={}
-global_depth.update({'mean_DP':float(round(weighted_stats.mean,signif)})
+global_depth.update({'mean_DP':round(weighted_stats.mean,signif)})
 global_depth.update({'median_DP':weighted_stats.quantile(0.5).values[0]})
 global_depth.update({'std_DP':round(weighted_stats.std,signif)})
 global_depth.update({'q25_DP':weighted_stats.quantile(0.25).values[0]})
