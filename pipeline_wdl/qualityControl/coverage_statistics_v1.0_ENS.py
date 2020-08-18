@@ -26,7 +26,7 @@ sample = args.samplename
 output_global_coverage = args.output_global_report
 output_coverage_by_exon = args.output_exon_report
 
-coverage = pd.read_table(ffile)
+coverage = pd.read_csv(ffile, sep = '\t')
 
 signif=2
 
@@ -77,7 +77,7 @@ weighted_stats = DescrStatsW(coverage['count'], weights=coverage.count_length, d
 
 
 global_depth={}
-global_depth.update({'mean_DP':round(weighted_stats.mean,signif)})
+global_depth.update({'mean_DP':float(round(weighted_stats.mean,signif)})
 global_depth.update({'median_DP':weighted_stats.quantile(0.5).values[0]})
 global_depth.update({'std_DP':round(weighted_stats.std,signif)})
 global_depth.update({'q25_DP':weighted_stats.quantile(0.25).values[0]})
