@@ -40,7 +40,7 @@ def depth_fraction(coverage,thr=0,ZeroDepth=False):
         condition = coverage['count']== thr
 
 #    return coverage[condition].count_length.sum()/float(coverage.count_length.sum())
-    return coverage[condition].count_length.sum()/float(coverage.count_length.sum())
+    return float(coverage[condition].count_length.sum())/float(coverage.count_length.sum())
 
 
 coverage = pd.read_table(ffile)
@@ -95,7 +95,6 @@ depth1 = coverage.groupby(['geneSymbol','exon_number'])['count','count_length'].
 depth10 = coverage.groupby(['geneSymbol','exon_number'])['count','count_length'].apply(lambda x: depth_fraction(x,thr=10))
 depth20 = coverage.groupby(['geneSymbol','exon_number'])['count','count_length'].apply(lambda x: depth_fraction(x,thr=20))
 depth30 = coverage.groupby(['geneSymbol','exon_number'])['count','count_length'].apply(lambda x: depth_fraction(x,thr=30))
-
 
 depth_by_exon = pd.concat([depth1,depth10,depth20,depth30],axis=1)
 depth_by_exon.columns=['dp1','dp10','dp20','dp30']
