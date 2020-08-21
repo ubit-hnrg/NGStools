@@ -22,7 +22,7 @@ out = args.output_file
 
 ###distancia from vcf annotado.
 dist = pd.read_csv(path_dist,header =None,sep ='\t')#,usecols = [0,1,2,3,4,5,9])
-dist.rename(columns={0: 'CHROM',1:'pos',2:'e_start',3:'e_end',4:'gen_symbol',5:'exon_number',6:'strand',7:'dist'}, inplace=True)
+dist.rename(columns={0: 'CHROM',1:'pos',2:'e_start',3:'e_end',4:'ENSEMBL_ID',5:'gen_symbol',6:'exon_number',7:'strand',8:'dist'}, inplace=True)
 dist['exon_id']=dist[['gen_symbol','strand','exon_number','e_start','e_end']].apply(lambda x: '_'.join(x.values.astype(str)), axis=1)
 
 ###variants from annovar
