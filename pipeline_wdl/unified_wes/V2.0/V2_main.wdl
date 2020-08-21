@@ -182,17 +182,35 @@ task build_excell_report{
     }
 }    
 
+task join_annovar_exon_dist{
+String name
+File annovar_variants
+File exon_dist
+
+
+command {
+
+ /home/hnrg/NGStools/python_scripts/join_annovar_exon_dist.py -d ${exon_dist} -a ${annovar_variants} -o ${name}.anno_variants.tsv
+}
+
+output {
+File anno_dist = "${name}.anno_variants.tsv"
+}
+
+}
+
+
 task pdf_report {
   
   File alineamiento 
-  String S1 = basename(alineamiento)
+  #String S1 = basename(alineamiento)
   String name 
   File glob_rep 
-  String S2 = basename(glob_rep)
+  #String S2 = basename(glob_rep)
   File sex 
-  String S3 = basename(sex)
+  #String S3 = basename(sex)
   File fastp_rep
-  String S4 = basename(fastp_rep)
+  #String S4 = basename(fastp_rep)
   String tso 
   String date
   String path
@@ -200,10 +218,7 @@ task pdf_report {
   command {
   
     /home/hnrg/NGStools/python_scripts/pdf_report_per_sample.py -fq ${fastp_rep} -aq ${alineamiento} -dq ${glob_rep} -s ${sex} -n ${name} -d ${date} -t ${tso} -o ${path}/${name}_qual_report.pdf
-  echo "${S1}"
-  echo "${S2}"
-  echo "${S3}"
-  echo "${S4}"
+  
   }
 
 
@@ -562,7 +577,10 @@ call qual_control.quality_control_V2 {
   }
 
 ### poner el exon_distance con el vcf anotado_hnrg freq
-## anotar con plof, gnomad /home/hnrg/HNRG-pipeline-V0.1/libraries/GRCh37/gnomad_plof_HNRG.tsv
+
+## anotar con plof, gnomad /home/hnrg/HNRG-pipeline-V0.1/libraries/GRCh37/gnomad_plof_HNRG.tsv ###done, mejorarlo porque lo quieren en la misma hoja
+
+
 ####for pdf purpose 
   Array[File] alineamiento_rep = bam2gvcf.reporte_final ### archivo para mergear... estadistica en la libreria del experimento
   Array[File] global = quality_control_V2.depth_global_cov_stats
@@ -578,6 +596,7 @@ call qual_control.quality_control_V2 {
 
    Array[File] gene_list = singleGenotypeGVCFs.annovar_gene_list 
    Array[File] plof = singleGenotypeGVCFs.gene_plof_file 
+   Array[File] exon_distances = FuncionalAnnotationSingle.vcf_exon_distance
 
  ####excel_report
 
@@ -588,9 +607,18 @@ call qual_control.quality_control_V2 {
        String samplename2 = basename(prof_by_exon[idx],"_coverage_statistics_by_exon_V2.0.tsv")
        
        #if(sample==samplename2){
+         #mergear tsv_annovar con distancias_exones
+        
+      call join_annovar_exon_dist {
+          input:
+            name = samplename2,
+              annovar_variants = Tsv_annovar[idx],
+              exon_dist = exon_distances[idx]
+         }
+
        call build_excell_report {
             input:
-            annovar_tsv = Tsv_annovar[idx],
+            annovar_tsv = join_annovar_exon_dist.anno_dist,
             plof = plof[idx],
             samplename2 = samplename2,
             exon_coverage_report = prof_by_exon[idx]
