@@ -185,12 +185,17 @@ task build_excell_report{
 task join_annovar_exon_dist{
 String name
 File annovar_variants
+String S1 = basename(anno_variants)
 File exon_dist
-
+String S2 = basename(exon_dist)
+String 
 
 command {
 
  /home/hnrg/NGStools/python_scripts/join_annovar_exon_dist.py -d ${exon_dist} -a ${annovar_variants} -o ${name}.anno_variants.tsv
+echo "${S1}"
+echo "${S2}"
+
 }
 
 output {
