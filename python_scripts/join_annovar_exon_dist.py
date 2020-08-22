@@ -34,4 +34,4 @@ columnas_merged = len(merged.columns)
 ##rearrange 
 merged_ok =merged.iloc[:,np.r_[0:19,141,143,columnas_merged-2,columnas_merged-1,20:140,142,144:columnas_variants]]
 
-merged_ok.to_csv(out, sep = '\t')
+merged_ok.to_csv(out, sep = '\t', index = False)
