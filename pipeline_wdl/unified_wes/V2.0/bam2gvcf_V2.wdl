@@ -423,7 +423,7 @@ task HaplotypeCaller {
       HaplotypeCaller \
       -R ${ref_fasta} \
       -I ${input_bam} \
-      -O ${gvcf_basename}.vcf.gz \
+      -O ${gvcf_basename}.g.vcf.gz \
       -L ${interval_list} \
       -ip 100 \
       -contamination ${default=null contamination} \
@@ -433,14 +433,14 @@ task HaplotypeCaller {
       --native-pair-hmm-threads ${gatk_gkl_pairhmm_threads} \
       --smith-waterman ${smith_waterman_implementation} \
       --use-new-qual-calculator ${newqual} \
-      --bam-output= ${gvcf_basename}_haplotype.bam
+      --bam-output= ${gvcf_basename}_haplotype.bam ###realigned reads
 
        
 >>>
 
   output {
-    File output_gvcf = "${gvcf_basename}.vcf.gz"
-    File output_gvcf_index = "${gvcf_basename}.vcf.gz.tbi"
+    File output_gvcf = "${gvcf_basename}.g.vcf.gz"
+    File output_gvcf_index = "${gvcf_basename}.g.vcf.gz.tbi"
     File bam_haplotypecaller = "${gvcf_basename}_haplotype.bam"
 
   }
