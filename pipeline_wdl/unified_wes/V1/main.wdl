@@ -139,7 +139,7 @@ task coord_generator {
 
     java -jar ${toolpath}${gatk_jar} BedToIntervalList -I=intervalo_b37_padded_${padding}.bed -O=intervalo_b37_padded_${padding}.interval_list -SD=${ref_dict}
      
-    cp -L {experiment_lib} ${path_save}
+    cp -L ${experiment_lib} ${path_save}
     cp -L intervalo_b37_padded_${padding}.bed ${path_save}
     cp -L intervalo_b37_padded_${padding}_merged_${merge_tolerance}_preprocessing.interval_list ${path_save}
     cp -L intervalo_b37_padded_${padding}.interval_list ${path_save}
