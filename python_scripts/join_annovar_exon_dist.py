@@ -28,7 +28,7 @@ dist['exon_id']=dist[['gen_symbol','strand','exon_number','e_start','e_end']].ap
 ###variants from annovar
 variants = pd.read_csv(path_variants, header= 0, sep ='\t')
 ##merge
-merged = pd.merge(left = variants, right = dist, left_on = 'POS', right_on = 'pos' )
+merged = pd.merge(left = variants, right = dist, left_on = 'POS', right_on = 'pos', how= 'left' )
 columnas_variants = len(variants.columns)
 columnas_merged = len(merged.columns)
 ##rearrange 
