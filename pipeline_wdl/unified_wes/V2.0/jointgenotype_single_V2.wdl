@@ -102,9 +102,23 @@ workflow singleGenotypeGVCFs {
     toolpath = toolpath
   }
 
+  call filtro_no_calls {
+    input:
+    gatk_jar = gatk_jar,
+    vcf_in = restrict_vcf.VCF_restricted,
+    sample_name = sample_name,
+    toolpath = toolpath,
+    ref_fasta = ref_fasta,
+    ref_fasta_index = ref_fasta_index,
+    ref_dict = ref_dict,
+    path_save = array_path_save
+}
+
+
+
   call annovar {
             input:
-            one_sample_vcf =  restrict_vcf.VCF_restricted,#get_individual_vcf.one_sample_vcf,
+            one_sample_vcf =  filtro_no_calls.one_sample_vcf,#restrict_vcf.VCF_restricted,#get_individual_vcf.one_sample_vcf,
             sample = sample_name,#idsample.idsample,
             annovar_table_pl = annovar_table_pl,
             db_annovar = db_annovar
@@ -500,6 +514,49 @@ task restrict_vcf{
     output {
         File VCF_restricted = "${base}_restricted.vcf"
     }
+
+}
+
+task filtro_no_calls {
+
+
+File ref_fasta
+File ref_fasta_index
+File ref_dict
+
+File vcf_in
+String sample_name
+String toolpath
+String gatk_jar
+
+String path_save
+
+
+    command<<<
+        ##split vcf according to $i sample. This file contain all samples but only those relevant for $i one
+        cat ${vcf_in} | java -jar ${toolpath}/SnpSift.jar filter "(GEN[${sample_name}].GT!='./.')&(GEN[${sample_name}].GT != '0/0')" >  faceted_one_sample_vcf
+
+        ##these steps remove the remaining samples of the vcf.
+        cat <(grep '^##' faceted_one_sample_vcf) <(grep -v '^##' faceted_one_sample_vcf| csvcut -t -c '#CHROM',POS,ID,REF,ALT,QUAL,FILTER,INFO,FORMAT,${sample_name} | csvformat -T) > ${sample_name}_filter.vcf 
+
+        rm faceted_one_sample_vcf
+
+      #   java -Xmx2g -Xms2g -jar ${toolpath}${gatk_jar} \
+      #   SelectVariants \
+      #   -V ${vcf_in} \
+      #   -R ${ref_fasta}\
+      #   -output ${sample_name}_filter_agu.vcf \
+      #   -invert-select 'vc.getHomRefCount() == vc.getCalledChrCount()/2' \ # outcome: vcf sites where all the samples are not GT = ./. (no call) or GT = 0/0
+
+      #  cp -L ${sample_name}_filter.vcf ${path_save}
+      #  cp -L ${sample_name}_filter_agu.vcf ${path_save}
+
+    >>>
+
+output {
+    File one_sample_vcf = '${sample_name}_filter.vcf'
+   # File filtro_nocall_vcf =  '${sample_name}_filter_agu.vcf'
+    }  
 
 }
 
