@@ -119,9 +119,11 @@ task coord_generator {
 
     java -jar ${toolpath}${gatk_jar} BedToIntervalList -I=intervalo_b37_padded_${padding}.bed -O=intervalo_b37_padded_${padding}.interval_list -SD=${ref_dict}
      
-    ####TSO_restricted for quality_control
-    ${toolpath}bedtools2/bin/intersectBed -wa -a ${generic_exon_coords} -b intervalo_b37_padded_${padding}.bed | sort -k1,1 -k2,2n -V | uniq > exon_restricted2interval.bed
- 
+    ####TSO_restricted for quality_control experiment_lib
+    #${toolpath}bedtools2/bin/intersectBed -wa -a ${generic_exon_coords} -b intervalo_b37_padded_${padding}.bed | sort -k1,1 -k2,2n -V | uniq > exon_restricted2interval.bed
+        ${toolpath}bedtools2/bin/intersectBed -wa -a ${generic_exon_coords} -b ${experiment_lib} | sort -k1,1 -k2,2n -V | uniq > exon_restricted2interval.bed
+
+
     cp -L ${experiment_lib} ${path_save}
     cp -L intervalo_b37_padded_${padding}.bed ${path_save}
     cp -L intervalo_b37_padded_${padding}_merged_${merge_tolerance}_preprocessing.interval_list ${path_save}
