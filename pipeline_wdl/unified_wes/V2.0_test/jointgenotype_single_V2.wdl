@@ -543,10 +543,10 @@ String path_save
 
         java -Xmx2g -Xms2g -jar ${toolpath}${gatk_jar} \
         SelectVariants \
-        -V ${vcf_in} 
-        -R ${ref_fasta}
-        -O ${sample_name}_filter_agu.vcf
-        -invert-select 'vc.getHomRefCount() == vc.getCalledChrCount()/2' # outcome: vcf sites where all the samples are not GT = ./. (no call) or GT = 0/0
+        -V ${vcf_in} \
+        -R ${ref_fasta}\
+        -output ${sample_name}_filter_agu.vcf \
+        -invert-select 'vc.getHomRefCount() == vc.getCalledChrCount()/2' \ # outcome: vcf sites where all the samples are not GT = ./. (no call) or GT = 0/0
 
        cp -L ${sample_name}_filter.vcf ${path_save}
        cp -L ${sample_name}_filter_agu.vcf ${path_save}
