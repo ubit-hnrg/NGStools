@@ -541,21 +541,21 @@ String path_save
 
         rm faceted_one_sample_vcf
 
-        java -Xmx2g -Xms2g -jar ${toolpath}${gatk_jar} \
-        SelectVariants \
-        -V ${vcf_in} \
-        -R ${ref_fasta}\
-        -output ${sample_name}_filter_agu.vcf \
-        -invert-select 'vc.getHomRefCount() == vc.getCalledChrCount()/2' \ # outcome: vcf sites where all the samples are not GT = ./. (no call) or GT = 0/0
+      #   java -Xmx2g -Xms2g -jar ${toolpath}${gatk_jar} \
+      #   SelectVariants \
+      #   -V ${vcf_in} \
+      #   -R ${ref_fasta}\
+      #   -output ${sample_name}_filter_agu.vcf \
+      #   -invert-select 'vc.getHomRefCount() == vc.getCalledChrCount()/2' \ # outcome: vcf sites where all the samples are not GT = ./. (no call) or GT = 0/0
 
-       cp -L ${sample_name}_filter.vcf ${path_save}
-       cp -L ${sample_name}_filter_agu.vcf ${path_save}
+      #  cp -L ${sample_name}_filter.vcf ${path_save}
+      #  cp -L ${sample_name}_filter_agu.vcf ${path_save}
 
     >>>
 
 output {
     File one_sample_vcf = '${sample_name}_filter.vcf'
-    File filtro_nocall_vcf =  '${sample_name}_filter_agu.vcf'
+   # File filtro_nocall_vcf =  '${sample_name}_filter_agu.vcf'
     }  
 
 }
