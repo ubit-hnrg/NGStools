@@ -121,7 +121,9 @@ task coord_generator {
      
     ####TSO_restricted for quality_control experiment_lib
     #${toolpath}bedtools2/bin/intersectBed -wa -a ${generic_exon_coords} -b intervalo_b37_padded_${padding}.bed | sort -k1,1 -k2,2n -V | uniq > exon_restricted2interval.bed
-        ${toolpath}bedtools2/bin/intersectBed -wa -a ${generic_exon_coords} -b ${experiment_lib} | sort -k1,1 -k2,2n -V | uniq > exon_restricted2interval.bed
+    
+    ##testing con experiment lib en vezde intervalo paddeado
+    ${toolpath}bedtools2/bin/intersectBed -a ${generic_exon_coords} -b ${experiment_lib} | sort -k1,1 -k2,2n -V | uniq > exon_restricted2interval.bed
 
 
     cp -L ${experiment_lib} ${path_save}
