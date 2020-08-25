@@ -506,7 +506,7 @@ workflow main_workflow {
         samplename1 = sample_name,
         java_heap_memory_initial = "12g",
         pipeline_v = pipeline_version,
-        exon_coordinates = coord_generator.interval_restricted,
+        exon_coordinates = experiment_lib,#coord_generator.interval_restricted,
         reference_version = reference_version
         
 
@@ -550,7 +550,8 @@ call qual_control.quality_control_V2 {
    analysis_readybam_index = bam2gvcf.analysis_ready_bam_index,
    toolpath = toolpath,
    Tso_name = basename(tabulatedSampleFilePaths, ".txt"),
-   exon_coords = coord_generator.interval_restricted,
+   exon_coords = experiment_lib,
+   #exon_coords = coord_generator.interval_restricted,
    pipeline_v = pipeline_version
    #tso_bed = tso_bed
   }
