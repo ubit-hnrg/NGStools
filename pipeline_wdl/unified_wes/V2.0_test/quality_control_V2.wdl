@@ -55,7 +55,12 @@ task bam_depth {
   #awk -F"\t" '{print $6"\t"$7"\t"$8"\t"$9"\t"$4"\t"$5"\t"$1"\t"$2"\t"$3}' ${name}_loj.txt > ${name}_loj_sorted_cols.tsv
 
   ### para el intervalo de ENSEMBL usar el de abajo y no el de arriba:
-  awk -F"\t" '{print $8"\t"$9"\t"$10"\t"$11"\t"$5"\t"$4"\t"$6"\t"$7"\t"$1"\t"$2"\t"$3}' ${name}_loj.txt > ${name}_loj_sorted_cols.tsv
+  #awk -F"\t" '{print $8"\t"$9"\t"$10"\t"$11"\t"$5"\t"$4"\t"$6"\t"$7"\t"$1"\t"$2"\t"$3}' ${name}_loj.txt > ${name}_loj_sorted_cols.tsv
+
+  #################### for agilent
+  awk -F"\t" '{print $5"\t"$6"\t"$7"\t"$8"\t"$4"\t"$1"\t"$2"\t"$3}'${name}_loj.txt > ${name}_loj_sorted_cols.tsv
+  #####################################################################solo sirve con intervalo de libreria agilent
+
 
   ${toolpath}bedtools2/bin/intersectBed -a ${name}_loj_sorted_cols.tsv -b ${Exon_coords}  > ${name}_loj_exon_filtered.coverage
 
