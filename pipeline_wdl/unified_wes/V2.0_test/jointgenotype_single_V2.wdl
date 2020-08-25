@@ -96,16 +96,16 @@ workflow singleGenotypeGVCFs {
   
 
   call restrict_vcf{
-    input:
-    VCF  = FinalGatherVcf.output_vcf,
-    region_padded_bed = region_padded_bed,
-    toolpath = toolpath
+   input:
+   VCF  = FinalGatherVcf.output_vcf,
+   region_padded_bed = region_padded_bed,
+   toolpath = toolpath
   }
 
   call filtro_no_calls {
     input:
     gatk_jar = gatk_jar,
-    vcf_in = restrict_vcf.VCF_restricted,
+    vcf_in = restrict_vcf.VCF_restricted,#FinalGatherVcf.output_vcf,# restrict_vcf.VCF_restricted,
     sample_name = sample_name,
     toolpath = toolpath,
     ref_fasta = ref_fasta,
