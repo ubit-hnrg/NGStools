@@ -123,7 +123,7 @@ task coord_generator {
     #${toolpath}bedtools2/bin/intersectBed -wa -a ${generic_exon_coords} -b intervalo_b37_padded_${padding}.bed | sort -k1,1 -k2,2n -V | uniq > exon_restricted2interval.bed
     
     ##testing con experiment lib en vezde intervalo paddeado
-    ${toolpath}bedtools2/bin/intersectBed -a ${generic_exon_coords} -b ${experiment_lib} | sort -k1,1 -k2,2n -V | uniq > exon_restricted2interval.bed
+    ${toolpath}bedtools2/bin/intersectBed -wa -b ${generic_exon_coords} -a ${experiment_lib} | sort -k1,1 -k2,2n -V | uniq > exon_restricted2interval.bed
 
 
     cp -L ${experiment_lib} ${path_save}
@@ -550,8 +550,8 @@ call qual_control.quality_control_V2 {
    analysis_readybam_index = bam2gvcf.analysis_ready_bam_index,
    toolpath = toolpath,
    Tso_name = basename(tabulatedSampleFilePaths, ".txt"),
-   exon_coords = experiment_lib,
-   #exon_coords = coord_generator.interval_restricted,
+   #exon_coords = experiment_lib,
+   exon_coords = coord_generator.interval_restricted,
    pipeline_v = pipeline_version
    #tso_bed = tso_bed
   }
