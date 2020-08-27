@@ -227,11 +227,11 @@ command{
     grep -v "#" ${vcf_ok}| sort -k1,1 -k2,2n >> head_vcf.vcf
     
     ##test
-    #sort -k1,1 -k2,2n ${exon_coord} >> sorted_exon_bed.bed
+    sort -k1,1 -k2,2n ${exon_coord} >> sorted_exon_bed.bed
     
-    #bedtools closest -a head_vcf.vcf -b sorted_exon_bed.bed -D ref | cut -f 1,2,12-18  > ${sample_name}.exon_distance.tsv
+    bedtools closest -a head_vcf.vcf -b sorted_exon_bed.bed -D ref | cut -f 1,2,12-18  > ${sample_name}.exon_distance.tsv
 
-    bedtools closest -a head_vcf.vcf -b ${exon_coord} -D ref | cut -f 1,2,12-18  > ${sample_name}.exon_distance.tsv
+    #bedtools closest -a head_vcf.vcf -b ${exon_coord} -D ref | cut -f 1,2,12-18  > ${sample_name}.exon_distance.tsv
 
     rm head_vcf.vcf
     }
