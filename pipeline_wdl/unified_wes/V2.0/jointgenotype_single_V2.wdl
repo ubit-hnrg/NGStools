@@ -102,23 +102,23 @@ workflow singleGenotypeGVCFs {
     toolpath = toolpath
   }
 
-  call filtro_no_calls {
-    input:
-    gatk_jar = gatk_jar,
-    vcf_in = restrict_vcf.VCF_restricted,
-    sample_name = sample_name,
-    toolpath = toolpath,
-    ref_fasta = ref_fasta,
-    ref_fasta_index = ref_fasta_index,
-    ref_dict = ref_dict,
-    path_save = array_path_save
-}
+#   call filtro_no_calls {
+#     input:
+#     gatk_jar = gatk_jar,
+#     vcf_in = restrict_vcf.VCF_restricted,
+#     sample_name = sample_name,
+#     toolpath = toolpath,
+#     ref_fasta = ref_fasta,
+#     ref_fasta_index = ref_fasta_index,
+#     ref_dict = ref_dict,
+#     path_save = array_path_save
+# }
 
 
 
   call annovar {
             input:
-            one_sample_vcf =  filtro_no_calls.one_sample_vcf,#restrict_vcf.VCF_restricted,#get_individual_vcf.one_sample_vcf,
+            one_sample_vcf =  restrict_vcf.VCF_restricted,#filtro_no_calls.one_sample_vcf,,#get_individual_vcf.one_sample_vcf,
             sample = sample_name,#idsample.idsample,
             annovar_table_pl = annovar_table_pl,
             db_annovar = db_annovar
