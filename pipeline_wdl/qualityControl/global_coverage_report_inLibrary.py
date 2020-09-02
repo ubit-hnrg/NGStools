@@ -65,7 +65,7 @@ def depth_fraction(coverage,thr=0,ZeroDepth=False):
     else:
         return 0
     
-def main()
+def main():
     coverage_hist = pd.read_csv(ffile,sep ='\t')
     globalreport = pd.Series(globaldepth(coverage_hist))
     globalreport.to_csv(output_global_coverage)

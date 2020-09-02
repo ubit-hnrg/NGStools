@@ -54,7 +54,7 @@ def localdepth(coverage_hist):
     local_depth.update({'dp>=100':round(depth_fraction(coverage_hist,thr=100),signif)})
     return pd.Series(local_depth)
 
-def main()
+def main():
     ENS_coverage_hist = pd.read_csv(ffile,sep ='\t')
     results = ENS_coverage_hist.groupby(['transcriptID','exonNumber']).apply(localdepth)
     results = results.reset_index()
