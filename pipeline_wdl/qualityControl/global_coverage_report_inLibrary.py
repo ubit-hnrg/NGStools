@@ -68,7 +68,8 @@ def depth_fraction(coverage,thr=0,ZeroDepth=False):
 def main():
     coverage_hist = pd.read_csv(ffile,sep ='\t')
     globalreport = pd.Series(globaldepth(coverage_hist))
-    globalreport.to_csv(output_global_coverage)
+    globalreport[['mean_DP', 'median_DP', 'std_DP', 'q25_DP', 'q75_DP', 'q95_DP', 'dp>=1',
+       'dp>=10', 'dp>=20', 'dp>=30', 'dp>=50', 'dp>=100']].to_csv(output_global_coverage)
 
 
 if __name__ == "__main__":
