@@ -61,7 +61,7 @@ def main():
     info = ENS_coverage_hist.drop_duplicates(['transcriptID','exonNumber'])[['gene','exonNumber','transcriptID','start','end','strand','IntervalLength']]
     results = pd.merge(results,info,on = ['transcriptID','exonNumber'])
     results = results[['gene','transcriptID','exonNumber','start','end','strand','IntervalLength','dp>=1','dp>=10','dp>=20','dp>=30','dp>=50','dp>=100']]
-
+    results.to_csv(output_local_coverage,sep = '\t')
 
 if __name__ == "__main__":
     main()
