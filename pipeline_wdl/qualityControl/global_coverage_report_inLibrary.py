@@ -89,7 +89,7 @@ def main():
     ax2.plot(coverage_hist.DP, coverage_hist['cumsum'].values,'.-')
     ax2.set_ylim((-0.02,1))
     ax2.set_xscale('symlog')
-    ax2.set_ylabel(r'$Prob( bp \geq DP )$')
+    ax2.set_ylabel('Prob( bp > DP )')
     ax2.set_yticks(np.arange(0, 1., 0.1))
     ax2.set_xlabel('DP')
     ax2.xaxis.set_minor_locator(LogLocator(subs=np.arange(2, 10)))
