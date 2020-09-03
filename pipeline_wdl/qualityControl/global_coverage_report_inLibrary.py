@@ -7,6 +7,8 @@ import pandas as pd
 import numpy as np
 import os
 import argparse
+from matplotlib import pyplot as plt
+from matplotlib.ticker import LogLocator, AutoLocator, AutoMinorLocator
 
 ###############################################################################
 #coverage_hist command line with bedtools
@@ -73,6 +75,27 @@ def main():
     globalreport.columns=[sample]
     globalreport.to_csv(output_global_coverage,header = True,sep='\t')
 
+    f = plt.figure(figsize=(14,6))
+    ax1 = f.add_subplot(121)
+    ax2 = f.add_subplot(122)
+    ax1.plot(coverage_hist.DP, coverage_hist.frequency)
+    ax1.set_yscale('log')
+    ax1.set_xscale('symlog')
+    ax1.set_xlabel('DP')
+    ax1.set_ylabel('density')
+    ax1.xaxis.set_minor_locator(LogLocator(subs=np.arange(2, 10)))
+    ax1.grid(True, which="both", ls="--")
+
+    ax2.plot(coverage_hist.DP, coverage_hist['cumsum'].values,'.-')
+    ax2.set_ylim((-0.02,1))
+    ax2.set_xscale('symlog')
+    ax2.set_ylabel(r'$Prob( bp \geq DP )$')
+    ax2.set_yticks(np.arange(0, 1., 0.1))
+    ax2.set_xlabel('DP')
+    ax2.xaxis.set_minor_locator(LogLocator(subs=np.arange(2, 10)))
+    ax2.yaxis.set_minor_locator(AutoMinorLocator(2))
+    ax2.grid(True, which="both", ls="--")
+    f.savefig('distributions.eps', format='eps')
 
 if __name__ == "__main__":
     main()
