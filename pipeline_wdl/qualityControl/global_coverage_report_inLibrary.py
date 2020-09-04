@@ -20,6 +20,7 @@ from matplotlib.ticker import LogLocator, AutoLocator, AutoMinorLocator
 parser = argparse.ArgumentParser()
 parser.add_argument('-i','--library_coverage_histogram', help=' "bedtools coverage -hist" between library_kit and sample bam file')
 parser.add_argument('-o','--output_global_report') #default='global_coverage_statistics.tsv'
+parser.add_argument('-op','--output_plot')
 parser.add_argument('-s','--samplename')
 
 args =  parser.parse_args()
@@ -29,6 +30,7 @@ args =  parser.parse_args()
 ffile = args.library_coverage_histogram  # input file
 sample = args.samplename
 output_global_coverage = args.output_global_report
+out_plot = args.output_plot
 signif = 2 # harcoded
 
 def globaldepth(coverage_hist):
@@ -95,7 +97,7 @@ def main():
     ax2.xaxis.set_minor_locator(LogLocator(subs=np.arange(2, 10)))
     ax2.yaxis.set_minor_locator(AutoMinorLocator(2))
     ax2.grid(True, which="both", ls="--")
-    f.savefig('distributions.eps', format='eps')
+    f.savefig(out_plot, format='eps')
 
 if __name__ == "__main__":
     main()
