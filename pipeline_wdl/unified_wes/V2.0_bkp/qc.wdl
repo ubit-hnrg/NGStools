@@ -34,6 +34,7 @@ task histo_cob {
     command {   
         #!/bin/bash
         set -e
+        set -o pipefail
 
         # esto reporta la cobertura en cada intervalo de captura y hace un histograma global también con el keyword "all"
         ${toolpath}/bedtools2/bin/coverageBed -a ${intervalo_captura} -b ${input_bam}  -hist > ${sample_name}.hist.aux
@@ -60,7 +61,9 @@ task histo_cob {
         echo -e 'chr\tstart\tend\ttranscriptID\tgene\texonNumber\tstrand\tDP\tBPs\tIntervalLength\tfrequency' > header.txt
         grep -v '^all' ${sample_name}.ENS.hist.aux1 > ${sample_name}.ENS.hist.aux2
         cat header.txt ${sample_name}.ENS.hist.aux2 > ${sample_name}.ENS.hist
-        rm ${sample_name}.ENS.hist.aux1 ${sample_name}.ENS.hist.aux2 rm header.txt
+        rm ${sample_name}.ENS.hist.aux1 ${sample_name}.ENS.hist.aux2 header.txt
+        ##
+
 
         
 
