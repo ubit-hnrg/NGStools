@@ -113,7 +113,7 @@ for q in range(len(content)):
 total_lecturas=sum(total_reads_bef1)
 bases_before = float(sum(total_bases_bef1)/1000000000)
 total_lecturas_passTrue=sum(total_reads_aft)
-bases_after = float(sum(total_bases_aft)/1000000000
+bases_after = float(sum(total_bases_aft)/1000000000)
 gc_before = sum(gc_content_bef1)
 gc_after = sum(gc_content_aft)
 porcentaje_passed = round((total_lecturas_passTrue*100)/total_lecturas,2)
