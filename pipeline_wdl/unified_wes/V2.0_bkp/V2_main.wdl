@@ -419,6 +419,7 @@ workflow main_workflow {
       wgs_evaluation_interval_list = coord_generator.eval_interval_list,#### uso este intervalo:experimento + padeado....   interval_list,
       gatk_jar = gatk_jar,
       toolpath = toolpath,
+      ngs_toolpath = ngs_toolpath,
       smith_waterman_implementation = smith_waterman_implementation,
       contamination = contamination,
       newqual = newqual,
@@ -433,7 +434,7 @@ workflow main_workflow {
         array_path_save = mkdir_samplename.path_out_softlink,
         dbSNP_vcf = dbSNP_vcf,
         dbSNP_vcf_index = dbSNP_vcf_index,
-        callset_name = basename(tabulatedSampleFilePaths, ".txt"),
+        callset_name = sample_name,##basename(tabulatedSampleFilePaths, ".txt"),
         ref_fasta = ref_fasta,
         ref_fasta_index =ref_fasta_index,
         ref_dict = ref_dict,
@@ -442,7 +443,14 @@ workflow main_workflow {
         sample_name = sample_name,
         region_padded_bed = coord_generator.padded_coord,
         input_gvcf = bam2gvcf.output_gvcf,
-        input_gvcf_index = bam2gvcf.output_gvcf_index
+        input_gvcf_index = bam2gvcf.output_gvcf_index,
+        pipeline_v = pipeline_version,
+
+        ####annovar
+        db_annovar = db_annovar,#path annovar
+        annovar_table_pl = annovar_table_pl, #/home/hnrg/HNRG-pipeline-V0.1/tools/annovar/table_annovar.pl
+        joinPY = joinPY
+
     }
  
     call anotacionesSingle.FuncionalAnnotationSingle {
@@ -558,7 +566,8 @@ call qual_control.qual_control {
           input:
             name = samplename2,
               annovar_variants = Tsv_annovar[idx],
-              exon_dist = exon_distances[idx]
+              exon_dist = exon_distances[idx],
+              ngs_toolpath = ngs_toolpath
          }
 
        call build_excell_report {
@@ -566,7 +575,8 @@ call qual_control.qual_control {
             annovar_tsv = join_annovar_exon_dist.anno_dist,
             plof = plof[idx],
             samplename2 = samplename2,
-            exon_coverage_report = prof_by_exon[idx]
+            exon_coverage_report = prof_by_exon[idx],
+            ngs_toolpath = ngs_toolpath
             
            }
         call pdf_report {
