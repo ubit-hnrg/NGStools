@@ -22,10 +22,10 @@ task fastp_qual {
 task histo_cob {
     
 #input_bam=/data/resultsHNRG/*/CC1707556/CC1707556.bam
-        File experiment_lib
+        File intervalo_captura
         File input_bam
         File input_bam_index
-        File ensembl2experiment_lib
+        File ensembl2intervalo_captura
         String sample_name = basename( input_bam,'*.bam')
         String toolpath
         String ngs_toolpath 
@@ -36,7 +36,7 @@ task histo_cob {
         set -e
 
         # esto reporta la cobertura en cada intervalo de captura y hace un histograma global también con el keyword "all"
-        ${toolpath}/bedtools2/bin/coverageBed -a ${experiment_lib} -b ${input_bam}  -hist > ${sample_name}.hist.aux
+        ${toolpath}/bedtools2/bin/coverageBed -a ${intervalo_captura} -b ${input_bam}  -hist > ${sample_name}.hist.aux
         echo -e 'chr\tstart\tend\tgene\tDP\tBPs\tIntervalLength\tfrequency' > header.txt
         cat header.txt ${sample_name}.hist.aux > ${sample_name}.hist; 
         rm ${sample_name}.hist.aux header.txt
@@ -56,7 +56,7 @@ task histo_cob {
         #### EXONES     ##################################
         #histograma restringido a cada exon de ensembl que está en la librería de captura
         
-        ${toolpath}/bedtools2/bin/coverageBed -a ${ensembl2experiment_lib} -b ${input_bam}  -hist > ${sample_name}.ENS.hist.aux1
+        ${toolpath}/bedtools2/bin/coverageBed -a ${ensembl2intervalo_captura} -b ${input_bam}  -hist > ${sample_name}.ENS.hist.aux1
         echo -e 'chr\tstart\tend\ttranscriptID\tgene\texonNumber\tstrand\tDP\tBPs\tIntervalLength\tfrequency' > header.txt
         grep -v '^all' ${sample_name}.ENS.hist.aux1 > ${sample_name}.ENS.hist.aux2
         cat header.txt ${sample_name}.ENS.hist.aux2 > ${sample_name}.ENS.hist;
@@ -184,7 +184,7 @@ Array[String] path_save
 String pipeline_v
 String experiment_name
 File exon_coords
-File experiment_lib
+File intervalo_captura
 
 ####inputs from bam2gvcf.reporte_final
 Array[File] stat_alineamiento
@@ -205,8 +205,8 @@ scatter (fastp in fastp_json_files){
       input_bam = bams_ready,
       input_bam_index = analysis_readybam_index,
       #pipeline_version = pipeline_v,
-      experiment_lib = experiment_lib,
-      ensembl2experiment_lib = exon_coords,
+      intervalo_captura = intervalo_captura,
+      ensembl2intervalo_captura = exon_coords,
       toolpath = toolpath,
       ngs_toolpath = ngs_toolpath
      
