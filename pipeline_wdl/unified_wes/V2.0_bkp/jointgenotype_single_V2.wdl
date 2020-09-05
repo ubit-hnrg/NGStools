@@ -7,6 +7,8 @@
 workflow singleGenotypeGVCFs {
   #File unpadded_intervals_file ##lista intervalos
   File eval_interval_list
+    String pipeline_v
+
   
   String array_path_save
   String callset_name
@@ -26,24 +28,17 @@ workflow singleGenotypeGVCFs {
   File dbSNP_vcf_index
   File region_padded_bed
 
-  
+  # for annovar prouposes
+    String db_annovar
+    File annovar_table_pl
+    File joinPY
+    File gnomad_plof_db
+
 
 
   # ExcessHet is a phred-scaled p-value. We want a cutoff of anything more extreme
   # than a z-score of -4.5 which is a p-value of 3.4e-06, which phred-scaled is 54.69
   Float excess_het_threshold = 54.69
-
-  # call DynamicallyCombineIntervals {
-  #  input:
-  #      intervals = unpadded_intervals_file,
-  #     merge_count = merge_count
-  # }
-
-
-  #  Array[String] unpadded_intervals = read_lines(DynamicallyCombineIntervals.output_intervals)
-
-  # scatter (idx in range(length(unpadded_intervals))) {
-
 
   call GenotypeGVCFs {
     input:
@@ -107,9 +102,28 @@ workflow singleGenotypeGVCFs {
     toolpath = toolpath
   }
 
-  #Array[File] salidas = ["${FinalGatherVcf.output_vcf}","${FinalGatherVcf.output_vcf_index}","${CollectMetricsOnFullVcf.detail_metrics_file}","${CollectMetricsOnFullVcf.summary_metrics_file}"]
-  #Array[Pair[String,File]] samples_x_files = cross (array_path_save, salidas)
-  #scatter (pairs in samples_x_files) {
+
+call annovar {
+            input:
+            one_sample_vcf =  restrict_vcf.VCF_restricted,#filtro_no_calls.one_sample_vcf,,#get_individual_vcf.one_sample_vcf,
+            sample = sample_name,#idsample.idsample,
+            annovar_table_pl = annovar_table_pl,
+            db_annovar = db_annovar
+         }
+
+
+
+        call get_tsv_from_annovar {
+            input:
+            gnomad_plof = gnomad_plof_db,
+            annovar_txt = annovar.annovar_txt,
+            annovar_vcf = annovar.annovar_vcf,
+            restrictedVCF = restrict_vcf.VCF_restricted,#rename_samples.multisample_vcf_restricted_renamed,
+            sample = sample_name,#idsample.idsample,
+            #sample1 = sample,
+            joinPY = joinPY
+        }
+
   call symlink_important_files {
     input:
     final_gath = FinalGatherVcf.output_vcf,
@@ -120,6 +134,16 @@ workflow singleGenotypeGVCFs {
     metrica2 = CollectMetricsOnFullVcf.summary_metrics_file,
     path_save = array_path_save
   }
+call symlink_important_files2 {
+            input: 
+             output_to_save1 = annovar.annovar_vcf,
+             #output_to_save2 = get_individual_vcf.one_sample_vcf,
+             output_to_save3 = get_tsv_from_annovar.annovar_tsv,
+             path_save = array_path_save, 
+             sample = sample_name
+        }
+
+
 
 
   output {
@@ -129,15 +153,14 @@ workflow singleGenotypeGVCFs {
    File? outputvcfindex =  FinalGatherVcf.output_vcf_index
    File? metrica1 =  CollectMetricsOnFullVcf.detail_metrics_file
    File? metrica2 = CollectMetricsOnFullVcf.summary_metrics_file
+   File individual_vcfs_annovar = annovar.annovar_vcf
+   #Array[File] individual_excell_reports = build_excell_report.excell_report
+   File annovar_tsv_out = get_tsv_from_annovar.annovar_tsv
+   File annovar_gene_list = get_tsv_from_annovar.gene_list
+   File gene_plof_file = get_tsv_from_annovar.gene_plof
 
-    # outputs from the large callset path through the wdl
-    # (note that we do not list ApplyRecalibration here because it is run in both paths)
-    #GatherMetrics.detail_metrics_file
-    #GatherMetrics.summary_metrics_file
-
-    # output the interval list generated/used by this run workflow
-    #File? inter = DynamicallyCombineIntervals.output_intervals
   }
+
 }
 
 task symlink_important_files {
@@ -472,4 +495,92 @@ task restrict_vcf{
     }
 
 }
+
+#### annovar
+
+task annovar{
+    File one_sample_vcf
+    File annovar_table_pl
+    File convert2annovar = '/home/hnrg/HNRG-pipeline-V0.1/tools/annovar/convert2annovar.pl'
+    File annotate_variation = '/home/hnrg/HNRG-pipeline-V0.1/tools/annovar/annotate_variation.pl'
+    File variants_reduction = '/home/hnrg/HNRG-pipeline-V0.1/tools/annovar/variants_reduction.pl'
+
+
+    String db_annovar
+    String sample
+    
+    command<<<
+        perl ${annovar_table_pl} ${one_sample_vcf} ${db_annovar} -vcfinput -buildver hg19 -remove -out ${sample} -protocol refGene,avsnp150,esp6500siv2_all,1000g2015aug_all,exac03,gnomad_exome,gnomad_genome,clinvar_20180603,intervar_20180118,dbscsnv11,dbnsfp35a,rmsk,tfbsConsSites,cytoBand,wgRna,targetScanS,genomicSuperDups,dgvMerged,gwasCatalog,ensGene,knownGene -operation  g,f,f,f,f,f,f,f,f,f,f,r,r,r,r,r,r,r,r,g,g -nastring . -otherinfo
+        #perl ${annovar_table_pl} ${one_sample_vcf} ${db_annovar} -vcfinput -buildver hg19 -remove -out ${sample} -protocol refGene,knownGene,intervar_20180118 -operation  g,g,f -nastring . -otherinfo
+
+    >>>
+
+    output {
+        File annovar_vcf = '${sample}.hg19_multianno.vcf'
+        File annovar_txt = '${sample}.hg19_multianno.txt'
+    }
+
+}
+
+ # prepare final multianno.tsv for deliver (do not forget postprocess InterVar)
+ #1) localizo las 3 columnas de Otherinfo para volarlas. 
+ #2) modifico el header agregando las columnas que faltan del vcf (remplazo x otherinfo)
+ #3) joineo al archivo multinanno las columnas de genotipo de las restantes muestras de  la corrida.
+
+task get_tsv_from_annovar {
+    File annovar_txt
+    File annovar_vcf
+    File restrictedVCF
+    String sample
+    #String sample1
+    File joinPY    #this file merge the multianno.tsv file with the original multisample vcf
+    File gnomad_plof ###gnomad plof for hnrg -> lo usan en brasil.
+
+    command <<<
+    #columnas a cortar (localizando Otherinfo column y las 2 siguientes)
+    nl0=$(head -n1 ${annovar_txt}|tr '\t' '\n'|nl|grep 'Otherinfo'|cut -f1)
+    nl1=$((nl0 + 1))
+    nl2=$((nl0 + 2))
+
+
+    # meto header (dejando el campo 'Otherinfo' que despues va a aser remplazado por las columnas del vcf original)
+    head -n1 ${annovar_txt} > ${sample}.hg19_multianno.tsv
+    # vuelo las tres columnas de otherinfo
+    tail -n+2 ${annovar_txt}|cut -f$nl0,$nl1,$nl2 --complement >>  ${sample}.hg19_multianno.tsv;
+vcf_header=$(grep '#CH' ${annovar_vcf});
+
+    #remplazo el header
+    sed -i "s/Otherinfo/$vcf_header/g" ${sample}.hg19_multianno.tsv;
+
+    #join one multianno tsv file AND joint genotyped vcf. This script (join_vcf.py) also postprocess Intervar columns.
+    python ${joinPY} --multianno_tsv=${sample}.hg19_multianno.tsv --vcf_multisample=${restrictedVCF} --output=${sample}.multianno_restrict.tsv
+    #change dots by tabs.
+    sed -i -e "s|\.     |       |g" ${sample}.multianno_restrict.tsv
+    
+    ####agrego un awk para buscar los genes de annovar y hacer un archivo con la tabla gnomad_plof para esos genes.
+    cat ${sample}.multianno_restrict.tsv | cut -f20 | uniq > ${sample}.gene_list_for_plof.list
+    head -n1 ${gnomad_plof} > ${sample}_plof.tsv
+    awk 'NR == FNR {gene_list[$1];next} ($1 in gene_list)' ${sample}.gene_list_for_plof.list ${gnomad_plof} >> ${sample}_plof.tsv
+ 
+    >>>
+    output{
+        File annovar_tsv =  '${sample}.multianno_restrict.tsv'
+        File gene_list = '${sample}.gene_list_for_plof.list'
+        File gene_plof = '${sample}_plof.tsv'
+    }
+}
+
+
+task symlink_important_files2 {
+    File output_to_save1
+    #File output_to_save2
+    File output_to_save3
+    String path_save
+    String sample
+    command{
+       cp -L ${output_to_save1} ${path_save} #${sample} 
+       cp -L ${output_to_save3} ${path_save} #${sample}
+    }
+}
+
 

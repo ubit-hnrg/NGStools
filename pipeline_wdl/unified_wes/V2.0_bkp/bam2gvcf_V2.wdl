@@ -4,25 +4,24 @@
 task samtools_stat{
 
   String toolpath
-  File TSO_bed #./TruSight_One_v1_padded_100_GRCh37.bed
+  File experiment_lib #./TruSight_One_v1_padded_100_GRCh37.bed
   File input_bam_reducido
   String name
+  String path_save
 
   command <<<
     set -e
     set -o pipefail
  
-    ${toolpath}samtools stats ${input_bam_reducido}  -t ${TSO_bed} > ${name}_TSO_samtools.stats
+    ${toolpath}samtools stats ${input_bam_reducido}  -t ${experiment_lib} > ${name}_TSO_samtools.stats
+    ${toolpath}plot-bamstats ${name}_TSO_samtools.stats -p ${path_save}/${name}
 
   >>>
   output {
 
-  #File samtools_stats = 
-  #File samtools_reduced_bam = $name'_samtools_reduced.stats'
-  #File samtools_stat_original_bam = "${name}_orig_samtools.stats"
-  File samtools_stat_TSO_bam = "${name}_TSO_samtools.stats"
+ 
+  File samtools_stat_experiment_bam = "${name}_TSO_samtools.stats"
 
-  #File 
 
   }
 
@@ -35,10 +34,10 @@ task samtools_reports_file {
   Int N_total_reads_bam
   #File samtools_global_report ##no va mas, necesita el numero total de reads
   File samtools_library_report
-  String toolpath
+  String ngs_toolpath
 
   command {
-  /home/hnrg/NGStools/pipeline_wdl/qualityControl/samtools_stats_report_v1.0.py -N=${N_total_reads_bam}  -l=${samtools_library_report} -o=${sampleID}_samtools_report.tsv
+  ${ngs_toolpath}/pipeline_wdl/qualityControl/samtools_stats_report_v1.0.py -N=${N_total_reads_bam}  -l=${samtools_library_report} -o=${sampleID}_samtools_report.tsv
 
   }
 
@@ -557,23 +556,6 @@ task CollectGvcfCallingMetrics {
   }
 }
 
-#task path_borrado {
-#File path1
-#Array[String] path2 
-#String temp1 = "temp1"
-#String temp2 = "temp2"
-#mv ${write_lines(path1)}  ${temp1}.tsv
-#command <<<
-#mv ${write_lines(path1)}  ${temp1}.txt
-
-#>>>
-
-#output {
-#File path_borrar1 = "${temp1}.txt"
-
-#}
-#}
-
 
 task symlink_important_files {
     File output_to_save
@@ -592,6 +574,7 @@ workflow bam2gvcf {
   ### PATH local de las herramientas sacadas de docker
   String gatk_jar
   String toolpath
+  String ngs_toolpath
   ########## referencia
   File ref_fasta
   File ref_fasta_index
@@ -628,7 +611,7 @@ workflow bam2gvcf {
   String smith_waterman_implementation
   Float? contamination
   String newqual
-  File tso_bed
+  File experiment_lib
     
   
   String base_file_name
@@ -797,8 +780,9 @@ workflow bam2gvcf {
   call samtools_stat {
     input:
     toolpath = toolpath,
+    path_save = path_save,
     name = base_file_name, 
-    TSO_bed = tso_bed, #./TruSight_One_v1_padded_100_GRCh37.bed
+    experiment_lib = experiment_lib, #sin padding 
     input_bam_reducido = GatherBamFiles.output_bam,
     #input_bam_reducido = reduce_bam.output_reduced_bam
 
@@ -810,8 +794,8 @@ workflow bam2gvcf {
   sampleID = base_file_name,
   N_total_reads_bam = bams_reads.N_reads,
   #samtools_global_report = samtools_stat.samtools_stat_original_bam,
-  samtools_library_report = samtools_stat.samtools_stat_TSO_bam,
-  toolpath = toolpath
+  samtools_library_report = samtools_stat.samtools_stat_experiment_bam,
+  ngs_toolpath = ngs_toolpath
 
   }
 
@@ -912,7 +896,7 @@ workflow bam2gvcf {
   
 
 
-  Array[File] salidas = ["${GatherBamFilesHaplotype.output_bam}","${GatherBamFilesHaplotype.output_bam_index}","${GatherBamFiles.output_bam}","${GatherBamFiles.output_bam_index}","${MergeVCFs.output_vcf}","${MergeVCFs.output_vcf_index}","${CollectGvcfCallingMetrics.summary_metrics}","${CollectGvcfCallingMetrics.detail_metrics}","${samtools_stat.samtools_stat_TSO_bam}","${samtools_reports_file.output_global_report}"]
+  Array[File] salidas = ["${GatherBamFilesHaplotype.output_bam}","${GatherBamFilesHaplotype.output_bam_index}","${GatherBamFiles.output_bam}","${GatherBamFiles.output_bam_index}","${MergeVCFs.output_vcf}","${MergeVCFs.output_vcf_index}","${CollectGvcfCallingMetrics.summary_metrics}","${CollectGvcfCallingMetrics.detail_metrics}","${samtools_stat.samtools_stat_experiment_bam}","${samtools_reports_file.output_global_report}"]
 
   scatter (paths in salidas) {
     call symlink_important_files {
@@ -943,11 +927,11 @@ workflow bam2gvcf {
    #String sampl_name_bam = bams_reads.sampl 
    #String N_reads_bam = bams_reads.N_reads 
    #File Samt_bam_stat = samtools_stat.samtools_stat_original_bam 
-   File Samt_TSO_stat = samtools_stat.samtools_stat_TSO_bam
+   File Samt_TSO_stat = samtools_stat.samtools_stat_experiment_bam
    File reporte_final = samtools_reports_file.output_global_report ### archivo para mergear... estadistica en la libreria del experimento
 
 
-   #"samtools_stat.samtools_stat_TSO_bam","samtools_reports_file.output_global_report"
+   #"samtools_stat.samtools_stat_experiment_bam","samtools_reports_file.output_global_report"
 
   } 
 

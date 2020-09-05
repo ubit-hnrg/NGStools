@@ -184,9 +184,11 @@ output {
 
 task symlink_important_files {
     File output_to_save
+    File output_to_save2 
     String path_save
     command{
        cp -L ${output_to_save} ${path_save}
+       cp -L ${output_to_save2} ${path_save}
     }
 }
 
@@ -212,18 +214,47 @@ output {
 
 }
 
+task exon_distance {
+File vcf_ok
+File exon_coord
+String sample_name
+
+command{
+    #!/bin/bash
+    set -e
+
+    grep "^#" ${vcf_ok} > head_vcf.vcf
+    grep -v "#" ${vcf_ok}| sort -k1,1 -k2,2n >> head_vcf.vcf
+    
+    ##test
+    #sort -k1,1 -k2,2n ${exon_coord} >> sorted_exon_bed.bed
+    
+    #bedtools closest -a head_vcf.vcf -b sorted_exon_bed.bed -D ref | cut -f 1,2,12-18  > ${sample_name}.exon_distance.tsv
+
+    bedtools closest -a head_vcf.vcf -b ${exon_coord} -D ref | cut -f 1,2,12-18  > ${sample_name}.exon_distance.tsv
+
+    rm head_vcf.vcf
+    }
+
+output {
+File exon_dist = "${sample_name}.exon_distance.tsv"
+
+}
+}
+
 
 
 workflow FuncionalAnnotationSingle {
 
 File input_vcf 
-##String path_herramientas#### cambiaar por toolpath
 String toolpath 
 String samplename1
 String java_heap_memory_initial
 String reference_version
 String path_save
-String version_db = "V2"
+File exon_coord
+
+String pipeline_v = "V2"
 
 
 
@@ -449,19 +480,27 @@ input:
     input_vcf = hnrg_freq.out_vcfanno,
     toolpath = toolpath,
     java_heap_memory_initial = java_heap_memory_initial,
-    nombre_step = "final_annot_"+version_db
+    nombre_step = "final_annot_"+pipeline_v
 
+}
+
+call exon_distance {
+    input:
+    vcf_ok = final_annot.salida_Snpsift,
+    exon_coord = exon_coord,
+    sample_name = samplename1
 }
 
  call symlink_important_files {
          input:
         output_to_save = final_annot.salida_Snpsift,
+        output_to_save2 = exon_distance.exon_dist,
         path_save = path_save
     }
 
 
-#output {
-#File out_single_vcf_annot = final_annot.salida_Snpsift
-#}
+output {
+File vcf_exon_distance = exon_distance.exon_dist
+}
 }
 

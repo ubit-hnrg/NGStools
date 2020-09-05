@@ -146,7 +146,7 @@ workflow ConvertPairedFastQsToUnmappedBamWf {
     File p_borrar2 = path_borrado.path_borrar2
 
     Array[File] fastp_json = fastp.fastp_json_report
-    #Array[File] fastp_html = fastp.fastp_html_report
+    Array[File] fastp_html = fastp.fastp_html_report
 
     Array[String] output_ubams_sample_names =  read_file_of_tabulated_inputs.array_of_samples
 
@@ -246,7 +246,7 @@ task fastp {
     File fastq_cleaned_R1 = "${R1_stripped_basename}_cleaned.fastq.gz"
     File fastq_cleaned_R2 = "${R2_stripped_basename}_cleaned.fastq.gz"
     File fastp_json_report = "${report_name}_fastp.json"
-    #File fastp_html_report = "${report_name}_fastp.html"  
+    File fastp_html_report = "${report_name}_fastp.html"  
   }
 
 }

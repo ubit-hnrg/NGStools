@@ -21,10 +21,12 @@ task bam_depth {
 
   File input_bam
   File Exon_coords
+  File input_bam_index
 
   ###herramientas
   String name = basename(input_bam, ".bam")
   String toolpath
+  String pipeline_version
 
   command <<<
 
@@ -34,6 +36,10 @@ task bam_depth {
   
   #reduce bam
   ${toolpath}bedtools2/bin/intersectBed -a ${input_bam} -b ${Exon_coords} > ${name}_exonTSO_reduced.bam
+  
+  ###ya que estamos, prediccion de sexo:
+  /home/hnrg/NGStools/python_scripts/bam_sex_xy.py -b ${input_bam} > ${name}_sex.txt
+
 
   #Bam coverage. No está estrictamente limitado al intervalo porque contiene grandes zonas con cobertura CERO 
   #que están presentes por una mínima interseccion con el intervalo buscado)
@@ -61,16 +67,17 @@ task bam_depth {
   #/home/hnrg/NGStools/pipeline_wdl/qualityControl/coverage_statistics_v1.0.py -i ${name}_exon_filtered_coverage.tsv -g ${name}_global_coverage_statistics.tsv -e ${name}_coverage_statistics_by_exon.tsv -s ${name}
 
   ###usamos este con ENS
-  /home/hnrg/NGStools/pipeline_wdl/qualityControl/coverage_statistics_v1.0_ENS.py -i ${name}_exon_filtered_coverage.tsv -g ${name}_global_coverage_statistics.tsv -e ${name}_coverage_statistics_by_exon.tsv -s ${name}
+  /home/hnrg/NGStools/pipeline_wdl/qualityControl/coverage_statistics_v1.0_ENS.py -i ${name}_exon_filtered_coverage.tsv -g ${name}_global_coverage_statistics_${pipeline_version}.tsv -e ${name}_coverage_statistics_by_exon_${pipeline_version}.tsv -s ${name}
 
   rm ${name}_exonTSO_reduced.bam ${name}_exon_filtered_coverage.tsv
   >>>
 
 
   output {
-    File cov_stats_by_exon = "${name}_coverage_statistics_by_exon.tsv"
-    File glob_cov_stats = "${name}_global_coverage_statistics.tsv"
+    File cov_stats_by_exon = "${name}_coverage_statistics_by_exon_${pipeline_version}.tsv"
+    File glob_cov_stats = "${name}_global_coverage_statistics_${pipeline_version}.tsv"
     String sample_Name = "${name}"
+    File sex_prediction = "${name}_sex.txt"
   }
 
 }
@@ -99,8 +106,6 @@ task samtools_stat{
   }
   output {
 
-    #File samtools_stats = 
-    #File samtools_reduced_bam = $name'_samtools_reduced.stats'
     File samtools_stat_original_bam = "${name}_orig_samtools.stats"
     File samtools_stat_TSO_bam = "${name}_TSO_samtools.stats"
 
@@ -141,15 +146,11 @@ task samtools_reports_file {
 
 #########este script es alimentado por un archivo que tiene  nombre_reporte.tsv por cada linea. y se llama en uno de los ultimos pasos 
 
-#####
 task merge_reports {
+
 ####inputs del paso1 
 File files_to_merge
 String TSO_name
-#String toolpath
-#File coverage_stats 
-
-#gvcfs = ['${sep="','" input_gvcfs}']
 
 command<<<
 /home/hnrg/NGStools/pipeline_wdl/qualityControl/merge_sample_reports.py -i ${files_to_merge} -o ${TSO_name}.merged_report
@@ -162,24 +163,6 @@ File merged_report = "${TSO_name}.merged_report"
 
 }
 
-#task merge_samtools_reports {
-####inputs del paso1 
-#Array[File] samtools_reports_files
-#String TSO_name
-#String toolpath
-#File coverage_stats 
-
-
-#command{
-#/home/hnrg/NGStools/pipeline_wdl/qualityControl/merge_sample_reports.py -i ${samtools_reports_files} -o ${TSO_name}.merged_st_report
-#}
-
-#output {
-#File merged_st_report = "${TSO_name}.merged_st_report"
-
-#}
-
-#}
 
 task CreateFoFN {
   # Command parameters
@@ -230,12 +213,15 @@ task symlink_important_files {
 workflow quality_control_V2 {
 
   Array[File]+ analysis_readybam 
+  Array[File]+ analysis_readybam_index 
+
   String toolpath
   File exon_coords
-  #File tso_bed
   Array[File]+ fastp_json_files
   String Tso_name
   Array[String] path_save
+  String pipeline_v
+
   #Map[String,String] bams_N_reads
 
   scatter (fastp in fastp_json_files){
@@ -253,6 +239,8 @@ workflow quality_control_V2 {
     call bam_depth {
       input: 
       input_bam = bams_ready,
+      input_bam_index = analysis_readybam_index,
+      pipeline_version = pipeline_v,
       Exon_coords = exon_coords,
       toolpath = toolpath
     }
@@ -342,9 +330,15 @@ workflow quality_control_V2 {
 output {
 Array[File] depth_global_cov_stats = bam_depth.glob_cov_stats ###estadistica del alineamiento...
 Array[File] by_exon_depth = bam_depth.cov_stats_by_exon
+File excel_qual_report = make_excel.reporte_excel
+####pdf_report
+Array[File] bams_sex_prediction = bam_depth.sex_prediction
+
+Array[File] fastp_rep_out = fastp_qual.fastp_stats
+
 #File coverage_merged_report = merge_reports.merged_report
 #Array[File] reporte_final = samtools_reports_file.output_global_report ### archivo para mergear... estadistica en la libreria del experimento
-File excel_qual_report = make_excel.reporte_excel
+
 #Array[File] Samt_bam_stat = samtools_stat.samtools_stat_original_bam 
 #Array[File] Samt_TSO_stat = samtools_stat.samtools_stat_TSO_bam
 

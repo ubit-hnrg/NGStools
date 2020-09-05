@@ -8,6 +8,7 @@
   
   "##COMMENT3": "TOOLS & GATK",
   "main_workflow.toolpath": "/home/hnrg/HNRG-pipeline-V0.1/tools/",
+  "main_workflow.ngs_toolpath":"/home/hnrg/NGStools",
   "main_workflow.gatk_jar": "gatk-package-4.0.8.1-local.jar",
   
   "##COMMENT4": "uBAM METADATA",
