@@ -37,7 +37,7 @@ with open(json_in) as fp:
     total_bases_bef1 = []
     q20_rates_bef1 = [] 
     q30_rates_bef1 = [] 
-    gc_content_bef = []
+    gc_content_bef1 = []
     read1_mean_length_bef1 = []
     read2_mean_length_bef1 = []
     total_reads_aft = []
@@ -82,7 +82,7 @@ for q in range(len(content)):
     ####campos importantes before filtering
     total_reads_bef1.append(json.summary.before_filtering['total_reads'])
     total_bases_bef1.append(json.summary.before_filtering['total_bases'])
-    gc_content_bef..append(json.summary.before_filtering['gc_content'])
+    gc_content_bef1.append(json.summary.before_filtering['gc_content'])
     q20_rates_bef1.append(json.summary.before_filtering['q20_rate'])
     q30_rates_bef1.append(json.summary.before_filtering['q30_rate'])
     read1_mean_length_bef1.append(json.summary.before_filtering['read1_mean_length'])
@@ -114,7 +114,7 @@ total_lecturas=sum(total_reads_bef1)
 bases_before = float(sum(total_bases_bef1)/1000000000)
 total_lecturas_passTrue=sum(total_reads_aft)
 bases_after = float(sum(total_bases_aft)/1000000000
-gc_before = sum(gc_content_bef)
+gc_before = sum(gc_content_bef1)
 gc_after = sum(gc_content_aft)
 porcentaje_passed = round((total_lecturas_passTrue*100)/total_lecturas,2)
 porcentaje_low_qual = round((sum(low_quality_reads)*100)/total_lecturas,2)
