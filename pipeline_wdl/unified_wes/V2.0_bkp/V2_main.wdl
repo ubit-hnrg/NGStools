@@ -495,16 +495,16 @@ workflow main_workflow {
       }
   }
 
- Array[File] html_reports_from_fastq = ConvertPairedFastQsToUnmappedBamWf.fastp_html 
- Array[Pair[String,File]] samples_x_files_json_html = zip (array_path_save_json, html_reports_from_fastq)
+ #Array[File] html_reports_from_fastq = ConvertPairedFastQsToUnmappedBamWf.fastp_html 
+ #Array[Pair[String,File]] samples_x_files_json_html = zip (array_path_save_json, html_reports_from_fastq)
  
-  scatter (pairs in samples_x_files_json_html) {
-     call symlink_important_files as save_html_fastp {
-       input:
-        output_to_save = pairs.right,
-        path_save = pairs.left
-      }
-  }
+  # scatter (pairs in samples_x_files_json_html) {
+  #    call symlink_important_files as save_html_fastp {
+  #      input:
+  #       output_to_save = pairs.right,
+  #       path_save = pairs.left
+  #     }
+  # }
 
 call qual_control.qual_control {
    input: 
@@ -633,7 +633,7 @@ call qual_control.qual_control {
    Array[File] output_vcf = bam2gvcf.output_gvcf
    Array[File] output_vcf_index = bam2gvcf.output_gvcf_index
   ##### output jointgenotype
-   
+   Array[File] html_reports_from_fastq = ConvertPairedFastQsToUnmappedBamWf.fastp_html 
    ###output_joint_single_vcf
  
    Array[File?] outputvcf = singleGenotypeGVCFs.outputvcf
