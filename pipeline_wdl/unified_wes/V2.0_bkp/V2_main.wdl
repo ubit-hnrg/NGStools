@@ -89,7 +89,7 @@ task symlink_important_files {
 
 task coord_generator {
 
-  File experiment_lib
+  File intervalo_captura
   File chromosome_length
   File generic_exon_coords
   Int padding
@@ -98,7 +98,7 @@ task coord_generator {
   String gatk_jar
   File ref_dict
   String path_save
-  String library_name = basename(experiment_lib, ".bed" )
+  String library_name = basename(intervalo_captura, ".bed" )
 
   
    
@@ -107,7 +107,7 @@ task coord_generator {
     set -e
     set -o pipefail
     
-    ${toolpath}bedtools2/bin/slopBed -i ${experiment_lib} -g ${chromosome_length} -b ${padding} | sort -k1,1 -k2,2n -V > ${library_name}_padded_${padding}.bed 
+    ${toolpath}bedtools2/bin/slopBed -i ${intervalo_captura} -g ${chromosome_length} -b ${padding} | sort -k1,1 -k2,2n -V > ${library_name}_padded_${padding}.bed 
 
     ###merged
      
@@ -118,10 +118,10 @@ task coord_generator {
     java -jar ${toolpath}${gatk_jar} BedToIntervalList -I=${library_name}_padded_${padding}.bed -O=${library_name}_padded_${padding}.interval_list -SD=${ref_dict}
      
     ####Exon_restricted interval for quality_control  ${library_name}_padded_${padding}.bed | sort -k1,1 -k2,2n -V 
-    ${toolpath}bedtools2/bin/intersectBed -a ${generic_exon_coords} -b ${experiment_lib} > exon_restricted2_${library_name}.bed
+    ${toolpath}bedtools2/bin/intersectBed -a ${generic_exon_coords} -b ${intervalo_captura} > exon_restricted2_${library_name}.bed
   
 
-    cp -L ${experiment_lib} ${path_save}
+    cp -L ${intervalo_captura} ${path_save}
     cp -L ${library_name}_padded_${padding}.bed ${path_save}
     cp -L ${library_name}_padded_${padding}_merged_${merge_tolerance}_preprocessing.interval_list ${path_save}
     cp -L ${library_name}_padded_${padding}.interval_list ${path_save}
@@ -295,7 +295,7 @@ workflow main_workflow {
 
 
   ###################### inputs para crear intervalo
-  File experiment_lib
+  File intervalo_captura
   File chromosome_length = "/home/hnrg/HNRG-pipeline-V0.1/libraries/GRCh37/chromosome_lengths_hg19.txt"
   Int padding = "100"
   Int merge_tolerance = "200"
@@ -311,7 +311,7 @@ workflow main_workflow {
 
     call coord_generator {
         input:
-        experiment_lib = experiment_lib,
+        intervalo_captura = intervalo_captura,
         chromosome_length = chromosome_length,
         padding = padding,
         merge_tolerance = merge_tolerance,
@@ -424,7 +424,7 @@ workflow main_workflow {
       contamination = contamination,
       newqual = newqual,
       java_heap_memory_initial = java_heap_memory_initial,
-      experiment_lib = experiment_lib ##coord_generator.padded_coords
+      intervalo_captura = intervalo_captura ##coord_generator.padded_coords
     } 
 
     ######single_genotype
@@ -516,10 +516,10 @@ call qual_control.qual_control {
    analysis_readybam_index = bam2gvcf.analysis_ready_bam_index,
    toolpath = toolpath,
    ngs_toolpath = ngs_toolpath,
-   experiment_lib = experiment_lib,
+   intervalo_captura = intervalo_captura,
    pipeline_v = pipeline_version,
    experiment_name = basename(tabulatedSampleFilePaths, ".txt"),
-   exon_coords = coord_generator.exon_restricted #### ensembl vs experiment_lib
+   exon_coords = coord_generator.exon_restricted #### ensembl vs intervalo_captura
   }
 
  Array[File] prof_by_exon = qual_control.by_exon_depth##","${coord_generator.padded_coord}"] #"${name}_coverage_statistics_by_exon.tsv"
