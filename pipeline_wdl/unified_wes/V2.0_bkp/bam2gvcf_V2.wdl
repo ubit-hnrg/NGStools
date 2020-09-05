@@ -14,7 +14,7 @@ task samtools_stat{
     set -o pipefail
  
     ${toolpath}samtools stats ${input_bam_reducido}  -t ${experiment_lib} > ${name}_TSO_samtools.stats
-    ${toolpath}plot-bamstats ${name}_TSO_samtools.stats -p ${path_save}/${name}
+    #${toolpath}plot-bamstats ${name}_TSO_samtools.stats -p ${path_save}/${name}
 
   >>>
   output {
