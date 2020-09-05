@@ -23,7 +23,7 @@ task histo_cob {
     
 #input_bam=/data/resultsHNRG/*/CC1707556/CC1707556.bam
         File intervalo_captura
-        Array[File] input_bam
+        File input_bam
         Array[File] input_bam_index
         File ensembl2intervalo_captura
         String sample_name = basename( input_bam,'*.bam')
