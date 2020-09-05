@@ -14,7 +14,7 @@ task samtools_stat{
     set -o pipefail
  
     ${toolpath}samtools stats ${input_bam_reducido}  -t ${intervalo_captura} > ${name}_TSO_samtools.stats
-    ${toolpath}plot-bamstats ${name}_TSO_samtools.stats -p ${path_save}/${name}
+    /usr/local/bin/plot-bamstats ${name}_TSO_samtools.stats -p ${path_save}/${name}
 
   >>>
   output {
