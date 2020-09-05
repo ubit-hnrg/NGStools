@@ -4,7 +4,7 @@
 task samtools_stat{
 
   String toolpath
-  File experiment_lib #./TruSight_One_v1_padded_100_GRCh37.bed
+  File intervalo_captura #./TruSight_One_v1_padded_100_GRCh37.bed
   File input_bam_reducido
   String name
   String path_save
@@ -13,8 +13,8 @@ task samtools_stat{
     set -e
     set -o pipefail
  
-    ${toolpath}samtools stats ${input_bam_reducido}  -t ${experiment_lib} > ${name}_TSO_samtools.stats
-    #${toolpath}plot-bamstats ${name}_TSO_samtools.stats -p ${path_save}/${name}
+    ${toolpath}samtools stats ${input_bam_reducido}  -t ${intervalo_captura} > ${name}_TSO_samtools.stats
+    ${toolpath}plot-bamstats ${name}_TSO_samtools.stats -p ${path_save}/${name}
 
   >>>
   output {
@@ -611,7 +611,7 @@ workflow bam2gvcf {
   String smith_waterman_implementation
   Float? contamination
   String newqual
-  File experiment_lib
+  File intervalo_captura
     
   
   String base_file_name
@@ -664,7 +664,7 @@ workflow bam2gvcf {
     #input_bam = bam_markdup,
     toolpath = toolpath,
     output_bam_basename = base_file_name, 
-    lib_resctricted = experiment_lib#lib_resctricted
+    lib_resctricted = intervalo_captura#lib_resctricted
     #./TruSight_One_v1_padded_100_GRCh37.bed 
   }
   
@@ -782,7 +782,7 @@ workflow bam2gvcf {
     toolpath = toolpath,
     path_save = path_save,
     name = base_file_name, 
-    experiment_lib = experiment_lib, #sin padding 
+    intervalo_captura = intervalo_captura, #sin padding 
     input_bam_reducido = GatherBamFiles.output_bam,
     #input_bam_reducido = reduce_bam.output_reduced_bam
 
