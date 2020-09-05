@@ -664,7 +664,7 @@ workflow bam2gvcf {
     #input_bam = bam_markdup,
     toolpath = toolpath,
     output_bam_basename = base_file_name, 
-    lib_resctricted = lib_resctricted
+    lib_resctricted = experiment_lib#lib_resctricted
     #./TruSight_One_v1_padded_100_GRCh37.bed 
   }
   
