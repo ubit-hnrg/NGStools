@@ -7,10 +7,10 @@ import pandas as pd
 import numpy as np
 import os
 import argparse
-import matplotlib
+import matplotlib as plt
 matplotlib.use('Agg')
 from matplotlib.ticker import LogLocator, AutoLocator, AutoMinorLocator
-#
+#matplotlib.use('Agg')
 
 ###############################################################################
 #coverage_hist command line with bedtools
