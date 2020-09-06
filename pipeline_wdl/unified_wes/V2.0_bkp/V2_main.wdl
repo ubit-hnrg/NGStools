@@ -538,6 +538,7 @@ call qual_control.qual_control {
   Array[File] alineamiento_rep = bam2gvcf.reporte_final ### archivo para mergear... estadistica en la libreria del experimento
   
   Array[File] global = qual_control.depth_global_cov_stats
+  Array[File] exon_tsv = qual_control.tsv_exon
   
   ####meter en pdf
   Array[File] plot_dist = qual_control.plot_distribution
@@ -557,14 +558,14 @@ call qual_control.qual_control {
     scatter (idx in range(length(Tsv_annovar))){
        
        String sample = basename(Tsv_annovar[idx],"multianno_restrict.tsv")
-       String samplename2 = basename(prof_by_exon[idx],"_coverage_statistics_by_exon_V2.0.tsv")
+       String samplename2 = basename(exon_tsv[idx],"_ENS_local_report.tsv")
        
        #if(sample==samplename2){
          #mergear tsv_annovar con distancias_exones
         
       call join_annovar_exon_dist {
           input:
-            name = samplename2,
+            name = sample,
               annovar_variants = Tsv_annovar[idx],
               exon_dist = exon_distances[idx],
               ngs_toolpath = ngs_toolpath
@@ -574,15 +575,15 @@ call qual_control.qual_control {
             input:
             annovar_tsv = join_annovar_exon_dist.anno_dist,
             plof = plof[idx],
-            samplename2 = samplename2,
-            exon_coverage_report = prof_by_exon[idx],
+            samplename2 = sample,
+            exon_coverage_report = exon_tsv[idx],
             ngs_toolpath = ngs_toolpath
             
            }
         call pdf_report {
             input:
             alineamiento = alineamiento_rep[idx],
-            name = samplename2,
+            name = sample,
             glob_rep = global[idx],
             sex = sex_pred[idx],
             #fastp_rep = fastp_qual[idx],

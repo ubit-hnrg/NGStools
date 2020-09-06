@@ -221,7 +221,7 @@ scatter (fastp in fastp_json_files){
         by_exon_cov =   histo_cob.histo_exon,
         global_cov = histo_cob.histo_global,
         ngs_toolpath = ngs_toolpath,
-        sample_name = basename(histo_cob.histo_exon, '.ENS.hist')
+        sample_name = basename(bams_ready, '.bam')
     }
  }
 
@@ -315,6 +315,10 @@ scatter (fastp in fastp_json_files){
     Array[File] depth_global_cov_stats = histo_cob.histo_global ###estadistica del alinamiento...
     ##plot distribution
     Array[File] plot_distribution = make_tsv_reports.distributions_plot
+#tsv_results
+    Array[File] tsv_exon = make_tsv_reports.hist_by_exon
+#make_tsv_reports.hist_global
+
 
     Array[File] by_exon_depth = histo_cob.histo_exon
     File excel_qual_report = make_excel.reporte_excel
