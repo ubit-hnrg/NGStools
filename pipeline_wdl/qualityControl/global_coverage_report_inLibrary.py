@@ -7,7 +7,7 @@ import pandas as pd
 import numpy as np
 import os
 import argparse
-from matplotlib
+import matplotlib
 matplotlib.use('Agg')
 from matplotlib.ticker import LogLocator, AutoLocator, AutoMinorLocator
 #
