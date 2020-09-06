@@ -319,7 +319,7 @@ task GatherBamFiles {
   
   ##### son 3g, cambiar dps en el json
   #String java_heap_memory_initial
-String gatk_jar
+  String gatk_jar
   String toolpath
   
   command {

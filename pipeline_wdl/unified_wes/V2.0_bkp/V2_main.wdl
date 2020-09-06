@@ -170,7 +170,7 @@ String ngs_toolpath
 
 command {
 
- ${ngs_toolpath}/home/hnrg/NGStools/python_scripts/join_annovar_exon_dist.py -d ${exon_dist} -a ${annovar_variants} -o ${name}.anno_variants.tsv
+ ${ngs_toolpath}/python_scripts/join_annovar_exon_dist.py -d ${exon_dist} -a ${annovar_variants} -o ${name}.anno_variants.tsv
   #echo "${S1}"
   #echo "${S2}"
 
