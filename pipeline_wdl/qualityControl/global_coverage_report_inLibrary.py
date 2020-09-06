@@ -2,15 +2,16 @@
 from __future__ import division
 
 from statsmodels.stats.weightstats import DescrStatsW
+import matplotlib
+# Force matplotlib to not use any Xwindows backend.
+matplotlib.use('Agg')
 import sys
 import pandas as pd
 import numpy as np
 import os
 import argparse
-import matplotlib as plt
-matplotlib.use('Agg')
+from matplotlib import pyplot as plt
 from matplotlib.ticker import LogLocator, AutoLocator, AutoMinorLocator
-#matplotlib.use('Agg')
 
 ###############################################################################
 #coverage_hist command line with bedtools
