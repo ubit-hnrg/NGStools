@@ -26,7 +26,7 @@ task histo_cob {
         File input_bam
         Array[File] input_bam_index
         File ensembl2intervalo_captura
-        String sample_name = basename( input_bam,'*.bam')
+        String sample_name = basename( input_bam,'.bam')
         String toolpath
         String ngs_toolpath 
     

@@ -557,7 +557,7 @@ call qual_control.qual_control {
     Array[File] Tsv_annovar = singleGenotypeGVCFs.annovar_tsv_out
     scatter (idx in range(length(Tsv_annovar))){
        
-       String sample = basename(Tsv_annovar[idx],"multianno_restrict.tsv")
+       String sample = basename(Tsv_annovar[idx],".multianno_restrict.tsv")
        String samplename2 = basename(exon_tsv[idx],"_ENS_local_report.tsv")
        
        #if(sample==samplename2){
