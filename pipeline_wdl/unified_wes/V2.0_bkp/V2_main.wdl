@@ -533,11 +533,23 @@ call qual_control.qual_control {
     }
   }
 
-
   ####for pdf purpose 
   Array[File] alineamiento_rep = bam2gvcf.reporte_final ### archivo para mergear... estadistica en la libreria del experimento
   
   Array[File] global = qual_control.depth_global_cov_stats
+  #global
+
+  Array[Pair[String,File]] global_report = zip (array_path_save_byexon, global)
+  scatter (pairs in global_report) {
+    call symlink_important_files as global_hist {
+        input:
+        output_to_save = pairs.right,
+        path_save = pairs.left
+    }
+  }
+
+
+
   Array[File] exon_tsv = qual_control.tsv_exon
   
   ####meter en pdf
