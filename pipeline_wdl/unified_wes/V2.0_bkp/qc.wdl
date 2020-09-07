@@ -230,7 +230,7 @@ scatter (fastp in fastp_json_files){
  Array[File] bams_stat_depth_global_coverage_stats = make_tsv_reports.hist_global
 
  #report por exon... 
- Array[File] by_exon_report = make_tsv_reports.hist_by_exon
+ #Array[File] by_exon_report = make_tsv_reports.hist_by_exon
 
  ###reportes calidad fastp
  Array[File] fastp_rep = fastp_qual.fastp_stats
