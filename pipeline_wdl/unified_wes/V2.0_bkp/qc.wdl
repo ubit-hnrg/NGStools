@@ -227,7 +227,7 @@ scatter (fastp in fastp_json_files){
 
 
  #reportes global nuevo from ari script
- Array[File] bams_stat_depth_global_coverage_stats = make_tsv_reports.hist_global
+ #Array[File] bams_stat_depth_global_coverage_stats = make_tsv_reports.hist_global
 
  #report por exon... 
  #Array[File] by_exon_report = make_tsv_reports.hist_by_exon
@@ -239,7 +239,7 @@ scatter (fastp in fastp_json_files){
  #Create a file with a list of the generated histo glob_stats for merge in excel report
   call CreateFoFN {
     input:
-      array_of_files = bams_stat_depth_global_coverage_stats,
+      array_of_files = make_tsv_reports.hist_global,#bams_stat_depth_global_coverage_stats,
       fofn_name = experiment_name
      
   }
@@ -313,6 +313,7 @@ scatter (fastp in fastp_json_files){
  output {
         
     Array[File] depth_global_cov_stats = histo_cob.histo_global ###estadistica del alinamiento...
+    Array[File] bams_stat_depth_global_coverage_stats = make_tsv_reports.hist_global
     ##plot distribution
     Array[File] plot_distribution = make_tsv_reports.distributions_plot
 #tsv_results

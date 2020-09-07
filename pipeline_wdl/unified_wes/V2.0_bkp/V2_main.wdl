@@ -554,7 +554,24 @@ call qual_control.qual_control {
   
   ####meter en pdf
   Array[File] plot_dist = qual_control.plot_distribution
+  Array[Pair[String,File]] plot_hist_save = zip (array_path_save_byexon, plot_dist)
+  scatter (pairs in plot_hist_save) {
+    call symlink_important_files as save_plot_distrib {
+        input:
+        output_to_save = pairs.right,
+        path_save = pairs.left
+    }
+  }
 
+  Array[File] tsv_global = qual_control.bams_stat_depth_global_coverage_stats
+  Array[Pair[String,File]] qual_tsv = zip (array_path_save_byexon, tsv_global)
+  scatter (pairs in plot_hist_save) {
+    call symlink_important_files as qual_tsv_save {
+        input:
+        output_to_save = pairs.right,
+        path_save = pairs.left
+    }
+  }
 
   #Array[File] fastp_qual = quality_control_V2.fastp_rep_out
   Array[File] sex_pred= qual_control.bams_sex_prediction
