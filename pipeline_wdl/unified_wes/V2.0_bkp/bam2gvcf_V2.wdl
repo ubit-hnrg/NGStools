@@ -649,13 +649,13 @@ workflow bam2gvcf {
 
 
   #scatter (bam in bams_N_reads){
-  call bams_reads {
-    input:
-    bam = MarkDuplicates.output_bam,
-    toolpath = toolpath,
-    sample_name = base_file_name
+  #call bams_reads {
+  #  input:
+  #  bam = MarkDuplicates.output_bam,
+  #  toolpath = toolpath,
+  #  sample_name = base_file_name
     
-  }
+  #}
     #}
 
   call reduce_bam {
@@ -668,7 +668,13 @@ workflow bam2gvcf {
     #./TruSight_One_v1_padded_100_GRCh37.bed 
   }
   
-
+call bams_reads {
+    input:
+    bam = reduce_bam.output_reduced_bam, #MarkDuplicates.output_bam,
+    toolpath = toolpath,
+    sample_name = base_file_name
+    
+  }
 
 
   # Sort aggregated+deduped BAM file and fix tags
