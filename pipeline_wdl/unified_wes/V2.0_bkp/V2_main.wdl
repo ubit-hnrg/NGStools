@@ -522,9 +522,9 @@ call qual_control.qual_control {
    exon_coords = coord_generator.exon_restricted #### ensembl vs intervalo_captura
   }
 
- Array[File] prof_by_exon = qual_control.tsv_exon#by_exon_depth##","${coord_generator.padded_coord}"] #"${name}_coverage_statistics_by_exon.tsv"
+ #Array[File] prof_by_exon = qual_control.tsv_exon#by_exon_depth##","${coord_generator.padded_coord}"] #"${name}_coverage_statistics_by_exon.tsv"
  Array[String] array_path_save_byexon = mkdir_samplename.path_out_softlink
- Array[Pair[String,File]] samples_by_exon = zip (array_path_save_byexon, prof_by_exon)
+ Array[Pair[String,File]] samples_by_exon = zip (array_path_save_byexon, exon_tsv)
   scatter (pairs in samples_by_exon) {
     call symlink_important_files as byexon{
         input:
