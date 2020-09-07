@@ -565,7 +565,7 @@ call qual_control.qual_control {
 
   Array[File] tsv_global = qual_control.bams_stat_depth_global_coverage_stats
   Array[Pair[String,File]] qual_tsv = zip (array_path_save_byexon, tsv_global)
-  scatter (pairs in plot_hist_save) {
+  scatter (pairs in qual_tsv) {
     call symlink_important_files as qual_tsv_save {
         input:
         output_to_save = pairs.right,

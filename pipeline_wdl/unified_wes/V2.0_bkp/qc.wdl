@@ -318,7 +318,6 @@ scatter (fastp in fastp_json_files){
     Array[File] plot_distribution = make_tsv_reports.distributions_plot
 #tsv_results
     Array[File] tsv_exon = make_tsv_reports.hist_by_exon
-#make_tsv_reports.hist_global
 
 
     Array[File] by_exon_depth = histo_cob.histo_exon
