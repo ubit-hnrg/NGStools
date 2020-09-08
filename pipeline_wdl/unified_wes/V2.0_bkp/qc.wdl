@@ -53,7 +53,7 @@ task histo_cob {
         ${ngs_toolpath}/python_scripts/bam_sex_xy.py -b ${input_bam} > ${sample_name}_sex.txt
 
         ####samtools stat
-        ${toolpath}samtools stats ${input_bam}  -t ${intervalo_captura} > ${sample_name}_TSO_samtools.stats
+        ${toolpath}samtools stats ${input_bam}  -t ${intervalo_captura} > ${sample_name}_samtools.stats
          /usr/local/bin/plot-bamstats ${sample_name}_TSO_samtools.stats -p ${path_save}samtools_plots/${sample_name}
 
 
@@ -78,7 +78,7 @@ task histo_cob {
         File histo_exon = "${sample_name}.ENS.hist"
         File histo_global ="${sample_name}.global.hist"
         File sex_prediction = "${sample_name}_sex.txt"
-        File samtools_stat_experiment_bam = "${sample_name}_TSO_samtools.stats"
+        File samtools_stat_experiment_bam = "${sample_name}_samtools.stats"
 
     }
 
@@ -378,7 +378,7 @@ scatter (fastp in fastp_json_files){
     
     ##fram samtools_stats
     Array[File] reporte_final = samtools_reports_file.output_global_report ### archivo para mergear... estadistica en la libreria del experimento
-    Array[File] Samt_TSO_stat = histo_cob.samtools_stat_experiment_bam
+    Array[File] samtools_stat_report_from_reduced_bam = histo_cob.samtools_stat_experiment_bam
 
  
  }

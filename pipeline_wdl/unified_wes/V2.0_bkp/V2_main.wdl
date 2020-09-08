@@ -563,8 +563,8 @@ call qual_control.qual_control {
     }
   }
   ###samtools_stat
-  Array[File] Samt_TSO_stat = qual_control.Samt_TSO_stat
-   Array[Pair[String,File]] samtools_stat_out = zip (array_path_save_byexon, Samt_TSO_stat)
+  Array[File] samtools_stat_report_from_reduced_bam = qual_control.samtools_stat_report_from_reduced_bam
+   Array[Pair[String,File]] samtools_stat_out = zip (array_path_save_byexon, samtools_stat_report_from_reduced_bam)
   scatter (pairs in samtools_stat_out) {
     call symlink_important_files as save_samtools {
         input:
@@ -678,7 +678,7 @@ call qual_control.qual_control {
    #File? intervalo = JointGenotyping.inter
 
    #Array[File] Samt_bam_stat = bam2gvcf.Samt_bam_stat 
-   #Array[File] Samt_TSO_stat = qual_control.Samt_TSO_stat
+   #Array[File] samtools_stat_report_from_reduced_bam = qual_control.samtools_stat_report_from_reduced_bam
    Array[File] reporte_final = qual_control.reporte_final ### archivo para mergear... estadistica en la libreria del experimento
  }
 
