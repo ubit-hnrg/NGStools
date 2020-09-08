@@ -113,7 +113,7 @@ task samtools_reports_file {
 
   String sampleID
   Int N_total_reads_bam
-  #Int N_bases_after_filtering
+  #Int N_bases_after_filtering ##dps lo agarro de fastp_report
   File samtools_library_report
   String ngs_toolpath
 
@@ -258,7 +258,7 @@ scatter (fastp in fastp_json_files){
     call histo_cob {
       input: 
       input_bam = analysis_readybam[idx],#bams_ready,
-      input_bam_index = analysis_readybam_index[idx],
+      input_bam_index = analysis_readybam_index,
       #pipeline_version = pipeline_v,
       intervalo_captura = intervalo_captura,
       ensembl2intervalo_captura = exon_coords,
