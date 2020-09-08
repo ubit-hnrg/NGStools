@@ -17,7 +17,31 @@ task fastp_qual {
   }
 }
 
+task samtools_stat{
 
+  String toolpath
+  File intervalo_captura #./TruSight_One_v1_padded_100_GRCh37.bed
+  File input_bam_reducido
+  String name
+  String path_save
+
+  command <<<
+    set -e
+    set -o pipefail
+ 
+    ${toolpath}samtools stats ${input_bam_reducido}  -t ${intervalo_captura} > ${name}_TSO_samtools.stats
+    /usr/local/bin/plot-bamstats ${name}_TSO_samtools.stats -p ${path_save}samtools_plots/${name}
+
+  >>>
+  output {
+
+ 
+  File samtools_stat_experiment_bam = "${name}_TSO_samtools.stats"
+
+
+  }
+
+}
 
 task histo_cob {
     
@@ -28,7 +52,8 @@ task histo_cob {
         File ensembl2intervalo_captura
         String sample_name = basename( input_bam,'.bam')
         String toolpath
-        String ngs_toolpath 
+        String ngs_toolpath
+        String path_save 
     
     
     command {   
@@ -52,6 +77,10 @@ task histo_cob {
         ###ya que estamos, prediccion de sexo:
         ${ngs_toolpath}/python_scripts/bam_sex_xy.py -b ${input_bam} > ${sample_name}_sex.txt
 
+        ####samtools stat
+        ${toolpath}samtools stats ${input_bam}  -t ${intervalo_captura} > ${sample_name}_TSO_samtools.stats
+         /usr/local/bin/plot-bamstats ${sample_name}_TSO_samtools.stats -p ${path_save}samtools_plots/${sample_name}
+
 
         #### COBERTURA  ##################################
         #### EXONES     ##################################
@@ -74,8 +103,30 @@ task histo_cob {
         File histo_exon = "${sample_name}.ENS.hist"
         File histo_global ="${sample_name}.global.hist"
         File sex_prediction = "${sample_name}_sex.txt"
+        File samtools_stat_experiment_bam = "${sample_name}_TSO_samtools.stats"
 
     }
+
+}
+
+task samtools_reports_file {
+
+  String sampleID
+  Int N_total_reads_bam
+  Int N_bases_after_filtering
+  File samtools_library_report
+  String ngs_toolpath
+
+  command {
+  ${ngs_toolpath}/pipeline_wdl/qualityControl/samtools_stats_report_V2.py -N=${N_total_reads_bam}  -l=${samtools_library_report} -o=${sampleID}_samtools_report.tsv
+
+  }
+
+  output {
+ 
+  File output_global_report = "${sampleID}_samtools_report.tsv" 
+
+  }
 
 }
 
@@ -188,9 +239,10 @@ String pipeline_v
 String experiment_name
 File exon_coords
 File intervalo_captura
+Array[Int] bams_N_reads
 
 ####inputs from bam2gvcf.reporte_final
-Array[File] stat_alineamiento
+#Array[File] stat_alineamiento
 
 scatter (fastp in fastp_json_files){
     call fastp_qual {
@@ -201,19 +253,41 @@ scatter (fastp in fastp_json_files){
 
 ######################scatter por los bams... analysis_readybam
 
-  scatter (bams_ready in analysis_readybam) {
-
+  #scatter (bams_ready in analysis_readybam) {
+   scatter (idx in range(length(analysis_readybam))){
     call histo_cob {
       input: 
-      input_bam = bams_ready,
-      input_bam_index = analysis_readybam_index,
+      input_bam = analysis_readybam[idx],#bams_ready,
+      input_bam_index = analysis_readybam_index[idx],
       #pipeline_version = pipeline_v,
       intervalo_captura = intervalo_captura,
       ensembl2intervalo_captura = exon_coords,
       toolpath = toolpath,
-      ngs_toolpath = ngs_toolpath
+      ngs_toolpath = ngs_toolpath,
+      path_save = path_save[idx]
      
     }
+  # call samtools_stat {
+  #   input:
+  #   toolpath = toolpath,
+  #   path_save = path_save,
+  #   name = base_file_name, 
+  #   intervalo_captura = intervalo_captura, #sin padding 
+  #   input_bam_reducido = GatherBamFiles.output_bam,
+  #   #input_bam_reducido = reduce_bam.output_reduced_bam
+
+  # }
+       
+  call samtools_reports_file {
+
+  input: 
+  sampleID = basename(analysis_readybam[idx], '.bam'),#base_file_name,
+  N_total_reads_bam = bams_N_reads[idx], ###ahora es sobre N_bases
+  #samtools_global_report = samtools_stat.samtools_stat_original_bam,
+  samtools_library_report = histo_cob.samtools_stat_experiment_bam,
+  ngs_toolpath = ngs_toolpath
+
+  }
 
     ###crear tsv 
     call make_tsv_reports {
@@ -221,7 +295,7 @@ scatter (fastp in fastp_json_files){
         by_exon_cov =   histo_cob.histo_exon,
         global_cov = histo_cob.histo_global,
         ngs_toolpath = ngs_toolpath,
-        sample_name = basename(bams_ready, '.bam')
+        sample_name = basename(analysis_readybam[idx], '.bam')
     }
  }
 
@@ -247,7 +321,7 @@ scatter (fastp in fastp_json_files){
  #Create a file with a list of the generated output_global_report
   call CreateFoFN as CreateFoFN_samtools{
     input:
-      array_of_files = stat_alineamiento,
+      array_of_files = samtools_reports_file.output_global_report,#stat_alineamiento,
       fofn_name = experiment_name
      
   }
@@ -326,6 +400,12 @@ scatter (fastp in fastp_json_files){
     Array[File] bams_sex_prediction = histo_cob.sex_prediction
 
     Array[File] fastp_rep_out = fastp_qual.fastp_stats
+    
+    ##fram samtools_stats
+    Array[File] reporte_final = samtools_reports_file.output_global_report ### archivo para mergear... estadistica en la libreria del experimento
+    Array[File] Samt_TSO_stat = histo_cob.samtools_stat_experiment_bam
+
+ 
  }
 
 }

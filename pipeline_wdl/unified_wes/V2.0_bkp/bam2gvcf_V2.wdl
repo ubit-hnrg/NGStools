@@ -28,26 +28,7 @@ task samtools_stat{
 }
 
 
-task samtools_reports_file {
 
-  String sampleID
-  Int N_total_reads_bam
-  #File samtools_global_report ##no va mas, necesita el numero total de reads
-  File samtools_library_report
-  String ngs_toolpath
-
-  command {
-  ${ngs_toolpath}/pipeline_wdl/qualityControl/samtools_stats_report_v1.0.py -N=${N_total_reads_bam}  -l=${samtools_library_report} -o=${sampleID}_samtools_report.tsv
-
-  }
-
-  output {
- 
-  File output_global_report = "${sampleID}_samtools_report.tsv" 
-
-  }
-
-}
 
 
 
@@ -649,13 +630,13 @@ workflow bam2gvcf {
 
 
   #scatter (bam in bams_N_reads){
-  #call bams_reads {
-  #  input:
-  #  bam = MarkDuplicates.output_bam,
-  #  toolpath = toolpath,
-  #  sample_name = base_file_name
+  call bams_reads {
+    input:
+    bam = MarkDuplicates.output_bam,
+    toolpath = toolpath,
+    sample_name = base_file_name
     
-  #}
+  }
     #}
 
   call reduce_bam {
@@ -668,13 +649,6 @@ workflow bam2gvcf {
     #./TruSight_One_v1_padded_100_GRCh37.bed 
   }
   
-call bams_reads {
-    input:
-    bam = reduce_bam.output_reduced_bam, #MarkDuplicates.output_bam,
-    toolpath = toolpath,
-    sample_name = base_file_name
-    
-  }
 
 
   # Sort aggregated+deduped BAM file and fix tags
@@ -783,28 +757,16 @@ call bams_reads {
   ## Output :
   ## - A clean BAM file and its index, suitable for variant discovery analyses.
   ##################################################################################
-  call samtools_stat {
-    input:
-    toolpath = toolpath,
-    path_save = path_save,
-    name = base_file_name, 
-    intervalo_captura = intervalo_captura, #sin padding 
-    input_bam_reducido = GatherBamFiles.output_bam,
-    #input_bam_reducido = reduce_bam.output_reduced_bam
+  # call samtools_stat {
+  #   input:
+  #   toolpath = toolpath,
+  #   path_save = path_save,
+  #   name = base_file_name, 
+  #   intervalo_captura = intervalo_captura, #sin padding 
+  #   input_bam_reducido = GatherBamFiles.output_bam,
+  #   #input_bam_reducido = reduce_bam.output_reduced_bam
 
-  }
-   
-  call samtools_reports_file {
-
-  input: 
-  sampleID = base_file_name,
-  N_total_reads_bam = bams_reads.N_reads,
-  #samtools_global_report = samtools_stat.samtools_stat_original_bam,
-  samtools_library_report = samtools_stat.samtools_stat_experiment_bam,
-  ngs_toolpath = ngs_toolpath
-
-  }
-
+  # }
 
 
 
@@ -902,7 +864,7 @@ call bams_reads {
   
 
 
-  Array[File] salidas = ["${GatherBamFilesHaplotype.output_bam}","${GatherBamFilesHaplotype.output_bam_index}","${GatherBamFiles.output_bam}","${GatherBamFiles.output_bam_index}","${MergeVCFs.output_vcf}","${MergeVCFs.output_vcf_index}","${CollectGvcfCallingMetrics.summary_metrics}","${CollectGvcfCallingMetrics.detail_metrics}","${samtools_stat.samtools_stat_experiment_bam}","${samtools_reports_file.output_global_report}"]
+  Array[File] salidas = ["${GatherBamFilesHaplotype.output_bam}","${GatherBamFilesHaplotype.output_bam_index}","${GatherBamFiles.output_bam}","${GatherBamFiles.output_bam_index}","${MergeVCFs.output_vcf}","${MergeVCFs.output_vcf_index}","${CollectGvcfCallingMetrics.summary_metrics}","${CollectGvcfCallingMetrics.detail_metrics}"]#,"${samtools_stat.samtools_stat_experiment_bam}"]#,"${samtools_reports_file.output_global_report}"]
 
   scatter (paths in salidas) {
     call symlink_important_files {
@@ -931,11 +893,11 @@ call bams_reads {
    #File borrar_Markdup = MarkDuplicates.output_bam
    File borrar_SortandFix = SortAndFixTags.output_bam
    #String sampl_name_bam = bams_reads.sampl 
-   #String N_reads_bam = bams_reads.N_reads 
+   Int N_reads_bam = bams_reads.N_reads 
    #File Samt_bam_stat = samtools_stat.samtools_stat_original_bam 
-   File Samt_TSO_stat = samtools_stat.samtools_stat_experiment_bam
-   File reporte_final = samtools_reports_file.output_global_report ### archivo para mergear... estadistica en la libreria del experimento
-
+   #File Samt_TSO_stat = samtools_stat.samtools_stat_experiment_bam
+   #File reporte_final = samtools_reports_file.output_global_report ### archivo para mergear... estadistica en la libreria del experimento
+   #samtools_reports_file.output_global_report
 
    #"samtools_stat.samtools_stat_experiment_bam","samtools_reports_file.output_global_report"
 

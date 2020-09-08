@@ -471,7 +471,7 @@ workflow main_workflow {
  
    } ###fin scatter gvcf
 
-
+ Array[Int] N_reads_bams = bam2gvcf.N_reads_bam
  Array[File] archivos_a_borrar3 = bam2gvcf.borrar_SortandFix #,"${}"]
 
  scatter (archivos in archivos_a_borrar3){
@@ -508,8 +508,8 @@ workflow main_workflow {
 
 call qual_control.qual_control {
    input: 
-   stat_alineamiento = bam2gvcf.reporte_final,
-   #bams_N_reads = bams_N_reads,
+   #stat_alineamiento = bam2gvcf.reporte_final,
+   bams_N_reads = N_reads_bams,#bam2gvcf.bams_N_reads,
    fastp_json_files = ConvertPairedFastQsToUnmappedBamWf.fastp_json_reports,
    path_save = mkdir_samplename.path_out_softlink,
    analysis_readybam = bam2gvcf.analysis_ready_bam,
@@ -534,7 +534,7 @@ call qual_control.qual_control {
   }
 
   ####for pdf purpose 
-  Array[File] alineamiento_rep = bam2gvcf.reporte_final ### archivo para mergear... estadistica en la libreria del experimento
+  Array[File] alineamiento_rep = qual_control.reporte_final ### archivo para mergear... estadistica en la libreria del experimento
   
   Array[File] global = qual_control.depth_global_cov_stats
   #global
@@ -673,8 +673,8 @@ call qual_control.qual_control {
    #File? intervalo = JointGenotyping.inter
 
    #Array[File] Samt_bam_stat = bam2gvcf.Samt_bam_stat 
-   Array[File] Samt_TSO_stat = bam2gvcf.Samt_TSO_stat
-   Array[File] reporte_final = bam2gvcf.reporte_final ### archivo para mergear... estadistica en la libreria del experimento
+   Array[File] Samt_TSO_stat = qual_control.Samt_TSO_stat
+   Array[File] reporte_final = qual_control.reporte_final ### archivo para mergear... estadistica en la libreria del experimento
  }
 
 }
