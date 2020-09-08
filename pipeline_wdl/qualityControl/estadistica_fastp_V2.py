@@ -192,5 +192,8 @@ res = res.loc[[u'total de lecturas antes del filtrado',
 #pd.options.display.float_format = '{:.2f}'.format
 #display(pd.concat(reportes, axis=1).round(2))
 res.round(2).to_csv(out,sep = '\t',header =False)
-N_bases.to_csv(bases_out,sep = '\t',header =False)
+with open(bases_out,'w') as f:
+    f.write('%d' % N_bases)
+f.close()
+
 #pd.concat(reportes, axis=1).round(2).to_csv(out,sep='\t')
