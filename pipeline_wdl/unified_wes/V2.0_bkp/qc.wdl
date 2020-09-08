@@ -53,8 +53,8 @@ task histo_cob {
         ${ngs_toolpath}/python_scripts/bam_sex_xy.py -b ${input_bam} > ${sample_name}_sex.txt
 
         ####samtools stat
-        ${toolpath}samtools stats ${input_bam}  -t ${intervalo_captura} > ${sample_name}_samtools.stats
-         /usr/local/bin/plot-bamstats ${sample_name}_TSO_samtools.stats -p ${path_save}samtools_plots/${sample_name}
+        ${toolpath}samtools stats ${input_bam} -t ${intervalo_captura} > ${sample_name}_samtools.stats
+         /usr/local/bin/plot-bamstats ${sample_name}_samtools.stats -p ${path_save}samtools_plots/${sample_name}
 
 
         #### COBERTURA  ##################################
