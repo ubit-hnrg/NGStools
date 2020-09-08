@@ -17,31 +17,6 @@ task fastp_qual {
   }
 }
 
-task samtools_stat{
-
-  String toolpath
-  File intervalo_captura #./TruSight_One_v1_padded_100_GRCh37.bed
-  File input_bam_reducido
-  String name
-  String path_save
-
-  command <<<
-    set -e
-    set -o pipefail
- 
-    ${toolpath}samtools stats ${input_bam_reducido}  -t ${intervalo_captura} > ${name}_TSO_samtools.stats
-    /usr/local/bin/plot-bamstats ${name}_TSO_samtools.stats -p ${path_save}samtools_plots/${name}
-
-  >>>
-  output {
-
- 
-  File samtools_stat_experiment_bam = "${name}_TSO_samtools.stats"
-
-
-  }
-
-}
 
 task histo_cob {
     
