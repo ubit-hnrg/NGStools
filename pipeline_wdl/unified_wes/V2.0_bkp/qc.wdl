@@ -113,7 +113,7 @@ task samtools_reports_file {
 
   String sampleID
   Int N_total_reads_bam
-  Int N_bases_after_filtering
+  #Int N_bases_after_filtering
   File samtools_library_report
   String ngs_toolpath
 
