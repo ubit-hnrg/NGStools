@@ -15,14 +15,17 @@ import argparse
 parser = argparse.ArgumentParser(prog='estadistica_fastp.py',description='Extract statistic info from fastp_json reports', usage='%(prog)s  --fastp_json_report --output_file')
 parser.add_argument('-i','--fastp_json_report_list', help='input file with one_sample_multi_lane_fastpjson_report_file per line')
 parser.add_argument('-o','--output_file', help='a tsv file with all statistics')
+parser.add_argument('-b','--N_bases_after_filtering', help='N bases after experiment filtering')
 args = parser.parse_args()
 
 
 results_dict = {}
 reportes = []
+N_bases = 0
 
 json_in = args.fastp_json_report_list
 out = args.output_file
+bases_out = args.N_bases_after_filtering
 
  
 with open(json_in) as fp:
@@ -114,6 +117,7 @@ total_lecturas=sum(total_reads_bef1)
 bases_before = float(sum(total_bases_bef1)/1000000000)
 total_lecturas_passTrue=sum(total_reads_aft)
 bases_after = float(sum(total_bases_aft)/1000000000)
+N_bases = sum(total_bases_aft)
 gc_before = sum(gc_content_bef1)
 gc_after = sum(gc_content_aft)
 porcentaje_passed = round((total_lecturas_passTrue*100)/total_lecturas,2)
@@ -188,4 +192,5 @@ res = res.loc[[u'total de lecturas antes del filtrado',
 #pd.options.display.float_format = '{:.2f}'.format
 #display(pd.concat(reportes, axis=1).round(2))
 res.round(2).to_csv(out,sep = '\t',header =False)
+N_bases.to_csv(bases_out,sep = '\t',header =False)
 #pd.concat(reportes, axis=1).round(2).to_csv(out,sep='\t')
