@@ -5,11 +5,15 @@ import argparse
 
 parser = argparse.ArgumentParser(prog='samtools_stat_report.py',description='Make aligment report from samtools stat reports', usage='%(prog)s  --samtools_global_report --samtools_library_report --output_file')
 parser.add_argument('-N','--total_reads', type=float,help='Number of total reads that passed quality criteria')
+parser.add_argument('-ba','--total_bases_after', type=int,help='Number of total bases after fastq filtering')
+parser.add_argument('-bb','--total_bases_before', type=int,help='Number of total bases before fastq filtering')
 parser.add_argument('-l','--samtools_library_report', help='library kit restricted report from samtools stat tool')
 parser.add_argument('-o','--output_file')
 
 args = parser.parse_args()
 total_reads = args.total_reads
+bases_after = args.total_bases_after
+bases_before = args.total_bases_before
 samtools_kit_report_file = args.samtools_library_report
 output = args.output_file
 
@@ -42,6 +46,16 @@ percents_tso = 100*samtools_kit_report[['reads properly paired','reads duplicate
 percents_tso = percents_tso.append(samtools_kit_report[['maximum length']])
 percents_tso = percents_tso.append(samtools_kit_report[['error rate']]*100)
 
+####bases
+percents_tso = percents_tso.append(samtools_kit_report[['bases mapped (cigar)']])
+cigar_after = 100 * samtools_kit_report[['bases mapped (cigar)']] / float(bases_after)
+cigar_before = 100 * samtools_kit_report[['bases mapped (cigar)']] / float(bases_before)
+percents_tso = percents_tso.append(pd.Series([cigar_after],index=['CIGAR after']))
+percents_tso = percents_tso.append(pd.Series([cigar_before],index=['CIGAR before']))
+
+
+percents_tso = percents_tso.append(samtools_kit_report[['bases inside the target']])
+#### ese reads properly paired no deberia ser el de cigar? 
 percents_tso = percents_tso.append(pd.Series([total_reads],index=['Number of reads properly paired']))
 
 percents_tso.index = percents_tso.index+' in Library'
