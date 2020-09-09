@@ -48,8 +48,8 @@ percents_tso = percents_tso.append(samtools_kit_report[['error rate']]*100)
 
 ####bases
 percents_tso = percents_tso.append(samtools_kit_report[['bases mapped (cigar)']])
-cigar_after = 100 * samtools_kit_report[['bases mapped (cigar)']] / float(bases_after)
-cigar_before = 100 * samtools_kit_report[['bases mapped (cigar)']] / float(bases_before)
+cigar_after = 100*samtools_kit_report[['bases mapped (cigar)']]/float(bases_after)
+cigar_before = 100*samtools_kit_report[['bases mapped (cigar)']]/float(bases_before)
 percents_tso = percents_tso.append(pd.Series([cigar_after],index=['CIGAR after']))
 percents_tso = percents_tso.append(pd.Series([cigar_before],index=['CIGAR before']))
 
