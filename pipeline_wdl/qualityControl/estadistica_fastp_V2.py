@@ -17,6 +17,7 @@ parser.add_argument('-i','--fastp_json_report_list', help='input file with one_s
 parser.add_argument('-o','--output_file', help='a tsv file with all statistics')
 parser.add_argument('-bb','--N_bases_before_filtering', help='N bases before filtering')
 parser.add_argument('-ba','--N_bases_after_filtering', help='N bases after experiment filtering')
+parser.add_argument('-ra','--N_reads_after_filtering', help = 'Number of reads after trimming')
 args = parser.parse_args()
 
 
@@ -24,10 +25,12 @@ results_dict = {}
 reportes = []
 N_bases_after = 0
 N_bases_before = 0
+N_reads_after = 0
 json_in = args.fastp_json_report_list
 out = args.output_file
 bases_after_out = args.N_bases_after_filtering
 bases_before_out = args.N_bases_before_filtering
+reads_after_out = args.N_reads_after_filtering
 
  
 with open(json_in) as fp:
@@ -118,6 +121,7 @@ for q in range(len(content)):
 total_lecturas=sum(total_reads_bef1)
 bases_before = float(sum(total_bases_bef1)/1000000000)
 total_lecturas_passTrue=sum(total_reads_aft)
+N_reads_after = total_lecturas_passTrue
 bases_after = float(sum(total_bases_aft)/1000000000)
 N_bases_after = sum(total_bases_aft)
 N_bases_before = sum(total_bases_bef1)
@@ -200,6 +204,9 @@ with open(bases_after_out,'w') as f:
 f.close()
 with open(bases_before_out,'w') as f:
     f.write('%d' % N_bases_before)
+f.close()
+with open(reads_after_out,'w') as f:
+    f.write('%d' % N_reads_after)
 f.close()
 
 #pd.concat(reportes, axis=1).round(2).to_csv(out,sep='\t')
