@@ -170,9 +170,9 @@ task fastp_qual {
 
   output {
     File fastp_stats = "${report_name}_fastp_report.tsv"
-    Array[String] bases_after = read_lines("${report_name}_N_bases_after.txt")
-    Array[String] bases_before = read_lines("${report_name}_N_bases_before.txt")
-    Array[String] reads_after = read_lines("${report_name}_N_reads_after.txt")
+    String bases_after = read_lines("${report_name}_N_bases_after.txt")
+    String bases_before = read_lines("${report_name}_N_bases_before.txt")
+    String reads_after = read_lines("${report_name}_N_reads_after.txt")
 
   }
 }
