@@ -513,7 +513,6 @@ Array[String] path_save = mkdir_samplename.path_out_softlink
   
 
 ######################scatter por los bams reducidos
-
    scatter (idx in range(length(bams))){
     call histo_cob {
       input: 
@@ -548,7 +547,7 @@ Array[String] path_save = mkdir_samplename.path_out_softlink
         by_exon_cov =   histo_cob.histo_exon,
         global_cov = histo_cob.histo_global,
         ngs_toolpath = ngs_toolpath,
-        sample_name = fastp_qual.fastp_stats[idx]#basename(analysis_readybam[idx], '.bam')
+        sample_name = basename(bams[idx], '.bam') #basename(fastp_qual.fastp_stats[idx],'_fastp_report.tsv')#basename(analysis_readybam[idx], '.bam')
     }
  
   
