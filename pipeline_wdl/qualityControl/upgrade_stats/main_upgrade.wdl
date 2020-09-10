@@ -473,11 +473,6 @@ call read_file_of_tabulated_inputs {
       toolpath = toolpath
     }
 
-    call mkdir_samplename {
-    input: 
-     path_softlink = path_softlink,
-     samplename = read_file_of_tabulated_inputs.array_of_samples[i]#sample_name
-    }
 } 
 
    #Create a file with a list of the generated fastp_json file
@@ -505,7 +500,7 @@ call fastp_qual {
 }
 ## fin scatter fastp
  ####qual control
-Array[String] path_save = mkdir_samplename.path_out_softlink
+
  Array[File] N_total_reads_bam = fastp_qual.reads_after ###ahora es sobre N_bases
   Array[File] N_bases_after_filtering = fastp_qual.bases_after
  Array[File]  N_bases_before_filtering = fastp_qual.bases_before
@@ -514,6 +509,12 @@ Array[String] path_save = mkdir_samplename.path_out_softlink
 
 ######################scatter por los bams reducidos
    scatter (idx in range(length(bams))){
+
+      call mkdir_samplename {
+    input: 
+     path_softlink = path_softlink,
+     samplename = basename(bams[idx], '.bam')#sample_name
+    }
     call histo_cob {
       input: 
       input_bam = bams[idx],#bams_ready,
@@ -523,7 +524,7 @@ Array[String] path_save = mkdir_samplename.path_out_softlink
       ensembl2intervalo_captura = coord_generator.exon_restricted, #exon_coords,
       toolpath = toolpath,
       ngs_toolpath = ngs_toolpath,
-      path_save = path_save[idx]
+      path_save = mkdir_samplename.path_out_softlink
      
     }
 
@@ -553,7 +554,7 @@ Array[String] path_save = mkdir_samplename.path_out_softlink
   
  }
 
-
+Array[String] path_save = mkdir_samplename.path_out_softlink
 
 #Create a file with a list of the generated histo glob_stats for merge in excel report
   call CreateFoFN {
@@ -633,7 +634,7 @@ Array[String] path_save = mkdir_samplename.path_out_softlink
         path_save = pairs.left
     }
   }  
-    Array[File] hist_glob = make_tsv_reports.hist_global
+    Array[File]+ hist_glob = make_tsv_reports.hist_global
    Array[Pair[String,File]] global_out = zip (path_save, hist_glob)
   scatter (pairs in global_out) {
     call symlink_important_files as save_global {
