@@ -247,8 +247,8 @@ task histo_cob {
 task samtools_reports_file {
 
   String sampleID
-  Int N_total_reads
-  Int N_bases_before
+  String N_total_reads
+  String N_bases_before
   Int N_bases_after##from fastp_report
   File samtools_library_report
   String ngs_toolpath
@@ -532,8 +532,8 @@ Array[String] path_save = mkdir_samplename.path_out_softlink
 
   input: 
   sampleID = basename(bams[idx], '.bam'),#base_file_name,
-  N_total_reads = read_int(N_total_reads_bam[idx]), ###ahora es sobre N_bases
-  N_bases_after = read_int(N_bases_after_filtering[idx]),
+  N_total_reads = read_string(N_total_reads_bam[idx]), ###ahora es sobre N_bases
+  N_bases_after = read_lines(N_bases_after_filtering[idx]),
   N_bases_before = read_int(N_bases_before_filtering[idx]), 
 
   #samtools_global_report = samtools_stat.samtools_stat_original_bam,
