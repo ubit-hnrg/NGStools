@@ -367,7 +367,7 @@ task Create_inputs_for_preprocesing {
 
 task CreateFoFN {
   # Command parameters
-  Array[File] array_of_files
+  Array[File]+ array_of_files
   String fofn_name
   
   command {
