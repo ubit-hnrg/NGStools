@@ -554,6 +554,8 @@ Array[String] path_save = mkdir_samplename.path_out_softlink
   
  }
 
+
+
 #Create a file with a list of the generated histo glob_stats for merge in excel report
   call CreateFoFN {
     input:
@@ -562,10 +564,11 @@ Array[String] path_save = mkdir_samplename.path_out_softlink
      
   }
 
+ Array[File] samtools_global = samtools_reports_file.output_global_report
  #Create a file with a list of the generated output_global_report
   call CreateFoFN as CreateFoFN_samtools{
     input:
-      array_of_files = samtools_reports_file.output_global_report,#stat_alineamiento,
+      array_of_files = samtools_global,#samtools_reports_file.output_global_report,#stat_alineamiento,
       fofn_name = experiment_name #basename(bams[idx], '.bam')#experiment_name
      
   }
