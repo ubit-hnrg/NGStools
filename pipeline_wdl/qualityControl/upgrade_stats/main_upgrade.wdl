@@ -633,15 +633,15 @@ Array[String] path_save = mkdir_samplename.path_out_softlink
         path_save = pairs.left
     }
   }  
-  #   Array[File] hist_glob = make_tsv_reports.hist_global
-  #  Array[Pair[String,File]] global_out = zip (path_save, hist_glob)
-  # scatter (pairs in global_out) {
-  #   call symlink_important_files as save_global {
-  #       input:
-  #       output_to_save = pairs.right,
-  #       path_save = pairs.left
-  #   }
-  # }
+    Array[File] hist_glob = make_tsv_reports.hist_global
+   Array[Pair[String,File]] global_out = zip (path_save, hist_glob)
+  scatter (pairs in global_out) {
+    call symlink_important_files as save_global {
+        input:
+        output_to_save = pairs.right,
+        path_save = pairs.left
+    }
+  }
   #     Array[File] distrib_plot = make_tsv_reports.distributions_plot
   #  Array[Pair[String,File]] distri_out = zip (path_save, distrib_plot)
   # scatter (pairs in distri_out) {
