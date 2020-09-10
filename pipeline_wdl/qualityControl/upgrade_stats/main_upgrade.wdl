@@ -170,9 +170,9 @@ task fastp_qual {
 
   output {
     File fastp_stats = "${report_name}_fastp_report.tsv"
-    File bases_after = "${report_name}_N_bases_after.txt"
-    File bases_before = "${report_name}_N_bases_before.txt"
-    File reads_after = "${report_name}_N_reads_after.txt"
+    Int bases_after = read_int("${report_name}_N_bases_after.txt")
+    Int bases_before = read_int("${report_name}_N_bases_before.txt")
+    Int reads_after = read_int("${report_name}_N_reads_after.txt")
 
   }
 }
@@ -247,9 +247,9 @@ task histo_cob {
 task samtools_reports_file {
 
   String sampleID
-  String N_total_reads_bam
-  String N_bases_before_filtering
-  String N_bases_after_filtering ##from fastp_report
+  Int N_total_reads_bam
+  Int N_bases_before_filtering
+  Int N_bases_after_filtering ##from fastp_report
   File samtools_library_report
   String ngs_toolpath
 
@@ -506,9 +506,9 @@ call fastp_qual {
 ## fin scatter fastp
  ####qual control
 Array[String] path_save = mkdir_samplename.path_out_softlink
- Array[File] N_total_reads_bam = fastp_qual.reads_after ###ahora es sobre N_bases
-  Array[File] N_bases_after_filtering = fastp_qual.bases_after
- Array[File]  N_bases_before_filtering = fastp_qual.bases_before
+ Array[Int] N_total_reads_bam = fastp_qual.reads_after ###ahora es sobre N_bases
+  Array[Int] N_bases_after_filtering = fastp_qual.bases_after
+ Array[Int]  N_bases_before_filtering = fastp_qual.bases_before
  
   
 
@@ -532,9 +532,9 @@ Array[String] path_save = mkdir_samplename.path_out_softlink
 
   input: 
   sampleID = basename(bams[idx], '.bam'),#base_file_name,
-  N_total_reads_bam = read_int(N_total_reads_bam[idx]), ###ahora es sobre N_bases
-  N_bases_after_filtering = read_int(N_bases_after_filtering[idx]),
-  N_bases_before_filtering = read_int(N_bases_before_filtering[idx]), 
+  N_total_reads_bam = N_total_reads_bam[idx], ###ahora es sobre N_bases
+  N_bases_after_filtering = N_bases_after_filtering[idx],
+  N_bases_before_filtering = N_bases_before_filtering[idx], 
 
   #samtools_global_report = samtools_stat.samtools_stat_original_bam,
   samtools_library_report = histo_cob.samtools_stat_experiment_bam,
