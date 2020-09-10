@@ -135,7 +135,7 @@ task fastp {
 
 task CreateFoFN2 {
   # Command parameters
-  Array[File]? array_of_files
+  Array[File] array_of_files
   String fofn_name
   #Map [String, String] lista = {"array_of_files":"fofn_name"} 
   
@@ -367,7 +367,7 @@ task Create_inputs_for_preprocesing {
 
 task CreateFoFN {
   # Command parameters
-  Array[File]? array_of_files
+  Array[File] array_of_files
   String fofn_name
   
   command {
@@ -478,9 +478,9 @@ call read_file_of_tabulated_inputs {
      path_softlink = path_softlink,
      samplename = read_file_of_tabulated_inputs.array_of_samples[i]#sample_name
     }
+} 
 
-
-     #Create a file with a list of the generated fastp_json file
+   #Create a file with a list of the generated fastp_json file
   call CreateFoFN2 as FoFN_fastp_json {
     input:
     array_of_files = fastp.fastp_json_report,
@@ -493,20 +493,16 @@ call Create_inputs_for_preprocesing as fastp_report_files {
     bams_sample_names = read_file_of_tabulated_inputs.samplenames
   }
 
+#Array[File] muestras  =  Create_inputs_for_preprocesing.ubam_samples
 
-  #call path_borrado {
-  #  input:
-  #  path1 = fastp.fastq_cleaned_R1,
-  #  path2 = fastp.fastq_cleaned_R2
-  #}
+ Array[File] fastp_json_reports  =  fastp_report_files.ubam_samples
+ 
+scatter (samples in fastp_json_reports){
 call fastp_qual {
       input:
-      inputs_json_report = fastp_report_files.ubam_samples
+      inputs_json_report = samples#fastp_report_files.ubam_samples
     }
-
-} 
-
-
+}
 ## fin scatter fastp
  ####qual control
 Array[String] path_save = mkdir_samplename.path_out_softlink
@@ -549,7 +545,7 @@ Array[String] path_save = mkdir_samplename.path_out_softlink
         by_exon_cov =   histo_cob.histo_exon,
         global_cov = histo_cob.histo_global,
         ngs_toolpath = ngs_toolpath,
-        sample_name = fastp_qual.fastp_stats#basename(analysis_readybam[idx], '.bam')
+        sample_name = fastp_qual.fastp_stats[idx]#basename(analysis_readybam[idx], '.bam')
     }
  
  #Create a file with a list of the generated histo glob_stats for merge in excel report
