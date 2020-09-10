@@ -249,7 +249,7 @@ task samtools_reports_file {
   String sampleID
   String N_total_reads
   String N_bases_before
-  Int N_bases_after##from fastp_report
+  String N_bases_after##from fastp_report
   File samtools_library_report
   String ngs_toolpath
 
