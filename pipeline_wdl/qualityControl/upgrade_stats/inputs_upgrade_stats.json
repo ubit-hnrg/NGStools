@@ -4,9 +4,11 @@
   "##COMMENT1": "MANDATORY INPUTS",
   "##COMMENT2": "INPUT-OUTPUT PATHS",
   "upgrade_statistics.tabulatedSampleFilePaths": "File",
+  "upgrade_statistics.experiment_name": "String",
   "upgrade_statistics.list_bams": "File",
   "upgrade_statistics.list_bam_index": "File",
   "upgrade_statistics.path_softlink": "String",
+
 
   "##COMMENT3": "TOOLS & GATK",
   "upgrade_statistics.toolpath": "/home/hnrg/HNRG-pipeline-V0.1/tools/",
