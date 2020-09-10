@@ -3,10 +3,10 @@
 
   "##COMMENT1": "MANDATORY INPUTS",
   "##COMMENT2": "INPUT-OUTPUT PATHS",
-  "upgrade_statistics.tabulatedSampleFilePaths": "File",
-  "upgrade_statistics.list_bams": "File",
-  "upgrade_statistics.list_bam_index": "File",
-  "upgrade_statistics.path_softlink": "String",
+  "upgrade_statistics.tabulatedSampleFilePaths": "/home/hnrg/executionsHNRG/testing/upgrade_stats/inputs/CC1707556.txt",
+  "upgrade_statistics.list_bams": "/home/hnrg/executionsHNRG/testing/upgrade_stats/inputs/bam.txt",
+  "upgrade_statistics.list_bam_index": "/home/hnrg/executionsHNRG/testing/upgrade_stats/inputs/bam_index.txt",
+  "upgrade_statistics.path_softlink": "/data/resultsHNRG/testing/upgrade_stats/",
 
   "##COMMENT3": "TOOLS & GATK",
   "upgrade_statistics.toolpath": "/home/hnrg/HNRG-pipeline-V0.1/tools/",
@@ -22,7 +22,7 @@
 
   "upgrade_statistics.padding": "100",
   "upgrade_statistics.merge_tolerance": "200",
-  "upgrade_statistics.intervalo_captura": "File",
+  "upgrade_statistics.intervalo_captura": "/home/hnrg/HNRG-pipeline-V0.1/libraries/GRCh37/TruSight_One_v1_padded_100_GRCh37.bed",
   "upgrade_statistics.chromosome_length": "/home/hnrg/HNRG-pipeline-V0.1/libraries/GRCh37/chromosome_lengths_hg19.txt",
   "upgrade_statistics.generic_exon_coords": "/home/hnrg/HNRG-pipeline-V0.1/libraries/intervalos/ensembl_canonicos_GRCh37_0based.tsv"
 }
