@@ -534,7 +534,7 @@ Array[String] path_save = mkdir_samplename.path_out_softlink
   sampleID = basename(bams[idx], '.bam'),#base_file_name,
   N_total_reads = read_string(N_total_reads_bam[idx]), ###ahora es sobre N_bases
   N_bases_after = read_lines(N_bases_after_filtering[idx]),
-  N_bases_before = read_int(N_bases_before_filtering[idx]), 
+  N_bases_before = read_string(N_bases_before_filtering[idx]), 
 
   #samtools_global_report = samtools_stat.samtools_stat_original_bam,
   samtools_library_report = histo_cob.samtools_stat_experiment_bam,
