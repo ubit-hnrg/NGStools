@@ -367,7 +367,7 @@ task Create_inputs_for_preprocesing {
 
 task CreateFoFN {
   # Command parameters
-  Array[File] array_of_files
+  Array[File]+ array_of_files
   String fofn_name
   
   command {
@@ -430,7 +430,7 @@ Array[File] bams_index = read_lines(list_bam_index)
   File chromosome_length = "/home/hnrg/HNRG-pipeline-V0.1/libraries/GRCh37/chromosome_lengths_hg19.txt"
   Int padding = "100"
   Int merge_tolerance = "200"
-
+  String experiment_name 
 
 
 ###################calls 
@@ -513,7 +513,6 @@ Array[String] path_save = mkdir_samplename.path_out_softlink
   
 
 ######################scatter por los bams reducidos
-
    scatter (idx in range(length(bams))){
     call histo_cob {
       input: 
@@ -548,29 +547,35 @@ Array[String] path_save = mkdir_samplename.path_out_softlink
         by_exon_cov =   histo_cob.histo_exon,
         global_cov = histo_cob.histo_global,
         ngs_toolpath = ngs_toolpath,
-        sample_name = fastp_qual.fastp_stats[idx]#basename(analysis_readybam[idx], '.bam')
+        sample_name = basename(bams[idx], '.bam') #basename(fastp_qual.fastp_stats[idx],'_fastp_report.tsv')#basename(analysis_readybam[idx], '.bam')
     }
  
- #Create a file with a list of the generated histo glob_stats for merge in excel report
+  
+ }
+
+
+
+#Create a file with a list of the generated histo glob_stats for merge in excel report
   call CreateFoFN {
     input:
       array_of_files = make_tsv_reports.hist_global,#bams_stat_depth_global_coverage_stats,
-      fofn_name = basename(bams[idx], '.bam')#experiment_name
+      fofn_name = experiment_name,# basename(bams[idx], '.bam')#experiment_name
      
   }
 
+ Array[File] samtools_global = samtools_reports_file.output_global_report
  #Create a file with a list of the generated output_global_report
   call CreateFoFN as CreateFoFN_samtools{
     input:
-      array_of_files = samtools_reports_file.output_global_report,#stat_alineamiento,
-      fofn_name = basename(bams[idx], '.bam')#experiment_name
+      array_of_files = samtools_global,#samtools_reports_file.output_global_report,#stat_alineamiento,
+      fofn_name = experiment_name #basename(bams[idx], '.bam')#experiment_name
      
   }
 
  call CreateFoFN as CreateFoFN_fastp{
     input:
       array_of_files = fastp_qual.fastp_stats,#fastp_rep,
-      fofn_name = basename(bams[idx], '.bam')#experiment_name
+      fofn_name = experiment_name # basename(bams[idx], '.bam')#experiment_name
      
   }
 
@@ -580,7 +585,7 @@ Array[String] path_save = mkdir_samplename.path_out_softlink
 
     input:  
     files_to_merge = CreateFoFN.fofn_list,
-    experiment_name = basename(bams[idx], '.bam'),#experiment_name,
+    experiment_name = experiment_name,#basename(bams[idx], '.bam'),#experiment_name,
     ngs_toolpath = ngs_toolpath
 
   } 
@@ -590,7 +595,7 @@ Array[String] path_save = mkdir_samplename.path_out_softlink
     input:  
       files_to_merge = CreateFoFN_samtools.fofn_list,
       ngs_toolpath = ngs_toolpath,
-      experiment_name = basename(bams[idx], '.bam'),#experiment_name
+      experiment_name = experiment_name#basename(bams[idx], '.bam'),#experiment_name
   } 
 
 
@@ -598,13 +603,13 @@ Array[String] path_save = mkdir_samplename.path_out_softlink
 
     input:  
       files_to_merge = CreateFoFN_fastp.fofn_list,
-      experiment_name = basename(bams[idx], '.bam'),#experiment_name,
+      experiment_name = experiment_name,#basename(bams[idx], '.bam'),#experiment_name,
       ngs_toolpath = ngs_toolpath
     } 
 
  call make_excel { 
     input:
-    experiment_name = basename(bams[idx], '.bam'),#experiment_name,
+    experiment_name = experiment_name,#basename(bams[idx], '.bam'),#experiment_name,
     tabla1 = merge_fastp_reports.merged_report,
     pestana1 = "Filtrado",
     tabla2 = merge_samtools_reports.merged_report, 
@@ -614,21 +619,20 @@ Array[String] path_save = mkdir_samplename.path_out_softlink
     ngs_toolpath = ngs_toolpath
 
   }
- 
- 
- }
 
 
  ###samtools_stat
-  Array[File] excel_report = make_excel.reporte_excel
-   Array[Pair[String,File]] excel_out = zip (path_save, excel_report)
-  scatter (pairs in excel_out) {
-    call symlink_important_files as save_excel {
+  #File excel_report = make_excel.reporte_excel
+
+   Array[File] reportes_salidas = ["${make_excel.reporte_excel}"]
+  Array[Pair[String,File]] samples_x_files = cross (path_save, reportes_salidas)
+  scatter (pairs in samples_x_files) {
+    call symlink_important_files {
         input:
         output_to_save = pairs.right,
         path_save = pairs.left
     }
-  }
+  }  
     Array[File] hist_glob = make_tsv_reports.hist_global
    Array[Pair[String,File]] global_out = zip (path_save, hist_glob)
   scatter (pairs in global_out) {
