@@ -170,9 +170,9 @@ task fastp_qual {
 
   output {
     File fastp_stats = "${report_name}_fastp_report.tsv"
-    Array[Int] bases_after = read_lines("${report_name}_N_bases_after.txt")
-    Array[Int] bases_before = read_lines("${report_name}_N_bases_before.txt")
-    Array[Int] reads_after = read_lines("${report_name}_N_reads_after.txt")
+    Array[String] bases_after = read_lines("${report_name}_N_bases_after.txt")
+    Array[String] bases_before = read_lines("${report_name}_N_bases_before.txt")
+    Array[String] reads_after = read_lines("${report_name}_N_reads_after.txt")
 
   }
 }
@@ -247,9 +247,9 @@ task histo_cob {
 task samtools_reports_file {
 
   String sampleID
-  Int N_total_reads_bam
-  Int N_bases_before_filtering
-  Int N_bases_after_filtering ##from fastp_report
+  String N_total_reads_bam
+  String N_bases_before_filtering
+  String N_bases_after_filtering ##from fastp_report
   File samtools_library_report
   String ngs_toolpath
 
