@@ -620,10 +620,47 @@ Array[String] path_save = mkdir_samplename.path_out_softlink
  }
 
 
-#Array[File] fastp_rep = fastp_qual.fastp_stats
+ ###samtools_stat
+  Array[File] excel_report = make_excel.reporte_excel
+   Array[Pair[String,File]] excel_out = zip (path_save, excel_report)
+  scatter (pairs in excel_out) {
+    call symlink_important_files as save_excel {
+        input:
+        output_to_save = pairs.right,
+        path_save = pairs.left
+    }
+  }
+    Array[File] hist_glob = make_tsv_reports.hist_global
+   Array[Pair[String,File]] global_out = zip (path_save, hist_glob)
+  scatter (pairs in global_out) {
+    call symlink_important_files as save_global {
+        input:
+        output_to_save = pairs.right,
+        path_save = pairs.left
+    }
+  }
+      Array[File] distrib_plot = make_tsv_reports.distributions_plot
+   Array[Pair[String,File]] distri_out = zip (path_save, distrib_plot)
+  scatter (pairs in distri_out) {
+    call symlink_important_files as save_distri_plot{
+        input:
+        output_to_save = pairs.right,
+        path_save = pairs.left
+    }
+  }
 
-
+        Array[File] hist_exon = make_tsv_reports.hist_by_exon
+   Array[Pair[String,File]] hist_exon_out = zip (path_save, hist_exon)
+  scatter (pairs in hist_exon_out) {
+    call symlink_important_files as save_hist_exon{
+        input:
+        output_to_save = pairs.right,
+        path_save = pairs.left
+    }
+  }
  
+ 
+
 
 
 
