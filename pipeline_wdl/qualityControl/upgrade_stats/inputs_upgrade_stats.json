@@ -1,0 +1,29 @@
+{
+  "##COMMENT0": "INPUTS PIPELINE para actualizar estadisticos de corridas. UBIT-HNRG Septiembre 2020",
+
+  "##COMMENT1": "MANDATORY INPUTS",
+  "##COMMENT2": "INPUT-OUTPUT PATHS",
+  "upgrade_statistics.tabulatedSampleFilePaths": "File",
+  "upgrade_statistics.list_bams": "File",
+  "upgrade_statistics.list_bam_index": "File",
+  "upgrade_statistics.path_softlink": "String",
+
+  "##COMMENT3": "TOOLS & GATK",
+  "upgrade_statistics.toolpath": "/home/hnrg/HNRG-pipeline-V0.1/tools/",
+  "upgrade_statistics.gatk_jar": "gatk-package-4.0.8.1-local.jar",
+  "upgrade_statistics.ngs_toolpath": "/home/hnrg/NGStools",
+  
+  "##COMMENT4": "TRIMMEADO",
+
+  "upgrade_statistics.trim_front_fastp": "5",
+  "upgrade_statistics.trim_tail_fastp": "5",
+  
+  "##COMMENT5": "INTERVALO DE CAPUTURA DEL EXPERIMENTO, ExoNES_ENSEMBL, GENERADOR DE INTERVALO",
+
+  "upgrade_statistics.padding": "100",
+  "upgrade_statistics.merge_tolerance": "200",
+  "upgrade_statistics.intervalo_captura": "File",
+  "upgrade_statistics.chromosome_length": "/home/hnrg/HNRG-pipeline-V0.1/libraries/GRCh37/chromosome_lengths_hg19.txt",
+  "upgrade_statistics.generic_exon_coords": "/home/hnrg/HNRG-pipeline-V0.1/libraries/intervalos/ensembl_canonicos_GRCh37_0based.tsv"
+}
+
