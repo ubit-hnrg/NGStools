@@ -643,25 +643,25 @@ Array[String] path_save = mkdir_samplename.path_out_softlink
         path_save = pairs.left
     }
   }
-  #     Array[File] distrib_plot = make_tsv_reports.distributions_plot
-  #  Array[Pair[String,File]] distri_out = zip (path_save, distrib_plot)
-  # scatter (pairs in distri_out) {
-  #   call symlink_important_files as save_distri_plot{
-  #       input:
-  #       output_to_save = pairs.right,
-  #       path_save = pairs.left
-  #   }
-  # }
+      Array[File]+ distrib_plot = make_tsv_reports.distributions_plot
+   Array[Pair[String,File]] distri_out = zip (path_save, distrib_plot)
+  scatter (pairs in distri_out) {
+    call symlink_important_files as save_distri_plot{
+        input:
+        output_to_save = pairs.right,
+        path_save = pairs.left
+    }
+  }
 
-  #       Array[File] hist_exon = make_tsv_reports.hist_by_exon
-  #  Array[Pair[String,File]] hist_exon_out = zip (path_save, hist_exon)
-  # scatter (pairs in hist_exon_out) {
-  #   call symlink_important_files as save_hist_exon{
-  #       input:
-  #       output_to_save = pairs.right,
-  #       path_save = pairs.left
-  #   }
-  # }
+        Array[File]+ hist_exon = make_tsv_reports.hist_by_exon
+   Array[Pair[String,File]] hist_exon_out = zip (path_save, hist_exon)
+  scatter (pairs in hist_exon_out) {
+    call symlink_important_files as save_hist_exon{
+        input:
+        output_to_save = pairs.right,
+        path_save = pairs.left
+    }
+  }
  
  
 
