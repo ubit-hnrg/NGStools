@@ -11,7 +11,7 @@ parser.add_argument('-l','--samtools_library_report', help='library kit restrict
 parser.add_argument('-o','--output_file')
 
 args = parser.parse_args()
-total_reads = args.total_reads
+totalreads = args.total_reads
 bases_after = args.total_bases_after
 bases_before = args.total_bases_before
 samtools_kit_report_file = args.samtools_library_report
@@ -42,45 +42,46 @@ def parse_samtools_report_SN(samtools_stat_file):
 
 
 samtools_kit_report = parse_samtools_report_SN(samtools_kit_report_file)
-percents_tso = (100*samtools_kit_report[['reads properly paired','reads duplicated','reads MQ0']]/float(total_reads)).astype('float64')
-percents_tso = percents_tso.append(samtools_kit_report[['maximum length']]).astype('int64')
+
+percents_tso = (100*samtools_kit_report[['reads properly paired','reads duplicated','reads MQ0']]/float(totalreads))
+#percents_tso =  100*samtools_kit_report[['reads properly paired','reads duplicated']]/float(totalreads) #.astype('float64')
+#percents_tso = percents_tso.append(100*samtools_kit_report[['reads MQ0']]/float(totalreads))
+percents_tso = percents_tso.append(samtools_kit_report[['maximum length']])
 percents_tso = percents_tso.append(samtools_kit_report[['error rate']]*100)
 
-
 ####bases
-percents_tso = percents_tso.append(samtools_kit_report[['bases mapped (cigar)']])
-#cigar_after = (100*samtools_kit_report[['bases mapped (cigar)'][0]]/float(bases_after))
-#cigar_before = (100*samtools_kit_report[['bases mapped (cigar)'][0]]/float(bases_before))
-cigar_after = (100*samtools_kit_report[['bases inside the target'][0]]/float(bases_after))
-cigar_before = (100*samtools_kit_report[['bases inside the target'][0]]/float(bases_before))
+percents_tso = percents_tso.append(samtools_kit_report[['bases mapped (cigar)']]/(10**9))
+cigar_after = round(100*samtools_kit_report[['bases mapped (cigar)'][0]]/float(bases_after),2)
+cigar_before = round(100*samtools_kit_report[['bases mapped (cigar)'][0]]/float(bases_before),2)
 
-
-#print(samtools_kit_report[['bases mapped (cigar)'][0]])
-#print(samtools_kit_report[['bases mapped (cigar)']])
 percents_tso = percents_tso.append(pd.Series([cigar_after],index=['On target[%]']))
 percents_tso = percents_tso.append(pd.Series([cigar_before],index=['On target_raw[%]']))
-percents_tso = percents_tso.append(pd.Series([bases_before],index=['bases_before']))
-percents_tso = percents_tso.append(pd.Series([bases_after],index=['bases_after']))
+
+Gb_before = round(bases_before/float(10**9),6)
+Gb_after = round(bases_after/float(10**9),6)
+print('hola' ,Gb_after)
+percents_tso = percents_tso.append(pd.Series([Gb_before],index=['bases_before']))
+percents_tso = percents_tso.append(pd.Series([Gb_after],index=['bases_after']))
 #print(pd.Series([cigar_after],index=['CIGAR after']))
 #print(pd.Series([cigar_before],index=['CIGAR before']))
 
-percents_tso = percents_tso.append(samtools_kit_report[['bases inside the target']])
-#### ese reads properly paired no deberia ser el de cigar? 
-percents_tso = percents_tso.append(pd.Series([total_reads],index=['Number of reads properly paired']))
+percents_tso = percents_tso.append(samtools_kit_report[['bases inside the target']])#/(10**9))
+percents_tso = percents_tso.append(pd.Series([totalreads],index=['Number of reads properly paired']))
 
 percents_tso.index = percents_tso.index+' in Library'
 percents_tso.rename(index={'Number of reads properly paired in Library':'Number of reads properly paired'},inplace = True)
 percents_tso.rename(index={'reads properly paired in Library':'Percent of reads properly paired in Library'},inplace = True)
-percents_tso.rename(index={'bases inside the target in Library':'Bases inside the target'},inplace = True)
+percents_tso.rename(index={'bases inside the target in Library':'Target size (BPs)'},inplace = True)
+percents_tso.rename(index={'bases mapped (cigar) in Library':'Gbases mapped (cigar) in Library'},inplace = True)
 
 percents_tso.index = percents_tso.index.str.replace(' ','-')
-print(percents_tso)
+
 
 ###renombro ontarge[%]
 percents_tso.rename(index={'On-target[%]-in-Library':'On-target[%]'},inplace = True)
 percents_tso.rename(index={'On-target_raw[%]-in-Library':'On-target_raw[%]'},inplace = True)
-percents_tso.rename(index={'bases_before-in-Library':'Bases_before_trimm'},inplace = True)
-percents_tso.rename(index={'bases_after-in-Library':'Bases_after_trimm'},inplace = True)
+percents_tso.rename(index={'bases_before-in-Library':'GBases_before_trimm'},inplace = True)
+percents_tso.rename(index={'bases_after-in-Library':'GBases_after_trimm'},inplace = True)
 
 report = percents_tso.loc[[
 #    u'raw-total-sequences',
@@ -95,16 +96,18 @@ report = percents_tso.loc[[
              u'maximum-length-in-Library',
              u'On-target[%]',
              u'On-target_raw[%]',
-             u'Bases_before_trimm',
-             u'Bases_after_trimm',
-             u'Bases-inside-the-target',
-             u'bases-mapped-(cigar)-in-Library']]
+             u'GBases_before_trimm',
+             u'GBases_after_trimm',
+             u'Gbases-mapped-(cigar)-in-Library',
+             u'Target-size-(BPs)']]
 
 report.iloc[1:5] = report.iloc[1:5].round(2).map('{:,.2f} %'.format)
-#report.iloc[6:8] = report.iloc[7:8].round(2).map('{:,.2f} %'.format)
-#report.iloc[9:10] = report.iloc[9:10].map('{:.2f}'.format)
+report.iloc[6:8] = report.iloc[6:8].map('{:,.2f} %'.format)
+#report.iloc[12] = report.iloc[12].map('{:.0f}'.format)
 report[0] = '{:.0f}'.format(report[0])
-print(report)
+report[11] = '{:.0f}'.format(report[11])
+
+#print(report)
 report.to_csv(output,sep='\t')
 
 #np.average(covTSO['cov'].values,weights= covTSO.cuentas.values)
