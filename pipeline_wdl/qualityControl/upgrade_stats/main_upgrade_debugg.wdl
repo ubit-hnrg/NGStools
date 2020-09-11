@@ -460,7 +460,7 @@ call read_file_of_tabulated_inputs {
       tabulatedSampleFilePaths = tabulatedSampleFilePaths
   }
 
-# Convert multiple pairs of input fastqs in parallel
+  ###Convert multiple pairs of input fastqs in parallel
   scatter (i in range(length(read_file_of_tabulated_inputs.array_of_samples ))) {
 
     call fastp {
@@ -510,71 +510,71 @@ call fastp_qual {
  
   
 
-######################scatter por los bams reducidos
-#    scatter (idx in range(length(bams))){
+#####################scatter por los bams reducidos
+   scatter (idx in range(length(bams))){
 
-#       call mkdir_samplename {
-#     input: 
-#      path_softlink = path_softlink,
-#      samplename = basename(bams[idx], '.bam')#sample_name
-#     }
-#     call histo_cob {
-#       input: 
-#       input_bam = bams[idx],#bams_ready,
-#       input_bam_index = bams_index,
-#       #pipeline_version = pipeline_v,
-#       intervalo_captura = intervalo_captura,
-#       ensembl2intervalo_captura = coord_generator.exon_restricted, #exon_coords,
-#       toolpath = toolpath,
-#       ngs_toolpath = ngs_toolpath,
-#       path_save = mkdir_samplename.path_out_softlink
+      call mkdir_samplename {
+    input: 
+     path_softlink = path_softlink,
+     samplename = basename(bams[idx], '.bam')#sample_name
+    }
+    call histo_cob {
+      input: 
+      input_bam = bams[idx],#bams_ready,
+      input_bam_index = bams_index,
+      #pipeline_version = pipeline_v,
+      intervalo_captura = intervalo_captura,
+      ensembl2intervalo_captura = coord_generator.exon_restricted, #exon_coords,
+      toolpath = toolpath,
+      ngs_toolpath = ngs_toolpath,
+      path_save = mkdir_samplename.path_out_softlink
      
-#     }
+    }
 
-#   call samtools_reports_file {
+  call samtools_reports_file {
 
-#   input: 
-#   sampleID = basename(bams[idx], '.bam'),#base_file_name,
-#   N_total_reads = read_string(N_total_reads_bam[idx]), ###ahora es sobre N_bases
-#   N_bases_after = read_string(N_bases_after_filtering[idx]),
-#   N_bases_before = read_string(N_bases_before_filtering[idx]), 
+  input: 
+  sampleID = basename(bams[idx], '.bam'),#base_file_name,
+  N_total_reads = read_string(N_total_reads_bam[idx]), ###ahora es sobre N_bases
+  N_bases_after = read_string(N_bases_after_filtering[idx]),
+  N_bases_before = read_string(N_bases_before_filtering[idx]), 
 
-#   #samtools_global_report = samtools_stat.samtools_stat_original_bam,
-#   samtools_library_report = histo_cob.samtools_stat_experiment_bam,
-#   ngs_toolpath = ngs_toolpath
+  #samtools_global_report = samtools_stat.samtools_stat_original_bam,
+  samtools_library_report = histo_cob.samtools_stat_experiment_bam,
+  ngs_toolpath = ngs_toolpath
 
-#   }
+  }
 
-#     ###crear tsv 
-#     call make_tsv_reports {
-#         input:
-#         by_exon_cov =   histo_cob.histo_exon,
-#         global_cov = histo_cob.histo_global,
-#         ngs_toolpath = ngs_toolpath,
-#         sample_name = basename(bams[idx], '.bam') #basename(fastp_qual.fastp_stats[idx],'_fastp_report.tsv')#basename(analysis_readybam[idx], '.bam')
-#     }
+    ###crear tsv 
+    call make_tsv_reports {
+        input:
+        by_exon_cov =   histo_cob.histo_exon,
+        global_cov = histo_cob.histo_global,
+        ngs_toolpath = ngs_toolpath,
+        sample_name = basename(bams[idx], '.bam') #basename(fastp_qual.fastp_stats[idx],'_fastp_report.tsv')#basename(analysis_readybam[idx], '.bam')
+    }
  
   
-#  }
+ }
 
-#Array[String] path_save = mkdir_samplename.path_out_softlink
+Array[String] path_save = mkdir_samplename.path_out_softlink
 
-# #Create a file with a list of the generated histo glob_stats for merge in excel report
-#   call CreateFoFN {
-#     input:
-#       array_of_files = make_tsv_reports.hist_global,#bams_stat_depth_global_coverage_stats,
-#       fofn_name = experiment_name,# basename(bams[idx], '.bam')#experiment_name
+#Create a file with a list of the generated histo glob_stats for merge in excel report
+  call CreateFoFN {
+    input:
+      array_of_files = make_tsv_reports.hist_global,#bams_stat_depth_global_coverage_stats,
+      fofn_name = experiment_name,# basename(bams[idx], '.bam')#experiment_name
      
-#   }
+  }
 
-#  Array[File] samtools_global = samtools_reports_file.output_global_report
-#  #Create a file with a list of the generated output_global_report
-#   call CreateFoFN as CreateFoFN_samtools{
-#     input:
-#       array_of_files = samtools_global,#samtools_reports_file.output_global_report,#stat_alineamiento,
-#       fofn_name = experiment_name #basename(bams[idx], '.bam')#experiment_name
+ Array[File] samtools_global = samtools_reports_file.output_global_report
+ #Create a file with a list of the generated output_global_report
+  call CreateFoFN as CreateFoFN_samtools{
+    input:
+      array_of_files = samtools_global,#samtools_reports_file.output_global_report,#stat_alineamiento,
+      fofn_name = experiment_name #basename(bams[idx], '.bam')#experiment_name
      
-#   }
+  }
 
  call CreateFoFN as CreateFoFN_fastp{
     input:
@@ -584,23 +584,23 @@ call fastp_qual {
   }
 
 
- ####### esto mergea archivos de distintas muestras
-  # call merge_reports {
+ ###### esto mergea archivos de distintas muestras
+  call merge_reports {
 
-  #   input:  
-  #   files_to_merge = CreateFoFN.fofn_list,
-  #   experiment_name = experiment_name,#basename(bams[idx], '.bam'),#experiment_name,
-  #   ngs_toolpath = ngs_toolpath
+    input:  
+    files_to_merge = CreateFoFN.fofn_list,
+    experiment_name = experiment_name,#basename(bams[idx], '.bam'),#experiment_name,
+    ngs_toolpath = ngs_toolpath
 
-  # } 
+  } 
 
-  # call merge_reports as merge_samtools_reports{
+  call merge_reports as merge_samtools_reports{
 
-  #   input:  
-  #     files_to_merge = CreateFoFN_samtools.fofn_list,
-  #     ngs_toolpath = ngs_toolpath,
-  #     experiment_name = experiment_name#basename(bams[idx], '.bam'),#experiment_name
-  # } 
+    input:  
+      files_to_merge = CreateFoFN_samtools.fofn_list,
+      ngs_toolpath = ngs_toolpath,
+      experiment_name = experiment_name#basename(bams[idx], '.bam'),#experiment_name
+  } 
 
 
   call merge_reports as merge_fastp_reports{
