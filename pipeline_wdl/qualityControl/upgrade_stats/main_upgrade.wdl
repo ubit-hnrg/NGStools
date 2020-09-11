@@ -109,14 +109,14 @@ task fastp {
   File R2_fastq_gz
   String R1_stripped_basename = basename(R1_fastq_gz, ".fastq.gz")
   String R2_stripped_basename = basename(R2_fastq_gz, ".fastq.gz")
-  #String report_name = basename(R2_fastq_gz,"_R2_001.fastq.gz")
+  String report_name = basename(R2_fastq_gz,"_R2_001.fastq.gz")
   String toolpath
   Int trim_front
   Int trim_tail
 
 
   command {
-    ${toolpath}fastp -i ${R1_fastq_gz} -I ${R2_fastq_gz} -o ${R1_stripped_basename}_cleaned.fastq.gz -O ${R2_stripped_basename}_cleaned.fastq.gz -h ${sample_name}_fastp.html -j ${sample_name}_fastp.json --trim_front1=${trim_front} --trim_tail1=${trim_tail}
+    ${toolpath}fastp -i ${R1_fastq_gz} -I ${R2_fastq_gz} -o ${R1_stripped_basename}_cleaned.fastq.gz -O ${R2_stripped_basename}_cleaned.fastq.gz -h ${report_name}_fastp.html -j ${report_name}_fastp.json --trim_front1=${trim_front} --trim_tail1=${trim_tail}
   rm ${R1_stripped_basename}_cleaned.fastq.gz ${R2_stripped_basename}_cleaned.fastq.gz
   
   }
