@@ -59,7 +59,6 @@ percents_tso = percents_tso.append(pd.Series([cigar_before],index=['On target_ra
 
 Gb_before = round(bases_before/float(10**9),6)
 Gb_after = round(bases_after/float(10**9),6)
-print('hola' ,Gb_after)
 percents_tso = percents_tso.append(pd.Series([Gb_before],index=['bases_before']))
 percents_tso = percents_tso.append(pd.Series([Gb_after],index=['bases_after']))
 #print(pd.Series([cigar_after],index=['CIGAR after']))
@@ -102,7 +101,7 @@ report = percents_tso.loc[[
              u'Target-size-(BPs)']]
 
 report.iloc[1:5] = report.iloc[1:5].round(2).map('{:,.2f} %'.format)
-report.iloc[6:8] = report.iloc[6:8].map('{:,.2f} %'.format)
+report.iloc[6:8] = report.iloc[6:8].map('{:,.2f}'.format)
 #report.iloc[12] = report.iloc[12].map('{:.0f}'.format)
 report[0] = '{:.0f}'.format(report[0])
 report[11] = '{:.0f}'.format(report[11])
