@@ -493,7 +493,7 @@ call Create_inputs_for_preprocesing as fastp_report_files {
 #Array[File] muestras  =  Create_inputs_for_preprocesing.ubam_samples
 
  Array[File] fastp_json_reports  =  fastp_report_files.ubam_samples
- Array[File] fastp_html = fastp.fastp_html_report,
+ Array[File] fastp_html = fastp.fastp_html_report
  
 scatter (samples in fastp_json_reports){
 call fastp_qual {
@@ -667,7 +667,7 @@ Array[String] path_save = mkdir_samplename.path_out_softlink
   }
    Array[Pair[String,File]] fastp_html_out = zip (path_save, fastp_html)
   scatter (pairs in fastp_html_out) {
-    call symlink_important_files as save_html_fastp{
+    call symlink_important_files as save_html_fastp {
         input:
         output_to_save = pairs.right,
         path_save = pairs.left
