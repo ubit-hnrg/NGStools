@@ -135,7 +135,7 @@ task fastp {
 
 task CreateFoFN2 {
   # Command parameters
-  Array[String] array_of_files
+  Array[File] array_of_files
   String fofn_name
   #Map [String, String] lista = {"array_of_files":"fofn_name"} 
   
@@ -479,7 +479,7 @@ call read_file_of_tabulated_inputs {
   call CreateFoFN2 as FoFN_fastp_json {
     input:
     array_of_files = fastp.fastp_json_report,
-    fofn_name = "fastp_reports_json" 
+    fofn_name = "fastp_json_rep" 
   }
  
   
@@ -562,8 +562,8 @@ Array[String] path_save = mkdir_samplename.path_out_softlink
 #Create a file with a list of the generated histo glob_stats for merge in excel report
   call CreateFoFN {
     input:
-      array_of_files = make_tsv_reports.hist_global,#bams_stat_depth_global_coverage_stats,
-      fofn_name = experiment_name,# basename(bams[idx], '.bam')#experiment_name
+      array_of_files = make_tsv_reports.hist_global, #bams_stat_depth_global_coverage_stats,
+      fofn_name = experiment_name # basename(bams[idx], '.bam')#experiment_name
      
   }
 
