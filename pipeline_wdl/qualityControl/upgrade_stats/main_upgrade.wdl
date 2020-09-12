@@ -197,7 +197,7 @@ task histo_cob {
         set -o pipefail
 
         # esto reporta la cobertura en cada intervalo de captura y hace un histograma global también con el keyword "all"
-        ${toolpath}/bedtools2/bin/coverageBed -a ${intervalo_captura} -b ${input_bam}  -hist > ${sample_name}.hist.aux
+        ${toolpath}bedtools2/bin/coverageBed -a ${intervalo_captura} -b ${input_bam}  -hist > ${sample_name}.hist.aux
         echo -e 'chr\tstart\tend\tgene\tDP\tBPs\tIntervalLength\tfrequency' > header.txt
         cat header.txt ${sample_name}.hist.aux > ${sample_name}.hist 
         rm ${sample_name}.hist.aux header.txt
@@ -229,7 +229,10 @@ task histo_cob {
         ##
 
 
-        
+        cp -L ${sample_name}.ENS.hist ${path_save}
+        cp -L ${sample_name}.global.hist ${path_save}
+        cp -L ${sample_name}_sex.txt ${path_save} 
+        cp -L ${sample_name}_samtools.stats ${path_save}
 
         
     }
@@ -252,10 +255,12 @@ task samtools_reports_file {
   String N_bases_after##from fastp_report
   File samtools_library_report
   String ngs_toolpath
+  String path_save
 
   command {
   ${ngs_toolpath}/pipeline_wdl/qualityControl/samtools_stats_report_V2.py -N=${N_total_reads}  -l=${samtools_library_report} -ba ${N_bases_after} -bb ${N_bases_before} -o=${sampleID}_samtools_report.tsv
 
+   cp -L ${sampleID}_samtools_report.tsv ${path_save}
   }
 
   output {
@@ -273,7 +278,7 @@ task make_tsv_reports {
         File global_cov
         String ngs_toolpath
         String sample_name
-        #String path_save
+        String path_save 
     
 
     command {
@@ -287,6 +292,10 @@ task make_tsv_reports {
         # make tsv coverage report by exon
         python ${ngs_toolpath}/pipeline_wdl/qualityControl/local_coverage_report_ENS_intersect_Library.py -i=${by_exon_cov} -o ${sample_name}_ENS_local_report.tsv -s=${sample_name}
 
+
+       cp -L ${sample_name}_ENS_local_report.tsv ${path_save}
+       cp -L ${sample_name}_experiment_global_report.tsv ${path_save}
+       cp -L ${sample_name}.distributions.eps ${path_save}
 
     }
 
@@ -371,7 +380,7 @@ task CreateFoFN {
   String fofn_name
   
   command {
-    mv ${write_lines(array_of_files)}  ${fofn_name}.list \
+    mv ${write_lines(array_of_files)}  ${fofn_name}.list 
    
   }
   output {
@@ -513,7 +522,7 @@ call fastp_qual {
 ######################scatter por los bams reducidos
    scatter (idx in range(length(bams))){
 
-      call mkdir_samplename {
+    call mkdir_samplename {
     input: 
      path_softlink = path_softlink,
      samplename = basename(bams[idx], '.bam')#sample_name
@@ -541,6 +550,7 @@ call fastp_qual {
 
   #samtools_global_report = samtools_stat.samtools_stat_original_bam,
   samtools_library_report = histo_cob.samtools_stat_experiment_bam,
+  path_save = mkdir_samplename.path_out_softlink,
   ngs_toolpath = ngs_toolpath
 
   }
@@ -551,6 +561,7 @@ call fastp_qual {
         by_exon_cov =   histo_cob.histo_exon,
         global_cov = histo_cob.histo_global,
         ngs_toolpath = ngs_toolpath,
+        path_save = mkdir_samplename.path_out_softlink,
         sample_name = basename(bams[idx], '.bam') #basename(fastp_qual.fastp_stats[idx],'_fastp_report.tsv')#basename(analysis_readybam[idx], '.bam')
     }
  
@@ -637,34 +648,34 @@ Array[String] path_save = mkdir_samplename.path_out_softlink
         path_save = pairs.left
     }
   }  
-    Array[File]+ hist_glob = make_tsv_reports.hist_global
-   Array[Pair[String,File]] global_out = zip (path_save, hist_glob)
-  scatter (pairs in global_out) {
-    call symlink_important_files as save_global {
-        input:
-        output_to_save = pairs.right,
-        path_save = pairs.left
-    }
-  }
-      Array[File]+ distrib_plot = make_tsv_reports.distributions_plot
-   Array[Pair[String,File]] distri_out = zip (path_save, distrib_plot)
-  scatter (pairs in distri_out) {
-    call symlink_important_files as save_distri_plot{
-        input:
-        output_to_save = pairs.right,
-        path_save = pairs.left
-    }
-  }
+  #   Array[File]+ hist_glob = make_tsv_reports.hist_global
+  #  Array[Pair[String,File]] global_out = zip (path_save, hist_glob)
+  # scatter (pairs in global_out) {
+  #   call symlink_important_files as save_global {
+  #       input:
+  #       output_to_save = pairs.right,
+  #       path_save = pairs.left
+  #   }
+  # }
+  # #     Array[File]+ distrib_plot = make_tsv_reports.distributions_plot
+  #  Array[Pair[String,File]] distri_out = zip (path_save, distrib_plot)
+  # scatter (pairs in distri_out) {
+  #   call symlink_important_files as save_distri_plot{
+  #       input:
+  #       output_to_save = pairs.right,
+  #       path_save = pairs.left
+  #   }
+  # }
 
-        Array[File]+ hist_exon = make_tsv_reports.hist_by_exon
-   Array[Pair[String,File]] hist_exon_out = zip (path_save, hist_exon)
-  scatter (pairs in hist_exon_out) {
-    call symlink_important_files as save_hist_exon{
-        input:
-        output_to_save = pairs.right,
-        path_save = pairs.left
-    }
-  }
+  #       Array[File]+ hist_exon = make_tsv_reports.hist_by_exon
+  #  Array[Pair[String,File]] hist_exon_out = zip (path_save, hist_exon)
+  # scatter (pairs in hist_exon_out) {
+  #   call symlink_important_files as save_hist_exon{
+  #       input:
+  #       output_to_save = pairs.right,
+  #       path_save = pairs.left
+  #   }
+  # }
   #  Array[Pair[String,File]] fastp_html_out = zip (path_save, fastp_html)
   # scatter (pairs in fastp_html_out) {
   #   call symlink_important_files as save_html_fastp {
