@@ -371,6 +371,7 @@ task CreateFoFN {
   String fofn_name
   
   command {
+    for f in $array_of_files; do print $f;done
     mv ${write_lines(array_of_files)}  ${fofn_name}.list \
    
   }
