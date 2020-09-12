@@ -183,7 +183,7 @@ task histo_cob {
 #input_bam=/data/resultsHNRG/*/CC1707556/CC1707556.bam
         File intervalo_captura
         File input_bam
-        Array[File] input_bam_index
+        File input_bam_index
         File ensembl2intervalo_captura
         String sample_name = basename( input_bam,'.bam')
         String toolpath
@@ -521,7 +521,7 @@ call fastp_qual {
     call histo_cob {
       input: 
       input_bam = bams[idx],#bams_ready,
-      input_bam_index = bams_index,
+      input_bam_index = bams_index[idx],
       #pipeline_version = pipeline_v,
       intervalo_captura = intervalo_captura,
       ensembl2intervalo_captura = coord_generator.exon_restricted, #exon_coords,
