@@ -143,6 +143,9 @@ task CreateFoFN2 {
     mv ${write_lines(array_of_files)}  ${fofn_name}.list \
    
   }
+  runtime {
+    memory: "5GB"
+  }
   output {
     File fofn_list = "${fofn_name}.list"
   }
@@ -415,6 +418,9 @@ task Create_inputs_for_preprocesing {
 
   CODE
   >>>
+   runtime {
+    memory: "5GB"
+  }
 
   output {
     Array[File] ubam_samples = glob("*.txt")
@@ -433,6 +439,11 @@ task CreateFoFN {
     mv ${write_lines(array_of_files)}  ${fofn_name}.list \
    
   }
+   runtime {
+    memory: "5GB"
+  }
+
+
   output {
     File fofn_list = "${fofn_name}.list"
   }
