@@ -135,7 +135,7 @@ task fastp {
 
 task CreateFoFN2 {
   # Command parameters
-  Array[File]+ array_of_files
+  Array[String]+ array_of_files
   String fofn_name
   #Map [String, String] lista = {"array_of_files":"fofn_name"} 
   
