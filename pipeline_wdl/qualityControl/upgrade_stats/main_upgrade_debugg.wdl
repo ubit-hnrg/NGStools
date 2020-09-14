@@ -703,18 +703,18 @@ Array[String] path_save = mkdir_samplename.path_out_softlink
    }
 
 
-#  ###samtools_stat
-#   #File excel_report = make_excel.reporte_excel
+ ###samtools_stat
+  #File excel_report = make_excel.reporte_excel
 
-#    Array[File] reportes_salidas = ["${make_excel.reporte_excel}"]
-#   Array[Pair[String,File]] samples_x_files = cross (path_save, reportes_salidas)
-#   scatter (pairs in samples_x_files) {
-#     call symlink_important_files {
-#         input:
-#         output_to_save = pairs.right,
-#         path_save = pairs.left
-#     }
-#   }  
+   Array[File] reportes_salidas = ["${make_excel.reporte_excel}"]
+  Array[Pair[String,File]] samples_x_files = cross (path_save, reportes_salidas)
+  scatter (pairs in samples_x_files) {
+    call symlink_important_files {
+        input:
+        output_to_save = pairs.right,
+        path_save = pairs.left
+    }
+  }  
 #     Array[File]+ hist_glob = make_tsv_reports.hist_global
 #    Array[Pair[String,File]] global_out = zip (path_save, hist_glob)
 #   scatter (pairs in global_out) {
