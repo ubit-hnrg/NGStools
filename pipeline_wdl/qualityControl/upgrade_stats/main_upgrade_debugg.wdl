@@ -220,6 +220,10 @@ task cobertura_global {
         #File sex_prediction = "${sample_name}_sex.txt"
 
     }
+     runtime {
+    memory: "12GB"
+  }
+    
   
   } ###fin
 
@@ -299,6 +303,10 @@ task cob_exones {
         ##
         cp -L ${sample_name}.ENS.hist ${path_save}
       >>>
+
+    runtime {
+    memory: "12GB"
+    }
 
     output { 
     File hist_exon = "${sample_name}.ENS.hist"
