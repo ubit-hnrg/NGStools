@@ -208,13 +208,13 @@ task cobertura_global {
         rm global.header.txt global.hist
         cp -L ${sample_name}.global.hist ${path_save}
 
-        ${ngs_toolpath}/python_scripts/bam_sex_xy.py -b ${input_bam} > ${sample_name}_sex.txt
-        cp -L ${sample_name}_sex.txt ${path_save} 
+        #${ngs_toolpath}/python_scripts/bam_sex_xy.py -b ${input_bam} > ${sample_name}_sex.txt
+        #cp -L ${sample_name}_sex.txt ${path_save} 
 
         }
     output {
         File histo_global ="${sample_name}.global.hist"
-        File sex_prediction = "${sample_name}_sex.txt"
+        #File sex_prediction = "${sample_name}_sex.txt"
 
     }
   
