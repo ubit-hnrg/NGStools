@@ -566,7 +566,7 @@ call fastp_qual {
 #####################scatter por los bams reducidos
    scatter (idx in range(length(bams))){
 
-      call mkdir_samplename {
+    call mkdir_samplename {
     input: 
      path_softlink = path_softlink,
      samplename = basename(bams[idx], '.bam')#sample_name
@@ -574,7 +574,7 @@ call fastp_qual {
     call cobertura_global {
       input: 
       input_bam = bams[idx],#bams_ready,
-      input_bam_index = bams_index,
+      input_bam_index = bams_index[idx],
       #pipeline_version = pipeline_v,
       intervalo_captura = intervalo_captura,
       #ensembl2intervalo_captura = coord_generator.exon_restricted, #exon_coords,
@@ -588,14 +588,14 @@ call fastp_qual {
        
       intervalo_captura = intervalo_captura,
       input_bam = bams[idx],#bams_ready,
-      input_bam_index = bams_index,
+      input_bam_index = bams_index[idx],
       toolpath = toolpath,
       path_save = mkdir_samplename.path_out_softlink
     }
     call sex_pred{
       input:
       input_bam = bams[idx],#bams_ready,
-      input_bam_index = bams_index,
+      input_bam_index = bams_index[idx],
       ngs_toolpath = ngs_toolpath,
       path_save = mkdir_samplename.path_out_softlink
     }
@@ -603,7 +603,7 @@ call fastp_qual {
     call cob_exones {
       input:
       input_bam = bams[idx],#bams_ready,
-      input_bam_index = bams_index,
+      input_bam_index = bams_index[idx],
       ensembl2intervalo_captura = coord_generator.exon_restricted, #exon_coords,
       toolpath = toolpath,
       path_save = mkdir_samplename.path_out_softlink
