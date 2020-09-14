@@ -185,7 +185,9 @@ task cobertura_global {
         File input_bam_index
         String sample_name = basename( input_bam,'.bam')
         String toolpath
-        String path_save 
+        String path_save
+        String ngs_toolpath
+ 
     
     
     command {   
@@ -206,9 +208,13 @@ task cobertura_global {
         rm global.header.txt global.hist
         cp -L ${sample_name}.global.hist ${path_save}
 
+        ${ngs_toolpath}/python_scripts/bam_sex_xy.py -b ${input_bam} > ${sample_name}_sex.txt
+        cp -L ${sample_name}_sex.txt ${path_save} 
+
         }
     output {
         File histo_global ="${sample_name}.global.hist"
+        File sex_prediction = "${sample_name}_sex.txt"
 
     }
   
@@ -579,7 +585,7 @@ call fastp_qual {
       intervalo_captura = intervalo_captura,
       #ensembl2intervalo_captura = coord_generator.exon_restricted, #exon_coords,
       toolpath = toolpath,
-      #ngs_toolpath = ngs_toolpath,
+      ngs_toolpath = ngs_toolpath,
       path_save = mkdir_samplename.path_out_softlink
      
     }
@@ -592,13 +598,13 @@ call fastp_qual {
       toolpath = toolpath,
       path_save = mkdir_samplename.path_out_softlink
     }
-    call sex_pred{
-      input:
-      input_bam = bams[idx],#bams_ready,
-      input_bam_index = bams_index[idx],
-      ngs_toolpath = ngs_toolpath,
-      path_save = mkdir_samplename.path_out_softlink
-    }
+    # call sex_pred{
+    #   input:
+    #   input_bam = bams[idx],#bams_ready,
+    #   input_bam_index = bams_index[idx],
+    #   ngs_toolpath = ngs_toolpath,
+    #   path_save = mkdir_samplename.path_out_softlink
+    # }
 
     call cob_exones {
       input:
