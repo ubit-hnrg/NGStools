@@ -178,16 +178,13 @@ task fastp_qual {
 }
 
 
-task histo_cob {
+task cobertura_global {
     
-#input_bam=/data/resultsHNRG/*/CC1707556/CC1707556.bam
         File intervalo_captura
         File input_bam
-        Array[File] input_bam_index
-        File ensembl2intervalo_captura
+        File input_bam_index
         String sample_name = basename( input_bam,'.bam')
         String toolpath
-        String ngs_toolpath
         String path_save 
     
     
@@ -207,15 +204,79 @@ task histo_cob {
         echo -e 'chr\tDP\tBPs\tIntervalLength\tfrequency' > global.header.txt
         cat global.header.txt global.hist > ${sample_name}.global.hist
         rm global.header.txt global.hist
+        cp -L ${sample_name}.global.hist ${path_save}
 
-        ####prediccion de sexo para reporte pdf
-        ###ya que estamos, prediccion de sexo:
-        ${ngs_toolpath}/python_scripts/bam_sex_xy.py -b ${input_bam} > ${sample_name}_sex.txt
+        }
+    output {
+        File histo_global ="${sample_name}.global.hist"
+
+    }
+  
+  } ###fin
+
+
+  task sex_pred {
+
+    File input_bam
+    File input_bam_index
+    String sample_name = basename( input_bam,'.bam')
+    String ngs_toolpath
+    String path_save 
+       
+    command <<<
+      #!/bin/bash
+      set -e
+      set -o pipefail
+
+      ####prediccion de sexo para reporte pdf
+      ###ya que estamos, prediccion de sexo:
+      ${ngs_toolpath}/python_scripts/bam_sex_xy.py -b ${input_bam} > ${sample_name}_sex.txt
+      cp -L ${sample_name}_sex.txt ${path_save} 
+      
+    >>>
+
+  output {
+    File sex_prediction = "${sample_name}_sex.txt"
+    }
+    }
+    
+    task samtools_experiment_stat {
+      File intervalo_captura
+        File input_bam
+        File input_bam_index
+        String sample_name = basename( input_bam,'.bam')
+        String toolpath
+        String path_save 
+    
+    command <<<
+        #!/bin/bash
+        set -e
+        set -o pipefail
 
         ####samtools stat
         ${toolpath}samtools stats ${input_bam} -t ${intervalo_captura} > ${sample_name}_samtools.stats
          /usr/local/bin/plot-bamstats ${sample_name}_samtools.stats -p ${path_save}samtools_plots/${sample_name}
+        cp -L ${sample_name}_samtools.stats ${path_save}
+        >>>
 
+        output {
+        
+        File samtools_stat_experiment_bam = "${sample_name}_samtools.stats"
+        }
+}
+task cob_exones {
+
+      File input_bam
+      File input_bam_index
+      File ensembl2intervalo_captura
+      String sample_name = basename( input_bam,'.bam')
+      String toolpath
+      String path_save 
+
+    command <<<
+        #!/bin/bash
+        set -e
+        set -o pipefail
 
         #### COBERTURA  ##################################
         #### EXONES     ##################################
@@ -227,19 +288,11 @@ task histo_cob {
         cat header.txt ${sample_name}.ENS.hist.aux2 > ${sample_name}.ENS.hist
         rm ${sample_name}.ENS.hist.aux1 ${sample_name}.ENS.hist.aux2 header.txt
         ##
+        cp -L ${sample_name}.ENS.hist ${path_save}
+      >>>
 
-
-        
-
-        
-    }
-
-    output {
-        File histo_exon = "${sample_name}.ENS.hist"
-        File histo_global ="${sample_name}.global.hist"
-        File sex_prediction = "${sample_name}_sex.txt"
-        File samtools_stat_experiment_bam = "${sample_name}_samtools.stats"
-
+    output { 
+    File hist_exon = "${sample_name}.ENS.hist"
     }
 
 }
@@ -518,17 +571,42 @@ call fastp_qual {
      path_softlink = path_softlink,
      samplename = basename(bams[idx], '.bam')#sample_name
     }
-    call histo_cob {
+    call cobertura_global {
       input: 
       input_bam = bams[idx],#bams_ready,
       input_bam_index = bams_index,
       #pipeline_version = pipeline_v,
       intervalo_captura = intervalo_captura,
-      ensembl2intervalo_captura = coord_generator.exon_restricted, #exon_coords,
+      #ensembl2intervalo_captura = coord_generator.exon_restricted, #exon_coords,
       toolpath = toolpath,
-      ngs_toolpath = ngs_toolpath,
+      #ngs_toolpath = ngs_toolpath,
       path_save = mkdir_samplename.path_out_softlink
      
+    }
+    call samtools_experiment_stat {
+      input:
+       
+      intervalo_captura = intervalo_captura,
+      input_bam = bams[idx],#bams_ready,
+      input_bam_index = bams_index,
+      toolpath = toolpath,
+      path_save = mkdir_samplename.path_out_softlink
+    }
+    call sex_pred{
+      input:
+      input_bam = bams[idx],#bams_ready,
+      input_bam_index = bams_index,
+      ngs_toolpath = ngs_toolpath,
+      path_save = mkdir_samplename.path_out_softlink
+    }
+
+    call cob_exones {
+      input:
+      input_bam = bams[idx],#bams_ready,
+      input_bam_index = bams_index,
+      ensembl2intervalo_captura = coord_generator.exon_restricted, #exon_coords,
+      toolpath = toolpath,
+      path_save = mkdir_samplename.path_out_softlink
     }
 
   call samtools_reports_file {
@@ -540,7 +618,7 @@ call fastp_qual {
   N_bases_before = read_string(N_bases_before_filtering[idx]), 
 
   #samtools_global_report = samtools_stat.samtools_stat_original_bam,
-  samtools_library_report = histo_cob.samtools_stat_experiment_bam,
+  samtools_library_report = samtools_experiment_stat.samtools_stat_experiment_bam,
   ngs_toolpath = ngs_toolpath
 
   }
@@ -548,8 +626,8 @@ call fastp_qual {
     ###crear tsv 
     call make_tsv_reports {
         input:
-        by_exon_cov =   histo_cob.histo_exon,
-        global_cov = histo_cob.histo_global,
+        by_exon_cov = cob_exones.hist_exon,
+        global_cov = cobertura_global.histo_global,
         ngs_toolpath = ngs_toolpath,
         sample_name = basename(bams[idx], '.bam') #basename(fastp_qual.fastp_stats[idx],'_fastp_report.tsv')#basename(analysis_readybam[idx], '.bam')
     }
@@ -611,18 +689,18 @@ Array[String] path_save = mkdir_samplename.path_out_softlink
       ngs_toolpath = ngs_toolpath
     } 
 
-#  call make_excel { 
-#     input:
-#     experiment_name = experiment_name,#basename(bams[idx], '.bam'),#experiment_name,
-#     tabla1 = merge_fastp_reports.merged_report,
-#     pestana1 = "Filtrado",
-#     tabla2 = merge_samtools_reports.merged_report, 
-#     pestana2 = "Alineamiento",
-#     tabla3 = merge_reports.merged_report,
-#     pestana3 = "Profundidad-en-libreria",
-#     ngs_toolpath = ngs_toolpath
+  call make_excel { 
+     input:
+     experiment_name = experiment_name,#basename(bams[idx], '.bam'),#experiment_name,
+     tabla1 = merge_fastp_reports.merged_report,
+     pestana1 = "Filtrado",
+     tabla2 = merge_samtools_reports.merged_report, 
+     pestana2 = "Alineamiento",
+     tabla3 = merge_reports.merged_report,
+     pestana3 = "Profundidad-en-libreria",
+     ngs_toolpath = ngs_toolpath
 
-#   }
+   }
 
 
 #  ###samtools_stat
