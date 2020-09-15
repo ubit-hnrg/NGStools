@@ -240,7 +240,7 @@ String N_bases_after
       input_bam_index = bam_index_in,#[idx],
       #pipeline_version = pipeline_v,
       intervalo_captura = intervalo_captura,
-      #ensembl2intervalo_captura = coord_generator.exon_restricted, #exon_coords,
+      ensembl2intervalo_captura = ensembl2intervalo_captura, #exon_coords,
       toolpath = toolpath,
       ngs_toolpath = ngs_toolpath,
       path_save = path_save #mkdir_samplename.path_out_softlink
