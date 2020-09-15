@@ -514,7 +514,7 @@ call fastp_qual {
  ####qual control
 
  Array[File] N_total_reads_bam = fastp_qual.reads_after ###ahora es sobre N_bases
-  Array[File] N_bases_after_filtering = fastp_qual.bases_after
+ Array[File] N_bases_after_filtering = fastp_qual.bases_after
  Array[File]  N_bases_before_filtering = fastp_qual.bases_before
  
   

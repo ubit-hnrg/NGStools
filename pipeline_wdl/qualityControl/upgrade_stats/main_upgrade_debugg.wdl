@@ -1,4 +1,4 @@
-#import '../qualityControl.wdl' as qc 
+import './cob.wdl' as cob 
 
 
 ###########################TASKS
@@ -130,7 +130,26 @@ task fastp {
 
 }
 
+###fastp_qual
+###fastp
 
+task fastp_qual {
+  File inputs_json_report
+  String report_name = basename(inputs_json_report, ".txt")
+
+  #${sep=' -I ' input_bqsr_reports}
+  command <<<
+  /home/hnrg/NGStools/pipeline_wdl/qualityControl/estadistica_fastp_V2.py -i ${inputs_json_report} -o ${report_name}_fastp_report.tsv -bb ${report_name}_N_bases_before.txt -ba ${report_name}_N_bases_after.txt -ra ${report_name}_N_reads_after.txt
+  >>>
+
+  output {
+    File fastp_stats = "${report_name}_fastp_report.tsv"
+    File bases_after = "${report_name}_N_bases_after.txt"
+    File bases_before = "${report_name}_N_bases_before.txt"
+    File reads_after = "${report_name}_N_reads_after.txt"
+
+  }
+}
 
 
 task CreateFoFN2 {
@@ -159,233 +178,7 @@ task symlink_important_files {
     }
 }
 
-#####quality control
-###fastp
 
-task fastp_qual {
-  File inputs_json_report
-  String report_name = basename(inputs_json_report, ".txt")
-
-  #${sep=' -I ' input_bqsr_reports}
-  command <<<
-  /home/hnrg/NGStools/pipeline_wdl/qualityControl/estadistica_fastp_V2.py -i ${inputs_json_report} -o ${report_name}_fastp_report.tsv -bb ${report_name}_N_bases_before.txt -ba ${report_name}_N_bases_after.txt -ra ${report_name}_N_reads_after.txt
-  >>>
-
-  output {
-    File fastp_stats = "${report_name}_fastp_report.tsv"
-    File bases_after = "${report_name}_N_bases_after.txt"
-    File bases_before = "${report_name}_N_bases_before.txt"
-    File reads_after = "${report_name}_N_reads_after.txt"
-
-  }
-}
-
-
-task cobertura_global {
-    
-        File intervalo_captura
-        File input_bam
-        File input_bam_index
-        String sample_name = basename( input_bam,'.bam')
-        String toolpath
-        String path_save
-        String ngs_toolpath
- 
-    
-    
-    command {   
-        #!/bin/bash
-        set -e
-        set -o pipefail
-
-        # esto reporta la cobertura en cada intervalo de captura y hace un histograma global también con el keyword "all"
-        ${toolpath}/bedtools2/bin/coverageBed -a ${intervalo_captura} -b ${input_bam}  -hist > ${sample_name}.hist.aux
-        echo -e 'chr\tstart\tend\tgene\tDP\tBPs\tIntervalLength\tfrequency' > header.txt
-        cat header.txt ${sample_name}.hist.aux > ${sample_name}.hist 
-        rm ${sample_name}.hist.aux header.txt
-
-        #histograma global del bam restringido a toda la librería
-        grep '^all' ${sample_name}.hist > global.hist
-        echo -e 'chr\tDP\tBPs\tIntervalLength\tfrequency' > global.header.txt
-        cat global.header.txt global.hist > ${sample_name}.global.hist
-        rm global.header.txt global.hist
-        cp -L ${sample_name}.global.hist ${path_save}
-
-        #${ngs_toolpath}/python_scripts/bam_sex_xy.py -b ${input_bam} > ${sample_name}_sex.txt
-        #cp -L ${sample_name}_sex.txt ${path_save} 
-
-        }
-    output {
-        File histo_global ="${sample_name}.global.hist"
-        #File sex_prediction = "${sample_name}_sex.txt"
-
-    }
-     runtime {
-    memory: "12GB"
-  }
-    
-  
-  } ###fin
-
-
-  task sex_pred {
-
-    File input_bam
-    File input_bam_index
-    String sample_name = basename( input_bam,'.bam')
-    String ngs_toolpath
-    String path_save 
-       
-    command <<<
-      #!/bin/bash
-      set -e
-      set -o pipefail
-
-      ####prediccion de sexo para reporte pdf
-      ###ya que estamos, prediccion de sexo:
-      ${ngs_toolpath}/python_scripts/bam_sex_xy.py -b ${input_bam} > ${sample_name}_sex.txt
-      cp -L ${sample_name}_sex.txt ${path_save} 
-      
-    >>>
-
-  output {
-    File sex_prediction = "${sample_name}_sex.txt"
-    }
-    }
-    
-    task samtools_experiment_stat {
-      File intervalo_captura
-        File input_bam
-        File input_bam_index
-        String sample_name = basename( input_bam,'.bam')
-        String toolpath
-        String path_save 
-    
-    command <<<
-        #!/bin/bash
-        set -e
-        set -o pipefail
-
-        ####samtools stat
-        ${toolpath}samtools stats ${input_bam} -t ${intervalo_captura} > ${sample_name}_samtools.stats
-         /usr/local/bin/plot-bamstats ${sample_name}_samtools.stats -p ${path_save}samtools_plots/${sample_name}
-        cp -L ${sample_name}_samtools.stats ${path_save}
-        >>>
-
-        output {
-        
-        File samtools_stat_experiment_bam = "${sample_name}_samtools.stats"
-        }
-}
-task cob_exones {
-
-      File input_bam
-      File input_bam_index
-      File ensembl2intervalo_captura
-      String sample_name = basename( input_bam,'.bam')
-      String toolpath
-      String path_save 
-
-    command <<<
-        #!/bin/bash
-        set -e
-        set -o pipefail
-
-        #### COBERTURA  ##################################
-        #### EXONES     ##################################
-        #histograma restringido a cada exon de ensembl que está en la librería de captura
-        
-        ${toolpath}/bedtools2/bin/coverageBed -a ${ensembl2intervalo_captura} -b ${input_bam}  -hist > ${sample_name}.ENS.hist.aux1
-        echo -e 'chr\tstart\tend\ttranscriptID\tgene\texonNumber\tstrand\tDP\tBPs\tIntervalLength\tfrequency' > header.txt
-        grep -v '^all' ${sample_name}.ENS.hist.aux1 > ${sample_name}.ENS.hist.aux2
-        cat header.txt ${sample_name}.ENS.hist.aux2 > ${sample_name}.ENS.hist
-        rm ${sample_name}.ENS.hist.aux1 ${sample_name}.ENS.hist.aux2 header.txt
-        ##
-        cp -L ${sample_name}.ENS.hist ${path_save}
-      >>>
-
-    runtime {
-    memory: "12GB"
-    }
-
-    output { 
-    File hist_exon = "${sample_name}.ENS.hist"
-    }
-
-}
-
-task samtools_reports_file {
-
-  String sampleID
-  String N_total_reads
-  String N_bases_before
-  String N_bases_after##from fastp_report
-  File samtools_library_report
-  String ngs_toolpath
-
-  command {
-  ${ngs_toolpath}/pipeline_wdl/qualityControl/samtools_stats_report_V2.py -N=${N_total_reads}  -l=${samtools_library_report} -ba ${N_bases_after} -bb ${N_bases_before} -o=${sampleID}_samtools_report.tsv
-
-  }
-
-  output {
- 
-  File output_global_report = "${sampleID}_samtools_report.tsv" 
-
-  }
-
-}
-
-
-task make_tsv_reports {
-    
-        File by_exon_cov  
-        File global_cov
-        String ngs_toolpath
-        String sample_name
-        #String path_save
-    
-
-    command {
-
-        #!/bin/bash
-        set -e
-
-        # make global tsv report
-        python ${ngs_toolpath}/pipeline_wdl/qualityControl/global_coverage_report_inLibrary.py -i=${global_cov} -o ${sample_name}_experiment_global_report.tsv -op ${sample_name}.distributions.eps -s ${sample_name}
-
-        # make tsv coverage report by exon
-        python ${ngs_toolpath}/pipeline_wdl/qualityControl/local_coverage_report_ENS_intersect_Library.py -i=${by_exon_cov} -o ${sample_name}_ENS_local_report.tsv -s=${sample_name}
-
-
-    }
-
-    output {
-        File hist_by_exon = "${sample_name}_ENS_local_report.tsv" 
-        File hist_global = "${sample_name}_experiment_global_report.tsv"
-        File distributions_plot = "${sample_name}.distributions.eps"
-
-    }
-
-}
-
-task merge_reports {
-
-####inputs del paso1 
-File files_to_merge
-String experiment_name
-String ngs_toolpath
-
-command<<<
-${ngs_toolpath}/pipeline_wdl/qualityControl/merge_sample_reports.py -i ${files_to_merge} -o ${experiment_name}.merged_report
->>>
-
-output {
-File merged_report = "${experiment_name}.merged_report"
-
-}
-
-}
 
 task Create_inputs_for_preprocesing {
   File bams_sample_names
@@ -455,6 +248,24 @@ task CreateFoFN {
   output {
     File fofn_list = "${fofn_name}.list"
   }
+}
+
+task merge_reports {
+
+####inputs del paso1 
+File files_to_merge
+String experiment_name
+String ngs_toolpath
+
+command<<<
+${ngs_toolpath}/pipeline_wdl/qualityControl/merge_sample_reports.py -i ${files_to_merge} -o ${experiment_name}.merged_report
+>>>
+
+output {
+File merged_report = "${experiment_name}.merged_report"
+
+}
+
 }
 
 task make_excel {
@@ -596,85 +407,40 @@ call fastp_qual {
      path_softlink = path_softlink,
      samplename = basename(bams[idx], '.bam')#sample_name
     }
-    call cobertura_global {
-      input: 
-      input_bam = bams[idx],#bams_ready,
-      input_bam_index = bams_index[idx],
-      #pipeline_version = pipeline_v,
-      intervalo_captura = intervalo_captura,
-      #ensembl2intervalo_captura = coord_generator.exon_restricted, #exon_coords,
-      toolpath = toolpath,
-      ngs_toolpath = ngs_toolpath,
-      path_save = mkdir_samplename.path_out_softlink
-     
-    }
-    call samtools_experiment_stat {
+    
+    call cob.coverage_qual{
       input:
-       
+      bam_in = bams[idx],
+      bam_index_in = bams_index[idx],
+      gatk_jar = gatk_jar,
+      toolpath = toolpath,
+      ngs_toolpath = ngs_toolpath, 
+      path_save = mkdir_samplename.path_out_softlink,
       intervalo_captura = intervalo_captura,
-      input_bam = bams[idx],#bams_ready,
-      input_bam_index = bams_index[idx],
-      toolpath = toolpath,
-      path_save = mkdir_samplename.path_out_softlink
+      ensembl2intervalo_captura = coord_generator.exon_restricted,
+      N_total_reads = N_total_reads_bam[idx],
+      N_bases_before = N_bases_after_filtering[idx],
+      N_bases_after = N_bases_before_filtering[idx],
+
     }
-    # call sex_pred{
-    #   input:
-    #   input_bam = bams[idx],#bams_ready,
-    #   input_bam_index = bams_index[idx],
-    #   ngs_toolpath = ngs_toolpath,
-    #   path_save = mkdir_samplename.path_out_softlink
-    # }
-
-    call cob_exones {
-      input:
-      input_bam = bams[idx],#bams_ready,
-      input_bam_index = bams_index[idx],
-      ensembl2intervalo_captura = coord_generator.exon_restricted, #exon_coords,
-      toolpath = toolpath,
-      path_save = mkdir_samplename.path_out_softlink
-    }
-
-  call samtools_reports_file {
-
-  input: 
-  sampleID = basename(bams[idx], '.bam'),#base_file_name,
-  N_total_reads = read_string(N_total_reads_bam[idx]), ###ahora es sobre N_bases
-  N_bases_after = read_string(N_bases_after_filtering[idx]),
-  N_bases_before = read_string(N_bases_before_filtering[idx]), 
-
-  #samtools_global_report = samtools_stat.samtools_stat_original_bam,
-  samtools_library_report = samtools_experiment_stat.samtools_stat_experiment_bam,
-  ngs_toolpath = ngs_toolpath
-
-  }
-
-    ###crear tsv 
-    call make_tsv_reports {
-        input:
-        by_exon_cov = cob_exones.hist_exon,
-        global_cov = cobertura_global.histo_global,
-        ngs_toolpath = ngs_toolpath,
-        sample_name = basename(bams[idx], '.bam') #basename(fastp_qual.fastp_stats[idx],'_fastp_report.tsv')#basename(analysis_readybam[idx], '.bam')
-    }
- 
-  
  }
 
 Array[String] path_save = mkdir_samplename.path_out_softlink
+Array[File] hist_global_tsv = coverage_qual.global_tsv
 
 #Create a file with a list of the generated histo glob_stats for merge in excel report
   call CreateFoFN {
     input:
-      array_of_files = make_tsv_reports.hist_global, #bams_stat_depth_global_coverage_stats,
+      array_of_files = hist_global_tsv, #make_tsv_reports.hist_global, #bams_stat_depth_global_coverage_stats,
       fofn_name = experiment_name # basename(bams[idx], '.bam')#experiment_name
      
   }
 
- Array[File] samtools_global = samtools_reports_file.output_global_report
+ #Array[File] samtools_global = samtools_reports_file.output_global_report
  #Create a file with a list of the generated output_global_report
   call CreateFoFN as CreateFoFN_samtools{
     input:
-      array_of_files = samtools_global,#samtools_reports_file.output_global_report,#stat_alineamiento,
+      array_of_files = coverage_qual.samtools_global,#samtools_reports_file.output_global_report,#stat_alineamiento,
       fofn_name = experiment_name #basename(bams[idx], '.bam')#experiment_name
      
   }
