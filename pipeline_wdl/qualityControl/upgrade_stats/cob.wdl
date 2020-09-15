@@ -19,8 +19,9 @@ task cobertura {
         set -e
         set -o pipefail
 
+        sort -k1,1V -k2,2n ${intervalo_captura} > intervalo_sorted.bed
         # esto reporta la cobertura en cada intervalo de captura y hace un histograma global también con el keyword "all"
-        ${toolpath}/bedtools2/bin/coverageBed -a ${intervalo_captura} -b ${input_bam}  -hist > ${sample_name}.hist.aux
+        ${toolpath}/bedtools2/bin/coverageBed -a intervalo_sorted.bed -b ${input_bam} -sorted -hist > ${sample_name}.hist.aux
         echo -e 'chr\tstart\tend\tgene\tDP\tBPs\tIntervalLength\tfrequency' > header.txt
         cat header.txt ${sample_name}.hist.aux > ${sample_name}.hist 
         rm ${sample_name}.hist.aux header.txt
@@ -42,7 +43,7 @@ task cobertura {
         #### EXONES     ##################################
         #histograma restringido a cada exon de ensembl que está en la librería de captura
         
-        ${toolpath}/bedtools2/bin/coverageBed -a ${ensembl2intervalo_captura} -b ${input_bam}  -hist > ${sample_name}.ENS.hist.aux1
+        ${toolpath}/bedtools2/bin/coverageBed -a ${ensembl2intervalo_captura} -b ${input_bam} -sort -hist > ${sample_name}.ENS.hist.aux1
         echo -e 'chr\tstart\tend\ttranscriptID\tgene\texonNumber\tstrand\tDP\tBPs\tIntervalLength\tfrequency' > header.txt
         grep -v '^all' ${sample_name}.ENS.hist.aux1 > ${sample_name}.ENS.hist.aux2
         cat header.txt ${sample_name}.ENS.hist.aux2 > ${sample_name}.ENS.hist
