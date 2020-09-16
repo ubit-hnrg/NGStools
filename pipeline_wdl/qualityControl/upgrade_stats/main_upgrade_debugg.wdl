@@ -427,6 +427,7 @@ call fastp_qual {
 
 Array[String] path_save = mkdir_samplename.path_out_softlink
 Array[File] hist_global_tsv = coverage_qual.global_tsv
+Array[File] samtools_tsv = coverage_qual.samtools_global
 
 #Create a file with a list of the generated histo glob_stats for merge in excel report
   call CreateFoFN {
@@ -440,7 +441,7 @@ Array[File] hist_global_tsv = coverage_qual.global_tsv
  #Create a file with a list of the generated output_global_report
   call CreateFoFN as CreateFoFN_samtools{
     input:
-      array_of_files = coverage_qual.samtools_global,#samtools_reports_file.output_global_report,#stat_alineamiento,
+      array_of_files = samtools_tsv,#samtools_reports_file.output_global_report,#stat_alineamiento,
       fofn_name = experiment_name #basename(bams[idx], '.bam')#experiment_name
      
   }
