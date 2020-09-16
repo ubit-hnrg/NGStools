@@ -419,8 +419,8 @@ call fastp_qual {
       intervalo_captura = intervalo_captura,
       ensembl2intervalo_captura = coord_generator.exon_restricted,
       N_total_reads = N_total_reads_bam[idx],
-      N_bases_before = N_bases_after_filtering[idx],
-      N_bases_after = N_bases_before_filtering[idx],
+      N_bases_before = N_bases_before_filtering[idx],
+      N_bases_after =  N_bases_after_filtering[idx]
 
     }
  }
