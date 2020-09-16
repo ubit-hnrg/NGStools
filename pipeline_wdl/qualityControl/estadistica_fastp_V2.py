@@ -39,7 +39,7 @@ with open(json_in) as fp:
 
 ######################
 
-
+    N_lanes = len(content)
     array_reports = []
     total_reads_bef1 = []
     total_bases_bef1 = []
@@ -125,8 +125,8 @@ N_reads_after = total_lecturas_passTrue
 bases_after = float(sum(total_bases_aft)/(10**9))
 N_bases_after = sum(total_bases_aft)
 N_bases_before = sum(total_bases_bef1)
-gc_before = sum(gc_content_bef1)
-gc_after = sum(gc_content_aft)
+gc_before = float(sum(gc_content_bef1)/N_lanes)
+gc_after = float(sum(gc_content_aft)/N_lanes)
 porcentaje_passed = round((total_lecturas_passTrue*100)/total_lecturas,2)
 porcentaje_low_qual = round((sum(low_quality_reads)*100)/total_lecturas,2)
 porcentaje_too_many_N = round((sum(too_many_N_reads)*100)/total_lecturas,2)
