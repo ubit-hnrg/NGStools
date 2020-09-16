@@ -119,10 +119,10 @@ for q in range(len(content)):
 
 
 total_lecturas=sum(total_reads_bef1)
-bases_before = float(sum(total_bases_bef1)/1000000000)
+bases_before = float(sum(total_bases_bef1)/(10**9))
 total_lecturas_passTrue=sum(total_reads_aft)
 N_reads_after = total_lecturas_passTrue
-bases_after = float(sum(total_bases_aft)/1000000000)
+bases_after = float(sum(total_bases_aft)/(10**9))
 N_bases_after = sum(total_bases_aft)
 N_bases_before = sum(total_bases_bef1)
 gc_before = sum(gc_content_bef1)
@@ -151,8 +151,8 @@ lectura_media_r2_aftNP = round(np.average(read2_mean_length_aft,weights=total_ba
     
     
 results_dict.update({"total de lecturas antes del filtrado":int(total_lecturas)})
-results_dict.update({"total de GIGAbases antes del filtrado":gc_before})##bases before
-results_dict.update({"total de GIGAbases despues del filtrado":gc_after})##bases_after
+results_dict.update({"total de GIGAbases antes del filtrado":N_bases_before})##bases before
+results_dict.update({"total de GIGAbases despues del filtrado":N_bases_after})##bases_after
 results_dict.update({"total de lecturas despues del filtrado":int(total_lecturas_passTrue)})
 results_dict.update({"total de lecturas despues del filtrado[%]":porcentaje_passed})
 results_dict.update({"lecturas lowqual[%]":porcentaje_low_qual})
