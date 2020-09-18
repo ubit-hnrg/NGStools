@@ -1,11 +1,14 @@
  #!/bin/bash
         set -e
 
-        exp_name = $1 #Nombre Experimento, Ej: TSOxxxxxx
-        output_path_upgrade = '/data/excecutionHNRG/upgrade_stats/'+ $2 + '/inputs'
+        exp_name=$1 #Nombre Experimento, Ej: TSOxxxxxx
+        output_path_upgrade='/data/excecutionHNRG/upgrade_stats/'$2'/inputs'
           
-        path_data = '/data/resultsHNRG/'+$exp_name+'/*/*'
+        path_data='/data/resultsHNRG/'$exp_name'/*/*'
+        input = $3
+dirname($path_data'[!_haplotype].'$input)
 
-        for f in exp_name; do readlink -f $path_data'/*[!_haplotype].bam;done
+
+        #for f in exp_name; do readlink -f $path_data'/*[!_haplotype].bam;done
 
         
