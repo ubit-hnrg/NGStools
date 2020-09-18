@@ -64,21 +64,21 @@ percents_tso = percents_tso.append(pd.Series([Gb_after],index=['bases_after']))
 #print(pd.Series([cigar_after],index=['CIGAR after']))
 #print(pd.Series([cigar_before],index=['CIGAR before']))
 
-percents_tso = percents_tso.append(samtools_kit_report[['bases inside the target']])#/(10**9))
+percents_tso = percents_tso.append(samtools_kit_report[['bases inside the target']]/float(10**9))
 percents_tso = percents_tso.append(pd.Series([totalreads],index=['Number of reads properly paired']))
 
 percents_tso.index = percents_tso.index+' in Library'
 percents_tso.rename(index={'Number of reads properly paired in Library':'Number of reads properly paired'},inplace = True)
 percents_tso.rename(index={'reads properly paired in Library':'Percent of reads properly paired in Library'},inplace = True)
-percents_tso.rename(index={'bases inside the target in Library':'Target size (BPs)'},inplace = True)
+percents_tso.rename(index={'bases inside the target in Library':'Target size (GBPs)'},inplace = True)
 percents_tso.rename(index={'bases mapped (cigar) in Library':'Gbases mapped (cigar) in Library'},inplace = True)
 
 percents_tso.index = percents_tso.index.str.replace(' ','-')
 
 
 ###renombro ontarge[%]
-percents_tso.rename(index={'On-target[%]-in-Library':'On-target[%]'},inplace = True)
-percents_tso.rename(index={'On-target_raw[%]-in-Library':'On-target_raw[%]'},inplace = True)
+percents_tso.rename(index={'On-target[%]-in-Library':'Bases-On-target[%]'},inplace = True)
+percents_tso.rename(index={'On-target_raw[%]-in-Library':'Bases-On-target_raw[%]'},inplace = True)
 percents_tso.rename(index={'bases_before-in-Library':'GBases_before_trimm'},inplace = True)
 percents_tso.rename(index={'bases_after-in-Library':'GBases_after_trimm'},inplace = True)
 
@@ -93,12 +93,12 @@ report = percents_tso.loc[[
 #             u'error-rate',
              u'error-rate-in-Library',
              u'maximum-length-in-Library',
-             u'On-target[%]',
-             u'On-target_raw[%]',
+             u'Bases-On-target[%]',
+             u'Bases-On-target_raw[%]',
              u'GBases_before_trimm',
              u'GBases_after_trimm',
              u'Gbases-mapped-(cigar)-in-Library',
-             u'Target-size-(BPs)']]
+             u'Target-size-(GBPs)']]
 
 report.iloc[1:5] = report.iloc[1:5].round(2).map('{:,.2f} %'.format)
 report.iloc[6:8] = report.iloc[6:8].map('{:,.2f}'.format)
