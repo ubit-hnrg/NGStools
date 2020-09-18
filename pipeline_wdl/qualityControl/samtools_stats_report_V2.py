@@ -104,7 +104,7 @@ report.iloc[1:5] = report.iloc[1:5].round(2).map('{:,.2f} %'.format)
 report.iloc[6:8] = report.iloc[6:8].map('{:,.2f}'.format)
 #report.iloc[12] = report.iloc[12].map('{:.0f}'.format)
 report[0] = '{:.0f}'.format(report[0])
-report[11] = '{:.0f}'.format(report[11])
+#report[11] = '{:.0f}'.format(report[11])
 
 #print(report)
 report.to_csv(output,sep='\t')
