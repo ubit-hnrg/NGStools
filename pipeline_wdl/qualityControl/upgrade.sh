@@ -19,7 +19,7 @@
         path_bam='/data/resultsHNRG/'$exp_name'/*/*[!_haplotype].bam'
         path_index='/data/resultsHNRG/'$exp_name'/*/*[!_haplotype].bai'
         path_excecution='/home/hnrg/executionsHNRG/upgrade_stats/'$exp_name
-        path_fasq='/data/excecutionsHNRG/'$exp_name'/inputs/'$exp_name'.txt'
+        path_fasq='/data/executionsHNRG/'$exp_name'/inputs/'$exp_name'.txt'
         #input = $3
         #dirname($path_data'[!_haplotype].'$input)
 
