@@ -8,6 +8,7 @@ parser.add_argument('-N','--total_reads', type=float,help='Number of total reads
 parser.add_argument('-ba','--total_bases_after', type=int,help='Number of total bases after fastq filtering')
 parser.add_argument('-bb','--total_bases_before', type=int,help='Number of total bases before fastq filtering')
 parser.add_argument('-l','--samtools_library_report', help='library kit restricted report from samtools stat tool')
+parser.add_argument('-d','--samtools_library_report_without_duplicates', help='library kit restricted report from samtools stat tool') # ARI 19/09
 parser.add_argument('-o','--output_file')
 
 args = parser.parse_args()
@@ -15,6 +16,7 @@ totalreads = args.total_reads
 bases_after = args.total_bases_after
 bases_before = args.total_bases_before
 samtools_kit_report_file = args.samtools_library_report
+samtools_kit_report_file_without_duplicates = args.samtools_library_report_without_duplicates # ARI 19/09
 output = args.output_file
 
 
@@ -41,7 +43,21 @@ def parse_samtools_report_SN(samtools_stat_file):
     return samtools_report
 
 
-samtools_kit_report = parse_samtools_report_SN(samtools_kit_report_file)
+######### ARI 19/09 ###########
+samtools_kit_report = parse_samtools_report_SN(samtools_kit_report_file)                                            # ARI 19/09
+samtools_kit_report_without_duplicates = parse_samtools_report_SN(samtools_kit_report_file_without_duplicates)      # ARI 19/09
+bases_on_target_no_dup = samtools_kit_report_without_duplicates[['bases mapped (cigar)'][0]]                        # ARI 19/09
+bases_on_library = samtools_kit_report[['bases mapped (cigar)'][0]]
+bases_on_library_nodup = bases_on_target_no_dup                                                                     # ARI 19/09
+
+efficienciy = bases_on_library_nodup / bases_before                                                                 # ARI 19/09
+filtering_ratio = bases_after / bases_before                                                                        # ARI 19/09
+on_target_ratio = bases_on_library / bases_after                                                                    # ARI 19/09
+duplicated_ratio = bases_on_library_nodup / bases_on_library                                                        # ARI 19/09  
+
+######### FIN incorporaciones ARI  #######
+
+
 
 percents_tso = (100*samtools_kit_report[['reads properly paired','reads duplicated','reads MQ0']]/float(totalreads))
 #percents_tso =  100*samtools_kit_report[['reads properly paired','reads duplicated']]/float(totalreads) #.astype('float64')
@@ -100,8 +116,8 @@ report = percents_tso.loc[[
              u'Gbases-mapped-(cigar)-in-Library',
              u'Target-size-(GBPs)']]
 
-report.iloc[1:5] = report.iloc[1:5].round(2).map('{:,.2f} %'.format)
-report.iloc[6:8] = report.iloc[6:8].map('{:,.2f}'.format)
+report.iloc[1:5] = report.iloc[1:5].round(2).map('{:,.2f} %'.format)        ## COMMENT ARI> ESTO ES MALA PRACTICA, Agus corregilo ;-) (indices.)
+report.iloc[6:8] = report.iloc[6:8].map('{:,.2f}'.format)                   ##COMMENT ARI> ESTO ES MALA PRACTICA, Agus corregilo ;-) (indices.)
 #report.iloc[12] = report.iloc[12].map('{:.0f}'.format)
 report[0] = '{:.0f}'.format(report[0])
 #report[11] = '{:.0f}'.format(report[11])
