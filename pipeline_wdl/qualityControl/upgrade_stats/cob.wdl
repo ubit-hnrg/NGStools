@@ -68,7 +68,7 @@ task cobertura {
         cp -L ${sample_name}.ENS.hist ${path_save}
         #cp -L ${sample_name}_sex.txt ${path_save} 
         cp -L ${sample_name}_nodups.stats ${path_save}
-        cp -L ${sample_name}.no_cubierto_intervalo.tsv
+        cp -L ${sample_name}.no_cubierto_intervalo.tsv ${path_save}
 
         }
     output {
