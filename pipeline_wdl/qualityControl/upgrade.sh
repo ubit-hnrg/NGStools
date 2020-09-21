@@ -27,4 +27,4 @@
         for f in exp_name; do readlink -f $path_index >> $path_excecution'/inputs/bams_index.txt'; readlink -f $path_bam >> $path_excecution'/inputs/bams.txt'; cp $path_fasq $path_excecution'/inputs'; done
 
 
-        python json_upgrade.py -sa $path_excecution'/inputs/'$1'.txt' -bam $path_excecution'/inputs/bams.txt' -bai $path_excecution'/inputs/bams_index.txt' -tf $3  -tt $4 -e $2 
+        python /home/hnrg/NGStools/pipeline_wdl/qualityControl/json_upgrade.py -sa $path_excecution'/inputs/'$1'.txt' -bam $path_excecution'/inputs/bams.txt' -bai $path_excecution'/inputs/bams_index.txt' -tf $3  -tt $4 -e $2 
