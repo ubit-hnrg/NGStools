@@ -297,7 +297,7 @@ String N_bases_after
   N_total_reads = read_string(N_total_reads), ###ahora es sobre N_bases
   N_bases_after = read_string(N_bases_after),
   N_bases_before = read_string(N_bases_before),
-  samtools_dup = cobertura.nodups
+  samtools_dup = cobertura.nodups,
 
   #samtools_global_report = samtools_stat.samtools_stat_original_bam,
   samtools_library_report = cobertura.samtools_stat_experiment_bam,
