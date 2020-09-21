@@ -40,7 +40,7 @@ task cobertura {
         #${ngs_toolpath}/python_scripts/bam_sex_xy.py -b ${input_bam} > ${sample_name}_sex.txt
 
         ###septiembre,20: se agrega eliminar duplicados.
-        ${toolpath}samtools view -F1024 -u ${input_bam} | ${toolpath}samtools stats -t intervalo_sorted - > ${sample_name}_nodups.stats
+        ${toolpath}samtools view -F1024 -u ${input_bam} | ${toolpath}samtools stats -t intervalo_sorted.bed - > ${sample_name}_nodups.stats
         
          ####samtools stat
         ${toolpath}samtools stats ${input_bam} -t ${intervalo_captura} > ${sample_name}_samtools.stats
