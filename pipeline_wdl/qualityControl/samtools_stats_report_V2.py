@@ -137,7 +137,7 @@ report = percents_tso.loc[[
 report.loc['Number-of-reads-properly-paired'] = '{:.0f}'.format(report['Number-of-reads-properly-paired']) ##0 ,'error-rate-in-Library','reads-duplicated-in-Library'
 report.loc[['Percent-of-reads-properly-paired-in-Library','error-rate-in-Library','reads-duplicated-in-Library','reads-MQ0-in-Library']] = report.loc[['Percent-of-reads-properly-paired-in-Library','error-rate-in-Library','reads-duplicated-in-Library','reads-MQ0-in-Library']].map('{:,.2f} %'.format)
 report.loc[['maximum-length-in-Library','GBases_before_trimm', 'GBases_after_trimm' ]] = report.loc[['maximum-length-in-Library','GBases_before_trimm', 'GBases_after_trimm' ]].map('{:,.2f}'.format) 
-#report.loc['']
+report.loc['filtering_ratio'] = '{:.4f}'.format(report['filtering_ratio'])
 #report.loc['']
 
 print(report)
