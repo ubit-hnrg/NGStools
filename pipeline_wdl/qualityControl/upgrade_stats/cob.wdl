@@ -18,8 +18,11 @@ task cobertura {
         #!/bin/bash
         set -e
         set -o pipefail
-
+         
+        #sort del intervalo de caputura para que funcione bien el coverageBED.
         sort -k1,1V -k2,2n ${intervalo_captura} > intervalo_sorted.bed
+        
+
         # esto reporta la cobertura en cada intervalo de captura y hace un histograma global también con el keyword "all"
         #${toolpath}bedtools2/bin/sort ${input_bam} -m 1G | 
         ${toolpath}bedtools2/bin/coverageBed -a intervalo_sorted.bed -b ${input_bam} -sorted -hist > ${sample_name}.hist.aux
@@ -35,6 +38,9 @@ task cobertura {
         
         ###sex prediction
         #${ngs_toolpath}/python_scripts/bam_sex_xy.py -b ${input_bam} > ${sample_name}_sex.txt
+
+        ###septiembre,20: se agrega eliminar duplicados.
+        ${toolpath}samtools view -F1024 -u ${input_bam} | ${toolpath}samtools stats -t intervalo_sorted - > ${sample_name}_nodups.stats
         
          ####samtools stat
         ${toolpath}samtools stats ${input_bam} -t ${intervalo_captura} > ${sample_name}_samtools.stats
@@ -51,20 +57,27 @@ task cobertura {
         cat header.txt ${sample_name}.ENS.hist.aux2 > ${sample_name}.ENS.hist
         rm ${sample_name}.ENS.hist.aux1 ${sample_name}.ENS.hist.aux2 header.txt
         ##
-        
+        ##regiones no cubiertas en el intervalo de captura. -bga reporta la profunidad in bedgraph format. reporta las regiones con 0 cobertura. 
+        ## por lo que dps se puede filtrar lo no cubierto.-
+        bedtools genomecov -ibam ${input_bam} -bga | awk '$4==0'| bedtools intersect -a intervalo_sorted.bed -b - > ${sample_name}.no_cubierto_intervalo.tsv
+
 
 
         cp -L ${sample_name}.global.hist ${path_save}
         cp -L ${sample_name}_samtools.stats ${path_save}
         cp -L ${sample_name}.ENS.hist ${path_save}
         #cp -L ${sample_name}_sex.txt ${path_save} 
+        cp -L ${sample_name}_nodups.stats ${path_save}
+        cp -L ${sample_name}.no_cubierto_intervalo.tsv
 
         }
     output {
         File histo_global ="${sample_name}.global.hist"
         File samtools_stat_experiment_bam = "${sample_name}_samtools.stats"
-         File hist_exon = "${sample_name}.ENS.hist"
+        File hist_exon = "${sample_name}.ENS.hist"
         #File sex_prediction = "${sample_name}_sex.txt"
+        File nodups = "${sample_name}_nodups.stats"
+        File no_cubierto_intervalo = "${sample_name}.no_cubierto_intervalo.tsv"
 
     }
  
@@ -164,11 +177,12 @@ task samtools_reports_file {
   String N_bases_before
   String N_bases_after##from fastp_report
   File samtools_library_report
+  File samtools_dup
   String ngs_toolpath
   String path_save
 
   command {
-  ${ngs_toolpath}/pipeline_wdl/qualityControl/samtools_stats_report_V2.py -N=${N_total_reads}  -l=${samtools_library_report} -ba ${N_bases_after} -bb ${N_bases_before} -o=${sampleID}_samtools_report.tsv
+  ${ngs_toolpath}/pipeline_wdl/qualityControl/samtools_stats_report_V2.py -N=${N_total_reads}  -l=${samtools_library_report} -d ${samtools_dup} -ba ${N_bases_after} -bb ${N_bases_before} -o=${sampleID}_samtools_report.tsv
    cp -L ${sampleID}_samtools_report.tsv ${path_save}
   }
 
@@ -179,7 +193,6 @@ task samtools_reports_file {
   }
 
 }
-
 
 task make_tsv_reports {
     
@@ -283,7 +296,8 @@ String N_bases_after
   sampleID = basename(bam_in, '.bam'),#base_file_name,
   N_total_reads = read_string(N_total_reads), ###ahora es sobre N_bases
   N_bases_after = read_string(N_bases_after),
-  N_bases_before = read_string(N_bases_before), 
+  N_bases_before = read_string(N_bases_before),
+  samtools_dup = cobertura.nodups
 
   #samtools_global_report = samtools_stat.samtools_stat_original_bam,
   samtools_library_report = cobertura.samtools_stat_experiment_bam,
