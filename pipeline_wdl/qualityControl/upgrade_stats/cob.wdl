@@ -321,6 +321,7 @@ String N_bases_after
  File global_tsv = make_tsv_reports.hist_global
  File distribution_plot = make_tsv_reports.distributions_plot
  File samtools_global = samtools_reports_file.output_global_report
+ File nocubierto_intervalo = cobertura.no_cubierto_intervalo
  }
 
 

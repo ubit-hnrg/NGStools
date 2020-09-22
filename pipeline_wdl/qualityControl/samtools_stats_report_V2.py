@@ -1,7 +1,9 @@
 #!/usr/bin/python
+from __future__ import division
 import pandas as pd
 import sys 
 import argparse
+
 
 parser = argparse.ArgumentParser(prog='samtools_stat_report.py',description='Make aligment report from samtools stat reports', usage='%(prog)s  --samtools_global_report --samtools_library_report --output_file')
 parser.add_argument('-N','--total_reads', type=float,help='Number of total reads that passed quality criteria')
@@ -51,29 +53,27 @@ bases_on_library = samtools_kit_report[['bases mapped (cigar)'][0]]
 bases_on_library_nodup = bases_on_target_no_dup                                                                     # ARI 19/09
 
 efficienciy = bases_on_library_nodup / bases_before                                                                 # ARI 19/09
-filtering_ratio = bases_after / bases_before                                                                        # ARI 19/09
+filtering_ratio = bases_after/bases_before                                                                        # ARI 19/09
 on_target_ratio = bases_on_library / bases_after                                                                    # ARI 19/09
 duplicated_ratio = bases_on_library_nodup / bases_on_library                                                        # ARI 19/09  
 
+###efficiency = filtering_ratio * on_target_ratio * duplicated_ratio.
 ######### FIN incorporaciones ARI  #######
-
+print('bases_before',bases_before)
+print('bases_after', bases_after)
+print('fratio',filtering_ratio)
 
 percents_tso = (100*samtools_kit_report[['reads properly paired','reads duplicated','reads MQ0']]/float(totalreads))
-#percents_tso =  100*samtools_kit_report[['reads properly paired','reads duplicated']]/float(totalreads) #.astype('float64')
-#percents_tso = percents_tso.append(100*samtools_kit_report[['reads MQ0']]/float(totalreads))
 percents_tso = percents_tso.append(samtools_kit_report[['maximum length']])
 percents_tso = percents_tso.append(samtools_kit_report[['error rate']]*100)
 
 ####bases
-#percents_tso = percents_tso.append(samtools_kit_report[['bases mapped (cigar)']]/(10**9))
+percents_tso = percents_tso.append(samtools_kit_report[['bases mapped (cigar)']]/(10**9))
 #cigar_after = round(100*samtools_kit_report[['bases mapped (cigar)'][0]]/float(bases_after),2)
 #cigar_before = round(100*samtools_kit_report[['bases mapped (cigar)'][0]]/float(bases_before),2)
 
 #percents_tso = percents_tso.append(pd.Series([cigar_after],index=['On target[%]']))        ##chau agu 20/9
 #percents_tso = percents_tso.append(pd.Series([cigar_before],index=['On target_raw[%]']))   ##chau agu 20/9
-
-
-
 
 Gb_before = round(bases_before/float(10**9),6)
 Gb_after = round(bases_after/float(10**9),6)
@@ -86,7 +86,7 @@ percents_tso = percents_tso.append(pd.Series([Gbases_nodup],index=['Gbases witho
 percents_tso = percents_tso.append(pd.Series([efficienciy],index=['efficienciy'])) ##agu 20-9
 percents_tso = percents_tso.append(pd.Series([filtering_ratio],index=['filtering_ratio'])) ##agu 20-9
 percents_tso = percents_tso.append(pd.Series([on_target_ratio],index=['on_target_ratio'])) ##agu 20-9
-percents_tso = percents_tso.append(pd.Series([duplicated_ratio],index=['duplicated_ratio'])) ##agu 20-9
+percents_tso = percents_tso.append(pd.Series([duplicated_ratio],index=['unduplicated_ratio'])) ##agu 20-9
 #print(pd.Series([cigar_after],index=['CIGAR after']))
 #print(pd.Series([cigar_before],index=['CIGAR before']))
 
@@ -97,7 +97,7 @@ percents_tso.index = percents_tso.index+' in Library'
 percents_tso.rename(index={'Number of reads properly paired in Library':'Number of reads properly paired'},inplace = True)
 percents_tso.rename(index={'reads properly paired in Library':'Percent of reads properly paired in Library'},inplace = True)
 percents_tso.rename(index={'bases inside the target in Library':'Target size (GBPs)'},inplace = True)
-#percents_tso.rename(index={'bases mapped (cigar) in Library':'Gbases mapped (cigar) in Library'},inplace = True)
+percents_tso.rename(index={'bases mapped (cigar) in Library':'Gbases mapped (cigar) in Library'},inplace = True)
 
 percents_tso.index = percents_tso.index.str.replace(' ','-')
 
@@ -121,12 +121,12 @@ report = percents_tso.loc[[
              u'maximum-length-in-Library',
              u'GBases_before_trimm',
              u'GBases_after_trimm',
-            # u'Gbases-mapped-(cigar)-in-Library', #9
+             u'Gbases-mapped-(cigar)-in-Library', #9
              u'Gbases-without-dup-mapped-in-Library',#9
              u'efficienciy-in-Library', ##agu 20-9
              u'filtering_ratio', ##agu 20-9
              u'on_target_ratio-in-Library', ##agu 20-9
-             u'duplicated_ratio-in-Library', ##agu 20-9
+             u'unduplicated_ratio-in-Library', ##agu 20-9
              u'Target-size-(GBPs)']]
 
 #report.iloc[1:5] = report.iloc[1:5].round(2).map('{:,.2f} %'.format)        ## COMMENT ARI> ESTO ES MALA PRACTICA, Agus corregilo ;-) (indices.)
