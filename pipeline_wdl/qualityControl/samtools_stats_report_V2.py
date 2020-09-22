@@ -59,9 +59,7 @@ duplicated_ratio = bases_on_library_nodup / bases_on_library                    
 
 ###efficiency = filtering_ratio * on_target_ratio * duplicated_ratio.
 ######### FIN incorporaciones ARI  #######
-print('bases_before',bases_before)
-print('bases_after', bases_after)
-print('fratio',filtering_ratio)
+
 
 percents_tso = (100*samtools_kit_report[['reads properly paired','reads duplicated','reads MQ0']]/float(totalreads))
 percents_tso = percents_tso.append(samtools_kit_report[['maximum length']])
@@ -140,7 +138,7 @@ report.loc[['maximum-length-in-Library','GBases_before_trimm', 'GBases_after_tri
 report.loc['filtering_ratio'] = '{:.4f}'.format(report['filtering_ratio'])
 #report.loc['']
 
-print(report)
+#print(report)
 report.to_csv(output,sep='\t')
 
 #np.average(covTSO['cov'].values,weights= covTSO.cuentas.values)
