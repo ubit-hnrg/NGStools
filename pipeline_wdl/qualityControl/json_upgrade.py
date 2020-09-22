@@ -39,7 +39,7 @@ def upgrade_json(samples,bams,bams_index, trim_front,trim_tail,experiment_lib):
     data['upgrade_statistics.list_bams']=bams
     data['upgrade_statistics.list_bam_index']=bams_index
     data['upgrade_statistics.experiment_name']=experiment_name+'_upgrade'
-    data['upgrade_statistics.path_softlink']= '/data/resultsHNRG/'+samples+'/upgrade_stats_'+trim_front+'-'+trim_tail+'/'
+    data['upgrade_statistics.path_softlink']= '/data/resultsHNRG/'+experiment_name+'/upgrade_stats_'+trim_front+'-'+trim_tail+'/'
     data['##COMMENT3']='TOOLS & GATK'
     data['upgrade_statistics.toolpath']='/home/hnrg/HNRG-pipeline-V0.1/tools/'
     data['upgrade_statistics.gatk_jar']='gatk-package-4.0.8.1-local.jar'
