@@ -151,8 +151,8 @@ lectura_media_r2_aftNP = round(np.average(read2_mean_length_aft,weights=total_ba
     
     
 results_dict.update({"total de lecturas antes del filtrado":int(total_lecturas)})
-results_dict.update({"total de GIGAbases antes del filtrado":N_bases_before})##bases before
-results_dict.update({"total de GIGAbases despues del filtrado":N_bases_after})##bases_after
+results_dict.update({"total de GIGAbases antes del filtrado":bases_before})##bases before
+results_dict.update({"total de GIGAbases despues del filtrado":bases_after})##bases_after
 results_dict.update({"total de lecturas despues del filtrado":int(total_lecturas_passTrue)})
 results_dict.update({"total de lecturas despues del filtrado[%]":porcentaje_passed})
 results_dict.update({"lecturas lowqual[%]":porcentaje_low_qual})
