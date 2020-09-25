@@ -273,7 +273,8 @@ File intervalo_captura
 scatter (fastp in fastp_json_files){
     call fastp_qual {
       input:
-      inputs_json_report = fastp
+      inputs_json_report = fastp,
+      ngs_toolpath = ngs_toolpath
     }
   }
 

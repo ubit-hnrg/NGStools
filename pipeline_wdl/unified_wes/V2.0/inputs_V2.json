@@ -39,7 +39,7 @@
 
   "##COMMENT7": "EXPERIMENT LIB, INTERVAL LIST, GENERADOR DE INTERVALO",
   "main_workflow.chromosome_length": "/home/hnrg/HNRG-pipeline-V0.1/libraries/GRCh37/chromosome_lengths_hg19.txt",
-  "main_workflow.experiment_lib": "/home/hnrg/HNRG-pipeline-V0.1/libraries/GRCh37/TruSight_One_v1.1_GRCh37.bed.gz",
+  "main_workflow.intervalo_captura": "/home/hnrg/HNRG-pipeline-V0.1/libraries/GRCh37/TruSight_One_v1.1_GRCh37.bed.gz",
   "main_workflow.generic_exon_coords": "/home/hnrg/HNRG-pipeline-V0.1/libraries/intervalos/intersect_ensembl_Tso.bed",
   "main_workflow.padding": "100",
   "main_workflow.merge_tolerance": "200",
