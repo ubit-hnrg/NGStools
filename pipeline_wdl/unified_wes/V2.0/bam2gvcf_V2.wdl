@@ -4,15 +4,19 @@
 task samtools_stat{
 
   String toolpath
-  File TSO_bed #./TruSight_One_v1_padded_100_GRCh37.bed
+  File intervalo_captura #./TruSight_One_v1_padded_100_GRCh37.bed
   File input_bam_reducido
   String name
+  String path_save
+
 
   command <<<
     set -e
     set -o pipefail
  
-    ${toolpath}samtools stats ${input_bam_reducido}  -t ${TSO_bed} > ${name}_TSO_samtools.stats
+    ${toolpath}samtools stats ${input_bam_reducido}  -t ${intervalo_captura} > ${name}_experiment_lib_samtools.stats
+    /usr/local/bin/plot-bamstats ${name}_experiment_lib_samtools.stats -p ${path_save}samtools_plots/${name}
+  
 
   >>>
   output {
@@ -20,56 +24,55 @@ task samtools_stat{
   #File samtools_stats = 
   #File samtools_reduced_bam = $name'_samtools_reduced.stats'
   #File samtools_stat_original_bam = "${name}_orig_samtools.stats"
-  File samtools_stat_TSO_bam = "${name}_TSO_samtools.stats"
-
-  #File 
+  #File samtools_stat_TSO_bam = "${name}_experiment_lib_samtools.stats"
+  File samtools_stat_experiment_bam = "${name}_experiment_lib_samtools.stats" 
 
   }
 
 }
 
 
-task samtools_reports_file {
+# task samtools_reports_file {
 
-  String sampleID
-  Int N_total_reads_bam
-  #File samtools_global_report ##no va mas, necesita el numero total de reads
-  File samtools_library_report
-  String toolpath
+#   String sampleID
+#   Int N_total_reads_bam
+#   #File samtools_global_report ##no va mas, necesita el numero total de reads
+#   File samtools_library_report
+#   String toolpath
 
-  command {
-  /home/hnrg/NGStools/pipeline_wdl/qualityControl/samtools_stats_report_v1.0.py -N=${N_total_reads_bam}  -l=${samtools_library_report} -o=${sampleID}_samtools_report.tsv
+#   command {
+#   /home/hnrg/NGStools/pipeline_wdl/qualityControl/samtools_stats_report_v1.0.py -N=${N_total_reads_bam}  -l=${samtools_library_report} -o=${sampleID}_samtools_report.tsv
 
-  }
+#   }
 
-  output {
+#   output {
  
-  File output_global_report = "${sampleID}_samtools_report.tsv" 
+#   File output_global_report = "${sampleID}_samtools_report.tsv" 
 
-  }
+#   }
 
-}
-
-
+# }
 
 
-task bams_reads {
-   File bam
-   String toolpath
-   String sample_name
-   #  echo ${sample_name}\t$({toolpath}samtools view -c ${bam})
 
-   command {
+
+# task bams_reads {
+#    File bam
+#    String toolpath
+#    String sample_name
+#    #  echo ${sample_name}\t$({toolpath}samtools view -c ${bam})
+
+#    command {
   
-    echo |${toolpath}samtools view -c ${bam} 
-   }
+#     echo |${toolpath}samtools view -c ${bam} 
+#    }
 
-   output {
-   String sampl = sample_name
-   Int N_reads = read_int(stdout())
-   }
+#    output {
+#    String sampl = sample_name
+#    Int N_reads = read_int(stdout())
+#    }
 
-}
+# }
 
 
 task reduce_bam {
@@ -81,11 +84,15 @@ task reduce_bam {
 
 
    command <<<
+
+   echo |${toolpath}samtools view -c ${input_bam} > bams_reads_markdup.txt
+
    ${toolpath}bedtools2/bin/intersectBed -a ${input_bam} -b ${lib_resctricted} -wa > ${output_bam_basename}_lib_resctricted.bam 
 
    >>>
     output {
     File output_reduced_bam = "${output_bam_basename}_lib_resctricted.bam"
+    String N_reads = read_string("bams_reads_markdup.txt")
     
    }
 }
@@ -587,20 +594,20 @@ task symlink_important_files {
 ################################################ agrego quality_control 
 ###fastp
 
-task fastp_qual {
-  File inputs_json_report
-  String report_name = basename(inputs_json_report, ".txt")
+# task fastp_qual {
+#   File inputs_json_report
+#   String report_name = basename(inputs_json_report, ".txt")
 
-  #${sep=' -I ' input_bqsr_reports}
-  command <<<
-  /home/hnrg/NGStools/pipeline_wdl/qualityControl/estadistica_fastp.py -i ${inputs_json_report} -o ${report_name}_fastp_report.tsv
-  >>>
+#   #${sep=' -I ' input_bqsr_reports}
+#   command <<<
+#   /home/hnrg/NGStools/pipeline_wdl/qualityControl/estadistica_fastp.py -i ${inputs_json_report} -o ${report_name}_fastp_report.tsv
+#   >>>
 
-  output {
-    File fastp_stats = "${report_name}_fastp_report.tsv"
+#   output {
+#     File fastp_stats = "${report_name}_fastp_report.tsv"
 
-  }
-}
+#   }
+# }
 
 
 # ####paso1 para calidad de bams
@@ -687,14 +694,14 @@ task fastp_qual {
 
 #   #paso2
 #   ##input es el bam original  y el intervalo de captura
-#   ${toolpath}samtools stats ${input_orig_bam} -t ${TSO_bed} > ${name}_TSO_samtools.stats
+#   ${toolpath}samtools stats ${input_orig_bam} -t ${TSO_bed} > ${name}_experiment_lib_samtools.stats
 
 #   }
 #   output {
 
 #     #File samtools_reduced_bam = $name'_samtools_reduced.stats'
 #     File samtools_stat_original_bam = "${name}_orig_samtools.stats"
-#     File samtools_stat_TSO_bam = "${name}_TSO_samtools.stats"
+#     File samtools_stat_TSO_bam = "${name}_experiment_lib_samtools.stats"
 
 #   }
 
@@ -789,6 +796,8 @@ workflow bam2gvcf {
   ### PATH local de las herramientas sacadas de docker
   String gatk_jar
   String toolpath
+  String ngs_toolpath
+
   ########## referencia
   File ref_fasta
   File ref_fasta_index
@@ -825,7 +834,7 @@ workflow bam2gvcf {
   String smith_waterman_implementation
   Float? contamination
   String newqual
-  File tso_bed
+  File intervalo_captura
     
   
   String base_file_name
@@ -863,14 +872,14 @@ workflow bam2gvcf {
 
 
   #scatter (bam in bams_N_reads){
-  call bams_reads {
-    input:
-    bam = MarkDuplicates.output_bam,
-    toolpath = toolpath,
-    sample_name = base_file_name
+  # call bams_reads {
+  #   input:
+  #   bam = MarkDuplicates.output_bam,
+  #   toolpath = toolpath,
+  #   sample_name = base_file_name
     
-  }
-    #}
+  # }
+  #   #}
 
   call reduce_bam {
     input:
@@ -878,7 +887,7 @@ workflow bam2gvcf {
     #input_bam = bam_markdup,
     toolpath = toolpath,
     output_bam_basename = base_file_name, 
-    lib_resctricted = lib_resctricted
+    lib_resctricted = intervalo_captura
     #./TruSight_One_v1_padded_100_GRCh37.bed 
   }
   
@@ -984,26 +993,26 @@ workflow bam2gvcf {
   ## Output :
   ## - A clean BAM file and its index, suitable for variant discovery analyses.
   ##################################################################################
-  call samtools_stat {
-    input:
-    toolpath = toolpath,
-    name = base_file_name, 
-    TSO_bed = tso_bed, #./TruSight_One_v1_padded_100_GRCh37.bed
-    input_bam_reducido = GatherBamFiles.output_bam,
-    #input_bam_reducido = reduce_bam.output_reduced_bam
+  # call samtools_stat {
+  #   input:
+  #   toolpath = toolpath,
+  #   name = base_file_name, 
+  #   TSO_bed = tso_bed, #./TruSight_One_v1_padded_100_GRCh37.bed
+  #   input_bam_reducido = GatherBamFiles.output_bam,
+  #   #input_bam_reducido = reduce_bam.output_reduced_bam
 
-  }
+  # }
    
-  call samtools_reports_file {
+  # call samtools_reports_file {
 
-  input: 
-  sampleID = base_file_name,
-  N_total_reads_bam = bams_reads.N_reads,
-  #samtools_global_report = samtools_stat.samtools_stat_original_bam,
-  samtools_library_report = samtools_stat.samtools_stat_TSO_bam,
-  toolpath = toolpath
+  # input: 
+  # sampleID = base_file_name,
+  # N_total_reads_bam = bams_reads.N_reads,
+  # #samtools_global_report = samtools_stat.samtools_stat_original_bam,
+  # samtools_library_report = samtools_stat.samtools_stat_TSO_bam,
+  # toolpath = toolpath
 
-  }
+  # }
 
   #BQSR bins the qualities which makes a significantly smaller bam
   #Float binned_qual_bam_size = size(GatherBamFiles.output_bam, "GB")
@@ -1102,7 +1111,7 @@ workflow bam2gvcf {
 
 
 
-  Array[File] salidas = ["${GatherBamFilesHaplotype.output_bam}","${GatherBamFilesHaplotype.output_bam_index}","${GatherBamFiles.output_bam}","${GatherBamFiles.output_bam_index}","${MergeVCFs.output_vcf}","${MergeVCFs.output_vcf_index}","${CollectGvcfCallingMetrics.summary_metrics}","${CollectGvcfCallingMetrics.detail_metrics}","${samtools_stat.samtools_stat_TSO_bam}","${samtools_reports_file.output_global_report}"]
+  Array[File] salidas = ["${GatherBamFilesHaplotype.output_bam}","${GatherBamFilesHaplotype.output_bam_index}","${GatherBamFiles.output_bam}","${GatherBamFiles.output_bam_index}","${MergeVCFs.output_vcf}","${MergeVCFs.output_vcf_index}","${CollectGvcfCallingMetrics.summary_metrics}","${CollectGvcfCallingMetrics.detail_metrics}"]# ,"${samtools_stat.samtools_stat_TSO_bam}","${samtools_reports_file.output_global_report}"]
 
   scatter (paths in salidas) {
     call symlink_important_files {
@@ -1130,11 +1139,12 @@ workflow bam2gvcf {
    Array[File] borrar_Applybqsr = ApplyBQSR.recalibrated_bam 
    #File borrar_Markdup = MarkDuplicates.output_bam
    File borrar_SortandFix = SortAndFixTags.output_bam
+   Int N_reads_bam = reduce_bam.N_reads
    #String sampl_name_bam = bams_reads.sampl 
    #String N_reads_bam = bams_reads.N_reads 
    #File Samt_bam_stat = samtools_stat.samtools_stat_original_bam 
-   File Samt_TSO_stat = samtools_stat.samtools_stat_TSO_bam
-   File reporte_final = samtools_reports_file.output_global_report ### archivo para mergear... estadistica en la libreria del experimento
+   #File Samt_TSO_stat = samtools_stat.samtools_stat_TSO_bam
+   #File reporte_final = samtools_reports_file.output_global_report ### archivo para mergear... estadistica en la libreria del experimento
 
 
    #"samtools_stat.samtools_stat_TSO_bam","samtools_reports_file.output_global_report"

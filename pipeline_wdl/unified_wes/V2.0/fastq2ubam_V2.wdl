@@ -52,7 +52,7 @@ workflow ConvertPairedFastQsToUnmappedBamWf {
 
     call fastp {
       input: 
-      trim_front = trim_front ,
+      trim_front = trim_front,
       trim_tail = trim_tail,
       sample_name = read_file_of_tabulated_inputs.array_of_samples[i],
       R1_fastq_gz = read_file_of_tabulated_inputs.array_of_R1_files[i],
@@ -104,12 +104,18 @@ workflow ConvertPairedFastQsToUnmappedBamWf {
   }
 
   #Create a file with a list of the generated fastp_json file
-  #call CreateFoFN as FoFN_fastp_html {
-  #  input:
-  #    array_of_files = fastp.fastp_html_report,
-  #    fofn_name = "fastp_reports_html"
+  call CreateFoFN as FoFN_fastp_html {
+    input:
+      array_of_files = fastp.fastp_html_report,
+      fofn_name = "fastp_reports_html"
      
-  #}
+  }
+
+    call Create_inputs_for_preprocesing as fastp_html_files {
+    input:
+    ubams_paths = FoFN_fastp_html.fofn_list,
+    bams_sample_names = read_file_of_tabulated_inputs.samplenames
+  }
   
   call Create_inputs_for_preprocesing {
     input:
@@ -159,7 +165,7 @@ workflow ConvertPairedFastQsToUnmappedBamWf {
 
     ####fastp_report
     Array[File] fastp_json_reports  =  fastp_report_files.ubam_samples ###array de reportes_fastp
-    #Array[File] fastp_html_reports  =  fastp_html_report_files.ubam_samples ###array de reportes_fastp
+    Array[File] fastp_html_reports  =  fastp_html_files.ubam_samples ###array de reportes_fastp
 
 
   }
@@ -239,14 +245,14 @@ task fastp {
 
 
   command {
-    ${toolpath}fastp -i ${R1_fastq_gz} -I ${R2_fastq_gz} -o ${R1_stripped_basename}_cleaned.fastq.gz -O ${R2_stripped_basename}_cleaned.fastq.gz -h ${report_name}_fastp.html -j ${report_name}_fastp.json --trim_front1=${trim_front} --trim_tail1=${trim_tail}
+    ${toolpath}fastp -i ${R1_fastq_gz} -I ${R2_fastq_gz} -o ${R1_stripped_basename}_cleaned.fastq.gz -O ${R2_stripped_basename}_cleaned.fastq.gz -h ${report_name}_fastp.html -j ${report_name}_fastp.json --trim_front1=${trim_front} --trim_tail1=${trim_tail} -A
   }
 
   output {
     File fastq_cleaned_R1 = "${R1_stripped_basename}_cleaned.fastq.gz"
     File fastq_cleaned_R2 = "${R2_stripped_basename}_cleaned.fastq.gz"
     File fastp_json_report = "${report_name}_fastp.json"
-    #File fastp_html_report = "${report_name}_fastp.html"  
+    File fastp_html_report = "${report_name}_fastp.html"  
   }
 
 }

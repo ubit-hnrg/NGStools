@@ -5,10 +5,11 @@
 
 
 import './fastq2ubam_V2.wdl' as fastq2ubam #1
-import './bam2gvcf_V2.wdl' as bamtogvcf #2
-import './ubam2bwa_V2.wdl' as ubam2bwa #3
+import './bam2gvcf_V2.wdl' as bamtogvcf #3
+import './ubam2bwa_V2.wdl' as ubam2bwa #2
 import './jointgenotype_single_V2.wdl' as single_genotypeGVCF #4
-import './quality_control_V2.wdl' as qual_control #5
+#import './quality_control_V2.wdl' as qual_control #5
+import './qc.wdl' as qual_control #5
 import './anotaciones_hnrg_single.wdl' as anotacionesSingle #5
 
 
@@ -92,7 +93,7 @@ task symlink_important_files {
 
 task coord_generator {
 
-  File experiment_lib
+  File intervalo_captura
   File chromosome_length
   File generic_exon_coords
   Int padding
@@ -101,6 +102,7 @@ task coord_generator {
   String gatk_jar
   File ref_dict
   String path_save
+  String library_name = basename(intervalo_captura, ".bed" )
 
   
    
@@ -109,29 +111,34 @@ task coord_generator {
     set -e
     set -o pipefail
     
-    ${toolpath}bedtools2/bin/slopBed -i ${experiment_lib} -g ${chromosome_length} -b ${padding} | sort -k1,1 -k2,2n -V > intervalo_b37_padded_${padding}.bed 
+    ${toolpath}bedtools2/bin/slopBed -i ${intervalo_captura} -g ${chromosome_length} -b ${padding} | sort -k1,1 -k2,2n -V > ${library_name}_padded_${padding}.bed 
 
+     ####Exon_restricted interval for quality_control  ${library_name}_padded_${padding}.bed | sort -k1,1 -k2,2n -V 
+    ${toolpath}bedtools2/bin/intersectBed -a ${generic_exon_coords} -b ${intervalo_captura}|sort -k1,1V -k2,2n - > exon_restricted2_${library_name}.bed
+
+    
     ###merged
      
-    ${toolpath}bedtools2/bin/mergeBed -i intervalo_b37_padded_${padding}.bed -d ${merge_tolerance} > intervalo_b37_padded_${padding}_merged_${merge_tolerance}.bed
+    ${toolpath}bedtools2/bin/mergeBed -i ${library_name}_padded_${padding}.bed -d ${merge_tolerance} > ${library_name}_padded_${padding}_merged_${merge_tolerance}.bed
 
-    java -jar ${toolpath}${gatk_jar} BedToIntervalList -I=intervalo_b37_padded_${padding}_merged_${merge_tolerance}.bed -O=intervalo_b37_padded_${padding}_merged_${merge_tolerance}_preprocessing.interval_list -SD=${ref_dict}  
+    java -jar ${toolpath}${gatk_jar} BedToIntervalList -I=${library_name}_padded_${padding}_merged_${merge_tolerance}.bed -O=${library_name}_padded_${padding}_merged_${merge_tolerance}_preprocessing.interval_list -SD=${ref_dict}
 
     java -jar ${toolpath}${gatk_jar} BedToIntervalList -I=intervalo_b37_padded_${padding}.bed -O=intervalo_b37_padded_${padding}.interval_list -SD=${ref_dict}
      
-    ####TSO_restricted for quality_control
-    ${toolpath}bedtools2/bin/intersectBed -wa -a ${generic_exon_coords} -b intervalo_b37_padded_${padding}.bed | sort -k1,1 -k2,2n -V | uniq > exon_restricted2interval.bed
- 
-    cp -L ${experiment_lib} ${path_save}
-    cp -L intervalo_b37_padded_${padding}.bed ${path_save}
+  
+    cp -L ${intervalo_captura} ${path_save}
+    cp -L ${library_name}_padded_${padding}.bed ${path_save}
+
     cp -L intervalo_b37_padded_${padding}_merged_${merge_tolerance}_preprocessing.interval_list ${path_save}
     cp -L intervalo_b37_padded_${padding}.interval_list ${path_save}
     cp -L exon_restricted2interval.bed ${path_save}
   >>>
 
   output {
-    File padded_coord = "intervalo_b37_padded_${padding}.bed"
-    File interval_restricted = "exon_restricted2interval.bed" ##for quality_control
+    File padded_coord = "${library_name}_padded_${padding}.bed"
+    File exon_restricted = "exon_restricted2_${library_name}.bed" ##for quality_control
+
+    #File interval_restricted = "exon_restricted2interval.bed" ##for quality_control
     #File merged_padded_coord = "intervalo_b37_padded_merged_${merge_tolerance}.bed"
     File interval_list = "intervalo_b37_padded_${padding}_merged_${merge_tolerance}_preprocessing.interval_list"
     File eval_interval_list = "intervalo_b37_padded_${padding}.interval_list"
@@ -167,13 +174,15 @@ task build_excell_report{
     File exon_coverage_report
     File plof
     String samplename2
+    String ngs_toolpath
+
     #String original_sample
   
      #/home/hnrg/NGStools/pipeline_wdl/qualityControl/make_excel_report.py ${annovar_tsv}:Variants ${exon_coverage_report}:ExonCoverage ${sample}.output_xlsx
 
     command{
 
-       /home/hnrg/NGStools/pipeline_wdl/qualityControl/make_excel_report.py ${annovar_tsv}:Variants ${exon_coverage_report}:ExonCoverage ${plof}:GnomAD_PLOF ${samplename2}_variants.xlsx
+       ${ngs_toolpath}/pipeline_wdl/qualityControl/make_excel_report.py ${annovar_tsv}:Variants ${exon_coverage_report}:ExonCoverage ${plof}:GnomAD_PLOF ${samplename2}_variants.xlsx
    
    }    
 
@@ -188,12 +197,14 @@ File annovar_variants
 String S1 = basename(annovar_variants)
 File exon_dist
 String S2 = basename(exon_dist)
+String ngs_toolpath
+
 
 command {
 
- /home/hnrg/NGStools/python_scripts/join_annovar_exon_dist.py -d ${exon_dist} -a ${annovar_variants} -o ${name}.anno_variants.tsv
-  echo "${S1}"
-  echo "${S2}"
+ ${ngs_toolpath}/python_scripts/join_annovar_exon_dist.py -d ${exon_dist} -a ${annovar_variants} -o ${name}.anno_variants.tsv
+  #echo "${S1}"
+  #echo "${S2}"
 
  }
 
@@ -218,10 +229,11 @@ task pdf_report {
   String tso 
   String date
   String path
+  String ngs_toolpath
 
   command {
   
-    /home/hnrg/NGStools/python_scripts/pdf_report_per_sample.py -fq ${fastp_rep} -aq ${alineamiento} -dq ${glob_rep} -s ${sex} -n ${name} -d ${date} -t ${tso} -o ${path}/${name}_qual_report.pdf
+    ${ngs_toolpath}/python_scripts/pdf_report_per_sample.py -fq ${fastp_rep} -aq ${alineamiento} -dq ${glob_rep} -s ${sex} -n ${name} -d ${date} -t ${tso} -o ${path}/${name}_qual_report.pdf
   
   }
 
@@ -257,9 +269,11 @@ workflow main_workflow {
   ###GATK
   String gatk_jar = "gatk-package-4.0.8.1-local.jar"
   String toolpath = "/home/hnrg/HNRG-pipeline-V0.1/tools/"
+  String ngs_toolpath = "/home/hnrg/NGStools"
+
 
   ###coordenadas exonicas (usamos ENSEMBL)
-  File generic_exon_coords = "/home/hnrg/HNRG-pipeline-V0.1/libraries/intervalos/intersect_ensembl_Tso.bed"
+  File generic_exon_coords = "/home/hnrg/HNRG-pipeline-V0.1/libraries/intervalos/ensembl_canonicos_GRCh37_0based.tsv"
   
   ###save location
   String path_softlink
@@ -320,8 +334,8 @@ workflow main_workflow {
 
 
   ###################### inputs para crear intervalo
-  File experiment_lib
-  File chromosome_length = "/home/hnrg/HNRG-pipeline-V0.1/libraries/GRCh37/chromosome_lengths_hg19.txt"
+  File intervalo_captura
+  File chromosome_length = "/home/hnrg/HNRG-pipeline-V0.1/libraries/GRCh37/chromosome_lengths_GRCh37_MT.txt" #"/home/hnrg/HNRG-pipeline-V0.1/libraries/GRCh37/chromosome_lengths_hg19.txt"
   Int padding = "100"
   Int merge_tolerance = "200"
 
@@ -336,7 +350,7 @@ workflow main_workflow {
 
     call coord_generator {
         input:
-        experiment_lib = experiment_lib,
+        intervalo_captura = intervalo_captura,
         chromosome_length = chromosome_length,
         padding = padding,
         merge_tolerance = merge_tolerance,
@@ -444,22 +458,24 @@ workflow main_workflow {
       dbSNP_vcf_index = dbSNP_vcf_index,
       known_indels_sites_VCFs = known_indels_sites_VCFs,
       known_indels_sites_indices = known_indels_sites_indices,
-      wes_calling_interval_list = coord_generator.interval_list,
+      wes_calling_interval_list = coord_generator.eval_interval_list,#coord_generator.interval_list,
       break_bands_at_multiples_of = break_bands_at_multiples_of,
       haplotype_scatter_count = haplotype_scatter_count,
       compression_level = compression_level,
       gatk_gkl_pairhmm_implementation = gatk_gkl_pairhmm_implementation,
       gatk_gkl_pairhmm_threads = gatk_gkl_pairhmm_threads,
-      wgs_calling_interval_list = coord_generator.interval_list, 
-      wgs_evaluation_interval_list = coord_generator.interval_list,
+      wgs_calling_interval_list = coord_generator.eval_interval_list,#coord_generator.interval_list, 
+      wgs_evaluation_interval_list = coord_generator.eval_interval_list,# coord_generator.interval_list,
       gatk_jar = gatk_jar,
       toolpath = toolpath,
+      ngs_toolpath = ngs_toolpath,
+
       smith_waterman_implementation = smith_waterman_implementation,
       contamination = contamination,
       newqual = newqual,
       java_heap_memory_initial = java_heap_memory_initial,
-      tso_bed = coord_generator.padded_coord
-    } 
+      intervalo_captura = intervalo_captura    
+      } 
 
     ######single_genotype
     call single_genotypeGVCF.singleGenotypeGVCFs {
@@ -476,8 +492,6 @@ workflow main_workflow {
         gatk_jar = gatk_jar,
         toolpath = toolpath,
         sample_name = sample_name,
-        #input_gvcfs = gvcf.left,
-        #input_gvcfs_indices = gvcf.right,
         region_padded_bed = coord_generator.padded_coord,
 
         ####input del anterior jointgenotyping
@@ -496,19 +510,23 @@ workflow main_workflow {
 
     call anotacionesSingle.FuncionalAnnotationSingle {
         input:
-        input_vcf = singleGenotypeGVCFs.individual_vcfs_annovar,#restricted_vcf,
+        input_vcf = singleGenotypeGVCFs.restricted_vcf,#singleGenotypeGVCFs.individual_vcfs_annovar,#restricted_vcf,
         path_save = mkdir_samplename.path_out_softlink,
         toolpath = toolpath,
         samplename1 = sample_name,
         java_heap_memory_initial = "12g",
         pipeline_v = pipeline_version,
-        exon_coordinates = coord_generator.interval_restricted,
+        exon_coordinates = generic_exon_coords,#coord_generator.interval_restricted,
         reference_version = reference_version
         
 
       }
 
    } ###fin scatter gvcf
+
+#####creo aca va lo nuevo con todas las N_bases del fastq. Creo...
+   #Array[Int] N_reads_bams = bam2gvcf.N_reads_bam
+   #Array[String] N_reads_bams = bam2gvcf.N_reads_bam
 
 
 
@@ -523,55 +541,43 @@ workflow main_workflow {
     }
   } 
 
- #Array[String] uniquesample_name =read_lines(ConvertPairedFastQsToUnmappedBamWf.samplesnames)
+ Array[String] uniquesample_name =read_lines(ConvertPairedFastQsToUnmappedBamWf.samplesnames)
 
-#Array[File] salidas_json = ConvertPairedFastQsToUnmappedBamWf.fastp_json_reports
+Array[File] salidas_json = ConvertPairedFastQsToUnmappedBamWf.fastp_json_reports
  Array[String] array_path_save_json = mkdir_samplename.path_out_softlink
- #Array[Pair[String,File]] samples_x_files_json = zip (array_path_save_json, salidas_json)
-#  scatter (pairs in samples_x_files_json) {
-  #    call symlink_important_files {
-  #      input:
-  #       output_to_save = pairs.right,
-  #       path_save = pairs.left
-  #     }
-  # }
-
-
-call qual_control.quality_control_V2 {
-   input: 
-   stat_alineamiento = bam2gvcf.reporte_final,
-   fastp_json_files = ConvertPairedFastQsToUnmappedBamWf.fastp_json_reports,
-   path_save = mkdir_samplename.path_out_softlink,
-   analysis_readybam = bam2gvcf.analysis_ready_bam,
-   analysis_readybam_index = bam2gvcf.analysis_ready_bam_index,
-   toolpath = toolpath,
-   Tso_name = basename(tabulatedSampleFilePaths, ".txt"),
-   exon_coords = coord_generator.interval_restricted,
-   pipeline_v = pipeline_version
-   #tso_bed = tso_bed
+ Array[Pair[String,File]] samples_x_files_json = zip (array_path_save_json, salidas_json)
+ scatter (pairs in samples_x_files_json) {
+     call symlink_important_files {
+       input:
+        output_to_save = pairs.right,
+        path_save = pairs.left
+      }
   }
 
 
+call qual_control.qual_control {
+   input: 
+   #stat_alineamiento = bam2gvcf.reporte_final,
+   fastp_json_files = ConvertPairedFastQsToUnmappedBamWf.fastp_json_reports,
+   path_save = mkdir_samplename.path_out_softlink,
+   #bams_N_reads = N_reads_bams,#bam2gvcf.bams_N_reads,
+   analysis_readybam = bam2gvcf.analysis_ready_bam,
+   analysis_readybam_index = bam2gvcf.analysis_ready_bam_index,
+   toolpath = toolpath,
+   ngs_toolpath = ngs_toolpath,
+   intervalo_captura = intervalo_captura,
+   pipeline_v = pipeline_version,
+   experiment_name = basename(tabulatedSampleFilePaths, ".txt"),
+   exon_coords = coord_generator.exon_restricted, #### ensembl vs intervalo_captura
+   #tso_bed = tso_bed
+
+   experiment_path = path_softlink
+  }
 
 
-
-#  Array[Pair[String,File]] test_save1 = zip (array_path_save_byexon, test1)
-#   scatter (pairs in test_save1) {
-#     call symlink_important_files as test{
-#         input:
-#         output_to_save = pairs.right,
-#         path_save = pairs.left
-#     }
-#   }
-
-
-
- 
- ##descomentar abajo y borrar la de arriba
- Array[File] prof_by_exon = quality_control_V2.by_exon_depth##","${coord_generator.padded_coord}"] #"${name}_coverage_statistics_by_exon.tsv"
+Array[File] exon_tsv = qual_control.tsv_exon
  Array[String] array_path_save_byexon = mkdir_samplename.path_out_softlink
-
- Array[Pair[String,File]] samples_by_exon = zip (array_path_save_byexon, prof_by_exon)
+ Array[Pair[String,File]] samples_by_exon = zip (array_path_save_byexon, exon_tsv)
   scatter (pairs in samples_by_exon) {
     call symlink_important_files as byexon{
         input:
@@ -580,27 +586,77 @@ call qual_control.quality_control_V2 {
     }
   }
 
-### poner el exon_distance con el vcf anotado_hnrg freq
 
-## anotar con plof, gnomad /home/hnrg/HNRG-pipeline-V0.1/libraries/GRCh37/gnomad_plof_HNRG.tsv ###done, mejorarlo porque lo quieren en la misma hoja
+ 
+ # Array[File] prof_by_exon = quality_control_V2.by_exon_depth##","${coord_generator.padded_coord}"] #"${name}_coverage_statistics_by_exon.tsv"
+Array[File] html_reports_from_fastq = ConvertPairedFastQsToUnmappedBamWf.fastp_html_reports 
+#Array[String] array_path_save_byexon = mkdir_samplename.path_out_softlink
+
+Array[Pair[String,File]] html_fastp_by_samplre = zip (array_path_save_byexon, html_reports_from_fastq)
+  scatter (pairs in html_fastp_by_samplre) {
+     call symlink_important_files as html_fastp{
+        input:
+        output_to_save = pairs.right,
+        path_save = pairs.left
+    }
+  }
 
 
 ####for pdf purpose 
-  Array[File] alineamiento_rep = bam2gvcf.reporte_final ### archivo para mergear... estadistica en la libreria del experimento
-  Array[File] global = quality_control_V2.depth_global_cov_stats
-  #Array[File] fastp_qual = quality_control_V2.fastp_rep_out
-  Array[File] sex_pred= quality_control_V2.bams_sex_prediction
- 
-#  scatter (indice in range(length(alineamiento_rep))){
-       
-#        String S1 = basename(alineamiento_rep[indice],"_samtools_report.tsv")
-#        String S2 = basename(prof_by_exon[indice],"_global_coverage_statistics_V2.0.tsv")
-#        String S3 = basename(fastp[indice],"_fastp_report.tsv")
-#        String S4 = basename(sex_pred[indice],"_sex.txt")
+  Array[File] alineamiento_rep = qual_control.reporte_final#bam2gvcf.reporte_final ### archivo para mergear... estadistica en la libreria del experimento
+  Array[File] global = qual_control.depth_global_cov_stats
+  Array[Pair[String,File]] global_report = zip (array_path_save_byexon, global)
+  scatter (pairs in global_report) {
+    call symlink_important_files as global_hist {
+        input:
+        output_to_save = pairs.right,
+        path_save = pairs.left
+    }
+  }
 
-   Array[File] gene_list = singleGenotypeGVCFs.annovar_gene_list 
-   Array[File] plof = singleGenotypeGVCFs.gene_plof_file 
-   Array[File] exon_distances = FuncionalAnnotationSingle.vcf_exon_distance
+
+  
+  ####meter en pdf
+  Array[File] plot_dist = qual_control.plot_distribution
+  Array[Pair[String,File]] plot_hist_save = zip (array_path_save_byexon, plot_dist)
+  scatter (pairs in plot_hist_save) {
+    call symlink_important_files as save_plot_distrib {
+        input:
+        output_to_save = pairs.right,
+        path_save = pairs.left
+    }
+  }
+
+ ###samtools_stat
+  Array[File] samtools_stat_report_from_reduced_bam = qual_control.samtools_stat_report_from_reduced_bam
+   Array[Pair[String,File]] samtools_stat_out = zip (array_path_save_byexon, samtools_stat_report_from_reduced_bam)
+  scatter (pairs in samtools_stat_out) {
+    call symlink_important_files as save_samtools {
+        input:
+        output_to_save = pairs.right,
+        path_save = pairs.left
+    }
+  }
+
+ Array[File] tsv_global = qual_control.bams_stat_depth_global_coverage_stats
+  Array[Pair[String,File]] qual_tsv = zip (array_path_save_byexon, tsv_global)
+  scatter (pairs in qual_tsv) {
+    call symlink_important_files as qual_tsv_save {
+        input:
+        output_to_save = pairs.right,
+        path_save = pairs.left
+    }
+  }
+
+
+
+  #Array[File] fastp_qual = quality_control_V2.fastp_rep_out
+  Array[File] sex_pred= qual_control.bams_sex_prediction
+  Array[File] gene_list = singleGenotypeGVCFs.annovar_gene_list 
+  Array[File] plof = singleGenotypeGVCFs.gene_plof_file 
+  Array[File] exon_distances = FuncionalAnnotationSingle.vcf_exon_distance
+
+
 
  ####excel_report
 
@@ -608,7 +664,7 @@ call qual_control.quality_control_V2 {
     scatter (idx in range(length(Tsv_annovar))){
        
        String sample = basename(Tsv_annovar[idx],"multianno_restrict.tsv")
-       String samplename2 = basename(prof_by_exon[idx],"_coverage_statistics_by_exon_V2.0.tsv")
+       String samplename2 = basename(exon_tsv[idx],"_coverage_statistics_by_exon_V2.0.tsv")
        
        #if(sample==samplename2){
          #mergear tsv_annovar con distancias_exones
@@ -617,7 +673,8 @@ call qual_control.quality_control_V2 {
           input:
             name = samplename2,
               annovar_variants = Tsv_annovar[idx],
-              exon_dist = exon_distances[idx]
+              exon_dist = exon_distances[idx],
+              ngs_toolpath = ngs_toolpath
          }
 
        call build_excell_report {
@@ -625,7 +682,8 @@ call qual_control.quality_control_V2 {
             annovar_tsv = join_annovar_exon_dist.anno_dist,
             plof = plof[idx],
             samplename2 = samplename2,
-            exon_coverage_report = prof_by_exon[idx]
+            exon_coverage_report = exon_tsv[idx],
+            ngs_toolpath = ngs_toolpath
             
            }
         call pdf_report {
@@ -635,10 +693,11 @@ call qual_control.quality_control_V2 {
             glob_rep = global[idx],
             sex = sex_pred[idx],
             #fastp_rep = fastp_qual[idx],
-            fastp_rep = quality_control_V2.fastp_rep_out[idx],
+            fastp_rep = qual_control.fastp_rep_out[idx],
             tso = basename(tabulatedSampleFilePaths, ".txt"),
             date = run_date,
-            path = array_path_save_json[idx]
+            path = array_path_save_json[idx],
+            ngs_toolpath = ngs_toolpath
             
            }  
         #}
@@ -679,7 +738,7 @@ Array[File?] reporte_variantes = build_excell_report.excell_report
    Array[File] output_vcf = bam2gvcf.output_gvcf
    Array[File] output_vcf_index = bam2gvcf.output_gvcf_index
   ##### output jointgenotype
-   
+  
    ###output_joint_single_vcf
  
    Array[File?] outputvcf = singleGenotypeGVCFs.outputvcf
@@ -687,10 +746,7 @@ Array[File?] reporte_variantes = build_excell_report.excell_report
    Array[File?] detail_metrics_file =  singleGenotypeGVCFs.metrica1
    Array[File?] summary_metrics_file = singleGenotypeGVCFs.metrica2
    #File? intervalo = JointGenotyping.inter
-
-   #Array[File] Samt_bam_stat = bam2gvcf.Samt_bam_stat 
-   Array[File] Samt_TSO_stat = bam2gvcf.Samt_TSO_stat
-   Array[File] reporte_final = bam2gvcf.reporte_final ### archivo para mergear... estadistica en la libreria del experimento
+   Array[File] reporte_final = qual_control.reporte_final ### archivo para mergear... estadistica en la libreria del experimento
  }
 
 }
