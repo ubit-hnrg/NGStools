@@ -444,7 +444,7 @@ workflow main_workflow {
      input:
       
       base_file_name =  sample_name,
-      lib_resctricted = coord_generator.padded_coord,
+      lib_restricted = coord_generator.padded_coord,
       path_save = mkdir_samplename.path_out_softlink,
       bams_entrada = groupingBams_bysample_glob.subArray_input_ubam2gvcf,
       ref_fasta = ref_fasta,
