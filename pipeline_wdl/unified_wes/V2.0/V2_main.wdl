@@ -721,34 +721,34 @@ Array[File?] reporte_variantes = build_excell_report.excell_report
 
 
    # Outputs that will be retained when execution is complete
-  output {
-    Array[File] output_ubams = ConvertPairedFastQsToUnmappedBamWf.output_ubams
-    Array[String] output_ubams_sample_names =  ConvertPairedFastQsToUnmappedBamWf.output_ubams_sample_names
-    File unmapped_ubam_list = ConvertPairedFastQsToUnmappedBamWf.unmapped_ubam_list
-    File samplesnames = ConvertPairedFastQsToUnmappedBamWf.samplesnames
-    Array[File] muestras  =  ConvertPairedFastQsToUnmappedBamWf.muestras
-  # Outputs del workflow bam2gvcf (bam2gvcf)  
+#   output {
+#     Array[File] output_ubams = ConvertPairedFastQsToUnmappedBamWf.output_ubams
+#     Array[String] output_ubams_sample_names =  ConvertPairedFastQsToUnmappedBamWf.output_ubams_sample_names
+#     File unmapped_ubam_list = ConvertPairedFastQsToUnmappedBamWf.unmapped_ubam_list
+#     File samplesnames = ConvertPairedFastQsToUnmappedBamWf.samplesnames
+#     Array[File] muestras  =  ConvertPairedFastQsToUnmappedBamWf.muestras
+#   # Outputs del workflow bam2gvcf (bam2gvcf)  
  
-   Array[File] duplication_metrics = bam2gvcf.duplication_metrics
-   Array[File] bqsr_report = bam2gvcf.bqsr_report 
-   Array[File] analysis_ready_bam = bam2gvcf.analysis_ready_bam
-   Array[File] analysis_ready_bam_index = bam2gvcf.analysis_ready_bam_index
-   Array[File] analysis_ready_bam_md5 = bam2gvcf.analysis_ready_bam_md5 
-   Array[File] gvcf_summary_metrics = bam2gvcf.gvcf_summary_metrics 
-   Array[File] gvcf_detail_metrics = bam2gvcf.gvcf_detail_metrics 
-   Array[File] output_vcf = bam2gvcf.output_gvcf
-   Array[File] output_vcf_index = bam2gvcf.output_gvcf_index
-  ##### output jointgenotype
+#    Array[File] duplication_metrics = bam2gvcf.duplication_metrics
+#    Array[File] bqsr_report = bam2gvcf.bqsr_report 
+#    Array[File] analysis_ready_bam = bam2gvcf.analysis_ready_bam
+#    Array[File] analysis_ready_bam_index = bam2gvcf.analysis_ready_bam_index
+#    Array[File] analysis_ready_bam_md5 = bam2gvcf.analysis_ready_bam_md5 
+#    Array[File] gvcf_summary_metrics = bam2gvcf.gvcf_summary_metrics 
+#    Array[File] gvcf_detail_metrics = bam2gvcf.gvcf_detail_metrics 
+#    Array[File] output_vcf = bam2gvcf.output_gvcf
+#    Array[File] output_vcf_index = bam2gvcf.output_gvcf_index
+#   ##### output jointgenotype
   
-   ###output_joint_single_vcf
+#    ###output_joint_single_vcf
  
-   Array[File?] outputvcf = singleGenotypeGVCFs.outputvcf
-   Array[File?] outputvcfindex =  singleGenotypeGVCFs.outputvcfindex
-   Array[File?] detail_metrics_file =  singleGenotypeGVCFs.metrica1
-   Array[File?] summary_metrics_file = singleGenotypeGVCFs.metrica2
-   #File? intervalo = JointGenotyping.inter
-   Array[File] reporte_final = qual_control.reporte_final ### archivo para mergear... estadistica en la libreria del experimento
- }
+#    Array[File?] outputvcf = singleGenotypeGVCFs.outputvcf
+#    Array[File?] outputvcfindex =  singleGenotypeGVCFs.outputvcfindex
+#    Array[File?] detail_metrics_file =  singleGenotypeGVCFs.metrica1
+#    Array[File?] summary_metrics_file = singleGenotypeGVCFs.metrica2
+#    #File? intervalo = JointGenotyping.inter
+#    Array[File] reporte_final = qual_control.reporte_final ### archivo para mergear... estadistica en la libreria del experimento
+#  }
 
 }
 
