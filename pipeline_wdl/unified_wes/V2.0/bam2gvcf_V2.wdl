@@ -79,7 +79,7 @@ task reduce_bam {
    File input_bam
    String toolpath
    String output_bam_basename
-   File lib_resctricted 
+   File lib_restricted 
  
 
 
@@ -87,11 +87,11 @@ task reduce_bam {
 
    echo |${toolpath}samtools view -c ${input_bam} > bams_reads_markdup.txt
 
-   ${toolpath}bedtools2/bin/intersectBed -a ${input_bam} -b ${lib_resctricted} -wa > ${output_bam_basename}_lib_resctricted.bam 
+   ${toolpath}bedtools2/bin/intersectBed -a ${input_bam} -b ${lib_restricted} -wa > ${output_bam_basename}_lib_restricted.bam 
 
    >>>
     output {
-    File output_reduced_bam = "${output_bam_basename}_lib_resctricted.bam"
+    File output_reduced_bam = "${output_bam_basename}_lib_restricted.bam"
     String N_reads = read_string("bams_reads_markdup.txt")
     
    }
@@ -839,7 +839,7 @@ workflow bam2gvcf {
   
   String base_file_name
   #Array[File] flowcell_unmapped_bams = read_lines(flowcell_unmapped_bams_list)
-  File lib_resctricted
+  File lib_restricted
   #./TruSight_One_v1_padded_100_GRCh37.bed 
 
  
@@ -887,7 +887,7 @@ workflow bam2gvcf {
     #input_bam = bam_markdup,
     toolpath = toolpath,
     output_bam_basename = base_file_name, 
-    lib_resctricted = lib_restricted#intervalo_captura
+    lib_restricted = lib_restricted #intervalo_captura
     #./TruSight_One_v1_padded_100_GRCh37.bed 
   }
   
