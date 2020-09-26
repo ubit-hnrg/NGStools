@@ -140,8 +140,8 @@ task coord_generator {
 
     #File interval_restricted = "exon_restricted2interval.bed" ##for quality_control
     #File merged_padded_coord = "intervalo_b37_padded_merged_${merge_tolerance}.bed"
-    File interval_list = "intervalo_b37_padded_${padding}_merged_${merge_tolerance}_preprocessing.interval_list"
-    File eval_interval_list = "intervalo_b37_padded_${padding}.interval_list"
+    File interval_list = "${library_name}_padded_${padding}_merged_${merge_tolerance}_preprocessing.interval_list"
+    File eval_interval_list = "${library_name}_padded_${padding}.interval_list"
   }
 
 }
