@@ -52,7 +52,8 @@
   "main_workflow.smith_waterman_implementation": "AVX_ENABLED",
   "main_workflow.break_bands_at_multiples_of": "1000000",
 
-  "##COMMENT9": "VARIOS",
+  "##COMMENT9": "VARIOS. El comando sorted debe estar vacio si la region contiene MT. sino es: -sorted",
+  "main_workflow.qual_control.cobertura.sorted": "String? (optional)",
   "main_workflow.ubam_list_name": "ubamfiles",
   "main_workflow.singleGenotypeGVCFs.excess_het_threshold": "54.69",
   "main_workflow.contamination": "0",

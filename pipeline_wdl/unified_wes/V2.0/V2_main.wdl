@@ -665,7 +665,7 @@ Array[Pair[String,File]] html_fastp_by_samplre = zip (array_path_save_byexon, ht
     scatter (idx in range(length(Tsv_annovar))){
        
        String sample = basename(Tsv_annovar[idx],"multianno_restrict.tsv")
-       String samplename2 = basename(exon_tsv[idx],"_coverage_statistics_by_exon_V2.0.tsv")
+       String samplename2 = basename(exon_tsv[idx],"_ENS_local_report.tsv")
        
        #if(sample==samplename2){
          #mergear tsv_annovar con distancias_exones

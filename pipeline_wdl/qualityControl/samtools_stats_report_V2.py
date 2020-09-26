@@ -136,6 +136,10 @@ report.loc['Number-of-reads-properly-paired'] = '{:.0f}'.format(report['Number-o
 report.loc[['Percent-of-reads-properly-paired-in-Library','error-rate-in-Library','reads-duplicated-in-Library','reads-MQ0-in-Library']] = report.loc[['Percent-of-reads-properly-paired-in-Library','error-rate-in-Library','reads-duplicated-in-Library','reads-MQ0-in-Library']].map('{:,.2f} %'.format)
 report.loc[['maximum-length-in-Library','GBases_before_trimm', 'GBases_after_trimm' ]] = report.loc[['maximum-length-in-Library','GBases_before_trimm', 'GBases_after_trimm' ]].map('{:,.2f}'.format) 
 report.loc['filtering_ratio'] = '{:.4f}'.format(report['filtering_ratio'])
+report.loc['on_target_ratio-in-Library'] = '{:.4f}'.format(report['on_target_ratio-in-Library'])
+report.loc['unduplicated_ratio-in-Library'] = '{:.4f}'.format(report['unduplicated_ratio-in-Library'])
+report.loc['efficienciy-in-Library'] = '{:.4f}'.format(report['efficienciy-in-Library'])
+
 #report.loc['']
 
 #print(report)
