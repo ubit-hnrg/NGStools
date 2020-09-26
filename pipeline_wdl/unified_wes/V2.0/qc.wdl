@@ -79,6 +79,10 @@ task cobertura {
         cat header.txt ${sample_name}.ENS.hist.aux2 > ${sample_name}.ENS.hist
         rm ${sample_name}.ENS.hist.aux1 ${sample_name}.ENS.hist.aux2 header.txt
         ##
+        ##regiones no cubiertas en el intervalo de captura. -bga reporta la profunidad in bedgraph format. reporta las regiones con 0 cobertura. 
+        ## por lo que dps se puede filtrar lo no cubierto.-
+        bedtools genomecov -ibam ${input_bam} -bga | awk '$4==0'| bedtools intersect -a intervalo_sorted.bed -b - > ${sample_name}.no_cubierto_intervalo.tsv
+
         
         cp -L ${sample_name}.global.hist ${path_save}
         cp -L ${sample_name}_samtools.stats ${path_save}
