@@ -887,7 +887,7 @@ workflow bam2gvcf {
     #input_bam = bam_markdup,
     toolpath = toolpath,
     output_bam_basename = base_file_name, 
-    lib_resctricted = intervalo_captura
+    lib_resctricted = lib_restricted#intervalo_captura
     #./TruSight_One_v1_padded_100_GRCh37.bed 
   }
   

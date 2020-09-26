@@ -442,6 +442,7 @@ workflow main_workflow {
 
    call bamtogvcf.bam2gvcf {
      input:
+      
       base_file_name =  sample_name,
       lib_resctricted = coord_generator.padded_coord,
       path_save = mkdir_samplename.path_out_softlink,
