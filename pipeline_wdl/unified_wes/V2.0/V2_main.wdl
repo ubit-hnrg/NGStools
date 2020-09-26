@@ -131,7 +131,7 @@ task coord_generator {
 
     cp -L ${library_name}_padded_${padding}_merged_${merge_tolerance}_preprocessing.interval_list ${path_save}
     cp -L ${library_name}_padded_${padding}.interval_list ${path_save}
-    cp -L exon_restricted2interval.bed ${path_save}
+    cp -L exon_restricted2_${library_name}.bed ${path_save}
   >>>
 
   output {
