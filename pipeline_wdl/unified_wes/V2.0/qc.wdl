@@ -447,6 +447,7 @@ call symlink_important_files as save_excel_qual {
     Array[File] plot_distribution = make_tsv_reports.distributions_plot
 #tsv_results
     Array[File] tsv_exon = make_tsv_reports.hist_by_exon
+    Array[File] nocubierto = cobertura.no_cubierto_intervalo
 
 
     #Array[File] by_exon_depth = cobertura.histo_exon

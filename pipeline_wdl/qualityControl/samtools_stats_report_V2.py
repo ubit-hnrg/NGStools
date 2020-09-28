@@ -58,6 +58,7 @@ on_target_ratio = bases_on_library / bases_after                                
 duplicated_ratio = bases_on_library_nodup / bases_on_library                                                        # ARI 19/09  
 
 ###efficiency = filtering_ratio * on_target_ratio * duplicated_ratio.
+
 ######### FIN incorporaciones ARI  #######
 
 
@@ -134,8 +135,9 @@ report = percents_tso.loc[[
 #report[11] = '{:.0f}'.format(report[11])
 report.loc['Number-of-reads-properly-paired'] = '{:.0f}'.format(report['Number-of-reads-properly-paired']) ##0 ,'error-rate-in-Library','reads-duplicated-in-Library'
 report.loc[['Percent-of-reads-properly-paired-in-Library','error-rate-in-Library','reads-duplicated-in-Library','reads-MQ0-in-Library']] = report.loc[['Percent-of-reads-properly-paired-in-Library','error-rate-in-Library','reads-duplicated-in-Library','reads-MQ0-in-Library']].map('{:,.2f} %'.format)
-report.loc[['maximum-length-in-Library','GBases_before_trimm', 'GBases_after_trimm' ]] = report.loc[['maximum-length-in-Library','GBases_before_trimm', 'GBases_after_trimm' ]].map('{:,.2f}'.format) 
+report.loc['maximum-length-in-Library'] = report.loc['maximum-length-in-Library'].map('{:,.2f}'.format) 
 report.loc['filtering_ratio'] = '{:.4f}'.format(report['filtering_ratio'])
+#report.loc[['GBases_before_trimm', 'GBases_after_trimm']]=report.loc[['GBases_before_trimm', 'GBases_after_trimm' ]].map('{:,.f}'.format)
 report.loc['on_target_ratio-in-Library'] = '{:.4f}'.format(report['on_target_ratio-in-Library'])
 report.loc['unduplicated_ratio-in-Library'] = '{:.4f}'.format(report['unduplicated_ratio-in-Library'])
 report.loc['efficienciy-in-Library'] = '{:.4f}'.format(report['efficienciy-in-Library'])

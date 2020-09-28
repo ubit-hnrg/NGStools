@@ -175,6 +175,7 @@ task build_excell_report{
     File plof
     String samplename2
     String ngs_toolpath
+    File no_cubierto
 
     #String original_sample
   
@@ -182,7 +183,7 @@ task build_excell_report{
 
     command{
 
-       ${ngs_toolpath}/pipeline_wdl/qualityControl/make_excel_report.py ${annovar_tsv}:Variants ${exon_coverage_report}:ExonCoverage ${plof}:GnomAD_PLOF ${samplename2}_variants.xlsx
+       ${ngs_toolpath}/pipeline_wdl/qualityControl/make_excel_report.py ${annovar_tsv}:Variants ${exon_coverage_report}:ExonCoverage ${plof}:GnomAD_PLOF ${no_cubierto}:no_cubierto  ${samplename2}_variants.xlsx
    
    }    
 
@@ -198,6 +199,7 @@ String S1 = basename(annovar_variants)
 File exon_dist
 String S2 = basename(exon_dist)
 String ngs_toolpath
+
 
 
 command {
@@ -656,6 +658,7 @@ Array[Pair[String,File]] html_fastp_by_samplre = zip (array_path_save_byexon, ht
   Array[File] gene_list = singleGenotypeGVCFs.annovar_gene_list 
   Array[File] plof = singleGenotypeGVCFs.gene_plof_file 
   Array[File] exon_distances = FuncionalAnnotationSingle.vcf_exon_distance
+  Array[File] no_cubierto = qual_control.nocubierto
 
 
 
@@ -684,7 +687,8 @@ Array[Pair[String,File]] html_fastp_by_samplre = zip (array_path_save_byexon, ht
             plof = plof[idx],
             samplename2 = samplename2,
             exon_coverage_report = exon_tsv[idx],
-            ngs_toolpath = ngs_toolpath
+            ngs_toolpath = ngs_toolpath,
+            no_cubierto = no_cubierto
             
            }
         call pdf_report {
