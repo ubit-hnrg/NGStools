@@ -1139,7 +1139,7 @@ workflow bam2gvcf {
    #Array[File] borrar_Applybqsr = ApplyBQSR.recalibrated_bam 
    #File borrar_Markdup = MarkDuplicates.output_bam
    #File borrar_SortandFix = SortAndFixTags.output_bam
-   Int N_reads_bam = reduce_bam.N_reads
+   #Int N_reads_bam = reduce_bam.N_reads
    #String sampl_name_bam = bams_reads.sampl 
    #String N_reads_bam = bams_reads.N_reads 
    #File Samt_bam_stat = samtools_stat.samtools_stat_original_bam 

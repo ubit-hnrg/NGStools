@@ -535,14 +535,14 @@ workflow main_workflow {
 
   ### intervalo para quality control -> coord_generator.interval_restricted
 
- Array[File] archivos_a_borrar3 = bam2gvcf.borrar_SortandFix #,"${}"]
+#  Array[File] archivos_a_borrar3 = bam2gvcf.borrar_SortandFix #,"${}"]
 
-  scatter (archivos in archivos_a_borrar3){
-    call borrado as borrado_Sort_and_Fix {
-    input:
-      archivo_borrar = archivos
-    }
-  } 
+#   scatter (archivos in archivos_a_borrar3){
+#     call borrado as borrado_Sort_and_Fix {
+#     input:
+#       archivo_borrar = archivos
+#     }
+#   } 
 
  Array[String] uniquesample_name =read_lines(ConvertPairedFastQsToUnmappedBamWf.samplesnames)
 
