@@ -165,6 +165,7 @@ task make_tsv_reports {
     
         File by_exon_cov  
         File global_cov
+        File global_cov_nodups
         String ngs_toolpath
         String sample_name
         String path_save
@@ -178,17 +179,22 @@ task make_tsv_reports {
         # make global tsv report
         python ${ngs_toolpath}/pipeline_wdl/qualityControl/global_coverage_report_inLibrary.py -i=${global_cov} -o ${sample_name}_experiment_global_report.tsv -op ${sample_name}.distributions.eps -s ${sample_name}
 
+        # make global_nodups tsv report
+        python ${ngs_toolpath}/pipeline_wdl/qualityControl/global_coverage_report_inLibrary.py -i=${global_cov_nodups} -o ${sample_name}_experiment_nodups_global_report.tsv -op ${sample_name}.nodups.distributions.eps -s ${sample_name}
+
         # make tsv coverage report by exon
         python ${ngs_toolpath}/pipeline_wdl/qualityControl/local_coverage_report_ENS_intersect_Library.py -i=${by_exon_cov} -o ${sample_name}_ENS_local_report.tsv -s=${sample_name}
        
-        cp -L ${sample_name}.distributions.eps ${sample_name}_experiment_global_report.tsv  ${sample_name}_ENS_local_report.tsv ${path_save}
+        cp -L ${sample_name}.distributions.eps ${sample_name}_experiment_global_report.tsv  ${sample_name}_ENS_local_report.tsv ${sample_name}_experiment_nodups_global_report.tsv ${sample_name}.nodups.distributions.eps ${path_save}
 
     }
-
+ 
     output {
         File hist_by_exon = "${sample_name}_ENS_local_report.tsv" 
         File hist_global = "${sample_name}_experiment_global_report.tsv"
         File distributions_plot = "${sample_name}.distributions.eps"
+        File hist_global_nodups = "${sample_name}_experiment_nodups_global_report.tsv"
+        File distributions_plot_nodups = "${sample_name}.nodups.distributions.eps"
 
     }
 
@@ -234,10 +240,12 @@ task make_excel {
   String pestana2
   File tabla3
   String pestana3
+  File tabla4
+  String pestana4
   String ngs_toolpath
 
   command{
-   ${ngs_toolpath}/pipeline_wdl/qualityControl/make_excel_report.py ${tabla1}:${pestana1} ${tabla2}:${pestana2} ${tabla3}:${pestana3} ${experiment_name}_qual_report.xlsx
+   ${ngs_toolpath}/pipeline_wdl/qualityControl/make_excel_report.py ${tabla1}:${pestana1} ${tabla2}:${pestana2} ${tabla3}:${pestana3} ${tabla4}:${pestana4} ${experiment_name}_qual_report.xlsx
  
   }
 
@@ -339,7 +347,9 @@ scatter (fastp in fastp_json_files){
         global_cov = cobertura.histo_global,
         ngs_toolpath = ngs_toolpath,
         sample_name = basename(analysis_readybam[idx], '.bam'),
-        path_save = path_save[idx]
+        path_save = path_save[idx],
+        global_cov_nodups = cobertura.nodups
+
 
     }
  }
@@ -361,6 +371,13 @@ scatter (fastp in fastp_json_files){
   call CreateFoFN {
     input:
       array_of_files = make_tsv_reports.hist_global,#bams_stat_depth_global_coverage_stats,
+      fofn_name = experiment_name
+     
+  }
+
+  call CreateFoFN as CreateFoFN_no_dups {
+    input:
+      array_of_files = make_tsv_reports.hist_global_nodups,#bams_stat_depth_global_coverage_stats,
       fofn_name = experiment_name
      
   }
@@ -391,6 +408,16 @@ scatter (fastp in fastp_json_files){
 
   } 
 
+   call merge_reports as merge_nodups_report{
+
+    input:  
+    files_to_merge = CreateFoFN_no_dups.fofn_list,
+    experiment_name = experiment_name,
+    ngs_toolpath = ngs_toolpath
+
+  } 
+
+
   call merge_reports as merge_samtools_reports{
 
     input:  
@@ -417,6 +444,8 @@ scatter (fastp in fastp_json_files){
     pestana2 = "Alineamiento",
     tabla3 = merge_reports.merged_report,
     pestana3 = "Profundidad-en-libreria",
+    tabla4= merge_nodups_report.merged_report,
+    pestana3 = "Profundidad-en-libreria_nodps",
     ngs_toolpath = ngs_toolpath
 
   }
