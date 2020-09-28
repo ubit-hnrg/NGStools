@@ -74,12 +74,12 @@ percents_tso = percents_tso.append(samtools_kit_report[['bases mapped (cigar)']]
 #percents_tso = percents_tso.append(pd.Series([cigar_after],index=['On target[%]']))        ##chau agu 20/9
 #percents_tso = percents_tso.append(pd.Series([cigar_before],index=['On target_raw[%]']))   ##chau agu 20/9
 
-Gb_before = round(bases_before/float(10**9),6)
-Gb_after = round(bases_after/float(10**9),6)
+Gb_before = bases_before/float(10**9)#,6)
+Gb_after = bases_after/float(10**9)#,6)
 Gbases_nodup = round(bases_on_library_nodup/float(10**9),6) ##agu; agrego division por (10**9)
 
-percents_tso = percents_tso.append(pd.Series([Gb_before],index=['bases_before']))
-percents_tso = percents_tso.append(pd.Series([Gb_after],index=['bases_after']))
+percents_tso = percents_tso.append(pd.Series([Gb_before],index=['bases_before']))#/float(10**9)
+percents_tso = percents_tso.append(pd.Series([Gb_after],index=['bases_after']))#/float(10**9)
 ##agu
 percents_tso = percents_tso.append(pd.Series([Gbases_nodup],index=['Gbases without dup mapped']))##agu 20-9
 percents_tso = percents_tso.append(pd.Series([efficienciy],index=['efficienciy'])) ##agu 20-9
@@ -135,7 +135,7 @@ report = percents_tso.loc[[
 #report[11] = '{:.0f}'.format(report[11])
 report.loc['Number-of-reads-properly-paired'] = '{:.0f}'.format(report['Number-of-reads-properly-paired']) ##0 ,'error-rate-in-Library','reads-duplicated-in-Library'
 report.loc[['Percent-of-reads-properly-paired-in-Library','error-rate-in-Library','reads-duplicated-in-Library','reads-MQ0-in-Library']] = report.loc[['Percent-of-reads-properly-paired-in-Library','error-rate-in-Library','reads-duplicated-in-Library','reads-MQ0-in-Library']].map('{:,.2f} %'.format)
-report.loc['maximum-length-in-Library'] = report.loc['maximum-length-in-Library'].map('{:,.2f}'.format) 
+report.loc['maximum-length-in-Library'] = '{:.4f}'.format(report['maximum-length-in-Library'])#.map('{:,.2f}'.format) 
 report.loc['filtering_ratio'] = '{:.4f}'.format(report['filtering_ratio'])
 #report.loc[['GBases_before_trimm', 'GBases_after_trimm']]=report.loc[['GBases_before_trimm', 'GBases_after_trimm' ]].map('{:,.f}'.format)
 report.loc['on_target_ratio-in-Library'] = '{:.4f}'.format(report['on_target_ratio-in-Library'])
