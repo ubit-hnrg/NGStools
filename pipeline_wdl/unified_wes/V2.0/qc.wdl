@@ -45,19 +45,19 @@ task cobertura {
         sort -k1,1V -k2,2n ${intervalo_captura} > intervalo_sorted.bed
         
 
-        # esto reporta la cobertura en cada intervalo de captura y hace un histograma global también con el keyword "all"
-        #${toolpath}bedtools2/bin/sort ${input_bam} -m 1G | 
-        ${toolpath}bedtools2/bin/coverageBed -a intervalo_sorted.bed -b ${input_bam} -hist ${sorted} > ${sample_name}.hist.aux
-        #${toolpath}bedtools2/bin/coverageBed -a ${intervalo_captura} -b ${input_bam} -sorted -hist > ${sample_name}.hist.aux
-        echo -e 'chr\tstart\tend\tgene\tDP\tBPs\tIntervalLength\tfrequency' > header.txt
-        cat header.txt ${sample_name}.hist.aux > ${sample_name}.hist 
-        rm ${sample_name}.hist.aux header.txt
+        # # esto reporta la cobertura en cada intervalo de captura y hace un histograma global también con el keyword "all"
+        # #${toolpath}bedtools2/bin/sort ${input_bam} -m 1G | 
+        # ${toolpath}bedtools2/bin/coverageBed -a intervalo_sorted.bed -b ${input_bam} -hist ${sorted} > ${sample_name}.hist.aux
+        # #${toolpath}bedtools2/bin/coverageBed -a ${intervalo_captura} -b ${input_bam} -sorted -hist > ${sample_name}.hist.aux
+        # echo -e 'chr\tstart\tend\tgene\tDP\tBPs\tIntervalLength\tfrequency' > header.txt
+        # cat header.txt ${sample_name}.hist.aux > ${sample_name}.hist 
+        # rm ${sample_name}.hist.aux header.txt
 
-        #histograma global del bam restringido a toda la librería
-        grep '^all' ${sample_name}.hist > global.hist
-        echo -e 'chr\tDP\tBPs\tIntervalLength\tfrequency' > global.header.txt
-        cat global.header.txt global.hist > ${sample_name}.global.hist
-        rm global.header.txt global.hist
+        # #histograma global del bam restringido a toda la librería
+        # grep '^all' ${sample_name}.hist > global.hist
+        # echo -e 'chr\tDP\tBPs\tIntervalLength\tfrequency' > global.header.txt
+        # cat global.header.txt global.hist > ${sample_name}.global.hist
+        # rm global.header.txt global.hist
         
         ###sex prediction
         ${ngs_toolpath}/python_scripts/bam_sex_xy.py -b ${input_bam} > ${sample_name}_sex.txt
@@ -100,7 +100,7 @@ task cobertura {
         bedtools genomecov -ibam ${input_bam} -bga | awk '$4==0'| bedtools intersect -a intervalo_sorted.bed -b - > ${sample_name}.no_cubierto_intervalo.tsv
 
         
-        cp -L ${sample_name}.global.hist ${path_save}
+        #cp -L ${sample_name}.global.hist ${path_save}
         cp -L ${sample_name}_samtools.stats ${path_save}
         cp -L ${sample_name}.ENS.hist ${path_save}
         cp -L ${sample_name}_sex.txt ${path_save} 
@@ -112,7 +112,7 @@ task cobertura {
     }
 
     output {
-        File histo_global ="${sample_name}.global.hist"
+        #File histo_global ="${sample_name}.global.hist"
         File histo_global_nodup = "${sample_name}_nodup.global.hist"
         File samtools_stat_experiment_bam = "${sample_name}_samtools.stats"
         File histo_exon = "${sample_name}.ENS.hist"
@@ -180,35 +180,35 @@ task samtools_reports_file {
 task make_tsv_reports {
     
         File by_exon_cov  
-        File global_cov
+        #File global_cov
         File global_cov_nodups
         String ngs_toolpath
         String sample_name
         String path_save
     
+# make global tsv report
+        #python ${ngs_toolpath}/pipeline_wdl/qualityControl/global_coverage_report_inLibrary.py -i=${global_cov} -o ${sample_name}_experiment_global_report.tsv -op ${sample_name}.distributions.eps -s ${sample_name}
 
     command {
 
         #!/bin/bash
         set -e
 
-        # make global tsv report
-        python ${ngs_toolpath}/pipeline_wdl/qualityControl/global_coverage_report_inLibrary.py -i=${global_cov} -o ${sample_name}_experiment_global_report.tsv -op ${sample_name}.distributions.eps -s ${sample_name}
-
+        
         # make global_nodups tsv report
         python ${ngs_toolpath}/pipeline_wdl/qualityControl/global_coverage_report_inLibrary.py -i=${global_cov_nodups} -o ${sample_name}_experiment_nodups_global_report.tsv -op ${sample_name}.nodups.distributions.eps -s ${sample_name}
 
         # make tsv coverage report by exon
         python ${ngs_toolpath}/pipeline_wdl/qualityControl/local_coverage_report_ENS_intersect_Library.py -i=${by_exon_cov} -o ${sample_name}_ENS_local_report.tsv -s=${sample_name}
        
-        cp -L ${sample_name}.distributions.eps ${sample_name}_experiment_global_report.tsv  ${sample_name}_ENS_local_report.tsv ${sample_name}_experiment_nodups_global_report.tsv ${sample_name}.nodups.distributions.eps ${path_save}
-
+        cp -L  ${sample_name}_ENS_local_report.tsv ${sample_name}_experiment_nodups_global_report.tsv ${sample_name}.nodups.distributions.eps ${path_save}
+####${sample_name}.distributions.eps ${sample_name}_experiment_global_report.tsv
     }
  
     output {
         File hist_by_exon = "${sample_name}_ENS_local_report.tsv" 
-        File hist_global = "${sample_name}_experiment_global_report.tsv"
-        File distributions_plot = "${sample_name}.distributions.eps"
+        #File hist_global = "${sample_name}_experiment_global_report.tsv"
+        #File distributions_plot = "${sample_name}.distributions.eps"
         File hist_global_nodups = "${sample_name}_experiment_nodups_global_report.tsv"
         File distributions_plot_nodups = "${sample_name}.nodups.distributions.eps"
 
@@ -254,14 +254,14 @@ task make_excel {
   String pestana1
   File tabla2
   String pestana2
-  File tabla3
-  String pestana3
+  #File tabla3
+  #String pestana3
   File tabla4
   String pestana4
   String ngs_toolpath
-
+##${tabla3}:${pestana3}
   command{
-   ${ngs_toolpath}/pipeline_wdl/qualityControl/make_excel_report.py ${tabla1}:${pestana1} ${tabla2}:${pestana2} ${tabla3}:${pestana3} ${tabla4}:${pestana4} ${experiment_name}_qual_report.xlsx
+   ${ngs_toolpath}/pipeline_wdl/qualityControl/make_excel_report.py ${tabla1}:${pestana1} ${tabla2}:${pestana2} ${tabla4}:${pestana4} ${experiment_name}_qual_report.xlsx
  
   }
 
@@ -360,7 +360,7 @@ scatter (fastp in fastp_json_files){
     call make_tsv_reports {
         input:
         by_exon_cov =   cobertura.histo_exon,
-        global_cov = cobertura.histo_global,
+        #global_cov = cobertura.histo_global,
         ngs_toolpath = ngs_toolpath,
         sample_name = basename(analysis_readybam[idx], '.bam'),
         path_save = path_save[idx],
@@ -384,12 +384,12 @@ scatter (fastp in fastp_json_files){
 
 
  #Create a file with a list of the generated histo glob_stats for merge in excel report
-  call CreateFoFN {
-    input:
-      array_of_files = make_tsv_reports.hist_global,#bams_stat_depth_global_coverage_stats,
-      fofn_name = experiment_name
+  # call CreateFoFN {
+  #   input:
+  #     array_of_files = make_tsv_reports.hist_global,#bams_stat_depth_global_coverage_stats,
+  #     fofn_name = experiment_name
      
-  }
+  # }
 
   call CreateFoFN as CreateFoFN_no_dups {
     input:
@@ -415,14 +415,14 @@ scatter (fastp in fastp_json_files){
 
 
  ####### esto mergea archivos de distintas muestras
-  call merge_reports {
+  # call merge_reports {
 
-    input:  
-    files_to_merge = CreateFoFN.fofn_list,
-    experiment_name = experiment_name,
-    ngs_toolpath = ngs_toolpath
+  #   input:  
+  #   files_to_merge = CreateFoFN.fofn_list,
+  #   experiment_name = experiment_name,
+  #   ngs_toolpath = ngs_toolpath
 
-  } 
+  # } 
 
    call merge_reports as merge_nodups_report{
 
@@ -458,8 +458,8 @@ scatter (fastp in fastp_json_files){
     pestana1 = "Filtrado",
     tabla2 = merge_samtools_reports.merged_report, 
     pestana2 = "Alineamiento",
-    tabla3 = merge_reports.merged_report,
-    pestana3 = "Profundidad-en-libreria",
+    #tabla3 = merge_reports.merged_report,
+    #pestana3 = "Profundidad-en-libreria",
     tabla4= merge_nodups_report.merged_report,
     pestana4 = "Profundidad-en-libreria_nodps",
     ngs_toolpath = ngs_toolpath
@@ -486,10 +486,11 @@ call symlink_important_files as save_excel_qual {
 
  output {
         
-    Array[File] depth_global_cov_stats = cobertura.histo_global ###estadistica del alinamiento...
-    Array[File] bams_stat_depth_global_coverage_stats = make_tsv_reports.hist_global
+    #Array[File] depth_global_cov_stats = cobertura.histo_global ###estadistica del alinamiento...
+    Array[File] depth_global_cov_stats = cobertura.histo_global_nodup
+    Array[File] bams_stat_depth_global_coverage_stats = make_tsv_reports.hist_global_nodups
     ##plot distribution
-    Array[File] plot_distribution = make_tsv_reports.distributions_plot
+    Array[File] plot_distribution = make_tsv_reports.distributions_plot_nodups
 #tsv_results
     Array[File] tsv_exon = make_tsv_reports.hist_by_exon
     Array[File] nocubierto = cobertura.no_cubierto_intervalo
