@@ -63,7 +63,22 @@ task cobertura {
         ${ngs_toolpath}/python_scripts/bam_sex_xy.py -b ${input_bam} > ${sample_name}_sex.txt
 
         ###septiembre,20: se agrega eliminar duplicados.
-        ${toolpath}samtools view -F1024 -u ${input_bam} | ${toolpath}samtools stats -t intervalo_sorted.bed - > ${sample_name}_nodups.stats
+        ${toolpath}samtools view -F1024 -u ${input_bam} > bam_nodups.sam
+         ${toolpath}samtools stats bam_nodups.sam -t intervalo_sorted.bed > ${sample_name}_nodups.stats
+
+        ####global_hist for no dups_bams
+        ${toolpath}bedtools2/bin/coverageBed -a intervalo_sorted.bed -b bam_nodups.sam -hist ${sorted} > ${sample_name}_nodup.hist.aux
+        ##${toolpath}bedtools2/bin/coverageBed -a ${intervalo_captura} -b ${input_bam} -sorted -hist > ${sample_name}.hist.aux
+        echo -e 'chr\tstart\tend\tgene\tDP\tBPs\tIntervalLength\tfrequency' > header_nodup.txt
+        cat header_nodup.txt ${sample_name}_nodup.hist.aux > ${sample_name}_nodup.hist 
+        rm ${sample_name}_nodup.hist.aux header_nodup.txt bam_nodups.sam
+
+        #histograma global del bam nodup restringido a toda la librería
+        grep '^all' ${sample_name}_nodup.hist > global_nodup.hist
+        echo -e 'chr\tDP\tBPs\tIntervalLength\tfrequency' > global_nodup.header.txt
+        cat global_nodup.header.txt global_nodup.hist > ${sample_name}_nodup.global.hist
+        rm global_nodup.header.txt global_nodup.hist
+
         
          ####samtools stat
         ${toolpath}samtools stats ${input_bam} -t ${intervalo_captura} > ${sample_name}_samtools.stats
@@ -98,6 +113,7 @@ task cobertura {
 
     output {
         File histo_global ="${sample_name}.global.hist"
+        File histo_global_nodup = "${sample_name}_nodup.global.hist"
         File samtools_stat_experiment_bam = "${sample_name}_samtools.stats"
         File histo_exon = "${sample_name}.ENS.hist"
         File sex_prediction = "${sample_name}_sex.txt"
@@ -348,7 +364,7 @@ scatter (fastp in fastp_json_files){
         ngs_toolpath = ngs_toolpath,
         sample_name = basename(analysis_readybam[idx], '.bam'),
         path_save = path_save[idx],
-        global_cov_nodups = cobertura.nodups
+        global_cov_nodups = cobertura.histo_global_nodup
 
 
     }
