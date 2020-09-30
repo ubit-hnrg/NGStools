@@ -65,7 +65,7 @@ task cobertura {
 
         ###septiembre,20: se agrega eliminar duplicados.
         ${toolpath}samtools view -F1024 -u ${input_bam} > bam_nodups.sam
-         ${toolpath}samtools stats bam_nodups.sam -t intervalo_sorted.bed > ${sample_name}_nodups.stats_${pipeline_version}.txt_${pipeline_version}.txt_${pipeline_version}.txt_${pipeline_version}.txt_${pipeline_version}.txt
+         ${toolpath}samtools stats bam_nodups.sam -t intervalo_sorted.bed > ${sample_name}_samtools_nodup_${pipeline_version}.stats
 
         ####global_hist for no dups_bams
         ${toolpath}bedtools2/bin/coverageBed -a intervalo_sorted.bed -b bam_nodups.sam -hist ${sorted} > ${sample_name}_nodup.hist.aux
@@ -111,10 +111,11 @@ task cobertura {
 
            
     }
+    #${sample_name}_${pipeline_version}.txt
 
     output {
         #File histo_global ="${sample_name}.global.hist"
-        File histo_global_nodup = "${sample_name}_nodups.stats_${pipeline_version}.txt"
+        File histo_global_nodup = "${sample_name}_samtools_nodup_${pipeline_version}.stats"
         File samtools_stat_experiment_bam = "${sample_name}_samtools_${pipeline_version}.stats"
         File histo_exon = "${sample_name}.ENS_${pipeline_version}.hist"
         File sex_prediction = "${sample_name}_sex_${pipeline_version}.txt"
@@ -295,7 +296,7 @@ String ngs_toolpath
 Array[File]+ fastp_json_files
 Array[String] path_save
 String experiment_path
-String pipeline_v
+String pipeline_version
 String experiment_name
 File exon_coords
 File intervalo_captura
@@ -324,7 +325,7 @@ scatter (fastp in fastp_json_files){
       input: 
       input_bam = analysis_readybam[idx],#bams_ready,
       input_bam_index = analysis_readybam_index[idx],
-      pipeline_version = pipeline_v,
+      pipeline_version = pipeline_version,
       intervalo_captura = intervalo_captura,
       ensembl2intervalo_captura = exon_coords,
       toolpath = toolpath,
@@ -369,7 +370,7 @@ scatter (fastp in fastp_json_files){
         sample_name = basename(analysis_readybam[idx], '.bam'),
         path_save = path_save[idx],
         global_cov_nodups = cobertura.histo_global_nodup,
-        pipeline_version = pipeline_v
+        pipeline_version = pipeline_version
 
 
     }
@@ -468,7 +469,7 @@ scatter (fastp in fastp_json_files){
     tabla3= merge_nodups_report.merged_report,
     pestana3 = "Profundidad-en-libreria_1024",
     ngs_toolpath = ngs_toolpath,
-    pipeline_version = pipeline_v
+    pipeline_version = pipeline_version
 
   }
 

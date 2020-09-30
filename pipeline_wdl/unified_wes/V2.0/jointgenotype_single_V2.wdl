@@ -7,7 +7,7 @@
 workflow singleGenotypeGVCFs {
   #File unpadded_intervals_file ##lista intervalos
   File eval_interval_list
-  String pipeline_v
+  String pipeline_version
   
   String array_path_save
   String callset_name
@@ -74,7 +74,7 @@ workflow singleGenotypeGVCFs {
     input:
     input_vcfs_fofn  = HardFilterAndMakeSitesOnlyVcf.variant_filtered_vcf,
     input_vcf_indexes_fofn = HardFilterAndMakeSitesOnlyVcf.variant_filtered_vcf_index,
-    output_vcf_name = callset_name+"."+pipeline_v+".vcf.gz",
+    output_vcf_name = callset_name+"."+pipeline_version+".vcf.gz",
     gatk_jar = gatk_jar,
     toolpath = toolpath
 

@@ -193,13 +193,14 @@ task build_excell_report{
     }
 }    
 
-task join_annovar_exon_dist{
+task join_annovar_exon_dist {
 String name
 File annovar_variants
 String S1 = basename(annovar_variants)
 File exon_dist
 String S2 = basename(exon_dist)
 String ngs_toolpath
+File pipeline_version
 
 
 
@@ -502,7 +503,7 @@ workflow main_workflow {
         ####input del anterior jointgenotyping
         input_gvcf = bam2gvcf.output_gvcf,
         input_gvcf_index = bam2gvcf.output_gvcf_index,
-        pipeline_v = pipeline_version,
+        pipeline_version = pipeline_version,
 
         ####annovar
         db_annovar = db_annovar,#path annovar
@@ -520,7 +521,7 @@ workflow main_workflow {
         toolpath = toolpath,
         samplename1 = sample_name,
         java_heap_memory_initial = "12g",
-        pipeline_v = pipeline_version,
+        pipeline_version = pipeline_version,
         exon_coordinates = generic_exon_coords,#coord_generator.interval_restricted,
         reference_version = reference_version
         
@@ -571,7 +572,7 @@ call qual_control.qual_control {
    toolpath = toolpath,
    ngs_toolpath = ngs_toolpath,
    intervalo_captura = intervalo_captura,
-   pipeline_v = pipeline_version,
+   pipeline_version= pipeline_version,
    experiment_name = basename(tabulatedSampleFilePaths, ".txt"),
    exon_coords = coord_generator.exon_restricted, #### ensembl vs intervalo_captura
    #tso_bed = tso_bed
@@ -681,7 +682,7 @@ Array[Pair[String,File]] html_fastp_by_samplre = zip (array_path_save_byexon, ht
               annovar_variants = Tsv_annovar[idx],
               exon_dist = exon_distances[idx],
               ngs_toolpath = ngs_toolpath,
-              pipeline_v = pipeline_version
+              pipeline_version = pipeline_version
          }
 
        call build_excell_report {
@@ -692,7 +693,7 @@ Array[Pair[String,File]] html_fastp_by_samplre = zip (array_path_save_byexon, ht
             exon_coverage_report = exon_tsv[idx],
             ngs_toolpath = ngs_toolpath,
             no_cubierto = no_cubierto,
-            pipeline_v = pipeline_version
+            pipeline_version = pipeline_version
             
            }
         call pdf_report {
@@ -707,7 +708,7 @@ Array[Pair[String,File]] html_fastp_by_samplre = zip (array_path_save_byexon, ht
             date = run_date,
             path = array_path_save_json[idx],
             ngs_toolpath = ngs_toolpath,
-            pipeline_v = pipeline_version
+            pipeline_version = pipeline_version
             
            }  
         #}

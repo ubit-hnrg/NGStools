@@ -252,7 +252,7 @@ String samplename1
 String java_heap_memory_initial
 String reference_version
 String path_save
-String pipeline_v
+String pipeline_version
 File exon_coordinates
 
 
@@ -479,7 +479,7 @@ input:
     input_vcf = hnrg_freq.out_vcfanno,
     toolpath = toolpath,
     java_heap_memory_initial = java_heap_memory_initial,
-    nombre_step = "final_annot_"+pipeline_v
+    nombre_step = "final_annot_"+pipeline_version
 
 }
 
