@@ -258,7 +258,7 @@ workflow main_workflow {
   
   File tabulatedSampleFilePaths ##samples
 
-  String pipeline_version = "V2.0"
+  String pipeline_version = "V2" ###no me lo toma el input como default
 
 
   ####metadata
