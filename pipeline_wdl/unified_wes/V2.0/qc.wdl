@@ -467,7 +467,8 @@ scatter (fastp in fastp_json_files){
     #pestana3 = "Profundidad-en-libreria",
     tabla3= merge_nodups_report.merged_report,
     pestana3 = "Profundidad-en-libreria_1024",
-    ngs_toolpath = ngs_toolpath
+    ngs_toolpath = ngs_toolpath,
+    pipeline_version = pipeline_v
 
   }
 
