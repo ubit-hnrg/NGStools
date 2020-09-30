@@ -119,7 +119,7 @@ task cobertura {
         File samtools_stat_experiment_bam = "${sample_name}_samtools_${pipeline_version}.stats"
         File histo_exon = "${sample_name}.ENS_${pipeline_version}.hist"
         File sex_prediction = "${sample_name}_sex_${pipeline_version}.txt"
-        File nodups = "{sample_name}_nodups.stats_${pipeline_version}.txt"
+        File nodups = "${sample_name}_nodups.stats_${pipeline_version}.txt"
         File no_cubierto_intervalo = "${sample_name}.no_cubierto_intervalo_${pipeline_version}.tsv"
 
 
