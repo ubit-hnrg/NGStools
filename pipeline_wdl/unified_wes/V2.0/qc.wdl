@@ -165,15 +165,15 @@ task samtools_reports_file {
   File pipeline_version
 
   command {
-  ${ngs_toolpath}/pipeline_wdl/qualityControl/samtools_stats_report_V2.py -N=${N_total_reads}  -l=${samtools_library_report} -d ${samtools_dup} -ba ${N_bases_after} -bb ${N_bases_before} -o=${sampleID}_samtools_report.tsv
+  ${ngs_toolpath}/pipeline_wdl/qualityControl/samtools_stats_report_V2.py -N=${N_total_reads}  -l=${samtools_library_report} -d ${samtools_dup} -ba ${N_bases_after} -bb ${N_bases_before} -o=${sampleID}_samtools_report_${pipeline_version}.tsv
   
-  cp -L ${sampleID}_samtools_report.tsv ${path_save}
+  cp -L ${sampleID}_samtools_report_${pipeline_version}.tsv ${path_save}
 
   }
 
   output {
  
-  File output_global_report = "${sampleID}_samtools_report.tsv" 
+  File output_global_report = "${sampleID}_samtools_report_${pipeline_version}.tsv" 
 
   }
 
@@ -210,7 +210,7 @@ task make_tsv_reports {
     }
  
     output {
-        File hist_by_exon = "${sample_name}_ENS_local_report$_{pipeline_version}.tsv" 
+        File hist_by_exon = "${sample_name}_ENS_local_report_${pipeline_version}.tsv" 
         #File hist_global = "${sample_name}_experiment_global_report.tsv"
         #File distributions_plot = "${sample_name}.distributions.eps"
         File hist_global_nodups = "${sample_name}_experiment_nodups_global_report_${pipeline_version}.tsv"
