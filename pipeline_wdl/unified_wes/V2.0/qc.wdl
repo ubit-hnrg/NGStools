@@ -117,6 +117,7 @@ task cobertura {
         #File histo_global ="${sample_name}.global.hist"
         File histo_global_nodup = "${sample_name}_nodup.hist"#"${sample_name}_samtools_nodup_${pipeline_version}.stats"
         File samtools_stat_experiment_bam = "${sample_name}_samtools_${pipeline_version}.stats"
+        File samtools_stat_nodup_experiment_bam = "${sample_name}_samtools_nodup_${pipeline_version}.stats"
         File histo_exon = "${sample_name}.ENS_${pipeline_version}.hist"
         File sex_prediction = "${sample_name}_sex_${pipeline_version}.txt"
         File nodups = "${sample_name}_nodups_stats_${pipeline_version}.txt"
