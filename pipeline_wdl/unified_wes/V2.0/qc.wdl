@@ -361,7 +361,7 @@ scatter (fastp in fastp_json_files){
     ###crear tsv 
     call make_tsv_reports {
         input:
-        by_exon_cov =   cobertura.histo_exon,
+        by_exon_cov = cobertura.histo_exon,
         #global_cov = cobertura.histo_global,
         ngs_toolpath = ngs_toolpath,
         sample_name = basename(analysis_readybam[idx], '.bam'),
