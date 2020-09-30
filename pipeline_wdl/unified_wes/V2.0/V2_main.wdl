@@ -664,61 +664,61 @@ Array[Pair[String,File]] html_fastp_by_samplre = zip (array_path_save_byexon, ht
 
  ####excel_report
 
-    # Array[File] Tsv_annovar = singleGenotypeGVCFs.annovar_tsv_out
-    # scatter (idx in range(length(Tsv_annovar))){
+    Array[File] Tsv_annovar = singleGenotypeGVCFs.annovar_tsv_out
+    scatter (idx in range(length(Tsv_annovar))){
        
-    #    String sample = basename(Tsv_annovar[idx],"multianno_restrict.tsv")
-    #    String samplename2 = basename(exon_tsv[idx],"_ENS_local_report.tsv")
+       String sample = basename(Tsv_annovar[idx],"multianno_restrict.tsv")
+       String samplename2 = basename(exon_tsv[idx],"_ENS_local_report.tsv")
        
-    #    #if(sample==samplename2){
-    #      #mergear tsv_annovar con distancias_exones
+       #if(sample==samplename2){
+         #mergear tsv_annovar con distancias_exones
         
-    #   call join_annovar_exon_dist {
-    #       input:
-    #         name = samplename2,
-    #           annovar_variants = Tsv_annovar[idx],
-    #           exon_dist = exon_distances[idx],
-    #           ngs_toolpath = ngs_toolpath
-    #      }
+      call join_annovar_exon_dist {
+          input:
+            name = samplename2,
+              annovar_variants = Tsv_annovar[idx],
+              exon_dist = exon_distances[idx],
+              ngs_toolpath = ngs_toolpath
+         }
 
-    #    call build_excell_report {
-    #         input:
-    #         annovar_tsv = join_annovar_exon_dist.anno_dist,
-    #         plof = plof[idx],
-    #         samplename2 = samplename2,
-    #         exon_coverage_report = exon_tsv[idx],
-    #         ngs_toolpath = ngs_toolpath,
-    #         no_cubierto = no_cubierto
+       call build_excell_report {
+            input:
+            annovar_tsv = join_annovar_exon_dist.anno_dist,
+            plof = plof[idx],
+            samplename2 = samplename2,
+            exon_coverage_report = exon_tsv[idx],
+            ngs_toolpath = ngs_toolpath,
+            no_cubierto = no_cubierto
             
-    #        }
-    #     call pdf_report {
-    #         input:
-    #         alineamiento = alineamiento_rep[idx],
-    #         name = samplename2,
-    #         glob_rep = global[idx],
-    #         sex = sex_pred[idx],
-    #         #fastp_rep = fastp_qual[idx],
-    #         fastp_rep = qual_control.fastp_rep_out[idx],
-    #         tso = basename(tabulatedSampleFilePaths, ".txt"),
-    #         date = run_date,
-    #         path = array_path_save_json[idx],
-    #         ngs_toolpath = ngs_toolpath
+           }
+        call pdf_report {
+            input:
+            alineamiento = alineamiento_rep[idx],
+            name = samplename2,
+            glob_rep = global[idx],
+            sex = sex_pred[idx],
+            #fastp_rep = fastp_qual[idx],
+            fastp_rep = qual_control.fastp_rep_out[idx],
+            tso = basename(tabulatedSampleFilePaths, ".txt"),
+            date = run_date,
+            path = array_path_save_json[idx],
+            ngs_toolpath = ngs_toolpath
             
-    #        }  
-    #     #}
+           }  
+        #}
 
-    # }
+    }
 
-# Array[File?] reporte_variantes = build_excell_report.excell_report
-# #Array[String] array_path_save_byexon = mkdir_samplename.path_out_softlink
-#  Array[Pair[String,File?]] samples_by_variant = zip (array_path_save_byexon, reporte_variantes)
-#   scatter (pairs in samples_by_variant) {
-#     call symlink_important_files as build_excell_reportbyvariants {
-#         input:
-#         output_to_save = pairs.right,
-#         path_save = pairs.left
-#     }
-#   }
+Array[File?] reporte_variantes = build_excell_report.excell_report
+#Array[String] array_path_save_byexon = mkdir_samplename.path_out_softlink
+ Array[Pair[String,File?]] samples_by_variant = zip (array_path_save_byexon, reporte_variantes)
+  scatter (pairs in samples_by_variant) {
+    call symlink_important_files as build_excell_reportbyvariants {
+        input:
+        output_to_save = pairs.right,
+        path_save = pairs.left
+    }
+  }
 
 
 
