@@ -200,12 +200,12 @@ task make_tsv_reports {
 
         
         # make global_nodups tsv report
-        python ${ngs_toolpath}/pipeline_wdl/qualityControl/global_coverage_report_inLibrary.py -i=${global_cov_nodups} -o ${sample_name}_experiment_nodups_global_report_${pipeline_version}.tsv -op ${sample_name}.nodups.distributions_${pipeline_version}.eps -s ${sample_name}
+        python ${ngs_toolpath}/pipeline_wdl/qualityControl/global_coverage_report_inLibrary.py -i=${global_cov_nodups} -o ${sample_name}_experiment_nodups_global_report_${pipeline_version}.tsv -op ${sample_name}_nodups_distributions_${pipeline_version}.eps -s ${sample_name}
 
         # make tsv coverage report by exon
         python ${ngs_toolpath}/pipeline_wdl/qualityControl/local_coverage_report_ENS_intersect_Library.py -i=${by_exon_cov} -o ${sample_name}_ENS_local_report_${pipeline_version}.tsv -s=${sample_name}
        
-        cp -L  ${sample_name}_ENS_local_report_${pipeline_version}.tsv ${sample_name}_experiment_nodups_global_report_${pipeline_version}.tsv ${sample_name}.nodups.distributions_${pipeline_version}.eps ${path_save}
+        cp -L  ${sample_name}_ENS_local_report_${pipeline_version}.tsv ${sample_name}_experiment_nodups_global_report_${pipeline_version}.tsv ${sample_name}_nodups_distributions_${pipeline_version}.eps ${path_save}
         ####${sample_name}.distributions.eps ${sample_name}_experiment_global_report.tsv
     }
  
@@ -214,7 +214,7 @@ task make_tsv_reports {
         #File hist_global = "${sample_name}_experiment_global_report.tsv"
         #File distributions_plot = "${sample_name}.distributions.eps"
         File hist_global_nodups = "${sample_name}_experiment_nodups_global_report_${pipeline_version}.tsv"
-        File distributions_plot_nodups = "${sample_name}.nodups.distributions_${pipeline_version}.eps"
+        File distributions_plot_nodups = "${sample_name}_nodups_distributions_${pipeline_version}.eps"
 
     }
 
@@ -296,7 +296,7 @@ String ngs_toolpath
 Array[File]+ fastp_json_files
 Array[String] path_save
 String experiment_path
-String pipeline_version
+String pipeline_v
 String experiment_name
 File exon_coords
 File intervalo_captura
@@ -325,7 +325,7 @@ scatter (fastp in fastp_json_files){
       input: 
       input_bam = analysis_readybam[idx],#bams_ready,
       input_bam_index = analysis_readybam_index[idx],
-      pipeline_version = pipeline_version,
+      pipeline_version = pipeline_v,
       intervalo_captura = intervalo_captura,
       ensembl2intervalo_captura = exon_coords,
       toolpath = toolpath,
@@ -353,7 +353,7 @@ scatter (fastp in fastp_json_files){
   samtools_library_report = cobertura.samtools_stat_experiment_bam,
   ngs_toolpath = ngs_toolpath,
   path_save = path_save[idx],
-  pipeline_version = pipeline_version
+  pipeline_version = pipeline_v
   }
 
     ###crear tsv 
@@ -365,7 +365,7 @@ scatter (fastp in fastp_json_files){
       sample_name = basename(analysis_readybam[idx], '.bam'),
       path_save = path_save[idx],
       global_cov_nodups = cobertura.histo_global_nodup,
-      pipeline_version = pipeline_version
+      pipeline_version = pipeline_v
        
         }
  }
@@ -463,7 +463,7 @@ scatter (fastp in fastp_json_files){
     tabla3= merge_nodups_report.merged_report,
     pestana3 = "Profundidad-en-libreria",
     ngs_toolpath = ngs_toolpath,
-    pipeline_version = pipeline_version
+    pipeline_version = pipeline_v
 
   }
 
