@@ -77,7 +77,7 @@ task cobertura {
         #histograma global del bam nodup restringido a toda la librería
         grep '^all' ${sample_name}_nodup.hist > global_nodup.hist
         echo -e 'chr\tDP\tBPs\tIntervalLength\tfrequency' > global_nodup.header.txt
-        cat global_nodup.header.txt global_nodup.hist > ${sample_name}_nodups_stats_${pipeline_version}.txt
+        cat global_nodup.header.txt global_nodup.hist > ${sample_name}_global_nodup.hist
         rm global_nodup.header.txt global_nodup.hist
 
         
@@ -104,8 +104,9 @@ task cobertura {
         cp -L ${sample_name}_samtools_nodup_${pipeline_version}.stats ${path_save}
         cp -L ${sample_name}_samtools_${pipeline_version}.stats ${path_save}
         cp -L ${sample_name}.ENS_${pipeline_version}.hist ${path_save}
+        #cp -L ${sample_name}_nodup.hist ${path_save}
         cp -L ${sample_name}_sex_${pipeline_version}.txt ${path_save} 
-        cp -L ${sample_name}_nodups_stats_${pipeline_version}.txt ${path_save}
+        cp -L ${sample_name}_global_nodup.hist ${path_save}
         cp -L ${sample_name}.no_cubierto_intervalo_${pipeline_version}.tsv ${path_save}
        
 
@@ -115,7 +116,7 @@ task cobertura {
 
     output {
         #File histo_global ="${sample_name}.global.hist"
-        File histo_global_nodup = "${sample_name}_nodup.hist"#"${sample_name}_samtools_nodup_${pipeline_version}.stats"
+        File histo_global_nodup = "${sample_name}_global_nodup.hist"####"${sample_name}_nodup.hist"#"${sample_name}_samtools_nodup_${pipeline_version}.stats"
         File samtools_stat_experiment_bam = "${sample_name}_samtools_${pipeline_version}.stats"
         File samtools_stat_nodup_experiment_bam = "${sample_name}_samtools_nodup_${pipeline_version}.stats"
         File histo_exon = "${sample_name}.ENS_${pipeline_version}.hist"
