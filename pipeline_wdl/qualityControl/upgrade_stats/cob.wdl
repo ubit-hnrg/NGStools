@@ -38,7 +38,7 @@ task cobertura {
         # rm global.header.txt global.hist
         
         ###sex prediction
-        ${ngs_toolpath}/python_scripts/bam_sex_xy.py -b ${input_bam} > ${sample_name}_sex.txt
+        #${ngs_toolpath}/python_scripts/bam_sex_xy.py -b ${input_bam} > ${sample_name}_sex.txt
 
         ###septiembre,20: se agrega eliminar duplicados.
         ${toolpath}samtools view -F1024 -u ${input_bam} > bam_nodups.sam
@@ -81,7 +81,7 @@ task cobertura {
         #cp -L ${sample_name}.global.hist ${path_save}
         cp -L ${sample_name}_samtools.stats ${path_save}
         cp -L ${sample_name}.ENS.hist ${path_save}
-        cp -L ${sample_name}_sex.txt ${path_save} 
+        #cp -L ${sample_name}_sex.txt ${path_save} 
         cp -L ${sample_name}_nodups.stats ${path_save}
         cp -L ${sample_name}.no_cubierto_intervalo.tsv ${path_save}
        
@@ -94,7 +94,7 @@ task cobertura {
         File histo_global_nodup = "${sample_name}_nodup.global.hist"
         File samtools_stat_experiment_bam = "${sample_name}_samtools.stats"
         File histo_exon = "${sample_name}.ENS.hist"
-        File sex_prediction = "${sample_name}_sex.txt"
+        #File sex_prediction = "${sample_name}_sex.txt"
         File nodups = "${sample_name}_nodups.stats"
         File no_cubierto_intervalo = "${sample_name}.no_cubierto_intervalo.tsv"
 
