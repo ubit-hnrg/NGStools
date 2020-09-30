@@ -273,12 +273,12 @@ task make_excel {
   String debug_db
 
   command{
-   ${ngs_toolpath}/pipeline_wdl/qualityControl/make_excel_report.py ${tabla1}:${pestana1} ${tabla2}:${pestana2} ${tabla3}:${pestana3} ${experiment_name}+${debug_db}_qual_report.xlsx
+   ${ngs_toolpath}/pipeline_wdl/qualityControl/make_excel_report.py ${tabla1}:${pestana1} ${tabla2}:${pestana2} ${tabla3}:${pestana3} ${experiment_name}_${debug_db}_qual_report.xlsx
  
   }
 
   output {
-    File reporte_excel = "${experiment_name}+${debug_db}_qual_report.xlsx"
+    File reporte_excel = "${experiment_name}_${debug_db}_qual_report.xlsx"
 
   }
 
