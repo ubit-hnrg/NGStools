@@ -690,7 +690,7 @@ Array[File] html_reports_from_fastq = ConvertPairedFastQsToUnmappedBamWf.fastp_h
             samplename2 = samplename2,
             exon_coverage_report = exon_tsv[idx],
             ngs_toolpath = ngs_toolpath,
-            no_cubierto = no_cubierto,
+            no_cubierto = no_cubierto[idx],
             pipeline_version = pipeline_version
             
            }
