@@ -200,21 +200,21 @@ task make_tsv_reports {
 
         
         # make global_nodups tsv report
-        python ${ngs_toolpath}/pipeline_wdl/qualityControl/global_coverage_report_inLibrary.py -i=${global_cov_nodups} -o ${sample_name}_experiment_nodups_global_report.tsv -op ${sample_name}.nodups.distributions.eps -s ${sample_name}
+        python ${ngs_toolpath}/pipeline_wdl/qualityControl/global_coverage_report_inLibrary.py -i=${global_cov_nodups} -o ${sample_name}_experiment_nodups_global_report_${pipeline_version}.tsv -op ${sample_name}.nodups.distributions_${pipeline_version}.eps -s ${sample_name}
 
         # make tsv coverage report by exon
-        python ${ngs_toolpath}/pipeline_wdl/qualityControl/local_coverage_report_ENS_intersect_Library.py -i=${by_exon_cov} -o ${sample_name}_ENS_local_report.tsv -s=${sample_name}
+        python ${ngs_toolpath}/pipeline_wdl/qualityControl/local_coverage_report_ENS_intersect_Library.py -i=${by_exon_cov} -o ${sample_name}_ENS_local_report_${pipeline_version}.tsv -s=${sample_name}
        
-        cp -L  ${sample_name}_ENS_local_report.tsv ${sample_name}_experiment_nodups_global_report.tsv ${sample_name}.nodups.distributions.eps ${path_save}
-####${sample_name}.distributions.eps ${sample_name}_experiment_global_report.tsv
+        cp -L  ${sample_name}_ENS_local_report_${pipeline_version}.tsv ${sample_name}_experiment_nodups_global_report_${pipeline_version}.tsv ${sample_name}.nodups.distributions_${pipeline_version}.eps ${path_save}
+        ####${sample_name}.distributions.eps ${sample_name}_experiment_global_report.tsv
     }
  
     output {
-        File hist_by_exon = "${sample_name}_ENS_local_report.tsv" 
+        File hist_by_exon = "${sample_name}_ENS_local_report$_{pipeline_version}.tsv" 
         #File hist_global = "${sample_name}_experiment_global_report.tsv"
         #File distributions_plot = "${sample_name}.distributions.eps"
-        File hist_global_nodups = "${sample_name}_experiment_nodups_global_report.tsv"
-        File distributions_plot_nodups = "${sample_name}.nodups.distributions.eps"
+        File hist_global_nodups = "${sample_name}_experiment_nodups_global_report_${pipeline_version}.tsv"
+        File distributions_plot_nodups = "${sample_name}.nodups.distributions_${pipeline_version}.eps"
 
     }
 
@@ -368,9 +368,8 @@ scatter (fastp in fastp_json_files){
         path_save = path_save[idx],
         global_cov_nodups = cobertura.histo_global_nodup,
         pipeline_version = pipeline_version
-
-
-    }
+        
+        }
  }
 
 
