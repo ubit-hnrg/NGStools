@@ -77,7 +77,7 @@ task cobertura {
         #histograma global del bam nodup restringido a toda la librería
         grep '^all' ${sample_name}_nodup.hist > global_nodup.hist
         echo -e 'chr\tDP\tBPs\tIntervalLength\tfrequency' > global_nodup.header.txt
-        cat global_nodup.header.txt global_nodup.hist > ${sample_name}_nodups.stats_${pipeline_version}.txt
+        cat global_nodup.header.txt global_nodup.hist > ${sample_name}_nodups_stats_${pipeline_version}.txt
         rm global_nodup.header.txt global_nodup.hist
 
         
@@ -105,7 +105,7 @@ task cobertura {
         cp -L ${sample_name}_samtools_${pipeline_version}.stats ${path_save}
         cp -L ${sample_name}.ENS_${pipeline_version}.hist ${path_save}
         cp -L ${sample_name}_sex_${pipeline_version}.txt ${path_save} 
-        cp -L ${sample_name}_nodups.stats_${pipeline_version}.txt ${path_save}
+        cp -L ${sample_name}_nodups_stats_${pipeline_version}.txt ${path_save}
         cp -L ${sample_name}.no_cubierto_intervalo_${pipeline_version}.tsv ${path_save}
        
 
@@ -119,7 +119,7 @@ task cobertura {
         File samtools_stat_experiment_bam = "${sample_name}_samtools_${pipeline_version}.stats"
         File histo_exon = "${sample_name}.ENS_${pipeline_version}.hist"
         File sex_prediction = "${sample_name}_sex_${pipeline_version}.txt"
-        File nodups = "${sample_name}_nodups.stats_${pipeline_version}.txt"
+        File nodups = "${sample_name}_nodups_stats_${pipeline_version}.txt"
         File no_cubierto_intervalo = "${sample_name}.no_cubierto_intervalo_${pipeline_version}.tsv"
 
 
@@ -198,7 +198,6 @@ task make_tsv_reports {
         #!/bin/bash
         set -e
 
-        
         # make global_nodups tsv report
         python ${ngs_toolpath}/pipeline_wdl/qualityControl/global_coverage_report_inLibrary.py -i=${global_cov_nodups} -o ${sample_name}_experiment_nodups_global_report_${pipeline_version}.tsv -op ${sample_name}_nodups_distributions_${pipeline_version}.eps -s ${sample_name}
 

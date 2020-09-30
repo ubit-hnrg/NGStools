@@ -575,8 +575,6 @@ call qual_control.qual_control {
    pipeline_v= pipeline_version,
    experiment_name = basename(tabulatedSampleFilePaths, ".txt"),
    exon_coords = coord_generator.exon_restricted, #### ensembl vs intervalo_captura
-   #tso_bed = tso_bed
-
    experiment_path = path_softlink
   }
 
