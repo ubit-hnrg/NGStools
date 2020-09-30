@@ -200,7 +200,7 @@ String S1 = basename(annovar_variants)
 File exon_dist
 String S2 = basename(exon_dist)
 String ngs_toolpath
-File pipeline_version
+String pipeline_version
 
 
 
@@ -596,14 +596,14 @@ Array[File] exon_tsv = qual_control.tsv_exon
 Array[File] html_reports_from_fastq = ConvertPairedFastQsToUnmappedBamWf.fastp_html_reports 
 #Array[String] array_path_save_byexon = mkdir_samplename.path_out_softlink
 
-Array[Pair[String,File]] html_fastp_by_samplre = zip (array_path_save_byexon, html_reports_from_fastq)
-  scatter (pairs in html_fastp_by_samplre) {
-     call symlink_important_files as html_fastp{
-        input:
-        output_to_save = pairs.right,
-        path_save = pairs.left
-    }
-  }
+# Array[Pair[String,File]] html_fastp_by_samplre = zip (array_path_save_byexon, html_reports_from_fastq)
+#   scatter (pairs in html_fastp_by_samplre) {
+#      call symlink_important_files as html_fastp{
+#         input:
+#         output_to_save = pairs.right,
+#         path_save = pairs.left
+#     }
+#   }
 
 
 ####for pdf purpose 

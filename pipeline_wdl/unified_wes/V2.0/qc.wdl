@@ -101,7 +101,7 @@ task cobertura {
         bedtools genomecov -ibam ${input_bam} -bga | awk '$4==0'| bedtools intersect -a intervalo_sorted.bed -b - > ${sample_name}.no_cubierto_intervalo_${pipeline_version}.tsv
 
         
-        #cp -L ${sample_name}.global.hist ${path_save}
+        cp -L ${sample_name}_samtools_nodup_${pipeline_version}.stats ${path_save}
         cp -L ${sample_name}_samtools_${pipeline_version}.stats ${path_save}
         cp -L ${sample_name}.ENS_${pipeline_version}.hist ${path_save}
         cp -L ${sample_name}_sex_${pipeline_version}.txt ${path_save} 
@@ -162,10 +162,10 @@ task samtools_reports_file {
   File samtools_dup
   String path_save
   String ngs_toolpath
-  File pipeline_version
+  String pipeline_version
 
   command {
-  ${ngs_toolpath}/pipeline_wdl/qualityControl/samtools_stats_report_V2.py -N=${N_total_reads}  -l=${samtools_library_report} -d ${samtools_dup} -ba ${N_bases_after} -bb ${N_bases_before} -o=${sampleID}_samtools_report.tsv
+  ${ngs_toolpath}/pipeline_wdl/qualityControl/samtools_stats_report_V2.py -N=${N_total_reads} -l=${samtools_library_report} -d ${samtools_dup} -ba ${N_bases_after} -bb ${N_bases_before} -o=${sampleID}_samtools_report.tsv
   
   cp -L ${sampleID}_samtools_report.tsv ${path_save}
 
@@ -188,7 +188,7 @@ task make_tsv_reports {
         String ngs_toolpath
         String sample_name
         String path_save
-        File pipeline_version
+        String pipeline_version
     
 # make global tsv report
         #python ${ngs_toolpath}/pipeline_wdl/qualityControl/global_coverage_report_inLibrary.py -i=${global_cov} -o ${sample_name}_experiment_global_report.tsv -op ${sample_name}.distributions.eps -s ${sample_name}
@@ -262,7 +262,7 @@ task make_excel {
     #File tabla4
     #String pestana4
     String ngs_toolpath
-    File pipeline_version
+    String pipeline_version
     ##${tabla3}:${pestana3}
     command{
     ${ngs_toolpath}/pipeline_wdl/qualityControl/make_excel_report.py ${tabla1}:${pestana1} ${tabla2}:${pestana2} ${tabla3}:${pestana3} ${experiment_name}_qual_report_${pipeline_version}.xlsx
