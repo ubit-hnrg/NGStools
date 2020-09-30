@@ -344,7 +344,7 @@ scatter (fastp in fastp_json_files){
   #N_total_reads = read_string(N_total_reads), ###ahora es sobre N_bases
   #N_bases_after = read_string(N_bases_after),
   #N_bases_before = read_string(N_bases_before),
-  samtools_dup = cobertura.nodups,
+  samtools_dup = cobertura.samtools_stat_nodup_experiment_bam,#nodups,
   #ensembl2intervalo_captura = ensembl2intervalo_captura,
   N_total_reads = read_string(total_reads_fastq[idx]),
   N_bases_before = read_string(N_bases_before_filtering_fastq_fastq[idx]),
