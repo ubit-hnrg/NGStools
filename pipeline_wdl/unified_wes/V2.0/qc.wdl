@@ -351,14 +351,11 @@ scatter (fastp in fastp_json_files){
   N_total_reads = read_string(total_reads_fastq[idx]),
   N_bases_before = read_string(N_bases_before_filtering_fastq_fastq[idx]),
   N_bases_after =  read_string(N_bases_after_filtering_fastq_fastq[idx]),
-
-
   #samtools_global_report = samtools_stat.samtools_stat_original_bam,
   samtools_library_report = cobertura.samtools_stat_experiment_bam,
   ngs_toolpath = ngs_toolpath,
-  path_save = path_save[idx]
-
-
+  path_save = path_save[idx],
+  pipeline_version = pipeline_version
   }
 
     ###crear tsv 
