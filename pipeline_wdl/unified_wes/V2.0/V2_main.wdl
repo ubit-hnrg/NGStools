@@ -669,7 +669,7 @@ Array[File] html_reports_from_fastq = ConvertPairedFastQsToUnmappedBamWf.fastp_h
     scatter (idx in range(length(Tsv_annovar))){
        
        String sample = basename(Tsv_annovar[idx],"multianno_restrict.tsv")
-       String samplename2 = basename(exon_tsv[idx],"_ENS_local_report_V2.tsv")
+       String samplename2 = basename(exon_tsv[idx],"_ENS_local_report.tsv")
        
        #if(sample==samplename2){
          #mergear tsv_annovar con distancias_exones
