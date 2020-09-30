@@ -572,7 +572,7 @@ call qual_control.qual_control {
    toolpath = toolpath,
    ngs_toolpath = ngs_toolpath,
    intervalo_captura = intervalo_captura,
-   pipeline_version= pipeline_version,
+   pipeline_v= pipeline_version,
    experiment_name = basename(tabulatedSampleFilePaths, ".txt"),
    exon_coords = coord_generator.exon_restricted, #### ensembl vs intervalo_captura
    #tso_bed = tso_bed
@@ -671,7 +671,7 @@ Array[Pair[String,File]] html_fastp_by_samplre = zip (array_path_save_byexon, ht
     scatter (idx in range(length(Tsv_annovar))){
        
        String sample = basename(Tsv_annovar[idx],"multianno_restrict.tsv")
-       String samplename2 = basename(exon_tsv[idx],"_ENS_local_report.tsv")
+       String samplename2 = basename(exon_tsv[idx],"_ENS_local_report_V2.tsv")
        
        #if(sample==samplename2){
          #mergear tsv_annovar con distancias_exones
