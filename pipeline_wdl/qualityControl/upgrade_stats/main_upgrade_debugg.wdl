@@ -136,10 +136,12 @@ task fastp {
 task fastp_qual {
   File inputs_json_report
   String report_name = basename(inputs_json_report, ".txt")
+  
 
   #${sep=' -I ' input_bqsr_reports}
   command <<<
   /home/hnrg/NGStools/pipeline_wdl/qualityControl/estadistica_fastp_V2.py -i ${inputs_json_report} -o ${report_name}_fastp_report.tsv -bb ${report_name}_N_bases_before.txt -ba ${report_name}_N_bases_after.txt -ra ${report_name}_N_reads_after.txt
+ 
   >>>
 
   output {
@@ -383,14 +385,15 @@ call Create_inputs_for_preprocesing as fastp_report_files {
 scatter (samples in fastp_json_reports){
 call fastp_qual {
       input:
-      inputs_json_report = samples#fastp_report_files.ubam_samples
+      inputs_json_report = samples,#fastp_report_files.ubam_samples
     }
 }
 ## fin scatter fastp
  ####qual control
 
+ Array[File] fasp_report = fastp_qual.fastp_stats
  Array[File] N_total_reads_bam = fastp_qual.reads_after ###ahora es sobre N_bases
-  Array[File] N_bases_after_filtering = fastp_qual.bases_after
+ Array[File] N_bases_after_filtering = fastp_qual.bases_after
  Array[File]  N_bases_before_filtering = fastp_qual.bases_before
  
   
@@ -531,7 +534,19 @@ Array[File] samtools_tsv = coverage_qual.samtools_global
 #         output_to_save = pairs.right,
 #         path_save = pairs.left
 #     }
-#   }
+#   }fasp_report
+  
+ Array[Pair[String,File]] fastp_report = zip (path_save, fasp_report)
+  scatter (pairs in fastp_report) {
+    call symlink_important_files as fastp_report_save {
+        input:
+        output_to_save = pairs.right,
+        path_save = pairs.left
+    }
+  }
+
+
+
   #  Array[Pair[String,File]] fastp_html_out = zip (path_save, fastp_html)
   # scatter (pairs in fastp_html_out) {
   #   call symlink_important_files as save_html_fastp {
