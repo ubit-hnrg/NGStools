@@ -119,10 +119,10 @@ for q in range(len(content)):
 
 
 total_lecturas=sum(total_reads_bef1)
-bases_before = sum(round(float(total_bases_bef1/10**9),6))
+bases_before = round(float(sum(total_bases_bef1)/10**9),6)
 total_lecturas_passTrue=sum(total_reads_aft)
 N_reads_after = total_lecturas_passTrue
-bases_after = sum(round(float(total_bases_aft/10**9),6))
+bases_after = round(float(sum(total_bases_aft)/10**9),6)
 N_bases_after = sum(total_bases_aft)
 N_bases_before = sum(total_bases_bef1)
 gc_before = float(sum(gc_content_bef1)/N_lanes)

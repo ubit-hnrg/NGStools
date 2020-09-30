@@ -162,9 +162,7 @@ task CreateFoFN2 {
     mv ${write_lines(array_of_files)}  ${fofn_name}.list \
    
   }
-  runtime {
-    memory: "5GB"
-  }
+
   output {
     File fofn_list = "${fofn_name}.list"
   }
@@ -219,9 +217,6 @@ task Create_inputs_for_preprocesing {
 
   CODE
   >>>
-   runtime {
-    memory: "5GB"
-  }
 
   output {
     Array[File] ubam_samples = glob("*.txt")
@@ -240,9 +235,7 @@ task CreateFoFN {
     mv ${write_lines(array_of_files)}  ${fofn_name}.list \
    
   }
-   runtime {
-    memory: "5GB"
-  }
+   
 
 
   output {
@@ -279,12 +272,12 @@ task make_excel {
   String ngs_toolpath
 
   command{
-   ${ngs_toolpath}/pipeline_wdl/qualityControl/make_excel_report.py ${tabla1}:${pestana1} ${tabla2}:${pestana2} ${tabla3}:${pestana3} ${experiment_name}_qual_report.xlsx
+   ${ngs_toolpath}/pipeline_wdl/qualityControl/make_excel_report.py ${tabla1}:${pestana1} ${tabla2}:${pestana2} ${tabla3}:${pestana3} ${experiment_name}+${debug_db}_qual_report.xlsx
  
   }
 
   output {
-    File reporte_excel = "${experiment_name}_qual_report.xlsx"
+    File reporte_excel = "${experiment_name}+${debug_db}_qual_report.xlsx"
 
   }
 
@@ -295,6 +288,7 @@ workflow upgrade_statistics {
 
 File tabulatedSampleFilePaths ##samples
 String path_softlink
+String debug_db
 
 File list_bams
 Array[File] bams = read_lines(list_bams)
@@ -490,7 +484,8 @@ Array[File] samtools_tsv = coverage_qual.samtools_global
      pestana2 = "Alineamiento",
      tabla3 = merge_reports.merged_report,
      pestana3 = "Profundidad-en-libreria",
-     ngs_toolpath = ngs_toolpath
+     ngs_toolpath = ngs_toolpath,
+     debug_db = debug_db
 
    }
 
