@@ -33,6 +33,7 @@ task cobertura {
         String toolpath
         String ngs_toolpath
         String path_save
+        String pipeline_version
         String? sorted 
     
     
@@ -60,11 +61,11 @@ task cobertura {
         # rm global.header.txt global.hist
         
         ###sex prediction
-        ${ngs_toolpath}/python_scripts/bam_sex_xy.py -b ${input_bam} > ${sample_name}_sex.txt
+        ${ngs_toolpath}/python_scripts/bam_sex_xy.py -b ${input_bam} > ${sample_name}_sex_${pipeline_version}.txt
 
         ###septiembre,20: se agrega eliminar duplicados.
         ${toolpath}samtools view -F1024 -u ${input_bam} > bam_nodups.sam
-         ${toolpath}samtools stats bam_nodups.sam -t intervalo_sorted.bed > ${sample_name}_nodups.stats
+         ${toolpath}samtools stats bam_nodups.sam -t intervalo_sorted.bed > ${sample_name}_nodups.stats_${pipeline_version}.txt_${pipeline_version}.txt_${pipeline_version}.txt_${pipeline_version}.txt_${pipeline_version}.txt
 
         ####global_hist for no dups_bams
         ${toolpath}bedtools2/bin/coverageBed -a intervalo_sorted.bed -b bam_nodups.sam -hist ${sorted} > ${sample_name}_nodup.hist.aux
@@ -76,36 +77,36 @@ task cobertura {
         #histograma global del bam nodup restringido a toda la librería
         grep '^all' ${sample_name}_nodup.hist > global_nodup.hist
         echo -e 'chr\tDP\tBPs\tIntervalLength\tfrequency' > global_nodup.header.txt
-        cat global_nodup.header.txt global_nodup.hist > ${sample_name}_nodup.global.hist
+        cat global_nodup.header.txt global_nodup.hist > ${sample_name}_nodups.stats_${pipeline_version}.txt
         rm global_nodup.header.txt global_nodup.hist
 
         
          ####samtools stat
-        ${toolpath}samtools stats ${input_bam} -t ${intervalo_captura} > ${sample_name}_samtools.stats
-         /usr/local/bin/plot-bamstats ${sample_name}_samtools.stats -p ${path_save}samtools_plots/${sample_name}
+        ${toolpath}samtools stats ${input_bam} -t ${intervalo_captura} > ${sample_name}_samtools_${pipeline_version}.stats
+         /usr/local/bin/plot-bamstats ${sample_name}_samtools_${pipeline_version}.stats -p ${path_save}samtools_plots/${sample_name}
 
          #### COBERTURA  ##################################
         #### EXONES     ##################################
         #histograma restringido a cada exon de ensembl que está en la librería de captura
         
         ##${toolpath}bedtools2/bin/sort ${input_bam} -m 1G | 
-        ${toolpath}bedtools2/bin/coverageBed -a ${ensembl2intervalo_captura} -b ${input_bam} -hist ${sorted} > ${sample_name}.ENS.hist.aux1
+        ${toolpath}bedtools2/bin/coverageBed -a ${ensembl2intervalo_captura} -b ${input_bam} -hist ${sorted} > ${sample_name}.ENS_${pipeline_version}.hist.aux1
         echo -e 'chr\tstart\tend\ttranscriptID\tgene\texonNumber\tstrand\tDP\tBPs\tIntervalLength\tfrequency' > header.txt
-        grep -v '^all' ${sample_name}.ENS.hist.aux1 > ${sample_name}.ENS.hist.aux2
-        cat header.txt ${sample_name}.ENS.hist.aux2 > ${sample_name}.ENS.hist
-        rm ${sample_name}.ENS.hist.aux1 ${sample_name}.ENS.hist.aux2 header.txt
+        grep -v '^all' ${sample_name}.ENS_${pipeline_version}.hist.aux1 > ${sample_name}.ENS_${pipeline_version}.hist.aux2
+        cat header.txt ${sample_name}.ENS_${pipeline_version}.hist.aux2 > ${sample_name}.ENS_${pipeline_version}.hist
+        rm ${sample_name}.ENS_${pipeline_version}.hist.aux1 ${sample_name}.ENS_${pipeline_version}.hist.aux2 header.txt
         ##
         ##regiones no cubiertas en el intervalo de captura. -bga reporta la profunidad in bedgraph format. reporta las regiones con 0 cobertura. 
         ## por lo que dps se puede filtrar lo no cubierto.-
-        bedtools genomecov -ibam ${input_bam} -bga | awk '$4==0'| bedtools intersect -a intervalo_sorted.bed -b - > ${sample_name}.no_cubierto_intervalo.tsv
+        bedtools genomecov -ibam ${input_bam} -bga | awk '$4==0'| bedtools intersect -a intervalo_sorted.bed -b - > ${sample_name}.no_cubierto_intervalo_${pipeline_version}.tsv
 
         
         #cp -L ${sample_name}.global.hist ${path_save}
-        cp -L ${sample_name}_samtools.stats ${path_save}
-        cp -L ${sample_name}.ENS.hist ${path_save}
-        cp -L ${sample_name}_sex.txt ${path_save} 
-        cp -L ${sample_name}_nodups.stats ${path_save}
-        cp -L ${sample_name}.no_cubierto_intervalo.tsv ${path_save}
+        cp -L ${sample_name}_samtools_${pipeline_version}.stats ${path_save}
+        cp -L ${sample_name}.ENS_${pipeline_version}.hist ${path_save}
+        cp -L ${sample_name}_sex_${pipeline_version}.txt ${path_save} 
+        cp -L ${sample_name}_nodups.stats_${pipeline_version}.txt ${path_save}
+        cp -L ${sample_name}.no_cubierto_intervalo_${pipeline_version}.tsv ${path_save}
        
 
            
@@ -113,12 +114,12 @@ task cobertura {
 
     output {
         #File histo_global ="${sample_name}.global.hist"
-        File histo_global_nodup = "${sample_name}_nodup.global.hist"
-        File samtools_stat_experiment_bam = "${sample_name}_samtools.stats"
-        File histo_exon = "${sample_name}.ENS.hist"
-        File sex_prediction = "${sample_name}_sex.txt"
-        File nodups = "${sample_name}_nodups.stats"
-        File no_cubierto_intervalo = "${sample_name}.no_cubierto_intervalo.tsv"
+        File histo_global_nodup = "${sample_name}_nodups.stats_${pipeline_version}.txt"
+        File samtools_stat_experiment_bam = "${sample_name}_samtools_${pipeline_version}.stats"
+        File histo_exon = "${sample_name}.ENS_${pipeline_version}.hist"
+        File sex_prediction = "${sample_name}_sex_${pipeline_version}.txt"
+        File nodups = "{sample_name}_nodups.stats_${pipeline_version}.txt"
+        File no_cubierto_intervalo = "${sample_name}.no_cubierto_intervalo_${pipeline_version}.tsv"
 
 
     }
@@ -139,13 +140,13 @@ task cobertura {
 
 #       ####prediccion de sexo para reporte pdf
 #       ###ya que estamos, prediccion de sexo:
-#       ${ngs_toolpath}/python_scripts/bam_sex_xy.py -b ${input_bam} > ${sample_name}_sex.txt
-#       cp -L ${sample_name}_sex.txt ${path_save} 
+#       ${ngs_toolpath}/python_scripts/bam_sex_xy.py -b ${input_bam} > ${sample_name}_sex_${pipeline_version}.txt
+#       cp -L ${sample_name}_sex_${pipeline_version}.txt ${path_save} 
       
 #     >>>
 
 #   output {
-#     File sex_prediction = "${sample_name}_sex.txt"
+#     File sex_prediction = "${sample_name}_sex_${pipeline_version}.txt"
 #     }
 #     }
 
@@ -160,6 +161,7 @@ task samtools_reports_file {
   File samtools_dup
   String path_save
   String ngs_toolpath
+  File pipeline_version
 
   command {
   ${ngs_toolpath}/pipeline_wdl/qualityControl/samtools_stats_report_V2.py -N=${N_total_reads}  -l=${samtools_library_report} -d ${samtools_dup} -ba ${N_bases_after} -bb ${N_bases_before} -o=${sampleID}_samtools_report.tsv
@@ -185,6 +187,7 @@ task make_tsv_reports {
         String ngs_toolpath
         String sample_name
         String path_save
+        File pipeline_version
     
 # make global tsv report
         #python ${ngs_toolpath}/pipeline_wdl/qualityControl/global_coverage_report_inLibrary.py -i=${global_cov} -o ${sample_name}_experiment_global_report.tsv -op ${sample_name}.distributions.eps -s ${sample_name}
@@ -249,24 +252,25 @@ task CreateFoFN {
 }
 
 task make_excel {
-  String experiment_name
-  File tabla1
-  String pestana1
-  File tabla2
-  String pestana2
-  #File tabla3
-  #String pestana3
-  File tabla4
-  String pestana4
-  String ngs_toolpath
-##${tabla3}:${pestana3}
-  command{
-   ${ngs_toolpath}/pipeline_wdl/qualityControl/make_excel_report.py ${tabla1}:${pestana1} ${tabla2}:${pestana2} ${tabla4}:${pestana4} ${experiment_name}_qual_report.xlsx
+    String experiment_name
+    File tabla1
+    String pestana1
+    File tabla2
+    String pestana2
+    File tabla3
+    String pestana3
+    #File tabla4
+    #String pestana4
+    String ngs_toolpath
+    File pipeline_version
+    ##${tabla3}:${pestana3}
+    command{
+    ${ngs_toolpath}/pipeline_wdl/qualityControl/make_excel_report.py ${tabla1}:${pestana1} ${tabla2}:${pestana2} ${tabla3}:${pestana3} ${experiment_name}_qual_report_${pipeline_version}.xlsx
  
   }
 
   output {
-    File reporte_excel = "${experiment_name}_qual_report.xlsx"
+    File reporte_excel = "${experiment_name}_qual_report_${pipeline_version}.xlsx"
 
   }
 
@@ -320,7 +324,7 @@ scatter (fastp in fastp_json_files){
       input: 
       input_bam = analysis_readybam[idx],#bams_ready,
       input_bam_index = analysis_readybam_index[idx],
-      #pipeline_version = pipeline_v,
+      pipeline_version = pipeline_v,
       intervalo_captura = intervalo_captura,
       ensembl2intervalo_captura = exon_coords,
       toolpath = toolpath,
@@ -364,7 +368,8 @@ scatter (fastp in fastp_json_files){
         ngs_toolpath = ngs_toolpath,
         sample_name = basename(analysis_readybam[idx], '.bam'),
         path_save = path_save[idx],
-        global_cov_nodups = cobertura.histo_global_nodup
+        global_cov_nodups = cobertura.histo_global_nodup,
+        pipeline_version = pipeline_v
 
 
     }
@@ -460,8 +465,8 @@ scatter (fastp in fastp_json_files){
     pestana2 = "Alineamiento",
     #tabla3 = merge_reports.merged_report,
     #pestana3 = "Profundidad-en-libreria",
-    tabla4= merge_nodups_report.merged_report,
-    pestana4 = "Profundidad-en-libreria_nodps",
+    tabla3= merge_nodups_report.merged_report,
+    pestana3 = "Profundidad-en-libreria_1024",
     ngs_toolpath = ngs_toolpath
 
   }

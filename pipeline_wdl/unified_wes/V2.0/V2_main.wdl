@@ -176,6 +176,7 @@ task build_excell_report{
     String samplename2
     String ngs_toolpath
     File no_cubierto
+    String pipeline_version
 
     #String original_sample
   
@@ -183,12 +184,12 @@ task build_excell_report{
 
     command{
 
-       ${ngs_toolpath}/pipeline_wdl/qualityControl/make_excel_report.py ${annovar_tsv}:Variants ${exon_coverage_report}:ExonCoverage ${plof}:GnomAD_PLOF ${no_cubierto}:no_cubierto  ${samplename2}_variants.xlsx
+       ${ngs_toolpath}/pipeline_wdl/qualityControl/make_excel_report.py ${annovar_tsv}:Variants ${exon_coverage_report}:ExonCoverage ${plof}:GnomAD_PLOF ${no_cubierto}:no_cubierto  ${samplename2}_variants_${pipeline_version}.xlsx
    
    }    
 
     output{
-        File excell_report = '${samplename2}_variants.xlsx'
+        File excell_report = '${samplename2}_variants_${pipeline_version}.xlsx'
     }
 }    
 
@@ -232,10 +233,11 @@ task pdf_report {
   String date
   String path
   String ngs_toolpath
+  String pipeline_version
 
   command {
   
-    ${ngs_toolpath}/python_scripts/pdf_report_per_sample.py -fq ${fastp_rep} -aq ${alineamiento} -dq ${glob_rep} -s ${sex} -n ${name} -d ${date} -t ${tso} -o ${path}/${name}_qual_report.pdf
+    ${ngs_toolpath}/python_scripts/pdf_report_per_sample.py -fq ${fastp_rep} -aq ${alineamiento} -dq ${glob_rep} -s ${sex} -n ${name} -d ${date} -t ${tso} -o ${path}/${name}_qual_report_${pipeline_version}.pdf
   
   }
 
