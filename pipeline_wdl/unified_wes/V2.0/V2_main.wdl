@@ -680,7 +680,8 @@ Array[Pair[String,File]] html_fastp_by_samplre = zip (array_path_save_byexon, ht
             name = samplename2,
               annovar_variants = Tsv_annovar[idx],
               exon_dist = exon_distances[idx],
-              ngs_toolpath = ngs_toolpath
+              ngs_toolpath = ngs_toolpath,
+              pipeline_v = pipeline_version
          }
 
        call build_excell_report {
@@ -690,7 +691,8 @@ Array[Pair[String,File]] html_fastp_by_samplre = zip (array_path_save_byexon, ht
             samplename2 = samplename2,
             exon_coverage_report = exon_tsv[idx],
             ngs_toolpath = ngs_toolpath,
-            no_cubierto = no_cubierto
+            no_cubierto = no_cubierto,
+            pipeline_v = pipeline_version
             
            }
         call pdf_report {
@@ -704,7 +706,8 @@ Array[Pair[String,File]] html_fastp_by_samplre = zip (array_path_save_byexon, ht
             tso = basename(tabulatedSampleFilePaths, ".txt"),
             date = run_date,
             path = array_path_save_json[idx],
-            ngs_toolpath = ngs_toolpath
+            ngs_toolpath = ngs_toolpath,
+            pipeline_v = pipeline_version
             
            }  
         #}
