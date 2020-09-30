@@ -331,8 +331,6 @@ scatter (fastp in fastp_json_files){
       toolpath = toolpath,
       ngs_toolpath = ngs_toolpath,
       path_save = path_save[idx]
-      
-     
     }
  
        
@@ -359,16 +357,16 @@ scatter (fastp in fastp_json_files){
   }
 
     ###crear tsv 
-    call make_tsv_reports {
-        input:
-        by_exon_cov = cobertura.histo_exon,
-        #global_cov = cobertura.histo_global,
-        ngs_toolpath = ngs_toolpath,
-        sample_name = basename(analysis_readybam[idx], '.bam'),
-        path_save = path_save[idx],
-        global_cov_nodups = cobertura.histo_global_nodup,
-        pipeline_version = pipeline_version
-        
+  call make_tsv_reports {
+      input:
+      by_exon_cov = cobertura.histo_exon,
+      #global_cov = cobertura.histo_global,
+      ngs_toolpath = ngs_toolpath,
+      sample_name = basename(analysis_readybam[idx], '.bam'),
+      path_save = path_save[idx],
+      global_cov_nodups = cobertura.histo_global_nodup,
+      pipeline_version = pipeline_version
+       
         }
  }
 
@@ -463,7 +461,7 @@ scatter (fastp in fastp_json_files){
     #tabla3 = merge_reports.merged_report,
     #pestana3 = "Profundidad-en-libreria",
     tabla3= merge_nodups_report.merged_report,
-    pestana3 = "Profundidad-en-libreria_1024",
+    pestana3 = "Profundidad-en-libreria",
     ngs_toolpath = ngs_toolpath,
     pipeline_version = pipeline_version
 
