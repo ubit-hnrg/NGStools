@@ -227,7 +227,7 @@ String N_bases_after
     ###crear tsv 
     call make_tsv_reports {
     input:
-        by_exon_cov = cobertura.hist_exon,
+        by_exon_cov = cobertura.histo_exon,
         #global_cov = cobertura.histo_global,
         global_cov_nodups = cobertura.histo_global_nodup,
         ngs_toolpath = ngs_toolpath,
@@ -238,7 +238,7 @@ String N_bases_after
  output {
  File por_exon_tsv = make_tsv_reports.hist_by_exon
  File global_tsv = make_tsv_reports.hist_global_nodups
- File distribution_plot = make_tsv_reports.distributions_plot
+ File distribution_plot = make_tsv_reports.distributions_plot_nodups
  File samtools_global = samtools_reports_file.output_global_report
  File nocubierto_intervalo = cobertura.no_cubierto_intervalo
  }

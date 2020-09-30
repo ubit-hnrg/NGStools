@@ -270,6 +270,7 @@ task make_excel {
   File tabla3
   String pestana3
   String ngs_toolpath
+  String debug_db
 
   command{
    ${ngs_toolpath}/pipeline_wdl/qualityControl/make_excel_report.py ${tabla1}:${pestana1} ${tabla2}:${pestana2} ${tabla3}:${pestana3} ${experiment_name}+${debug_db}_qual_report.xlsx
@@ -289,6 +290,7 @@ workflow upgrade_statistics {
 File tabulatedSampleFilePaths ##samples
 String path_softlink
 String debug_db
+
 
 File list_bams
 Array[File] bams = read_lines(list_bams)

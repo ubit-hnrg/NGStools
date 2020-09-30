@@ -3,18 +3,16 @@
 
   "##COMMENT1": "MANDATORY INPUTS",
   "##COMMENT2": "INPUT-OUTPUT PATHS",
-<<<<<<< HEAD
-  "upgrade_statistics.tabulatedSampleFilePaths": "/home/hnrg/executionsHNRG/testing/upgrade_stats/inputs/CC1707556.txt",
-  "upgrade_statistics.list_bams": "/home/hnrg/executionsHNRG/testing/upgrade_stats/inputs/bam.txt",
-  "upgrade_statistics.list_bam_index": "/home/hnrg/executionsHNRG/testing/upgrade_stats/inputs/bam_index.txt",
-  "upgrade_statistics.path_softlink": "/data/resultsHNRG/testing/upgrade_stats/",
-=======
+
+  "##COMMENT6": "agregar -sorted si es normal, si tiene MT, solucion parcial es dejar en blanco",
+  "upgrade_statistics.coverage_qual.cobertura.sorted": "String? (optional)",
   "upgrade_statistics.tabulatedSampleFilePaths": "File",
   "upgrade_statistics.experiment_name": "String",
+  "upgrade_statistics.debug_db": "String",
+
   "upgrade_statistics.list_bams": "File",
   "upgrade_statistics.list_bam_index": "File",
   "upgrade_statistics.path_softlink": "String",
->>>>>>> 186364b1d1cfad07ca0082963d017ecb1d2bc50c
 
 
   "##COMMENT3": "TOOLS & GATK",
