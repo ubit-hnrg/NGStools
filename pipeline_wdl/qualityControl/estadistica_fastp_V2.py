@@ -176,7 +176,7 @@ res=pd.Series(results_dict).to_frame()
 res.columns = [sample_name]
     #res.index
 
-res.loc['total de GIGAbases antes del filtrado']= '{:.6f}'.format(res['total de GIGAbases antes del filtrado'])
+#res.loc['total de GIGAbases antes del filtrado']= '{:.6f}'.format(res['total de GIGAbases antes del filtrado'])
 res = res.loc[[u'total de lecturas antes del filtrado',
              u'total de GIGAbases antes del filtrado',
              u'total de lecturas despues del filtrado',
