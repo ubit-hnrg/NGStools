@@ -117,10 +117,11 @@ for q in range(len(content)):
     
     sample_name=os.path.basename(content[q]).strip('.txt')
 
-
+#total_lecturas_passTrue=0
 total_lecturas=sum(total_reads_bef1)
-bases_before = round(float(sum(total_bases_bef1)/10**9),6)
-total_lecturas_passTrue=sum(total_reads_aft)
+#bases_before = round(float(sum(total_bases_bef1)/10**9),6)
+bases_before = sum(total_bases_bef1)/float(10**9)
+total_lecturas_passTrue = sum(total_reads_aft)
 N_reads_after = total_lecturas_passTrue
 bases_after = round(float(sum(total_bases_aft)/10**9),6)
 N_bases_after = sum(total_bases_aft)
