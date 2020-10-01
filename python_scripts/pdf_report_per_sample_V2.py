@@ -1,11 +1,7 @@
 #!/usr/bin/python
 from pdf_reports import pug_to_html, write_report
 
-import xlsxwriter
 import pandas as pd 
-import numpy as np
-import sys
-import os
 import argparse
 
 parser = argparse.ArgumentParser()
@@ -53,6 +49,7 @@ bases_col = ['total de GIGAbases antes del filtrado','total de GIGAbases despues
 bases = filtrado_df[bases_col]
 antes = filtrado_df[antes_col]#.index('total de lecturas antes del filtrado')
 desp = filtrado_df[despues_col]#.set_index('total de lecturas despues del filtrado')
+desp.rename(columns = {'total de lecturas despues del filtrado':'lecturas despues','total de lecturas despues del filtrado[%]':'lecturas despues[%]','longitud media R1 despues del filtrado':'long media R1 despues','longitud media R2 despues del filtrado':'long media R2 despues'}, inplace = True)
 NNN = filtrado_df[NNN_col]#.set_index('lecturas lowqual[%]')
 
 
