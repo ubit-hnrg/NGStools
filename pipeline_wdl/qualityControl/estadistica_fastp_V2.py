@@ -89,7 +89,7 @@ for q in range(len(content)):
     #update observables.
     ####campos importantes before filtering
     total_reads_bef1.append(json.summary.before_filtering['total_reads'])
-    total_bases_bef1.append(json.summary.before_filtering['total_bases']/(10**9))
+    total_bases_bef1.append(json.summary.before_filtering['total_bases'])
     gc_content_bef1.append(json.summary.before_filtering['gc_content'])
     q20_rates_bef1.append(json.summary.before_filtering['q20_rate'])
     q30_rates_bef1.append(json.summary.before_filtering['q30_rate'])
@@ -119,8 +119,8 @@ for q in range(len(content)):
 
 #total_lecturas_passTrue=0
 total_lecturas=sum(total_reads_bef1)
-#bases_before = round(float(sum(total_bases_bef1)/10**9),6)
-bases_before = sum(total_bases_bef1)#/(10**9)
+bases_before = float(sum(total_bases_bef1)/10**9)
+#bases_before = sum(total_bases_bef1)#/(10**9)
 total_lecturas_passTrue = sum(total_reads_aft)
 N_reads_after = total_lecturas_passTrue
 bases_after = round(float(sum(total_bases_aft)/10**9),6)
@@ -175,6 +175,8 @@ results_dict.update({"contenido GC despues":gc_after})##gc_content_after
 res=pd.Series(results_dict).to_frame()
 res.columns = [sample_name]
     #res.index
+
+res.loc['total de GIGAbases antes del filtrado']= '{:.6f}'.format(res['total de GIGAbases antes del filtrado'])
 res = res.loc[[u'total de lecturas antes del filtrado',
              u'total de GIGAbases antes del filtrado',
              u'total de lecturas despues del filtrado',
@@ -196,6 +198,8 @@ res = res.loc[[u'total de lecturas antes del filtrado',
              u'longitud media R2 antes del filtrado',
              u'longitud media R1 despues del filtrado',
              u'longitud media R2 despues del filtrado'],:]
+
+
     
 #pd.options.display.float_format = '{:.2f}'.format
 #display(pd.concat(reportes, axis=1).round(2))
