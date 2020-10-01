@@ -65,7 +65,7 @@ stats_dp = prof[col_dp]
 dp = prof[dp_col]
 
 ###alineamiento
-alineamiento = pd.read_csv(a_qual,sep='\t',index_col =0,header = 0).T
+alineamiento = pd.read_csv(a_qual,sep='\t',index_col =0,header = None).T
 reads_col = ['Number-of-reads-properly-paired','Percent-of-reads-properly-paired-in-Library','reads-duplicated-in-Library','reads-MQ0-in-Library']
 rates_col = ['error-rate-in-Library','efficienciy-in-Library','filtering_ratio','on_target_ratio-in-Library','unduplicated_ratio-in-Library']
 Gbases_col = ['GBases_before_trimm','GBases_after_trimm','Gbases-mapped-(cigar)-in-Library','Gbases-without-dup-mapped-in-Library']

@@ -377,10 +377,24 @@ scatter (fastp in fastp_json_files){
 
  #report por exon... 
  #Array[File] by_exon_report = make_tsv_reports.hist_by_exon
-
- ###reportes calidad fastp
+###reportes calidad fastp
  Array[File] fastp_rep = fastp_qual.fastp_stats
+
+  Array[Pair[String,File]] save_fastp = zip(path_save, fastp_rep)
+  scatter (pairs in save_fastp) {
+    call symlink_important_files as copy_fastp {
+        input:
+        output_to_save = pairs.right,
+        path_save = pairs.left
+    }
+  }
  
+ 
+call symlink_important_files as save_excel_qual {
+         input:
+         output_to_save = make_excel.reporte_excel,
+         path_save = experiment_path
+     }
  ###File hist_by_exon = "${sample_name}_ENS_local_report.tsv"  ##este es output y va al main para armar el excel x exones.
 
 
