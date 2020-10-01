@@ -489,7 +489,7 @@ call symlink_important_files as save_excel_qual {
  output {
         
     #Array[File] depth_global_cov_stats = cobertura.histo_global ###estadistica del alinamiento...
-    Array[File] depth_global_cov_stats = cobertura.histo_global_nodup
+    Array[File] depth_global_cov_stats = cobertura.samtools_stat_nodup_experiment_bam#histo_global_nodup
     Array[File] bams_stat_depth_global_coverage_stats = make_tsv_reports.hist_global_nodups
     ##plot distribution
     Array[File] plot_distribution = make_tsv_reports.distributions_plot_nodups
@@ -506,7 +506,7 @@ call symlink_important_files as save_excel_qual {
     Array[File] fastp_rep_out = fastp_qual.fastp_stats
     
     ##fram samtools_stats
-    Array[File] reporte_final = samtools_reports_file.output_global_report ### archivo para mergear... estadistica en la libreria del experimento
+    Array[File] reporte_final_alineamiento = samtools_reports_file.output_global_report ### archivo para mergear... estadistica en la libreria del experimento
     Array[File] samtools_stat_report_from_reduced_bam = cobertura.samtools_stat_experiment_bam
 
  

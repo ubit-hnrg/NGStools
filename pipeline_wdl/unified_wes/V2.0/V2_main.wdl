@@ -238,7 +238,7 @@ task pdf_report {
 
   command {
   
-    ${ngs_toolpath}/python_scripts/pdf_report_per_sample.py -fq ${fastp_rep} -aq ${alineamiento} -dq ${glob_rep} -s ${sex} -n ${name} -d ${date} -t ${tso} -o ${path}/${name}_qual_report_${pipeline_version}.pdf
+    ${ngs_toolpath}/python_scripts/pdf_report_per_sample_V2.py -fq ${fastp_rep} -aq ${alineamiento} -dq ${glob_rep} -s ${sex} -n ${name} -d ${date} -t ${tso} -o ${path}/${name}_qual_report_${pipeline_version}.pdf
   
   }
 
@@ -607,7 +607,7 @@ Array[File] html_reports_from_fastq = ConvertPairedFastQsToUnmappedBamWf.fastp_h
 
 
 ####for pdf purpose 
-  Array[File] alineamiento_rep = qual_control.reporte_final#bam2gvcf.reporte_final ### archivo para mergear... estadistica en la libreria del experimento
+  Array[File] alineamiento_rep = qual_control.reporte_final_alineamiento#bam2gvcf.reporte_final ### archivo para mergear... estadistica en la libreria del experimento
   Array[File] global = qual_control.depth_global_cov_stats
   Array[Pair[String,File]] global_report = zip (array_path_save_byexon, global)
   scatter (pairs in global_report) {
@@ -694,21 +694,21 @@ Array[File] html_reports_from_fastq = ConvertPairedFastQsToUnmappedBamWf.fastp_h
             pipeline_version = pipeline_version
             
            }
-        # call pdf_report {
-        #     input:
-        #     alineamiento = alineamiento_rep[idx],
-        #     name = samplename2,
-        #     glob_rep = global[idx],
-        #     sex = sex_pred[idx],
-        #     #fastp_rep = fastp_qual[idx],
-        #     fastp_rep = qual_control.fastp_rep_out[idx],
-        #     tso = basename(tabulatedSampleFilePaths, ".txt"),
-        #     date = run_date,
-        #     path = array_path_save_json[idx],
-        #     ngs_toolpath = ngs_toolpath,
-        #     pipeline_version = pipeline_version
+        call pdf_report {
+            input:
+            alineamiento = alineamiento_rep[idx], ##ok
+            name = samplename2,
+            glob_rep =tsv_global[idx], ##ok
+            sex = sex_pred[idx],
+            #fastp_rep = fastp_qual[idx],
+            fastp_rep = qual_control.fastp_rep_out[idx],
+            tso = basename(tabulatedSampleFilePaths, ".txt"),
+            date = run_date,
+            path = array_path_save_json[idx],
+            ngs_toolpath = ngs_toolpath,
+            pipeline_version = pipeline_version
             
-        #    }  
+           }  
         #}
 
     }

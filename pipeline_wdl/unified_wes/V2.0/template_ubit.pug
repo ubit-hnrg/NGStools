@@ -21,6 +21,12 @@ p.
 {{ pdf_tools.dataframe_to_html(genero, extra_classes=['ui','compact', 'table'], index = False) }}
 p.
 
+
+:markdown
+  ####  Bases en la muestra:
+{{ pdf_tools.dataframe_to_html(bases, extra_classes=['ui','compact', 'table'], index = False) }}
+p.
+
 :markdown
   ####  Antes del filtrado:
 {{ pdf_tools.dataframe_to_html(antes, extra_classes=['ui','compact', 'table'], index = False) }}
@@ -34,14 +40,20 @@ p.
 
 :markdown
  #### Profundidad en libreria:
-{{ pdf_tools.dataframe_to_html(prof1, extra_classes=['ui','compact', 'table'], index = False) }}
+{{ pdf_tools.dataframe_to_html(stats_dp, extra_classes=['ui','compact', 'table'], index = False) }}
 p.
-{{ pdf_tools.dataframe_to_html(prof2, extra_classes=['ui','compact', 'table'], index = False) }}
+{{ pdf_tools.dataframe_to_html(dp, extra_classes=['ui','compact', 'table'], index = False) }}
 
 
 :markdown
  #### Marcador de Alineamiento:
- {{ pdf_tools.dataframe_to_html(alineamiento, extra_classes=['ui','compact', 'table'], index = True) }}
+ {{ pdf_tools.dataframe_to_html(al_Gbases, extra_classes=['ui','compact', 'table'], index = True) }}
+p.
+{{ pdf_tools.dataframe_to_html(al_reads, extra_classes=['ui','compact', 'table'], index = True) }}
+p.
+{{ pdf_tools.dataframe_to_html(al_rates, extra_classes=['ui','compact', 'table'], index = True) }}
+p.
+{{ pdf_tools.dataframe_to_html(al_lib, extra_classes=['ui','compact', 'table'], index = True) }}
 p.
 
 //:markdown
@@ -68,9 +80,9 @@ p.
   .ui.icon.message.yellow.block-center
     i.exclamation.circle.icon
     .content
-      .header Disclaimer.
+      .header Descargo de responsabilidad.
       p.
-        Los estudios de secuenciación masiva no poseen una sensibilidad del 100 %. Las variantes identificadas deben ser interpretadas dentro
+        Los estudios de secuenciación masiva no poseen una sensibilidad del 100%. Las variantes identificadas deben ser interpretadas dentro
         del contexto del conocimiento actual de las causas genéticas de la alteración que motiva el análisis y de la sensibilidad de las herramientas 
         bioinformáticas utilizadas.
       p.
