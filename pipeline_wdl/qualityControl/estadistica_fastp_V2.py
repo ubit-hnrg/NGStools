@@ -120,7 +120,7 @@ for q in range(len(content)):
 #total_lecturas_passTrue=0
 total_lecturas=sum(total_reads_bef1)
 #bases_before = round(float(sum(total_bases_bef1)/10**9),6)
-bases_before = sum(total_bases_bef1)/float(10**9)
+bases_before = sum(total_bases_bef1)/(10**9)
 total_lecturas_passTrue = sum(total_reads_aft)
 N_reads_after = total_lecturas_passTrue
 bases_after = round(float(sum(total_bases_aft)/10**9),6)
