@@ -50,7 +50,7 @@ despues_col = ['total de lecturas despues del filtrado','total de lecturas despu
 NNN_col = ['lecturas lowqual[%]', 'lecturas NNNNN[%]', 'lecturas muy cortas[%]','lecturas muy largas[%]']
 bases_col = ['total de GIGAbases antes del filtrado','total de GIGAbases despues del filtrado','contenido GC antes','contenido GC despues']
 
-bases = filtrado_df[bases]
+bases = filtrado_df[bases_col]
 antes = filtrado_df[antes_col]#.index('total de lecturas antes del filtrado')
 desp = filtrado_df[despues_col]#.set_index('total de lecturas despues del filtrado')
 NNN = filtrado_df[NNN_col]#.set_index('lecturas lowqual[%]')
