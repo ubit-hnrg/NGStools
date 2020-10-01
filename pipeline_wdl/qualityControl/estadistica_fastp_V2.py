@@ -89,7 +89,7 @@ for q in range(len(content)):
     #update observables.
     ####campos importantes before filtering
     total_reads_bef1.append(json.summary.before_filtering['total_reads'])
-    total_bases_bef1.append(json.summary.before_filtering['total_bases'])
+    total_bases_bef1.append(json.summary.before_filtering['total_bases']/float(10**9))
     gc_content_bef1.append(json.summary.before_filtering['gc_content'])
     q20_rates_bef1.append(json.summary.before_filtering['q20_rate'])
     q30_rates_bef1.append(json.summary.before_filtering['q30_rate'])
@@ -118,9 +118,9 @@ for q in range(len(content)):
     sample_name=os.path.basename(content[q]).strip('.txt')
 
 #total_lecturas_passTrue=0
-total_lecturas=sum(total_reads_bef1)
+total_lecturas=sum(total_reads_bef1)*(10**9)
 #bases_before = round(float(sum(total_bases_bef1)/10**9),6)
-bases_before = sum(total_bases_bef1)/(10**9)
+bases_before = sum(total_bases_bef1)#/(10**9)
 total_lecturas_passTrue = sum(total_reads_aft)
 N_reads_after = total_lecturas_passTrue
 bases_after = round(float(sum(total_bases_aft)/10**9),6)
