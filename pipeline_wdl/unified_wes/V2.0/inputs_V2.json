@@ -54,6 +54,7 @@
 
   "##COMMENT9": "VARIOS. El comando sorted debe estar vacio si la region contiene MT. sino es: -sorted",
   "main_workflow.qual_control.cobertura.sorted": "String? (optional)",
+  "main_workflow.pipeline_version":"V2_5-2",
   "main_workflow.ubam_list_name": "ubamfiles",
   "main_workflow.singleGenotypeGVCFs.excess_het_threshold": "54.69",
   "main_workflow.contamination": "0",
