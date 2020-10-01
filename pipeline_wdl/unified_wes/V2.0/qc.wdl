@@ -390,11 +390,7 @@ scatter (fastp in fastp_json_files){
   }
  
  
-call symlink_important_files as save_excel_qual {
-         input:
-         output_to_save = make_excel.reporte_excel,
-         path_save = experiment_path
-     }
+
  ###File hist_by_exon = "${sample_name}_ENS_local_report.tsv"  ##este es output y va al main para armar el excel x exones.
 
 
