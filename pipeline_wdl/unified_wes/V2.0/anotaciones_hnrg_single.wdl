@@ -231,10 +231,9 @@ command{
     ##test
     ##sort -k1,1V -k2,2n ${exon_coord} >> sorted_exon_bed.bed
     
-    bedtools closest -a head_vcf.vcf -b ${exon_coord} -D a | cut -f1,2,12-18  > ${sample_name}.exon_distance.tsv
+    bedtools closest -a head_vcf.vcf -b ${exon_coord} -D a | cut -f1,2,12,13,15-18  > ${sample_name}.exon_distance.tsv
 
     rm head_vcf.vcf
-    ###cp -L ${sample_name}.exon_distance_tolib.tsv ${path_save}
     }
 
 output {
