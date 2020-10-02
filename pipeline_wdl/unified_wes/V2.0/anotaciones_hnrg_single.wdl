@@ -218,7 +218,7 @@ task exon_distance {
 File vcf_ok
 File exon_coord
 String sample_name
-File exon_coordinates_to_lib
+#File exon_coordinates_to_lib
 String path_save
 
 command{
@@ -229,19 +229,17 @@ command{
     grep -v "#" ${vcf_ok}| sort -k1,1 -k2,2n >> head_vcf.vcf
     
     ##test
-    sort -k1,1V -k2,2n ${exon_coord} >> sorted_exon_bed.bed
+    ##sort -k1,1V -k2,2n ${exon_coord} >> sorted_exon_bed.bed
     
-    bedtools closest -a head_vcf.vcf -b sorted_exon_bed.bed -D ref | cut -f 1,2,12-18  > ${sample_name}.exon_distance.tsv
-
-    bedtools closest -a head_vcf.vcf -b ${exon_coordinates_to_lib} -D ref | cut -f 1,2,12-18  > ${sample_name}.exon_distance_tolib.tsv
+    bedtools closest -a head_vcf.vcf -b ${exon_coord} -D a | cut -f1,2,12-18  > ${sample_name}.exon_distance.tsv
 
     rm head_vcf.vcf
-    cp -L ${sample_name}.exon_distance_tolib.tsv ${path_save}
+    ###cp -L ${sample_name}.exon_distance_tolib.tsv ${path_save}
     }
 
 output {
 File exon_dist = "${sample_name}.exon_distance.tsv"
-File exon_dist_to_lib = "${sample_name}.exon_distance_tolib.tsv"
+#File exon_dist_to_lib = "${sample_name}.exon_distance_tolib.tsv"
 
 }
 }
@@ -258,7 +256,7 @@ String reference_version
 String path_save
 String pipeline_version
 File exon_coordinates
-File exon_coordinates_to_lib
+#File exon_coordinates_to_lib
 
 
 
@@ -492,7 +490,7 @@ call exon_distance {
     input:
     vcf_ok = final_annot.salida_Snpsift,
     exon_coord = exon_coordinates,
-    exon_coordinates_to_lib = exon_coordinates_to_lib,
+    #exon_coordinates_to_lib = exon_coordinates_to_lib,
     sample_name = samplename1,
     path_save = path_save
 }
