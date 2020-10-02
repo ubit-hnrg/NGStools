@@ -523,6 +523,7 @@ workflow main_workflow {
         java_heap_memory_initial = "12g",
         pipeline_version = pipeline_version,
         exon_coordinates = generic_exon_coords,#coord_generator.interval_restricted,
+        exon_coordinates_to_lib =  coord_generator.exon_restricted,
         reference_version = reference_version
         
 

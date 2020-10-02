@@ -492,6 +492,7 @@ call exon_distance {
     input:
     vcf_ok = final_annot.salida_Snpsift,
     exon_coord = exon_coordinates,
+    exon_coordinates_to_lib = exon_coordinates_to_lib,
     sample_name = samplename1,
     path_save = path_save
 }
