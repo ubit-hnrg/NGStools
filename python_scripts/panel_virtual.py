@@ -14,8 +14,8 @@ parser.add_argument('-o','--output', help='bed file con genes virtuales')
 
 args =  parser.parse_args()
 
-l_genes = args.lista_genes
-int_cap = args.intervalo_de_captura
+lista_genes_path = args.lista_genes
+int_cap_path = args.intervalo_de_captura
 out = args.output
 
 
@@ -41,7 +41,12 @@ def no_encontrados(lista,intervalo_captura):
     return aux
 
 def intervalo_captura(lista_genes,intervalo_experimento):
-    panel_digital = intervalo_experimento[intervalo_experimento.GENE_NAME.isin(lista_genes)]
+
+    experiment_lib = pd.read_csv(intervalo_experimento, sep = '\t',header = None)
+    experiment_lib.rename(columns={0:'CHR',1:'START',2:'END',3:'ENSEMBL_ID',4:'GENE_NAME',5:'EXON_NUMBER',6:'STRAND'},inplace = True)
+
+
+    panel_digital = experiment_lib[experiment_lib.GENE_NAME.isin(lista_genes)]
     genes_lista = panel_digital['GENE_NAME'].drop_duplicates().tolist()
     bases_panel_digital = sum(panel_digital.END - panel_digital.START)
     n_genes = panel_digital.GENE_NAME.drop_duplicates().count()
@@ -54,11 +59,12 @@ def main(args):
     #if len(args) != 3:
     #    raise SystemExit('Uso adecuado: %s archivo_lista_genes archivo_intervalo_ensembl_2_lib' % args[0])
 
-    genes_panel = lista_genes(l_genes)
-    panel_digital, genes_lista, bases_panel_digital, n_genes, n_exones = intervalo_captura(genes_panel,int_cap)
+ 
+    genes_panel = lista_genes(lista_genes_path) ### 
+    panel_digital, genes_lista, bases_panel_digital, n_genes, n_exones = intervalo_captura(genes_panel,int_cap_path)
     no_found = no_encontrados(genes_panel,genes_lista)
 
-    print(f'El panel digital {os.path.splitext(os.path.basename(path_idp))[0]} tiene: {n_genes} genes, {n_exones} exones, {bases_panel_digital} bases.')
+    print(f'El panel digital {os.path.splitext(os.path.basename(lista_genes_path))[0]} tiene: {n_genes} genes, {n_exones} exones, {bases_panel_digital} bases.')
     print(f'Los genes: {no_found} de la lista ingresada no se encuentran en el intervalo')
     
     panel_digital.to_csv(out,sep='\t', index = False)
