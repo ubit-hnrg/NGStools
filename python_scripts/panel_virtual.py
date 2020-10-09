@@ -55,7 +55,7 @@ def intervalo_captura(lista_genes,intervalo_experimento):
     return panel_digital, genes_lista, bases_panel_digital, n_genes, n_exones
     
 
-def main(args):
+def main():
     #if len(args) != 3:
     #    raise SystemExit('Uso adecuado: %s archivo_lista_genes archivo_intervalo_ensembl_2_lib' % args[0])
 
