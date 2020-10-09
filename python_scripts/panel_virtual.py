@@ -67,7 +67,7 @@ def main():
     #print(f'El panel digital {os.path.splitext(os.path.basename(lista_genes_path))[0]} tiene: {n_genes} genes, {n_exones} exones, {bases_panel_digital} bases.')
     #print(f'Los genes: {no_found} de la lista ingresada no se encuentran en el intervalo')
     
-    panel_digital.to_csv(out,sep='\t', index = False)
+    panel_digital.to_csv(out,sep='\t', index = False, header = None)
 
 
 if __name__ == '__main__':
