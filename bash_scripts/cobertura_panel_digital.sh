@@ -5,7 +5,7 @@ bam=$1
 intervalo_restricted=$2
 lista_genes=$3
 
-out=$4
+#out=$4
 
 sample_name=$(basename $bam .bam)
 panel_name=$(basename $lista_genes .genes)
