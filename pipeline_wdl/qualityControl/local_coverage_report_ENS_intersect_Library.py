@@ -58,10 +58,10 @@ def main():
     ENS_coverage_hist = pd.read_csv(ffile,sep ='\t')
     results = ENS_coverage_hist.groupby(['transcriptID','exonNumber']).apply(localdepth)
     results = results.reset_index()
-    info = ENS_coverage_hist.drop_duplicates(['transcriptID','exonNumber'])[['gene','exonNumber','transcriptID','chr','start','end','strand','IntervalLength']]
+    info = ENS_coverage_hist.drop_duplicates(['transcriptID','exonNumber'])[['gene','exonNumber','transcriptID','start','end','strand','IntervalLength']]
     results = pd.merge(results,info,on = ['transcriptID','exonNumber'])
-    results = results[['gene','transcriptID','exonNumber','chr','start','end','strand','IntervalLength','dp>=1','dp>=10','dp>=20','dp>=30','dp>=50','dp>=100']]
-    results.sort_values(by=['chr','start','end'],inplace = True) ### sort para ordenar los exones en strand - ##agu 8/10
+    results = results[['gene','transcriptID','exonNumber','start','end','strand','IntervalLength','dp>=1','dp>=10','dp>=20','dp>=30','dp>=50','dp>=100']]
+    results.sort_values(by=['start','end'],inplace = True) ### sort para ordenar los exones en strand - ##agu 8/10
     results.to_csv(output_local_coverage,sep = '\t',index = False)
 
 if __name__ == "__main__":
