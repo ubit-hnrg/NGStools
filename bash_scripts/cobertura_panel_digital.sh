@@ -20,7 +20,7 @@ rm $sample_name.hist.aux1 $sample_name.hist.aux2 header.txt
 
 
 # make tsv coverage report by exon
-python /home/hnrg/NGStools/pipeline_wdl/qualityControl/local_coverage_report_ENS_intersect_Library.py -i=$sample_name.hist -o $sample_name'_'$panel_digital_coverage'.tsv' -s=$sample_name
+python /home/hnrg/NGStools/pipeline_wdl/qualityControl/local_coverage_report_ENS_intersect_Library.py -i=$sample_name.hist -o $sample_name'_exon_digital_panel_coverage.tsv' -s=$sample_name
        
 
 
