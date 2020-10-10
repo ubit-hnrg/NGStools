@@ -12,7 +12,7 @@ panel_name=$(basename $lista_genes .genes)
 
 python /home/hnrg/NGStools/python_scripts/panel_virtual.py -l $lista_genes -ic $intervalo_restricted -o intervalo_panel_digital.bed
 
-/home/hnrg/HNRG-pipeline-V0.1/tools/bedtools2/bin/coverageBed -bbam $bam  -a intervalo_panel_digital.bed -hist -sorted > $sample_name.hist.aux1
+/home/hnrg/HNRG-pipeline-V0.1/tools/bedtools2/bin/coverageBed -b $bam  -a intervalo_panel_digital.bed -hist  > $sample_name.hist.aux1
 echo -e 'chr\tstart\tend\ttranscriptID\tgene\texonNumber\tstrand\tDP\tBPs\tIntervalLength\tfrequency' > header.txt
 grep -v '^all' $sample_name.hist.aux1 > $sample_name.hist.aux2
 cat header.txt $sample_name.hist.aux2 > $sample_name.hist
