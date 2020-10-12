@@ -10,7 +10,7 @@ lista_genes=$3
 sample_name=$(basename $bam .bam)
 panel_name=$(basename $lista_genes .genes)
 
-python /home/hnrg/NGStools/python_scripts/panel_virtual.py -l $lista_genes -ic $intervalo_restricted -o intervalo_panel_digital.bed
+python /home/hnrg/NGStools/python_scripts/panel_virtual.py -l $lista_genes -ic $intervalo_restricted -o intervalo_panel_digital.bed -ne $panel_name'_no_encontrado.tsv' 
 
 #### quito duplicados
 ##/home/hnrg/HNRG-pipeline-V0.1/tools/samtools-1.9
@@ -25,12 +25,12 @@ grep -v '^all' $sample_name.hist.aux1 > $sample_name.hist.aux2
 cat header.txt $sample_name.hist.aux2 > $sample_name.hist
 #rm $sample_name.hist.aux1 $sample_name.hist.aux2 header.txt bam_nodups.bam
 
-rm $sample_name.hist.aux1 $sample_name.hist.aux2 header.txt
+rm $sample_name.hist.aux1 $sample_name.hist.aux2 header.txt 
 
 
 # make tsv coverage report by exon
 python /home/hnrg/NGStools/pipeline_wdl/qualityControl/local_coverage_report_dp_20X.py -i=$sample_name.hist -o $panel_name'_digital_panel_coverage.tsv' -pn=$panel_name
        
 
-
+rm $sample_name.hist
 
