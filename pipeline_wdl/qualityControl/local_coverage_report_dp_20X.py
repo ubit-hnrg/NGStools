@@ -28,9 +28,10 @@ panel_name = args.panel_name
 output_local_coverage = args.output_coverage_digital_report
 signif = 2 # harcoded
     
-def depth_fraction(coverage,thr=0,ZeroDepth=False): ##modifico, retorno la cantidad de bases totales.
-    if not ZeroDepth:
-        condition = coverage['DP']>=thr
+########################################################################################################### ARI
+def depth_fraction(coverage,thr=0,ZeroDepth=False): ##modifico, retorno la cantidad de bases totales.       #
+    if not ZeroDepth:                                                                                       #
+        condition = coverage['DP']>=thr                                                                     #
     else:
         condition = coverage['DP']== thr
 
@@ -48,8 +49,8 @@ def localdepth(coverage_hist):
 
     local_depth.update({'dp>=20':round(depth_20X,signif)})
     #local_depth.update({'dp>=20':round(depth_fraction(coverage_hist,thr=30),signif)})
-    return pd.Series(local_depth)  
-
+    return pd.Series(local_depth)                                                                  #
+####################################################################################################
 
 def main():
     cov_panel_digital = pd.read_csv(ffile,sep ='\t')
@@ -70,7 +71,7 @@ def main():
     panel_out = pd.DataFrame(panel_dig, columns = ['N_genes','N_exones','N_bases_panel','bases_20X','bases>=20X(%)','prof_media'],index = [panel_name])
 
 
-    results.to_csv(panel_out,sep = '\t')#,index = False)
+    panel_out.to_csv(output_local_coverage,sep = '\t')#,index = False)
 
 if __name__ == "__main__":
     main()
