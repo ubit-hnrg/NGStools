@@ -11,12 +11,16 @@ parser = argparse.ArgumentParser()
 parser.add_argument('-l','--lista_genes', help='archivo con genes, uno por linea')
 parser.add_argument('-ic','--intervalo_de_captura', help='intervalo de captura acotado a ensembl, esta en la carpeta de resultados de cada experimento')
 parser.add_argument('-o','--output', help='bed file con genes virtuales')
+parser.add_argument('-ne','--out_no_encontrado', help='lista de genes no encontrados')
+
+
 
 args =  parser.parse_args()
 
 lista_genes_path = args.lista_genes
 int_cap_path = args.intervalo_de_captura
 out = args.output
+out_no_enc = args.out_no_encontrado
 
 
 def lista_genes(path):
@@ -68,6 +72,7 @@ def main():
     #print(f'Los genes: {no_found} de la lista ingresada no se encuentran en el intervalo')
     
     panel_digital.to_csv(out,sep='\t', index = False, header = None)
+    no_found.to_csv(out_no_enc,sep='\t', index = False, header = None)
 
 
 if __name__ == '__main__':
