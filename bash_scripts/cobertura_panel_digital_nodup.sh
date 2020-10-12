@@ -15,7 +15,7 @@ python /home/hnrg/NGStools/python_scripts/panel_virtual.py -l $lista_genes -ic $
 #### quito duplicados
 ##/home/hnrg/HNRG-pipeline-V0.1/tools/samtools-1.9
 samtools view -F1024 $bam> bam_nodups.bam
-samtools stats bam_nodups.bam -t intervalo_sorted.bed > $sample_name'_samtools_nodup.stats'
+samtools stats bam_nodups.bam -t intervalo_panel_digital.bed  > $sample_name'_samtools_nodup.stats'
 
 
 /home/hnrg/HNRG-pipeline-V0.1/tools/bedtools2/bin/coverageBed -b bam_nodups.bam  -a intervalo_panel_digital.bed -g /home/hnrg/HNRG-pipeline-V0.1/references/hs37d5/hs37d5.genome -hist -sorted > $sample_name.hist.aux1
