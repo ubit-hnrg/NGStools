@@ -26,7 +26,7 @@ rm $sample_name.hist.aux1 $sample_name.hist.aux2 header.txt bam_nodups.bam
 
 
 # make tsv coverage report by exon
-python /home/hnrg/NGStools/pipeline_wdl/qualityControl/local_coverage_report_pd_20X.py -i=$sample_name.hist -o $sample_name'_exon_digital_panel_coverage.tsv' -pn=$panel_name
+python /home/hnrg/NGStools/pipeline_wdl/qualityControl/local_coverage_report_pd_20X.py -i=$sample_name.hist -o $sample_name'_digital_panel_coverage.tsv' -pn=$panel_name
        
 
 
