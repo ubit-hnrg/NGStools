@@ -67,12 +67,13 @@ def main():
     genes_panel = lista_genes(lista_genes_path) ### 
     panel_digital, genes_lista, bases_panel_digital, n_genes, n_exones = intervalo_captura(genes_panel,int_cap_path)
     no_found = no_encontrados(genes_panel,genes_lista)
+    out_nofound = pd.DataFrame(no_found,columns=['genes_no_encontrados_en_lista(RECHECK)'])
 
     #print(f'El panel digital {os.path.splitext(os.path.basename(lista_genes_path))[0]} tiene: {n_genes} genes, {n_exones} exones, {bases_panel_digital} bases.')
     #print(f'Los genes: {no_found} de la lista ingresada no se encuentran en el intervalo')
     
     panel_digital.to_csv(out,sep='\t', index = False, header = None)
-    no_found.to_csv(out_no_enc,sep='\t', index = False, header = None)
+    out_nofound.to_csv(out_no_enc,sep='\t', index = False)
 
 
 if __name__ == '__main__':
