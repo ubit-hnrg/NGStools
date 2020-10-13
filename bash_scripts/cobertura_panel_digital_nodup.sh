@@ -17,17 +17,17 @@ python /home/hnrg/NGStools/python_scripts/panel_virtual.py -l $lista_genes -ic $
 
 #### quito duplicados
 /home/hnrg/HNRG-pipeline-V0.1/tools/samtools-1.9/samtools view -h -F1024 $bam -u > bam_nodups.sam
-/home/hnrg/HNRG-pipeline-V0.1/tools/bedtools2/bin/coverageBed -b bam_nodups.sam  -a intervalo_panel_digital.bed -g /home/hnrg/HNRG-pipeline-V0.1/references/hs37d5/hs37d5.genome -hist -sorted > $sample_name.hist.aux
+/home/hnrg/HNRG-pipeline-V0.1/tools/bedtools2/bin/coverageBed -b bam_nodups.sam  -a intervalo_panel_digital.bed -g /home/hnrg/HNRG-pipeline-V0.1/references/hs37d5/hs37d5.genome -hist -sorted > $sample_name'.hist.aux'
 
 
 #####para ensembl
 echo -e 'chr\tstart\tend\ttranscriptID\tgene\texonNumber\tstrand\tDP\tBPs\tIntervalLength\tfrequency' > header.txt
-grep -v '^all' $sample_name.hist.aux > $sample_name.hist.aux2
-cat header.txt $sample_name.hist.aux2 > $sample_name.hist
-rm $sample_name.hist.aux2 header.txt bam_nodups.sam $sample_name.hist.aux
+grep -v '^all' $sample_name'.hist.aux' > $sample_name'.hist.aux2'
+cat header.txt $sample_name'.hist.aux2' > $sample_name'.hist'
+rm $sample_name'.hist.aux2' header.txt bam_nodups.sam $sample_name'.hist.aux'
 
 #histograma global del bam nodup restringido a toda la librería
-grep '^all' $sample_name.hist.aux > global_nodup.hist
+grep '^all' $sample_name'.hist.aux' > global_nodup.hist
 echo -e 'chr\tDP\tBPs\tIntervalLength\tfrequency' > global_nodup.header.txt
 cat global_nodup.header.txt global_nodup.hist > $sample_name'_global_nodup.hist'
 rm global_nodup.header.txt global_nodup.hist
