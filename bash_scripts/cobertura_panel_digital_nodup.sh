@@ -31,7 +31,7 @@ panel_name=$(basename $lista_genes .genes)
 
 echo -e 'chr\tstart\tend\tgene\tDP\tBPs\tIntervalLength\tfrequency' > header.txt
 cat header.txt $sample_name'.hist.aux' > $sample_name'_nodup.hist' 
-rm $sample_name'.hist.aux header.txt' bam_nodups.sam
+rm $sample_name'.hist.aux' header.txt bam_nodups.sam
 
 
 #histograma global del bam nodup restringido a toda la librería
