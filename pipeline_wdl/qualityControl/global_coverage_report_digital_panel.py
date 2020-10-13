@@ -89,19 +89,22 @@ def main():
     coverage_hist = pd.read_csv(ffile,sep ='\t')
     globalreport = pd.Series(globaldepth(coverage_hist))
 
-    genes_panel = coverage_hist.gene.drop_duplicates().count() 
-    exones_panel = coverage_hist.drop_duplicates(['transcriptID','exonNumber']).shape[0]
+    #genes_panel = coverage_hist.gene.drop_duplicates().count() 
+    #exones_panel = coverage_hist.drop_duplicates(['transcriptID','exonNumber']).shape[0]
 
     #prof_media = coverage_hist.DP.mean()
 
-    panel_dig = {'N_genes':[genes_panel],'N_exones':[exones_panel]}
-    panel_out = pd.DataFrame(panel_dig, columns = ['N_genes','N_exones'],index = [panel_n])
+    #panel_dig = {'N_genes':[genes_panel],'N_exones':[exones_panel]}
+    #panel_out = pd.DataFrame(panel_dig, columns = ['N_genes','N_exones'],index = [panel_n])
 
 
     globalreport = globalreport[['bases_totales','bases_20X','dp>=20','mean_DP']].to_frame()
     globalreport.columns=[panel_n]
-    out=pd.concat([panel_out , globalreport.T],axis = 1)
-    out.to_csv(output_digital_panel_report,header = True,sep='\t')
+    #out=pd.concat([panel_out , globalreport.T],axis = 1)
+    #out.to_csv(output_digital_panel_report,header = True,sep='\t')
+    globalreport.to_csv(output_digital_panel_report,header = True,sep='\t')
+
+
 
     # f = plt.figure(figsize=(14,6))
     # ax1 = f.add_subplot(121)
