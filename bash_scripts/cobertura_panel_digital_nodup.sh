@@ -39,7 +39,7 @@ rm global_nodup.header.txt global_nodup.hist $sample_name'.hist.aux'
 ########################################################### para intervalo_lib.
 echo -e 'chr\tstart\tend\tgene\tDP\tBPs\tIntervalLength\tfrequency' > header_lib.txt
 grep -v '^all' $sample_name'.intervalo_captura.aux' > $sample_name'.IC.aux2'
-cat header_lib.txt $sample_name'.IC.aux2' > $sample_name'_lib.hist' 
+cat header_lib.txt $sample_name'.IC.aux2' > $sample_name'_lib_IC.hist' 
 rm $sample_name'.IC.aux2' header_lib.txt
 
 #histograma global del bam nodup restringido a toda la librería
