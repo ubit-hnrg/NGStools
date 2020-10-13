@@ -24,7 +24,7 @@ python /home/hnrg/NGStools/python_scripts/panel_virtual.py -l $lista_genes -ic $
 echo -e 'chr\tstart\tend\ttranscriptID\tgene\texonNumber\tstrand\tDP\tBPs\tIntervalLength\tfrequency' > header.txt
 grep -v '^all' $sample_name.hist.aux > $sample_name.hist.aux2
 cat header.txt $sample_name.hist.aux2 > $sample_name.hist
-rm $sample_name.hist.aux $sample_name.hist.aux2 header.txt bam_nodups.sam
+rm $sample_name.hist.aux2 header.txt bam_nodups.sam #$sample_name.hist.aux
 
 #histograma global del bam nodup restringido a toda la librería
 #grep '^all' $sample_name'_nodup.hist' > global_nodup.hist
