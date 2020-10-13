@@ -11,13 +11,17 @@ sample_name=$(basename $bam .bam)
 panel_name=$(basename $lista_genes .genes)
 
 ####for intervalo de captura raw.
-#sort -k1,1V -k2,2n $intervalo_restricted > intervalo_sorted.bed
+sort -k1,1V -k2,2n $4 > intervalo_sorted.bed
 
 python /home/hnrg/NGStools/python_scripts/panel_virtual.py -l $lista_genes -ic $intervalo_restricted -o intervalo_panel_digital.bed -gne $panel_name'_no_encontrado.tsv' -ge $panel_name'_incluidos.tsv'
 
 #### quito duplicados
 /home/hnrg/HNRG-pipeline-V0.1/tools/samtools-1.9/samtools view -h -F1024 $bam -u > bam_nodups.sam
 /home/hnrg/HNRG-pipeline-V0.1/tools/bedtools2/bin/coverageBed -b bam_nodups.sam  -a intervalo_panel_digital.bed -g /home/hnrg/HNRG-pipeline-V0.1/references/hs37d5/hs37d5.genome -hist -sorted > $sample_name'.hist.aux'
+
+#####fines de testing: cobertura en la libreria del experimento:
+/home/hnrg/HNRG-pipeline-V0.1/tools/bedtools2/bin/coverageBed -b bam_nodups.sam  -a $4 -g /home/hnrg/HNRG-pipeline-V0.1/references/hs37d5/hs37d5.genome -hist -sorted > $sample_name'.intervalo_captura.aux'
+
 
 
 #####para ensembl
@@ -33,15 +37,16 @@ cat global_nodup.header.txt global_nodup.hist > $sample_name'_global_nodup.hist'
 rm global_nodup.header.txt global_nodup.hist $sample_name'.hist.aux'
 
 ########################################################### para intervalo_lib.
-#echo -e 'chr\tstart\tend\tgene\tDP\tBPs\tIntervalLength\tfrequency' > header_lib.txt
-#cat header_lib.txt ${sample_name}_nodup.hist.aux > ${sample_name}_nodup.hist 
-#rm ${sample_name}_nodup.hist.aux header_nodup.txt bam_nodups.sam
+echo -e 'chr\tstart\tend\tgene\tDP\tBPs\tIntervalLength\tfrequency' > header_lib.txt
+grep -v '^all' $sample_name'.intervalo_captura.aux' > $sample_name'.IC.aux2'
+cat header_lib.txt $sample_name'.IC.aux2' > $sample_name'_lib.hist' 
+rm $sample_name'.IC.aux2' header_lib.txt
 
 #histograma global del bam nodup restringido a toda la librería
-#grep '^all' ${sample_name}_nodup.hist > global_nodup.hist
-#echo -e 'chr\tDP\tBPs\tIntervalLength\tfrequency' > global_nodup.header.txt
-#cat global_nodup.header.txt global_nodup.hist > ${sample_name}_global_nodup.hist
-#rm global_nodup.header.txt global_nodup.hist
+grep '^all' $sample_name'.intervalo_captura.aux' > global_all.hist
+echo -e 'chr\tDP\tBPs\tIntervalLength\tfrequency' > global_nodup.header.txt
+cat global_nodup.header.txt global_all.hist > $sample_name'_IC_all.hist'
+rm global_nodup.header.txt global_all.hist
 
 
 #make tsv coverage report by exon
