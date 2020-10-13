@@ -45,7 +45,7 @@ def globaldepth(coverage_hist):
     
     global_depth={}
     b, bases_20x, depth_20X = depth_fraction(coverage_hist,thr=20)
-    global_depth.update({'bases_totales':b})
+    global_depth.update({'bases_totales':int(b)})
 
     global_depth.update({'mean_DP':round(weighted_stats.mean,signif)})
     #global_depth.update({'median_DP':weighted_stats.quantile(0.5).values[0]})
@@ -57,7 +57,7 @@ def globaldepth(coverage_hist):
 
     #global_depth.update({'dp>=1':round(depth_fraction(coverage_hist,thr=1),signif)})
     #global_depth.update({'dp>=10':round(depth_fraction(coverage_hist,thr=10),signif)})
-    global_depth.update({'bases_20X':bases_20x})
+    global_depth.update({'bases_20X':int(bases_20x)})
     #global_depth.update({'bases_20X(%)':(100*(bases_20x/b)})
     global_depth.update({'dp>=20':round(depth_20X,3)})
 
@@ -89,20 +89,20 @@ def main():
     coverage_hist = pd.read_csv(ffile,sep ='\t')
     globalreport = pd.Series(globaldepth(coverage_hist))
 
-    #genes_panel = coverage_hist.gene.drop_duplicates().count() 
-    #exones_panel = coverage_hist.drop_duplicates(['transcriptID','exonNumber']).shape[0]
+    genes_panel = coverage_hist.gene.drop_duplicates().count() 
+    exones_panel = coverage_hist.drop_duplicates(['transcriptID','exonNumber']).shape[0]
 
-    #prof_media = coverage_hist.DP.mean()
+    prof_media = coverage_hist.DP.mean()
 
-    #panel_dig = {'N_genes':[genes_panel],'N_exones':[exones_panel]}
-    #panel_out = pd.DataFrame(panel_dig, columns = ['N_genes','N_exones'],index = [panel_n])
+    panel_dig = {'N_genes':[genes_panel],'N_exones':[exones_panel]}
+    panel_out = pd.DataFrame(panel_dig, columns = ['N_genes','N_exones'],index = [panel_n])
 
 
     globalreport = globalreport[['bases_totales','bases_20X','dp>=20','mean_DP']].to_frame()
     globalreport.columns=[panel_n]
-    #out=pd.concat([panel_out , globalreport.T],axis = 1)
-    #out.to_csv(output_digital_panel_report,header = True,sep='\t')
-    globalreport.to_csv(output_digital_panel_report,header = True,sep='\t')
+    out=pd.concat([panel_out , globalreport.T],axis = 1)
+    out.to_csv(output_digital_panel_report,header = True,sep='\t')
+    #globalreport.to_csv(output_digital_panel_report,header = True,sep='\t')
 
 
 
