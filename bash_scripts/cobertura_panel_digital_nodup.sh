@@ -15,22 +15,41 @@ panel_name=$(basename $lista_genes .genes)
 #sed -i 's/\t*$//' intervalo_panel_digital.bed > bed_ok.bed
 #### quito duplicados
 /home/hnrg/HNRG-pipeline-V0.1/tools/samtools-1.9/samtools view -h -F1024 $bam -u > bam_nodups.sam
-/home/hnrg/HNRG-pipeline-V0.1/tools/bedtools2/bin/coverageBed -b bam_nodups.sam  -a intervalo_sorted.bed -g /home/hnrg/HNRG-pipeline-V0.1/references/hs37d5/hs37d5.genome -hist -sorted > $sample_name.hist.aux1
+/home/hnrg/HNRG-pipeline-V0.1/tools/bedtools2/bin/coverageBed -b bam_nodups.sam  -a intervalo_sorted.bed -g /home/hnrg/HNRG-pipeline-V0.1/references/hs37d5/hs37d5.genome -hist -sorted > $sample_name.hist.aux
 
 ####con dup
-#/home/hnrg/HNRG-pipeline-V0.1/tools/bedtools2/bin/coverageBed -b $bam  -a intervalo_panel_digital.bed -g /home/hnrg/HNRG-pipeline-V0.1/references/hs37d5/hs37d5.genome -hist -sorted > $sample_name.hist.aux1
-echo -e 'chr\tstart\tend\tgene\texonNumber\tDP\tBPs\tIntervalLength\tfrequency' > header.txt
+#/home/hnrg/HNRG-pipeline-V0.1/tools/bedtools2/bin/coverageBed -b $bam  -a intervalo_panel_digital.bed -g /home/hnrg/HNRG-pipeline-V0.1/references/hs37d5/hs37d5.genome -hist -sorted > $sample_name.hist.aux
+
+#echo -e 'chr\tstart\tend\tgene\tDP\tBPs\tIntervalLength\tfrequency' > header_nodup.txt
+
+#echo -e 'chr\tstart\tend\tgene\texonNumber\tDP\tBPs\tIntervalLength\tfrequency' > header.txt
 
 #echo -e 'chr\tstart\tend\ttranscriptID\tgene\texonNumber\tstrand\tDP\tBPs\tIntervalLength\tfrequency' > header.txt
-grep -v '^all' $sample_name.hist.aux1 > $sample_name.hist.aux2
-cat header.txt $sample_name.hist.aux2 > $sample_name.hist
-rm $sample_name.hist.aux1 $sample_name.hist.aux2 header.txt bam_nodups.sam
+#grep -v '^all' $sample_name.hist.aux1 > $sample_name.hist.aux2
+#cat header.txt $sample_name.hist.aux2 > $sample_name.hist
+#rm $sample_name.hist.aux1 $sample_name.hist.aux2 header.txt bam_nodups.sam
+
+echo -e 'chr\tstart\tend\tgene\tDP\tBPs\tIntervalLength\tfrequency' > header.txt
+cat header.txt $sample_name'.hist.aux' > $sample_name'_nodup.hist' 
+rm $sample_name'.hist.aux header.txt' bam_nodups.sam
+
+
+#histograma global del bam nodup restringido a toda la librería
+grep '^all' $sample_name'_nodup.hist' > global_nodup.hist
+echo -e 'chr\tDP\tBPs\tIntervalLength\tfrequency' > global_nodup.header.txt
+cat global_nodup.header.txt global_nodup.hist > $sample_name'_global_nodup.hist'
+rm global_nodup.header.txt global_nodup.hist
+
+###no dup
+# echo -e 'chr\tstart\tend\tgene\tDP\tBPs\tIntervalLength\tfrequency' > header_nodup.txt
+# cat header_nodup.txt $sample_name'_nodup.hist.aux' > $sample_name'_nodup.hist' 
+# rm $sample_name'_nodup.hist.aux header_nodup.txt' bam_nodups.sam
 
 #rm $sample_name.hist.aux1 $sample_name.hist.aux2 header.txt 
 
 
 #make tsv coverage report by exon
-python /home/hnrg/NGStools/pipeline_wdl/qualityControl/global_coverage_report_digital_panel.py -i=$sample_name.hist -o $panel_name'_digital_panel_coverage.tsv' -pn=$panel_name
+python /home/hnrg/NGStools/pipeline_wdl/qualityControl/global_coverage_report_digital_panel.py -i=$sample_name'_global_nodup.hist' -o $panel_name'_digital_panel_coverage.tsv' -pn=$panel_name
        
 #python /home/hnrg/NGStools/pipeline_wdl/qualityControl/make_excel_report.py $panel_name'_digital_panel_coverage.tsv':$panel_name $panel_name'_no_encontrado.tsv':genes_NO_encontrados $panel_name'_incluidos.tsv':genes_cubiertos  $panel_name'_coverage_report.xlsx'
 
