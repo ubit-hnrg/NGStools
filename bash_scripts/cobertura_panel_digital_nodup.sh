@@ -13,7 +13,7 @@ panel_name=$(basename $lista_genes .genes)
 python /home/hnrg/NGStools/python_scripts/panel_virtual.py -l $lista_genes -ic $intervalo_restricted -o intervalo_panel_digital.bed -gne $panel_name'_no_encontrado.tsv' -ge $panel_name'_incluidos.tsv'
 
 #### quito duplicados
-/home/hnrg/HNRG-pipeline-V0.1/tools/samtools-1.9/samtools view -F1024 $bam > bam_nodups.bam
+/home/hnrg/HNRG-pipeline-V0.1/tools/samtools-1.9/samtools view -F1024 -h $bam > bam_nodups.bam
 /home/hnrg/HNRG-pipeline-V0.1/tools/bedtools2/bin/coverageBed -b bam_nodups.bam  -a intervalo_panel_digital.bed -g /home/hnrg/HNRG-pipeline-V0.1/references/hs37d5/hs37d5.genome -hist -sorted > $sample_name.hist.aux1
 
 ####con dup
