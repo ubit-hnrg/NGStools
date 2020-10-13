@@ -45,7 +45,7 @@ def globaldepth(coverage_hist):
     
     global_depth={}
     b, bases_20x, depth_20X = depth_fraction(coverage_hist,thr=20)
-    global_depth.update({'bases_totales':int(b)})
+    global_depth.update({'bases_totales':b})
 
     global_depth.update({'mean_DP':round(weighted_stats.mean,signif)})
     #global_depth.update({'median_DP':weighted_stats.quantile(0.5).values[0]})
@@ -57,7 +57,7 @@ def globaldepth(coverage_hist):
 
     #global_depth.update({'dp>=1':round(depth_fraction(coverage_hist,thr=1),signif)})
     #global_depth.update({'dp>=10':round(depth_fraction(coverage_hist,thr=10),signif)})
-    global_depth.update({'bases_20X':int(bases_20x)})
+    global_depth.update({'bases_20X':bases_20x})
     #global_depth.update({'bases_20X(%)':(100*(bases_20x/b)})
     global_depth.update({'dp>=20':round(depth_20X,3)})
 
