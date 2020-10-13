@@ -32,7 +32,7 @@ args =  parser.parse_args()
 #ffile = sys.argv[1]
 ffile = args.library_coverage_histogram  # input file
 panel_n = args.panel_name
-output_global_digital_panel_report = args.output_global_report
+output_digital_panel_report = args.output_global_digital_panel_report
 #out_plot = args.output_plot
 signif = 2 # harcoded
 
@@ -101,7 +101,7 @@ def main():
     globalreport = globalreport[['bases_totales','bases_20X','dp>=20','mean_DP']].to_frame()
     globalreport.columns=[panel_n]
     out=pd.concat([panel_out , globalreport.T],axis = 1)
-    out.to_csv(output_global_digital_panel_report,header = True,sep='\t')
+    out.to_csv(output_digital_panel_report,header = True,sep='\t')
 
     # f = plt.figure(figsize=(14,6))
     # ax1 = f.add_subplot(121)
