@@ -19,8 +19,9 @@ panel_name=$(basename $lista_genes .genes)
 
 ####con dup
 #/home/hnrg/HNRG-pipeline-V0.1/tools/bedtools2/bin/coverageBed -b $bam  -a intervalo_panel_digital.bed -g /home/hnrg/HNRG-pipeline-V0.1/references/hs37d5/hs37d5.genome -hist -sorted > $sample_name.hist.aux1
+echo -e 'chr\tstart\tend\tgene\texonNumber\tDP\tBPs\tIntervalLength\tfrequency' > header.txt
 
-echo -e 'chr\tstart\tend\ttranscriptID\tgene\texonNumber\tstrand\tDP\tBPs\tIntervalLength\tfrequency' > header.txt
+#echo -e 'chr\tstart\tend\ttranscriptID\tgene\texonNumber\tstrand\tDP\tBPs\tIntervalLength\tfrequency' > header.txt
 grep -v '^all' $sample_name.hist.aux1 > $sample_name.hist.aux2
 cat header.txt $sample_name.hist.aux2 > $sample_name.hist
 rm $sample_name.hist.aux1 $sample_name.hist.aux2 header.txt bam_nodups.sam
