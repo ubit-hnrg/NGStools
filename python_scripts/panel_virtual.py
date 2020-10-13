@@ -11,7 +11,8 @@ parser = argparse.ArgumentParser()
 parser.add_argument('-l','--lista_genes', help='archivo con genes, uno por linea')
 parser.add_argument('-ic','--intervalo_de_captura', help='intervalo de captura acotado a ensembl, esta en la carpeta de resultados de cada experimento')
 parser.add_argument('-o','--output', help='bed file con genes virtuales')
-parser.add_argument('-ne','--out_no_encontrado', help='lista de genes no encontrados')
+parser.add_argument('-gne','--out_no_encontrado', help='lista de genes no encontrados')
+parser.add_argument('-ge','--out_encontrados', help='lista de genes encontrados')
 
 
 
@@ -21,6 +22,7 @@ lista_genes_path = args.lista_genes
 int_cap_path = args.intervalo_de_captura
 out = args.output
 out_no_enc = args.out_no_encontrado
+out_enc = args.out_encontrados
 
 
 def lista_genes(path):
@@ -38,11 +40,14 @@ def no_encontrados(lista,intervalo_captura):
     '''
     devuelve los genes no encontrados en la lista de genes suministrada x el usuario
     '''
-    aux=[]
+    aux_no = []
+    aux_si = []
     for i in lista:
         if i not in intervalo_captura:
-            aux.append(i)
-    return aux
+            aux_no.append(i)
+        else: 
+            aux_si.append(i)
+    return aux_si, aux_no
 
 def intervalo_captura(lista_genes,intervalo_experimento):
 
@@ -66,14 +71,16 @@ def main():
  
     genes_panel = lista_genes(lista_genes_path) ### 
     panel_digital, genes_lista, bases_panel_digital, n_genes, n_exones = intervalo_captura(genes_panel,int_cap_path)
-    no_found = no_encontrados(genes_panel,genes_lista)
+    encontrado, no_found = no_encontrados(genes_panel,genes_lista)
     out_nofound = pd.DataFrame(no_found,columns=['genes_no_encontrados_en_lista(RECHECK)'])
+    out_genes = pd.DataFrame(encontrado, columns=['genes en el panel digital'])
 
     #print(f'El panel digital {os.path.splitext(os.path.basename(lista_genes_path))[0]} tiene: {n_genes} genes, {n_exones} exones, {bases_panel_digital} bases.')
     #print(f'Los genes: {no_found} de la lista ingresada no se encuentran en el intervalo')
     
     panel_digital.to_csv(out,sep='\t', index = False, header = None)
     out_nofound.to_csv(out_no_enc,sep='\t', index = False)
+    out_genes.to_csv(out_enc,sep='\t', index = False)
 
 
 if __name__ == '__main__':
