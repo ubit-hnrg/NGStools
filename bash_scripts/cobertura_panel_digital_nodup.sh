@@ -22,9 +22,9 @@ python /home/hnrg/NGStools/python_scripts/panel_virtual.py -l $lista_genes -ic $
 echo -e 'chr\tstart\tend\ttranscriptID\tgene\texonNumber\tstrand\tDP\tBPs\tIntervalLength\tfrequency' > header.txt
 grep -v '^all' $sample_name.hist.aux1 > $sample_name.hist.aux2
 cat header.txt $sample_name.hist.aux2 > $sample_name.hist
-rm $sample_name.hist.aux1 $sample_name.hist.aux2 header.txt bam_nodups.sam
+#rm $sample_name.hist.aux1 $sample_name.hist.aux2 header.txt bam_nodups.sam
 
-#rm $sample_name.hist.aux1 $sample_name.hist.aux2 header.txt 
+rm $sample_name.hist.aux1 $sample_name.hist.aux2 header.txt 
 
 
 #make tsv coverage report by exon
