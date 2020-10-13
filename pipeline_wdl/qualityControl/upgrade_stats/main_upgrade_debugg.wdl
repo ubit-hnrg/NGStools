@@ -406,7 +406,7 @@ call fastp_qual {
      path_softlink = path_softlink,
      samplename = basename(bams[idx], '.bam')#sample_name
     }
-    }
+    #}
     call cob.coverage_qual{
       input:
       bam_in = bams[idx],
@@ -424,7 +424,7 @@ call fastp_qual {
     }
  }
 
- Array[String] path_save = mkdir_samplename.path_out_softlink
+Array[String] path_save = mkdir_samplename.path_out_softlink
 Array[File] hist_global_tsv = coverage_qual.global_tsv
 Array[File] samtools_tsv = coverage_qual.samtools_global
 
@@ -438,7 +438,7 @@ Array[File] samtools_tsv = coverage_qual.samtools_global
 
  #Array[File] samtools_global = samtools_reports_file.output_global_report
  #Create a file with a list of the generated output_global_report
-  call CreateFoFN as CreateFoFN_samtools{
+  call CreateFoFN as CreateFoFN_samtools {
     input:
       array_of_files = samtools_tsv,#samtools_reports_file.output_global_report,#stat_alineamiento,
       fofn_name = experiment_name #basename(bams[idx], '.bam')#experiment_name
@@ -561,4 +561,5 @@ Array[File] samtools_tsv = coverage_qual.samtools_global
 
 
 ####end
+
 }
