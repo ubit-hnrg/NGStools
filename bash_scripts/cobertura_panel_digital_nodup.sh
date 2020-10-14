@@ -19,11 +19,15 @@ python /home/hnrg/NGStools/python_scripts/panel_virtual.py -l $lista_genes -ic $
 /home/hnrg/HNRG-pipeline-V0.1/tools/samtools-1.9/samtools view -h -F1024 $bam -u > bam_nodups.sam
 /home/hnrg/HNRG-pipeline-V0.1/tools/bedtools2/bin/coverageBed -b bam_nodups.sam  -a intervalo_panel_digital.bed -g /home/hnrg/HNRG-pipeline-V0.1/references/hs37d5/hs37d5.genome -hist -sorted > $sample_name'.hist.aux'
 
-#####fines de testing: cobertura en la libreria del experimento:
+#####fines de testing: cobertura en la libreria del experimento: NO DUPS
 /home/hnrg/HNRG-pipeline-V0.1/tools/bedtools2/bin/coverageBed -b bam_nodups.sam  -a intervalo_sorted.bed -g /home/hnrg/HNRG-pipeline-V0.1/references/hs37d5/hs37d5.genome -hist -sorted > $sample_name'.intervalo_captura.aux'
+samtools stats bam_nodups.sam -t intervalo_sorted.bed > $sample_name'_samtools_nodups.stats'
 
-#####fines de testing: cobertura en la libreria del experimento:
+
+
+#####fines de testing: cobertura en la libreria del experimento: DUPS
 /home/hnrg/HNRG-pipeline-V0.1/tools/bedtools2/bin/coverageBed -b $bam  -a intervalo_sorted.bed -g /home/hnrg/HNRG-pipeline-V0.1/references/hs37d5/hs37d5.genome -hist -sorted > $sample_name'.intervalo_captura_dup.aux'
+samtools stats $bam -t intervalo_sorted.bed > $sample_name'_samtools_dups.stats'
 
 #####para ensembl
 echo -e 'chr\tstart\tend\ttranscriptID\tgene\texonNumber\tstrand\tDP\tBPs\tIntervalLength\tfrequency' > header.txt
