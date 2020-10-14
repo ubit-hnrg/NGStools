@@ -58,7 +58,7 @@ rm $sample_name'.IC_dup.aux2' header_lib_dup.txt
 #histograma global del bam nodup restringido a toda la librería
 grep '^all' $sample_name'.intervalo_captura_dup.aux' > global_all_dup.hist
 echo -e 'chr\tDP\tBPs\tIntervalLength\tfrequency' > global_dup.header.txt
-cat global_dup.header.txt global_all.hist > $sample_name'_IC_all_dup.hist'
+cat global_dup.header.txt global_all_dup.hist > $sample_name'_IC_all_dup.hist'
 rm global_dup.header.txt global_all_dup.hist
 
 
