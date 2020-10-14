@@ -22,7 +22,8 @@ python /home/hnrg/NGStools/python_scripts/panel_virtual.py -l $lista_genes -ic $
 #####fines de testing: cobertura en la libreria del experimento:
 /home/hnrg/HNRG-pipeline-V0.1/tools/bedtools2/bin/coverageBed -b bam_nodups.sam  -a intervalo_sorted.bed -g /home/hnrg/HNRG-pipeline-V0.1/references/hs37d5/hs37d5.genome -hist -sorted > $sample_name'.intervalo_captura.aux'
 
-
+#####fines de testing: cobertura en la libreria del experimento:
+/home/hnrg/HNRG-pipeline-V0.1/tools/bedtools2/bin/coverageBed -b $bam  -a intervalo_sorted.bed -g /home/hnrg/HNRG-pipeline-V0.1/references/hs37d5/hs37d5.genome -hist -sorted > $sample_name'.intervalo_captura_dup.aux'
 
 #####para ensembl
 echo -e 'chr\tstart\tend\ttranscriptID\tgene\texonNumber\tstrand\tDP\tBPs\tIntervalLength\tfrequency' > header.txt
@@ -47,6 +48,18 @@ grep '^all' $sample_name'.intervalo_captura.aux' > global_all.hist
 echo -e 'chr\tDP\tBPs\tIntervalLength\tfrequency' > global_nodup.header.txt
 cat global_nodup.header.txt global_all.hist > $sample_name'_IC_all.hist'
 rm global_nodup.header.txt global_all.hist
+
+#####intervalo sin duplicados $sample_name'.intervalo_captura_dup.aux'
+echo -e 'chr\tstart\tend\tgene\tDP\tBPs\tIntervalLength\tfrequency' > header_lib_dup.txt
+grep -v '^all' $sample_name'.intervalo_captura_dup.aux' > $sample_name'.IC_dup.aux2'
+cat header_lib_dup.txt $sample_name'.IC_dup.aux2' > $sample_name'_lib_IC_dup.hist' 
+rm $sample_name'.IC_dup.aux2' header_lib_dup.txt
+
+#histograma global del bam nodup restringido a toda la librería
+grep '^all' $sample_name'.intervalo_captura_dup.aux' > global_all_dup.hist
+echo -e 'chr\tDP\tBPs\tIntervalLength\tfrequency' > global_dup.header.txt
+cat global_dup.header.txt global_all.hist > $sample_name'_IC_all_dup.hist'
+rm global_dup.header.txt global_all_dup.hist
 
 
 #make tsv coverage report by exon
