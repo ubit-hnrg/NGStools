@@ -72,5 +72,5 @@ python /home/hnrg/NGStools/pipeline_wdl/qualityControl/global_coverage_report_di
 python /home/hnrg/NGStools/pipeline_wdl/qualityControl/make_excel_report.py $panel_name'_digital_panel_coverage.tsv':$panel_name $panel_name'_no_encontrado.tsv':genes_NO_encontrados $panel_name'_incluidos.tsv':genes_cubiertos  $panel_name'_digita_coverage_report.xlsx'
 
 
-rm $sample_name.hist
+rm $sample_name.hist intervalo_panel_digital.bed 
 
