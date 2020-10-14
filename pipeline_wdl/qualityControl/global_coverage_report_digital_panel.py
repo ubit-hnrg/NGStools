@@ -92,7 +92,7 @@ def main():
     genes_panel = coverage_hist.gene.drop_duplicates().count() 
     exones_panel = coverage_hist.drop_duplicates(['transcriptID','exonNumber']).shape[0]
 
-    prof_media = coverage_hist.DP.mean()
+    #prof_media = coverage_hist.DP.mean()
 
     panel_dig = {'N_genes':[genes_panel],'N_exones':[exones_panel]}
     panel_out = pd.DataFrame(panel_dig, columns = ['N_genes','N_exones'],index = [panel_n])
