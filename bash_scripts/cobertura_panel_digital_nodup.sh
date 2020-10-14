@@ -35,11 +35,11 @@ grep -v '^all' $sample_name'.hist.aux' > $sample_name'.hist.aux2'
 cat header.txt $sample_name'.hist.aux2' > $sample_name'.hist'
 rm $sample_name'.hist.aux2' header.txt bam_nodups.sam 
 
-#histograma global del bam nodup restringido a toda la librería
-grep '^all' $sample_name'.hist.aux' > global_nodup.hist
-echo -e 'chr\tDP\tBPs\tIntervalLength\tfrequency' > global_nodup.header.txt
-cat global_nodup.header.txt global_nodup.hist > $sample_name'_global_nodup.hist'
-rm global_nodup.header.txt global_nodup.hist $sample_name'.hist.aux'
+#histograma global del bam nodup restringido a toda la librería ####all, no lo uso. este va en el excel
+#grep '^all' $sample_name'.hist.aux' > global_nodup.hist
+#echo -e 'chr\tDP\tBPs\tIntervalLength\tfrequency' > global_nodup.header.txt
+#cat global_nodup.header.txt global_nodup.hist > $sample_name'_global_nodup.hist'
+#rm global_nodup.header.txt global_nodup.hist $sample_name'.hist.aux'
 
 # ########################################################### para intervalo_lib.
 # echo -e 'chr\tstart\tend\tgene\tDP\tBPs\tIntervalLength\tfrequency' > header_lib.txt
