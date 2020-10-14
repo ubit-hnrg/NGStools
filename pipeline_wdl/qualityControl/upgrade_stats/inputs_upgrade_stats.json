@@ -6,6 +6,7 @@
 
   "##COMMENT6": "agregar -sorted si es normal, si tiene MT, solucion parcial es dejar en blanco",
   "upgrade_statistics.coverage_qual.cobertura.sorted": "String? (optional)",
+  "upgrade_statistics.debug_db": "String",
   "upgrade_statistics.tabulatedSampleFilePaths": "File",
   "upgrade_statistics.experiment_name": "String",
   "upgrade_statistics.debug_db": "String",
