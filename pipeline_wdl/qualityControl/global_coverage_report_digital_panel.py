@@ -48,7 +48,7 @@ def globaldepth(coverage_hist):
     global_depth.update({'bases_totales':int(b)})
 
     global_depth.update({'mean_DP':round(weighted_stats.mean,signif)})
-    #global_depth.update({'median_DP':weighted_stats.quantile(0.5).values[0]})
+    global_depth.update({'median_DP':weighted_stats.quantile(0.5).values[0]})
     #global_depth.update({'std_DP':round(weighted_stats.std,signif)})
     #global_depth.update({'q25_DP':weighted_stats.quantile(0.25).values[0]})
     #global_depth.update({'q75_DP':weighted_stats.quantile(0.75).values[0]})
@@ -98,7 +98,7 @@ def main():
     panel_out = pd.DataFrame(panel_dig, columns = ['N_genes','N_exones'],index = [panel_n])
 
 
-    globalreport = globalreport[['bases_totales','bases_20X','dp>=20','mean_DP']].to_frame()
+    globalreport = globalreport[['bases_totales','bases_20X','dp>=20','mean_DP','median_DP']].to_frame()
     globalreport.columns=[panel_n]
     out=pd.concat([panel_out , globalreport.T],axis = 1)
     out.to_csv(output_digital_panel_report,header = True,sep='\t')
