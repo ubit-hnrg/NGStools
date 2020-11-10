@@ -65,23 +65,23 @@ task cobertura {
 
         ###septiembre,20: se agrega eliminar duplicados.
         ${toolpath}samtools view -F1024 -u ${input_bam} > bam_nodups.sam
-         ${toolpath}samtools stats bam_nodups.sam -t intervalo_sorted.bed > ${sample_name}_samtools_nodup_${pipeline_version}.stats
+        ${toolpath}samtools stats bam_nodups.sam -t intervalo_sorted.bed > ${sample_name}_samtools_nodup_${pipeline_version}.stats ##samtools stat task
 
-        ####global_hist for no dups_bams
+        ####global_hist for no dups_bams 
         ${toolpath}bedtools2/bin/coverageBed -a intervalo_sorted.bed -b bam_nodups.sam -hist ${sorted} > ${sample_name}_nodup.hist.aux
         ##${toolpath}bedtools2/bin/coverageBed -a ${intervalo_captura} -b ${input_bam} -sorted -hist > ${sample_name}.hist.aux
         echo -e 'chr\tstart\tend\tgene\tDP\tBPs\tIntervalLength\tfrequency' > header_nodup.txt
         cat header_nodup.txt ${sample_name}_nodup.hist.aux > ${sample_name}_nodup.hist 
         rm ${sample_name}_nodup.hist.aux header_nodup.txt bam_nodups.sam
 
-        #histograma global del bam nodup restringido a toda la librería
-        grep '^all' ${sample_name}_nodup.hist > global_nodup.hist
+        #histograma global del bam nodup restringido a toda la librería ####for report tsv
+        grep '^all' ${sample_name}_nodup.hist.aux > global_nodup.hist
         echo -e 'chr\tDP\tBPs\tIntervalLength\tfrequency' > global_nodup.header.txt
         cat global_nodup.header.txt global_nodup.hist > ${sample_name}_global_nodup.hist
         rm global_nodup.header.txt global_nodup.hist
 
         
-         ####samtools stat
+         ####samtools stat ###pestaña alineamiento excel calidad.
         ${toolpath}samtools stats ${input_bam} -t ${intervalo_captura} > ${sample_name}_samtools_${pipeline_version}.stats
          /usr/local/bin/plot-bamstats ${sample_name}_samtools_${pipeline_version}.stats -p ${path_save}samtools_plots/${sample_name}
 
@@ -89,7 +89,7 @@ task cobertura {
         #### EXONES     ##################################
         #histograma restringido a cada exon de ensembl que está en la librería de captura
         
-        ##${toolpath}bedtools2/bin/sort ${input_bam} -m 1G | 
+        ##${toolpath}bedtools2/bin/sort ${input_bam} -m 1G |  
         ${toolpath}bedtools2/bin/coverageBed -a ${ensembl2intervalo_captura} -b ${input_bam} -hist ${sorted} > ${sample_name}.ENS_${pipeline_version}.hist.aux1
         echo -e 'chr\tstart\tend\ttranscriptID\tgene\texonNumber\tstrand\tDP\tBPs\tIntervalLength\tfrequency' > header.txt
         grep -v '^all' ${sample_name}.ENS_${pipeline_version}.hist.aux1 > ${sample_name}.ENS_${pipeline_version}.hist.aux2
@@ -116,8 +116,8 @@ task cobertura {
 
     output {
         #File histo_global ="${sample_name}.global.hist"
-        File histo_global_nodup = "${sample_name}_global_nodup.hist"####"${sample_name}_nodup.hist"#"${sample_name}_samtools_nodup_${pipeline_version}.stats"
-        File samtools_stat_experiment_bam = "${sample_name}_samtools_${pipeline_version}.stats"
+        File histo_global_nodup = "${sample_name}_global_nodup.hist" ### para reporte prof en libreria
+        File samtools_stat_experiment_bam = "${sample_name}_samtools_${pipeline_version}.stats" 
         File samtools_stat_nodup_experiment_bam = "${sample_name}_samtools_nodup_${pipeline_version}.stats"
         File histo_exon = "${sample_name}.ENS_${pipeline_version}.hist"
         File sex_prediction = "${sample_name}_sex_${pipeline_version}.txt"

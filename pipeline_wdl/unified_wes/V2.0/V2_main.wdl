@@ -516,7 +516,8 @@ workflow main_workflow {
 
     call anotacionesSingle.FuncionalAnnotationSingle {
         input:
-        input_vcf = singleGenotypeGVCFs.restricted_vcf,#singleGenotypeGVCFs.individual_vcfs_annovar,#restricted_vcf,
+        #input_vcf = singleGenotypeGVCFs.restricted_vcf, # version actual, 
+        input_vcf = singleGenotypeGVCFs.individual_vcfs_annovar,# pruebo con esta ahora. 
         path_save = mkdir_samplename.path_out_softlink,
         toolpath = toolpath,
         samplename1 = sample_name,
@@ -609,7 +610,7 @@ Array[File] html_reports_from_fastq = ConvertPairedFastQsToUnmappedBamWf.fastp_h
 
 ####for pdf purpose 
   Array[File] alineamiento_rep = qual_control.reporte_final_alineamiento#bam2gvcf.reporte_final ### archivo para mergear... estadistica en la libreria del experimento
-  Array[File] global = qual_control.depth_global_cov_stats
+  Array[File] global = qual_control.depth_global_cov_stats 
   Array[Pair[String,File]] global_report = zip (array_path_save_byexon, global)
   scatter (pairs in global_report) {
     call symlink_important_files as global_hist {
