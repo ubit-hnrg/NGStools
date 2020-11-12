@@ -292,19 +292,19 @@ call bptools as step_0_bptools_mma {
 
 
 }
-# #Step 12: Annotate with ClinVar
-# call Snpsift as step12_clinVar{
-# input:
-#     samplename1 = samplename1,
-#     #parametros = "annotate -v -info CLNHGVS,CLNALLE,CLNSRC,CLNORIGIN,CLNSRCID,CLNSIG,CLNDSDB,CLNDSDBID,CLNDBN,CLNACC",
-#     parametros = "annotate",
-#     input_vcf = step10_PhastCons.salida_Snpsift,
-#     #input_vcf = step11_CADD.salida_Snpsift,
-#     toolpath = toolpath,
-#     java_heap_memory_initial = java_heap_memory_initial,
-#     nombre_step = "step12_clinVar"
+#Step 12: Annotate with ClinVar
+call Snpsift as step12_clinVar{
+input:
+    samplename1 = samplename1,
+    #parametros = "annotate -v -info CLNHGVS,CLNALLE,CLNSRC,CLNORIGIN,CLNSRCID,CLNSIG,CLNDSDB,CLNDSDBID,CLNDBN,CLNACC",
+    parametros = "annotate",
+    input_vcf = step_0_bptools_mma.bptools_out,#step10_PhastCons.salida_Snpsift,
+    #input_vcf = step11_CADD.salida_Snpsift,
+    toolpath = toolpath,
+    java_heap_memory_initial = java_heap_memory_initial,
+    nombre_step = "step12_clinVar"
 
-# }
+}
 
 
 # #Step 5: Annotate with hapmap
@@ -436,7 +436,7 @@ call bptools as step_0_bptools_mma {
  call hnrg_freq {
 
  input:
-    input_vcf = step_0_bptools_mma.bptools_out,#step13_pharmGKB.salida_Snpsift, 
+    input_vcf = step12_clinVar.salida_Snpsift,#step_0_bptools_mma.bptools_out,#step13_pharmGKB.salida_Snpsift, 
     samplename1 = samplename1,
     toolpath = toolpath,
     nombre_step = "step14_HNRG_FREQ"

@@ -15,6 +15,9 @@
   "FuncionalAnnotationSingle.step3_dbSNP.database": "/home/hnrg/HNRG-pipeline-V0.1/libraries/intervalos/ensembl_canonicos_GRCh37_0based.tsv",
   "FuncionalAnnotationSingle.step3_dbSNP.database_index": "/home/hnrg/HNRG-pipeline-V0.1/libraries/intervalos/ensembl_canonicos_GRCh37_0based.tsv",
   "FuncionalAnnotationSingle.step4_1000Genomes.database_index": "File",
-  "FuncionalAnnotationSingle.step4_1000Genomes.database": "File"
+  "FuncionalAnnotationSingle.step4_1000Genomes.database": "File",
+  "FuncionalAnnotationSingle.step12_clinVar.database": "/home/hnrg/HNRG-pipeline-V0.1/new_dbs/clinvar_20200127.vcf.gz",
+  "FuncionalAnnotationSingle.step12_clinVar.database_index": "/home/hnrg/HNRG-pipeline-V0.1/new_dbs/clinvar_20200127.vcf.gz.tbi"
+
 }
 
