@@ -13,6 +13,8 @@
   "FuncionalAnnotationSingle.hnrg_freq.config_file_vcfanno": "/home/hnrg/NGStools/pipeline_wdl/unified_wes/anotacion_funcional_2020/anotacion_freq_HNRG.toml",
   
   "FuncionalAnnotationSingle.step3_dbSNP.database": "/home/hnrg/HNRG-pipeline-V0.1/libraries/intervalos/ensembl_canonicos_GRCh37_0based.tsv",
-  "FuncionalAnnotationSingle.step3_dbSNP.database_index": "/home/hnrg/HNRG-pipeline-V0.1/libraries/intervalos/ensembl_canonicos_GRCh37_0based.tsv"
+  "FuncionalAnnotationSingle.step3_dbSNP.database_index": "/home/hnrg/HNRG-pipeline-V0.1/libraries/intervalos/ensembl_canonicos_GRCh37_0based.tsv",
+  "FuncionalAnnotationSingle.step4_1000Genomes.database_index": "File",
+  "FuncionalAnnotationSingle.step4_1000Genomes.database": "File"
 }
 

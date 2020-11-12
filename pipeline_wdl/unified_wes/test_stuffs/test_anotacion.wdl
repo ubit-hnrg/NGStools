@@ -270,22 +270,22 @@ input:
     
 }
 
-# #Step 4: Annotate with 1000Genomes
-# call Snpsift as step4_1000Genomes {
-# input:
-#     samplename1 = samplename1,
-#     parametros = "annotate",
-#     input_vcf = step3_dbSNP.salida_Snpsift,
-#     toolpath = toolpath,
-#     java_heap_memory_initial = java_heap_memory_initial,
-#     nombre_step = "step4_1000Genomes"
-# }
+#Step 4: Annotate with 1000Genomes
+call Snpsift as step4_1000Genomes {
+input:
+    samplename1 = samplename1,
+    parametros = "annotate",
+    input_vcf = step3_dbSNP.salida_Snpsift,
+    toolpath = toolpath,
+    java_heap_memory_initial = java_heap_memory_initial,
+    nombre_step = "step4_1000Genomes"
+}
 
 call bptools as step_0_bptools_mma {
     input: 
     samplename1 = samplename1,
     parametros = "-mma",
-    input_vcf = step3_dbSNP.salida_Snpsift,#input_vcf,
+    input_vcf = step4_1000Genomes.salida_Snpsift,#step3_dbSNP.salida_Snpsift,#input_vcf,
     toolpath = toolpath,
     java_heap_memory_initial = java_heap_memory_initial,
     nombre_step = "step0_splitMAA"
