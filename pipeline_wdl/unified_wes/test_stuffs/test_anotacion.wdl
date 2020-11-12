@@ -258,28 +258,17 @@ input:
 
 # }
 
-#Step 3: Annotate with dbSNP151"
-call Snpsift as step3_dbSNP {
-input:
-    samplename1 = samplename1,
-    parametros = "annotate",
-    input_vcf = step_1_Snpeff.step1_snpeff,#step_2_bptools_variant_annotation.bptools_out,
-    toolpath = toolpath,
-    java_heap_memory_initial = java_heap_memory_initial,
-    nombre_step = "step3_dbSNP"
-    
-}
-
 #Step 4: Annotate with 1000Genomes
 call Snpsift as step4_1000Genomes {
 input:
     samplename1 = samplename1,
     parametros = "annotate",
-    input_vcf = step3_dbSNP.salida_Snpsift,
+    input_vcf = step_1_Snpeff.step1_snpeff,
     toolpath = toolpath,
     java_heap_memory_initial = java_heap_memory_initial,
     nombre_step = "step4_1000Genomes"
 }
+
 
 call bptools as step_0_bptools_mma {
     input: 
@@ -292,13 +281,26 @@ call bptools as step_0_bptools_mma {
 
 
 }
+#Step 3: Annotate with dbSNP151"
+call Snpsift as step3_dbSNP {
+input:
+    samplename1 = samplename1,
+    parametros = "annotate",
+    input_vcf = step_0_bptools_mma.bptools_out,#step_2_bptools_variant_annotation.bptools_out,
+    toolpath = toolpath,
+    java_heap_memory_initial = java_heap_memory_initial,
+    nombre_step = "step3_dbSNP"
+    
+}
+
+
 #Step 12: Annotate with ClinVar
 call Snpsift as step12_clinVar{
 input:
     samplename1 = samplename1,
     #parametros = "annotate -v -info CLNHGVS,CLNALLE,CLNSRC,CLNORIGIN,CLNSRCID,CLNSIG,CLNDSDB,CLNDSDBID,CLNDBN,CLNACC",
     parametros = "annotate",
-    input_vcf = step_0_bptools_mma.bptools_out,#step10_PhastCons.salida_Snpsift,
+    input_vcf = step3_dbSNP.salida_Snpsift,#step10_PhastCons.salida_Snpsift,
     #input_vcf = step11_CADD.salida_Snpsift,
     toolpath = toolpath,
     java_heap_memory_initial = java_heap_memory_initial,
