@@ -225,11 +225,11 @@ File input_vcf
 ##String path_herramientas#### cambiaar por toolpath
 String toolpath = '/home/hnrg/HNRG-pipeline-V0.1/tools/'
 String samplename1 = basename(input_vcf, ".vcf" )
-String java_heap_memory_initial
+String java_heap_memory_initial = '12g'
 String reference_version
 String path_save
 String pipeline_version = "anotation_test"
-File exon_coordinates
+File exon_coordinates = "/home/hnrg/HNRG-pipeline-V0.1/libraries/intervalos/ensembl_canonicos_GRCh37_0based.tsv"
 #File exon_coordinates_to_lib
 
 
