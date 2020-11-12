@@ -1,0 +1,18 @@
+{
+  
+ 
+  "FuncionalAnnotationSingle.input_vcf": "/home/hnrg/testing/anotaciones/EB896_ch17.vcf",
+  "FuncionalAnnotationSingle.exon_coordinates": "/home/hnrg/HNRG-pipeline-V0.1/libraries/intervalos/ensembl_canonicos_GRCh37_0based.tsv",
+  "FuncionalAnnotationSingle.java_heap_memory_initial": "128m",
+  "FuncionalAnnotationSingle.reference_version": "GRCh37.75",
+  "FuncionalAnnotationSingle.path_save": "/home/hnrg/testing/anotaciones/test_anotacion",
+  "FuncionalAnnotationSingle.toolpath": "/home/hnrg/HNRG-pipeline-V0.1/tools/",
+  "FuncionalAnnotationSingle.pipeline_version": "annotation_test",
+
+
+  "FuncionalAnnotationSingle.hnrg_freq.config_file_vcfanno": "/home/hnrg/NGStools/pipeline_wdl/unified_wes/anotacion_funcional_2020/anotacion_freq_HNRG.toml",
+  
+  "FuncionalAnnotationSingle.step3_dbSNP.database": "/home/hnrg/HNRG-pipeline-V0.1/libraries/intervalos/ensembl_canonicos_GRCh37_0based.tsv",
+  "FuncionalAnnotationSingle.step3_dbSNP.database_index": "/home/hnrg/HNRG-pipeline-V0.1/libraries/intervalos/ensembl_canonicos_GRCh37_0based.tsv"
+}
+
