@@ -3,7 +3,7 @@
  
   "FuncionalAnnotationSingle.input_vcf": "/home/hnrg/testing/anotaciones/EB896_ch17.vcf",
   "FuncionalAnnotationSingle.exon_coordinates": "/home/hnrg/HNRG-pipeline-V0.1/libraries/intervalos/ensembl_canonicos_GRCh37_0based.tsv",
-  "FuncionalAnnotationSingle.java_heap_memory_initial": "128m",
+  "FuncionalAnnotationSingle.java_heap_memory_initial": "12g",
   "FuncionalAnnotationSingle.reference_version": "GRCh37.75",
   "FuncionalAnnotationSingle.path_save": "/home/hnrg/testing/anotaciones/test_anotacion",
   "FuncionalAnnotationSingle.toolpath": "/home/hnrg/HNRG-pipeline-V0.1/tools/",
