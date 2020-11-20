@@ -595,7 +595,7 @@ Array[File] exon_tsv = qual_control.tsv_exon
 
  
  # Array[File] prof_by_exon = quality_control_V2.by_exon_depth##","${coord_generator.padded_coord}"] #"${name}_coverage_statistics_by_exon.tsv"
-Array[File] html_reports_from_fastq = ConvertPairedFastQsToUnmappedBamWf.fastp_html_reports 
+#Array[File] html_reports_from_fastq = ConvertPairedFastQsToUnmappedBamWf.fastp_html_reports 
 #Array[String] array_path_save_byexon = mkdir_samplename.path_out_softlink
 
 # Array[Pair[String,File]] html_fastp_by_samplre = zip (array_path_save_byexon, html_reports_from_fastq)
