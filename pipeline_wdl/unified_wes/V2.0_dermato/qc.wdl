@@ -72,13 +72,13 @@ task cobertura {
         ##${toolpath}bedtools2/bin/coverageBed -a ${intervalo_captura} -b ${input_bam} -sorted -hist > ${sample_name}.hist.aux
         echo -e 'chr\tstart\tend\tgene\tDP\tBPs\tIntervalLength\tfrequency' > header_nodup.txt
         cat header_nodup.txt ${sample_name}_nodup.hist.aux > ${sample_name}_nodup.hist 
-        rm ${sample_name}_nodup.hist.aux header_nodup.txt bam_nodups.sam
+        
 
         #histograma global del bam nodup restringido a toda la librería ####for report tsv
         grep '^all' ${sample_name}_nodup.hist.aux > global_nodup.hist
         echo -e 'chr\tDP\tBPs\tIntervalLength\tfrequency' > global_nodup.header.txt
         cat global_nodup.header.txt global_nodup.hist > ${sample_name}_global_nodup.hist
-        rm global_nodup.header.txt global_nodup.hist
+        rm global_nodup.header.txt global_nodup.hist ${sample_name}_nodup.hist.aux header_nodup.txt bam_nodups.sam
 
         
          ####samtools stat ###pestaña alineamiento excel calidad.
