@@ -306,7 +306,7 @@ call bptools as step_0_bptools_mma {
     nombre_step = "step0_splitMAA"
 
 
-# }
+ }
 
 #Step 12: Annotate with ClinVar
 # call Snpsift as step12_clinVar{
