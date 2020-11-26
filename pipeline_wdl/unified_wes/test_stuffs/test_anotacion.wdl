@@ -236,15 +236,15 @@ File exon_coordinates = "/home/hnrg/HNRG-pipeline-V0.1/libraries/intervalos/ense
 
 
 
-call Snpeff as step_1_Snpeff {
-input:
-    samplename1 = samplename1,
-    input_vcf = input_vcf,#step_0_bptools_mma.bptools_out,
-    toolpath = toolpath,
-    java_heap_memory_initial = java_heap_memory_initial,
-    reference_version = reference_version
+# call Snpeff as step_1_Snpeff {
+# input:
+#     samplename1 = samplename1,
+#     input_vcf = input_vcf,#step_0_bptools_mma.bptools_out,
+#     toolpath = toolpath,
+#     java_heap_memory_initial = java_heap_memory_initial,
+#     reference_version = reference_version
 
-}
+# }
 
 # call bptools as step_2_bptools_variant_annotation {
 #  input: 
@@ -272,28 +272,30 @@ input:
 
 
 #Step 3: Annotate with dbSNP151"
-call Snpsift as step3_dbSNP {
-input:
-    samplename1 = samplename1,
-    parametros = "annotate",
-    input_vcf = step_1_Snpeff.step1_snpeff,#step_0_bptools_mma.bptools_out,#step4_1000Genomes.salida_Snpsift,#,#step_2_bptools_variant_annotation.bptools_out,
-    toolpath = toolpath,
-    java_heap_memory_initial = java_heap_memory_initial,
-    nombre_step = "step3_dbSNP"
-    
-}
 
 call bptools as step_0_bptools_mma {
     input: 
     samplename1 = samplename1,
     parametros = "-mma",
-    input_vcf = step3_dbSNP.salida_Snpsift,#step4_1000Genomes.salida_Snpsift,#step3_dbSNP.salida_Snpsift,#input_vcf,
+    input_vcf = input_vcf,#step3_dbSNP.salida_Snpsift,#step4_1000Genomes.salida_Snpsift,#step3_dbSNP.salida_Snpsift,#input_vcf,
     toolpath = toolpath,
     java_heap_memory_initial = java_heap_memory_initial,
     nombre_step = "step0_splitMAA"
 
 
 }
+
+call Snpsift as step3_dbSNP {
+input:
+    samplename1 = samplename1,
+    parametros = "annotate",
+    input_vcf = step_0_bptools_mma.bptools_out,#step4_1000Genomes.salida_Snpsift,#,#step_2_bptools_variant_annotation.bptools_out,
+    toolpath = toolpath,
+    java_heap_memory_initial = java_heap_memory_initial,
+    nombre_step = "step3_dbSNP"
+    
+}
+
 #Step 12: Annotate with ClinVar
 # call Snpsift as step12_clinVar{
 # input:
@@ -435,16 +437,16 @@ call bptools as step_0_bptools_mma {
 # }
 
 
- call hnrg_freq {
+#  call hnrg_freq {
 
- input:
-    input_vcf = step_0_bptools_mma.bptools_out,#step3_dbSNP.salida_Snpsift,#step12_clinVar.salida_Snpsift,#step_0_bptools_mma.bptools_out,#step13_pharmGKB.salida_Snpsift, 
-    samplename1 = samplename1,
-    toolpath = toolpath,
-    nombre_step = "step14_HNRG_FREQ"
+#  input:
+#     input_vcf = step_0_bptools_mma.bptools_out,#step3_dbSNP.salida_Snpsift,#step12_clinVar.salida_Snpsift,#step_0_bptools_mma.bptools_out,#step13_pharmGKB.salida_Snpsift, 
+#     samplename1 = samplename1,
+#     toolpath = toolpath,
+#     nombre_step = "step14_HNRG_FREQ"
 
     
- }
+#  }
 
 
 # #Step 14: Annotate with ExAC
@@ -470,7 +472,7 @@ call bptools as step_0_bptools_mma {
 
  call symlink_important_files {
          input:
-        output_to_save = hnrg_freq.out_vcfanno,#final_annot.salida_Snpsift,
+        output_to_save = step3_dbSNP.salida_Snpsift,#hnrg_freq.out_vcfanno,#final_annot.salida_Snpsift,
         #output_to_save2 = exon_distance.exon_dist,
         path_save = path_save
     }
