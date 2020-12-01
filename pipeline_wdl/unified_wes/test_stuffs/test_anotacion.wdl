@@ -296,17 +296,17 @@ input:
     
 }
 
-call bptools as step_0_bptools_mma {
-    input: 
-    samplename1 = samplename1,
-    parametros = "-mma",
-    input_vcf = step3_dbSNP.salida_Snpsift,#step4_1000Genomes.salida_Snpsift,#step3_dbSNP.salida_Snpsift,#input_vcf,
-    toolpath = toolpath,
-    java_heap_memory_initial = java_heap_memory_initial,
-    nombre_step = "step0_splitMAA"
+# call bptools as step_0_bptools_mma {
+#     input: 
+#     samplename1 = samplename1,
+#     parametros = "-mma",
+#     input_vcf = step3_dbSNP.salida_Snpsift,#step4_1000Genomes.salida_Snpsift,#step3_dbSNP.salida_Snpsift,#input_vcf,
+#     toolpath = toolpath,
+#     java_heap_memory_initial = java_heap_memory_initial,
+#     nombre_step = "step0_splitMAA"
 
 
- }
+#  }
 
 #Step 12: Annotate with ClinVar
 # call Snpsift as step12_clinVar{
@@ -484,7 +484,7 @@ call bptools as step_0_bptools_mma {
 
  call symlink_important_files {
          input:
-        output_to_save = step_0_bptools_mma.bptools_out,#step3_dbSNP.salida_Snpsift,#hnrg_freq.out_vcfanno,#final_annot.salida_Snpsift,
+        output_to_save = step3_dbSNP.salida_Snpsift,#step_0_bptools_mma.bptools_out,#,#hnrg_freq.out_vcfanno,#final_annot.salida_Snpsift,
         #output_to_save2 = exon_distance.exon_dist,
         path_save = path_save
     }
