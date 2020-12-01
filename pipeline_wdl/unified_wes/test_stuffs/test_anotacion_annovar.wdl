@@ -274,28 +274,28 @@ File exon_coordinates = "/home/hnrg/HNRG-pipeline-V0.1/libraries/intervalos/ense
 
 #Step 3: Annotate with dbSNP151"
 
-call bptools as step_0_bptools_mma {
-    input: 
-    samplename1 = samplename1,
-    parametros = "-mma",
-    input_vcf = intervar_postprocessing.salida_intervar,#input_vcf,#step3_dbSNP.salida_Snpsift,#step4_1000Genomes.salida_Snpsift,#step3_dbSNP.salida_Snpsift,#input_vcf,
-    toolpath = toolpath,
-    java_heap_memory_initial = java_heap_memory_initial,
-    nombre_step = "step0_splitMAA"
+# call bptools as step_0_bptools_mma {
+#     input: 
+#     samplename1 = samplename1,
+#     parametros = "-mma",
+#     input_vcf = intervar_postprocessing.salida_intervar,#input_vcf,#step3_dbSNP.salida_Snpsift,#step4_1000Genomes.salida_Snpsift,#step3_dbSNP.salida_Snpsift,#input_vcf,
+#     toolpath = toolpath,
+#     java_heap_memory_initial = java_heap_memory_initial,
+#     nombre_step = "step0_splitMAA"
 
 
-}
+# }
 
-call Snpsift as step3_dbSNP {
-input:
-    samplename1 = samplename1,
-    parametros = "annotate",
-    input_vcf = step_0_bptools_mma.bptools_out,#intervar_postprocessing.salida_intervar,#input_vcf,#,#step4_1000Genomes.salida_Snpsift,#,#step_2_bptools_variant_annotation.bptools_out,
-    toolpath = toolpath,
-    java_heap_memory_initial = java_heap_memory_initial,
-    nombre_step = "step3_dbSNP"
+# call Snpsift as step3_dbSNP {
+# input:
+#     samplename1 = samplename1,
+#     parametros = "annotate",
+#     input_vcf = step_0_bptools_mma.bptools_out,#intervar_postprocessing.salida_intervar,#input_vcf,#,#step4_1000Genomes.salida_Snpsift,#,#step_2_bptools_variant_annotation.bptools_out,
+#     toolpath = toolpath,
+#     java_heap_memory_initial = java_heap_memory_initial,
+#     nombre_step = "step3_dbSNP"
     
-}
+# }
 
 # call bptools as step_0_bptools_mma {
 #     input: 
@@ -485,7 +485,7 @@ call intervar_postprocessing {
 
  call symlink_important_files {
          input:
-        output_to_save = step3_dbSNP.salida_Snpsift,#intervar_postprocessing.salida_intervar,#step_0_bptools_mma.bptools_out,#,#hnrg_freq.out_vcfanno,#final_annot.salida_Snpsift,
+        output_to_save = intervar_postprocessing.salida_intervar,#step3_dbSNP.salida_Snpsift,#,#step_0_bptools_mma.bptools_out,#,#hnrg_freq.out_vcfanno,#final_annot.salida_Snpsift,
         #output_to_save2 = exon_distance.exon_dist,
         path_save = path_save
     }
