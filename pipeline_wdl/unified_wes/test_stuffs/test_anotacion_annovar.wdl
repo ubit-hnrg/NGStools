@@ -249,11 +249,22 @@ File exon_coordinates = "/home/hnrg/HNRG-pipeline-V0.1/libraries/intervalos/ense
 
 # }
 
+call Snpsift_nodb as dbsnp{
+input:
+    samplename1 = samplename1,
+    parametros = 'annotate -v "/home/hnrg/HNRG-pipeline-V0.1/dbs/preprocessing_dbs/All_20180423.vcf.gz" -info CAF',
+    input_vcf = input_vcf,#intervar_postprocessing.salida_intervar,
+    toolpath = toolpath,
+    java_heap_memory_initial = java_heap_memory_initial,
+    nombre_step = "dbsnp"
+
+} 
+
 # call bptools as step_2_bptools_variant_annotation {
 #  input: 
 #     samplename1 = samplename1,
 #     parametros = "-bpann",
-#     input_vcf = step_1_Snpeff.step1_snpeff,
+#     input_vcf = dbsnp.salida_Snpsift,#step_1_Snpeff.step1_snpeff,
 #     toolpath = toolpath,
 #     java_heap_memory_initial = java_heap_memory_initial,
 #     nombre_step = "Step2_VariantAnnotator"
@@ -276,17 +287,17 @@ File exon_coordinates = "/home/hnrg/HNRG-pipeline-V0.1/libraries/intervalos/ense
 
 #Step 3: Annotate with dbSNP151"
 
-# call bptools as step_0_bptools_mma {
-#     input: 
-#     samplename1 = samplename1,
-#     parametros = "-mma",
-#     input_vcf = intervar_postprocessing.salida_intervar,#input_vcf,#step3_dbSNP.salida_Snpsift,#step4_1000Genomes.salida_Snpsift,#step3_dbSNP.salida_Snpsift,#input_vcf,
-#     toolpath = toolpath,
-#     java_heap_memory_initial = java_heap_memory_initial,
-#     nombre_step = "step0_splitMAA"
+call bptools as step_0_bptools_mma {
+    input: 
+    samplename1 = samplename1,
+    parametros = "-mma",
+    input_vcf = dbsnp.salida_Snpsift,#intervar_postprocessing.salida_intervar,#input_vcf,#step3_dbSNP.salida_Snpsift,#step4_1000Genomes.salida_Snpsift,#step3_dbSNP.salida_Snpsift,#input_vcf,
+    toolpath = toolpath,
+    java_heap_memory_initial = java_heap_memory_initial,
+    nombre_step = "step0_splitMAA"
 
 
-# }
+}
 
 # call Snpsift as step3_dbSNP {
 # input:
@@ -367,7 +378,7 @@ File exon_coordinates = "/home/hnrg/HNRG-pipeline-V0.1/libraries/intervalos/ense
 #####step7  annovar
 call annovar {
 input:
-vcf_in = input_vcf,#step6_Snpsift_GWASCat.salida_Snpsift,
+vcf_in = step_0_bptools_mma.bptools_out,#input_vcf,#step6_Snpsift_GWASCat.salida_Snpsift,
 out_prefix = samplename1,
 #File out_prefix
 toolpath = toolpath
@@ -385,16 +396,16 @@ call intervar_postprocessing {
 }
 
 #/home/hnrg/HNRG-pipeline-V0.1/new_dbs/GCF_000001405.25.dbSNP153.gz
-call Snpsift_nodb as dbsnp{
-input:
-    samplename1 = samplename1,
-    parametros = 'annotate -v "/home/hnrg/HNRG-pipeline-V0.1/dbs/preprocessing_dbs/All_20180423.vcf.gz" -info CAF',
-    input_vcf = intervar_postprocessing.salida_intervar,
-    toolpath = toolpath,
-    java_heap_memory_initial = java_heap_memory_initial,
-    nombre_step = "dbsnp"
+# call Snpsift_nodb as dbsnp{
+# input:
+#     samplename1 = samplename1,
+#     parametros = 'annotate -v "/home/hnrg/HNRG-pipeline-V0.1/dbs/preprocessing_dbs/All_20180423.vcf.gz" -info CAF',
+#     input_vcf = intervar_postprocessing.salida_intervar,
+#     toolpath = toolpath,
+#     java_heap_memory_initial = java_heap_memory_initial,
+#     nombre_step = "dbsnp"
 
-}    
+# }    
 # #Step 8: Annotate with VarType
 # #### no lleva database
 
@@ -498,7 +509,7 @@ input:
 
  call symlink_important_files {
          input:
-        output_to_save = dbsnp.salida_Snpsift,#intervar_postprocessing.salida_intervar,#step3_dbSNP.salida_Snpsift,#,#step_0_bptools_mma.bptools_out,#,#hnrg_freq.out_vcfanno,#final_annot.salida_Snpsift,
+        output_to_save = intervar_postprocessing.salida_intervar,#dbsnp.salida_Snpsift,#,#step3_dbSNP.salida_Snpsift,#,#step_0_bptools_mma.bptools_out,#,#hnrg_freq.out_vcfanno,#final_annot.salida_Snpsift,
         #output_to_save2 = exon_distance.exon_dist,
         path_save = path_save
     }
