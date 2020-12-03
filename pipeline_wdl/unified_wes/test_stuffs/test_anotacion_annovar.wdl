@@ -162,27 +162,27 @@ task intervar_postprocessing {
 
 # }
 
-# task Snpsift_nodb {
+task Snpsift_nodb {
 
-# File input_vcf
-# String samplename1
-# String toolpath
-# String java_heap_memory_initial
-# String nombre_step
-# String parametros
+File input_vcf
+String samplename1
+String toolpath
+String java_heap_memory_initial
+String nombre_step
+String parametros
 
-# command {
-# set -o pipefail
-# java -Xmx${java_heap_memory_initial} -jar ${toolpath}SnpSift.jar ${parametros} \
-# ${input_vcf} > ${samplename1}.${nombre_step}.vcf
+command {
+set -o pipefail
+java -Xmx${java_heap_memory_initial} -jar ${toolpath}SnpSift.jar ${parametros} \
+${input_vcf} > ${samplename1}.${nombre_step}.vcf
 
-# }
+}
 
-# output {
-#     File salida_Snpsift = "${samplename1}.${nombre_step}.vcf"
-# }
+output {
+    File salida_Snpsift = "${samplename1}.${nombre_step}.vcf"
+}
 
-# }
+}
 
 
 task symlink_important_files {
@@ -384,6 +384,17 @@ call intervar_postprocessing {
 
 }
 
+#/home/hnrg/HNRG-pipeline-V0.1/new_dbs/GCF_000001405.25.dbSNP153.gz
+call Snpsift_nodb as dbsnp{
+input:
+    samplename1 = samplename1,
+    parametros = 'annotate -v "/home/hnrg/HNRG-pipeline-V0.1/dbs/preprocessing_dbs/All_20180423.vcf.gz" -info CAF',
+    input_vcf = intervar_postprocessing.salida_intervar,
+    toolpath = toolpath,
+    java_heap_memory_initial = java_heap_memory_initial,
+    nombre_step = "dbsnp"
+
+}    
 # #Step 8: Annotate with VarType
 # #### no lleva database
 
@@ -487,7 +498,7 @@ call intervar_postprocessing {
 
  call symlink_important_files {
          input:
-        output_to_save = intervar_postprocessing.salida_intervar,#step3_dbSNP.salida_Snpsift,#,#step_0_bptools_mma.bptools_out,#,#hnrg_freq.out_vcfanno,#final_annot.salida_Snpsift,
+        output_to_save = dbsnp.salida_Snpsift,#intervar_postprocessing.salida_intervar,#step3_dbSNP.salida_Snpsift,#,#step_0_bptools_mma.bptools_out,#,#hnrg_freq.out_vcfanno,#final_annot.salida_Snpsift,
         #output_to_save2 = exon_distance.exon_dist,
         path_save = path_save
     }
