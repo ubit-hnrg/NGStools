@@ -248,11 +248,13 @@ File exon_coordinates = "/home/hnrg/HNRG-pipeline-V0.1/libraries/intervalos/ense
 #     reference_version = reference_version
 
 # }
+#/home/hnrg/HNRG-pipeline-V0.1/new_dbs/GCF_000001405.25.dbSNP153.gz
+#/home/hnrg/HNRG-pipeline-V0.1/dbs/preprocessing_dbs/All_20180423.vcf.gz
 
 call Snpsift_nodb as dbsnp{
 input:
     samplename1 = samplename1,
-    parametros = 'annotate -v "/home/hnrg/HNRG-pipeline-V0.1/dbs/preprocessing_dbs/All_20180423.vcf.gz" -info CAF',
+    parametros = 'annotate -v "#/home/hnrg/HNRG-pipeline-V0.1/new_dbs/GCF_000001405.25.dbSNP153.gz" -info FREQ, GnomAD, TOPMED',
     input_vcf = input_vcf,#intervar_postprocessing.salida_intervar,
     toolpath = toolpath,
     java_heap_memory_initial = java_heap_memory_initial,
@@ -376,24 +378,24 @@ call bptools as step_0_bptools_mma {
 # #}
 
 #####step7  annovar
-call annovar {
-input:
-vcf_in = step_0_bptools_mma.bptools_out,#input_vcf,#step6_Snpsift_GWASCat.salida_Snpsift,
-out_prefix = samplename1,
-#File out_prefix
-toolpath = toolpath
+# call annovar {
+# input:
+# vcf_in = step_0_bptools_mma.bptools_out,#input_vcf,#step6_Snpsift_GWASCat.salida_Snpsift,
+# out_prefix = samplename1,
+# #File out_prefix
+# toolpath = toolpath
 
-}
+# }
 
 
-call intervar_postprocessing {
-    input:
-        vcfinput = annovar.multianno_vcf,
-        multianno_txt = annovar.multianno_txt,
-        toolpath = toolpath,
-        samplename1 = samplename1
+# call intervar_postprocessing {
+#     input:
+#         vcfinput = annovar.multianno_vcf,
+#         multianno_txt = annovar.multianno_txt,
+#         toolpath = toolpath,
+#         samplename1 = samplename1
 
-}
+# }
 
 #/home/hnrg/HNRG-pipeline-V0.1/new_dbs/GCF_000001405.25.dbSNP153.gz
 # call Snpsift_nodb as dbsnp{
@@ -509,7 +511,7 @@ call intervar_postprocessing {
 
  call symlink_important_files {
          input:
-        output_to_save = intervar_postprocessing.salida_intervar,#dbsnp.salida_Snpsift,#,#step3_dbSNP.salida_Snpsift,#,#step_0_bptools_mma.bptools_out,#,#hnrg_freq.out_vcfanno,#final_annot.salida_Snpsift,
+        output_to_save = step_0_bptools_mma.bptools_out,#intervar_postprocessing.salida_intervar,#dbsnp.salida_Snpsift,#,#step3_dbSNP.salida_Snpsift,#,#,#,#hnrg_freq.out_vcfanno,#final_annot.salida_Snpsift,
         #output_to_save2 = exon_distance.exon_dist,
         path_save = path_save
     }
