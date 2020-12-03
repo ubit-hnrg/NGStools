@@ -254,7 +254,7 @@ File exon_coordinates = "/home/hnrg/HNRG-pipeline-V0.1/libraries/intervalos/ense
 call Snpsift_nodb as dbsnp{
 input:
     samplename1 = samplename1,
-    parametros = 'annotate "/home/hnrg/HNRG-pipeline-V0.1/new_dbs/GCF_000001405.25.dbSNP153.gz"',
+    parametros = 'annotate "/home/hnrg/HNRG-pipeline-V0.1/new_dbs/GCF_000001405.25.dbSNP153.vcf.gz"',
     input_vcf = input_vcf,#intervar_postprocessing.salida_intervar,
     toolpath = toolpath,
     java_heap_memory_initial = java_heap_memory_initial,
