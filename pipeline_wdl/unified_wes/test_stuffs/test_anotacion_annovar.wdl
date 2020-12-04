@@ -292,19 +292,7 @@ call bptools as step_0_bptools_mma {
 
 }
 
-call Snpsift_nodb as dbsnp{
-input:
-    samplename1 = samplename1,
-    #parametros = 'annotate -v "/home/hnrg/HNRG-pipeline-V0.1/dbs/preprocessing_dbs/All_20180423.vcf.gz" -info CAF',
 
-
-    parametros = 'annotate -v "/home/hnrg/HNRG-pipeline-V0.1/new_dbs/GRCH7.dbSNP153.vcf.gz"',
-    input_vcf = step_0_bptools_mma.bptools_out,#input_vcf,#intervar_postprocessing.salida_intervar,
-    toolpath = toolpath,
-    java_heap_memory_initial = java_heap_memory_initial,
-    nombre_step = "dbsnp"
-
-} 
 
 # call Snpsift as step3_dbSNP {
 # input:
@@ -382,25 +370,39 @@ input:
 # #
 # #}
 
-#####step7  annovar
-# call annovar {
-# input:
-# vcf_in = step_0_bptools_mma.bptools_out,#input_vcf,#step6_Snpsift_GWASCat.salida_Snpsift,
-# out_prefix = samplename1,
-# #File out_prefix
-# toolpath = toolpath
+####step7  annovar
+call annovar {
+input:
+vcf_in = step_0_bptools_mma.bptools_out,#input_vcf,#step6_Snpsift_GWASCat.salida_Snpsift,
+out_prefix = samplename1,
+#File out_prefix
+toolpath = toolpath
 
-# }
+}
 
 
-# call intervar_postprocessing {
-#     input:
-#         vcfinput = annovar.multianno_vcf,
-#         multianno_txt = annovar.multianno_txt,
-#         toolpath = toolpath,
-#         samplename1 = samplename1
+call intervar_postprocessing {
+    input:
+        vcfinput = annovar.multianno_vcf,
+        multianno_txt = annovar.multianno_txt,
+        toolpath = toolpath,
+        samplename1 = samplename1
 
-# }
+}
+
+call Snpsift_nodb as dbsnp{
+input:
+    samplename1 = samplename1,
+    #parametros = 'annotate -v "/home/hnrg/HNRG-pipeline-V0.1/dbs/preprocessing_dbs/All_20180423.vcf.gz" -info CAF',
+
+
+    parametros = 'annotate -v "/home/hnrg/HNRG-pipeline-V0.1/new_dbs/GRCH7.dbSNP153.vcf.gz"',
+    input_vcf = intervar_postprocessing.salida_intervar,#step_0_bptools_mma.bptools_out,#input_vcf,#,
+    toolpath = toolpath,
+    java_heap_memory_initial = java_heap_memory_initial,
+    nombre_step = "dbsnp"
+
+} 
 
 #/home/hnrg/HNRG-pipeline-V0.1/new_dbs/GCF_000001405.25.dbSNP153.gz
 # call Snpsift_nodb as dbsnp{
