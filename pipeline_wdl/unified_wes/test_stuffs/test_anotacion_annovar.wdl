@@ -98,7 +98,7 @@ command <<<
 #perl ${toolpath}annovar/table_annovar.pl ${vcf_in} ${annovar_dbpath} -vcfinput  -buildver hg19 -remove -out ${out_prefix} -protocol dbnsfp35a,gnomad_exome,gnomad_genome,intervar_20180118 -operation f,f,f,f 
 ###anotaciones del excel...
 #perl ${toolpath}annovar/table_annovar.pl  ${vcf_in} ${annovar_dbpath} -vcfinput -buildver hg19 -remove -out ${out_prefix} -protocol refGene,avsnp150,esp6500siv2_all,1000g2015aug_all,exac03,gnomad_exome,gnomad_genome,clinvar_20180603,intervar_20180118,dbscsnv11,dbnsfp41a,rmsk,tfbsConsSites,cytoBand,wgRna,targetScanS,genomicSuperDups,dgvMerged,gwasCatalog,ensGene,knownGene -operation  g,f,f,f,f,f,f,f,f,f,f,r,r,r,r,r,r,r,r,g,g -nastring . -otherinfo
-perl ${toolpath}annovar/table_annovar.pl  ${vcf_in} ${annovar_dbpath} -vcfinput -buildver hg19 -remove -out ${out_prefix} -protocol avsnp150,1000g2015aug_all,intervar_20180118 -operation  f,f,f #-nastring . -otherinfo
+perl ${toolpath}annovar/table_annovar.pl  ${vcf_in} ${annovar_dbpath} -vcfinput -buildver hg19 -remove -out ${out_prefix} -protocol avsnp150,1000g2015aug_all,intervar_20180118,gnomad_exome,gnomad_genome -operation  f,f,f,f,f #-nastring . -otherinfo
 
 
 >>>
@@ -390,19 +390,19 @@ call intervar_postprocessing {
 
 }
 
-call Snpsift_nodb as dbsnp{
-input:
-    samplename1 = samplename1,
-    #parametros = 'annotate -v "/home/hnrg/HNRG-pipeline-V0.1/dbs/preprocessing_dbs/All_20180423.vcf.gz" -info CAF',
+# call Snpsift_nodb as dbsnp{
+# input:
+#     samplename1 = samplename1,
+#     #parametros = 'annotate -v "/home/hnrg/HNRG-pipeline-V0.1/dbs/preprocessing_dbs/All_20180423.vcf.gz" -info CAF',
 
 
-    parametros = 'annotate -v "/home/hnrg/HNRG-pipeline-V0.1/new_dbs/GRCH7.dbSNP153.vcf.gz"',
-    input_vcf = intervar_postprocessing.salida_intervar,#step_0_bptools_mma.bptools_out,#input_vcf,#,
-    toolpath = toolpath,
-    java_heap_memory_initial = java_heap_memory_initial,
-    nombre_step = "dbsnp"
+#     parametros = 'annotate -v "/home/hnrg/HNRG-pipeline-V0.1/new_dbs/GRCH7.dbSNP153.vcf.gz"',
+#     input_vcf = intervar_postprocessing.salida_intervar,#step_0_bptools_mma.bptools_out,#input_vcf,#,
+#     toolpath = toolpath,
+#     java_heap_memory_initial = java_heap_memory_initial,
+#     nombre_step = "dbsnp"
 
-} 
+# } 
 
 #/home/hnrg/HNRG-pipeline-V0.1/new_dbs/GCF_000001405.25.dbSNP153.gz
 # call Snpsift_nodb as dbsnp{
@@ -518,7 +518,7 @@ input:
 
  call symlink_important_files {
          input:
-        output_to_save = dbsnp.salida_Snpsift,#step_0_bptools_mma.bptools_out,#intervar_postprocessing.salida_intervar,#,#,#step3_dbSNP.salida_Snpsift,#,#,#,#hnrg_freq.out_vcfanno,#final_annot.salida_Snpsift,
+        output_to_save = intervar_postprocessing.salida_intervar,#dbsnp.salida_Snpsift,#step_0_bptools_mma.bptools_out,#,#,#,#step3_dbSNP.salida_Snpsift,#,#,#,#hnrg_freq.out_vcfanno,#final_annot.salida_Snpsift,
         #output_to_save2 = exon_distance.exon_dist,
         path_save = path_save
     }
