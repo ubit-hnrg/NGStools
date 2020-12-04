@@ -516,7 +516,7 @@ input:
 
  call symlink_important_files {
          input:
-        output_to_save = step_0_bptools_mma.bptools_out,#intervar_postprocessing.salida_intervar,#dbsnp.salida_Snpsift,#,#step3_dbSNP.salida_Snpsift,#,#,#,#hnrg_freq.out_vcfanno,#final_annot.salida_Snpsift,
+        output_to_save = dbsnp.salida_Snpsift,#step_0_bptools_mma.bptools_out,#intervar_postprocessing.salida_intervar,#,#,#step3_dbSNP.salida_Snpsift,#,#,#,#hnrg_freq.out_vcfanno,#final_annot.salida_Snpsift,
         #output_to_save2 = exon_distance.exon_dist,
         path_save = path_save
     }
