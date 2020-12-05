@@ -266,18 +266,6 @@ File exon_coordinates = "/home/hnrg/HNRG-pipeline-V0.1/libraries/intervalos/ense
 # }
 
 
-#Step 4: Annotate with 1000Genomes
-# call Snpsift as step4_1000Genomes {
-# input:
-#     samplename1 = samplename1,
-#     parametros = "annotate",
-#     input_vcf = step_0_bptools_mma.bptools_out,#step_1_Snpeff.step1_snpeff,
-#     toolpath = toolpath,
-#     java_heap_memory_initial = java_heap_memory_initial,
-#     nombre_step = "step4_1000Genomes"
-# }
-
-
 # #Step 3: Annotate with dbSNP151"
 
 # call bptools as step_0_bptools_mma {
@@ -358,21 +346,21 @@ File exon_coordinates = "/home/hnrg/HNRG-pipeline-V0.1/libraries/intervalos/ense
 # }
 
 
-call bptools as step_0_bptools_mma {
-    input: 
-    samplename1 = samplename1,
-    parametros = "-mma",
-    input_vcf = input_vcf,#dbsnp.salida_Snpsift,#intervar_postprocessing.salida_intervar,#input_vcf,#step3_dbSNP.salida_Snpsift,#step4_1000Genomes.salida_Snpsift,#step3_dbSNP.salida_Snpsift,#input_vcf,
-    toolpath = toolpath,
-    java_heap_memory_initial = java_heap_memory_initial,
-    nombre_step = "step0_splitMAA"
+# call bptools as step_0_bptools_mma {
+#     input: 
+#     samplename1 = samplename1,
+#     parametros = "-mma",
+#     input_vcf = input_vcf,#dbsnp.salida_Snpsift,#intervar_postprocessing.salida_intervar,#input_vcf,#step3_dbSNP.salida_Snpsift,#step4_1000Genomes.salida_Snpsift,#step3_dbSNP.salida_Snpsift,#input_vcf,
+#     toolpath = toolpath,
+#     java_heap_memory_initial = java_heap_memory_initial,
+#     nombre_step = "step0_splitMAA"
 
 
-}
+# }
 call Snpeff as step_1_Snpeff {
 input:
     samplename1 = samplename1,
-    input_vcf = step_0_bptools_mma.bptools_out,#input_vcf,#,
+    input_vcf = input_vcf,#step_0_bptools_mma.bptools_out,#input_vcf,#,
     toolpath = toolpath,
     java_heap_memory_initial = java_heap_memory_initial,
     reference_version = reference_version
@@ -433,6 +421,17 @@ call intervar_postprocessing {
         toolpath = toolpath,
         samplename1 = samplename1
 
+}
+
+#Step 4: Annotate with 1000Genomes
+call Snpsift as step4_1000Genomes {
+input:
+    samplename1 = samplename1,
+    parametros = "annotate",
+    input_vcf = intervar_postprocessing.salida_intervar,#step_0_bptools_mma.bptools_out,#step_1_Snpeff.step1_snpeff,
+    toolpath = toolpath,
+    java_heap_memory_initial = java_heap_memory_initial,
+    nombre_step = "step4_1000Genomes"
 }
 
 # call Snpsift_nodb as dbsnp{
@@ -563,7 +562,7 @@ call intervar_postprocessing {
 
  call symlink_important_files {
          input:
-        output_to_save = intervar_postprocessing.salida_intervar,#dbsnp.salida_Snpsift,#,#,#step_0_bptools_mma.bptools_out,#,#,#,#step3_dbSNP.salida_Snpsift,#,#,#,#hnrg_freq.out_vcfanno,#final_annot.salida_Snpsift,
+        output_to_save =step4_1000Genomes.salida_Snpsift,# intervar_postprocessing.salida_intervar,#dbsnp.salida_Snpsift,#,#,#step_0_bptools_mma.bptools_out,#,#,#,#step3_dbSNP.salida_Snpsift,#,#,#,#hnrg_freq.out_vcfanno,#final_annot.salida_Snpsift,
         #output_to_save2 = exon_distance.exon_dist,
         path_save = path_save
     }
