@@ -370,10 +370,20 @@ File exon_coordinates = "/home/hnrg/HNRG-pipeline-V0.1/libraries/intervalos/ense
 # #
 # #}
 
+call Snpeff as step_1_Snpeff {
+input:
+    samplename1 = samplename1,
+    input_vcf = input_vcf,#step_0_bptools_mma.bptools_out,
+    toolpath = toolpath,
+    java_heap_memory_initial = java_heap_memory_initial,
+    reference_version = reference_version
+
+}
+
 ####step7  annovar
 call annovar {
 input:
-vcf_in = input_vcf,#step_0_bptools_mma.bptools_out,#input_vcf,#step6_Snpsift_GWASCat.salida_Snpsift,
+vcf_in = step_1_Snpeff.step1_snpeff,#input_vcf,#step_0_bptools_mma.bptools_out,#input_vcf,#step6_Snpsift_GWASCat.salida_Snpsift,
 out_prefix = samplename1,
 #File out_prefix
 toolpath = toolpath
