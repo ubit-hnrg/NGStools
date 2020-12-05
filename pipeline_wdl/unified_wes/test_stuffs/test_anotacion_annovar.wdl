@@ -423,30 +423,30 @@ call intervar_postprocessing {
 
 }
 
-#Step 4: Annotate with 1000Genomes
-call Snpsift as step4_1000Genomes {
-input:
-    samplename1 = samplename1,
-    parametros = "annotate",
-    input_vcf = intervar_postprocessing.salida_intervar,#step_0_bptools_mma.bptools_out,#step_1_Snpeff.step1_snpeff,
-    toolpath = toolpath,
-    java_heap_memory_initial = java_heap_memory_initial,
-    nombre_step = "step4_1000Genomes"
-}
-
-# call Snpsift_nodb as dbsnp{
+# #Step 4: Annotate with 1000Genomes
+# call Snpsift as step4_1000Genomes {
 # input:
 #     samplename1 = samplename1,
-#     #parametros = 'annotate -v "/home/hnrg/HNRG-pipeline-V0.1/dbs/preprocessing_dbs/All_20180423.vcf.gz" -info CAF',
-
-
-#     parametros = 'annotate -v "/home/hnrg/HNRG-pipeline-V0.1/new_dbs/GRCH7.dbSNP153.vcf.gz"',
-#     input_vcf = intervar_postprocessing.salida_intervar,#step_0_bptools_mma.bptools_out,#input_vcf,#,
+#     parametros = "annotate",
+#     input_vcf = intervar_postprocessing.salida_intervar,#step_0_bptools_mma.bptools_out,#step_1_Snpeff.step1_snpeff,
 #     toolpath = toolpath,
 #     java_heap_memory_initial = java_heap_memory_initial,
-#     nombre_step = "dbsnp"
+#     nombre_step = "step4_1000Genomes"
+# }
 
-# } 
+call Snpsift_nodb as dbsnp{
+input:
+    samplename1 = samplename1,
+    #parametros = 'annotate -v "/home/hnrg/HNRG-pipeline-V0.1/dbs/preprocessing_dbs/All_20180423.vcf.gz" -info CAF',
+
+
+    parametros = 'annotate -v "/home/hnrg/HNRG-pipeline-V0.1/dbs/preprocessing_dbs/All_20180423.vcf.gz"',#/home/hnrg/HNRG-pipeline-V0.1/new_dbs/GRCH7.dbSNP153.vcf.gz"',
+    input_vcf = intervar_postprocessing.salida_intervar,#step_0_bptools_mma.bptools_out,#input_vcf,#,
+    toolpath = toolpath,
+    java_heap_memory_initial = java_heap_memory_initial,
+    nombre_step = "dbsnp"
+
+} 
 
 #/home/hnrg/HNRG-pipeline-V0.1/new_dbs/GCF_000001405.25.dbSNP153.gz
 # call Snpsift_nodb as dbsnp{
@@ -562,7 +562,7 @@ input:
 
  call symlink_important_files {
          input:
-        output_to_save =step4_1000Genomes.salida_Snpsift,# intervar_postprocessing.salida_intervar,#dbsnp.salida_Snpsift,#,#,#step_0_bptools_mma.bptools_out,#,#,#,#step3_dbSNP.salida_Snpsift,#,#,#,#hnrg_freq.out_vcfanno,#final_annot.salida_Snpsift,
+        output_to_save = dbsnp.salida_Snpsift,#step4_1000Genomes.salida_Snpsift,# intervar_postprocessing.salida_intervar,#,#,#,#step_0_bptools_mma.bptools_out,#,#,#,#step3_dbSNP.salida_Snpsift,#,#,#,#hnrg_freq.out_vcfanno,#final_annot.salida_Snpsift,
         #output_to_save2 = exon_distance.exon_dist,
         path_save = path_save
     }
