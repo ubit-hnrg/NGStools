@@ -393,10 +393,22 @@ input:
 
 # } 
 
+call Snpsift as step3_dbSNP {
+input:
+    samplename1 = samplename1,
+    parametros = "annotate",
+    input_vcf = step_1_Snpeff.step1_snpeff,#step_0_bptools_mma.bptools_out,#intervar_postprocessing.salida_intervar,#input_vcf,#,#step4_1000Genomes.salida_Snpsift,#,#step_2_bptools_variant_annotation.bptools_out,
+    toolpath = toolpath,
+    java_heap_memory_initial = java_heap_memory_initial,
+    nombre_step = "step3_dbSNP"
+    
+}
+
+
 ####step7  annovar
 call annovar {
 input:
-vcf_in = step_1_Snpeff.step1_snpeff,#input_vcf,#step_0_bptools_mma.bptools_out,#input_vcf,#step6_Snpsift_GWASCat.salida_Snpsift,
+vcf_in = step3_dbSNP.salida_Snpsift,# step_1_Snpeff.step1_snpeff,#input_vcf,#step_0_bptools_mma.bptools_out,#input_vcf,#step6_Snpsift_GWASCat.salida_Snpsift,
 out_prefix = samplename1,
 #File out_prefix
 toolpath = toolpath
