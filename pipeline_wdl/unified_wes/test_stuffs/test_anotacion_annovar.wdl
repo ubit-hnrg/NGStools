@@ -256,17 +256,7 @@ File exon_coordinates = "/home/hnrg/HNRG-pipeline-V0.1/libraries/intervalos/ense
 
 # #Step 3: Annotate with dbSNP151"
 
-# call bptools as step_0_bptools_mma {
-#     input: 
-#     samplename1 = samplename1,
-#     parametros = "-mma",
-#     input_vcf = input_vcf,#dbsnp.salida_Snpsift,#intervar_postprocessing.salida_intervar,#input_vcf,#step3_dbSNP.salida_Snpsift,#step4_1000Genomes.salida_Snpsift,#step3_dbSNP.salida_Snpsift,#input_vcf,
-#     toolpath = toolpath,
-#     java_heap_memory_initial = java_heap_memory_initial,
-#     nombre_step = "step0_splitMAA"
 
-
-# }
 
 
 
@@ -328,11 +318,23 @@ input:
 
 }
 
+call bptools as step_0_bptools_mma {
+    input: 
+    samplename1 = samplename1,
+    parametros = "-mma",
+    input_vcf = step_1_Snpeff.step1_snpeff,#input_vcf,#dbsnp.salida_Snpsift,#intervar_postprocessing.salida_intervar,#input_vcf,#step3_dbSNP.salida_Snpsift,#step4_1000Genomes.salida_Snpsift,#step3_dbSNP.salida_Snpsift,#input_vcf,
+    toolpath = toolpath,
+    java_heap_memory_initial = java_heap_memory_initial,
+    nombre_step = "step0_splitMAA"
+
+
+}
+
 call Snpsift_nodb as step8_VarType{
 input:
     samplename1 = samplename1,
     parametros = "varType",
-    input_vcf = step_1_Snpeff.step1_snpeff,#intervar_postprocessing.salida_intervar,
+    input_vcf = step_0_bptools_mma.bptools_out,#step_1_Snpeff.step1_snpeff,#intervar_postprocessing.salida_intervar,
     #input_vcf = step7_dbNSFP.salida_Snpsift, #####salida annovar
     toolpath = toolpath,
     java_heap_memory_initial = java_heap_memory_initial,
