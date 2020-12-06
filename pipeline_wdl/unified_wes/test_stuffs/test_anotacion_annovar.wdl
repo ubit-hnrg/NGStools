@@ -97,8 +97,8 @@ command <<<
 ###anotaciones del workflow anotacion
 #perl ${toolpath}annovar/table_annovar.pl ${vcf_in} ${annovar_dbpath} -vcfinput  -buildver hg19 -remove -out ${out_prefix} -protocol dbnsfp35a,gnomad_exome,gnomad_genome,intervar_20180118 -operation f,f,f,f 
 ###anotaciones del excel...
-#perl ${toolpath}annovar/table_annovar.pl  ${vcf_in} ${annovar_dbpath} -vcfinput -buildver hg19 -remove -out ${out_prefix} -protocol refGene,avsnp150,esp6500siv2_all,1000g2015aug_all,exac03,gnomad_exome,gnomad_genome,clinvar_20180603,intervar_20180118,dbscsnv11,dbnsfp41a,rmsk,tfbsConsSites,cytoBand,wgRna,targetScanS,genomicSuperDups,dgvMerged,gwasCatalog,ensGene,knownGene -operation  g,f,f,f,f,f,f,f,f,f,f,r,r,r,r,r,r,r,r,g,g -nastring . -otherinfo
-perl ${toolpath}annovar/table_annovar.pl  ${vcf_in} ${annovar_dbpath} -vcfinput -buildver hg19 -remove -out ${out_prefix} -protocol 1000g2015aug_all,intervar_20180118,gnomad_exome,gnomad_genome -operation  f,f,f,f #-nastring . -otherinfo
+perl ${toolpath}annovar/table_annovar.pl  ${vcf_in} ${annovar_dbpath} -vcfinput -buildver hg19 -remove -out ${out_prefix} -protocol refGene,avsnp150,esp6500siv2_all,1000g2015aug_all,exac03,gnomad_exome,gnomad_genome,clinvar_20180603,intervar_20180118,dbscsnv11,dbnsfp41a,rmsk,tfbsConsSites,cytoBand,wgRna,targetScanS,genomicSuperDups,dgvMerged,gwasCatalog,ensGene,knownGene -operation  g,f,f,f,f,f,f,f,f,f,f,r,r,r,r,r,r,r,r,g,g -nastring . -otherinfo
+#perl ${toolpath}annovar/table_annovar.pl  ${vcf_in} ${annovar_dbpath} -vcfinput -buildver hg19 -remove -out ${out_prefix} -protocol 1000g2015aug_all,intervar_20180118,gnomad_exome,gnomad_genome -operation  f,f,f,f #-nastring . -otherinfo
 
 
 >>>
@@ -236,18 +236,6 @@ File exon_coordinates = "/home/hnrg/HNRG-pipeline-V0.1/libraries/intervalos/ense
 #File exon_coordinates_to_lib
 
 
-
-
-
-# call Snpeff as step_1_Snpeff {
-# input:
-#     samplename1 = samplename1,
-#     input_vcf = input_vcf,#step_0_bptools_mma.bptools_out,
-#     toolpath = toolpath,
-#     java_heap_memory_initial = java_heap_memory_initial,
-#     reference_version = reference_version
-
-# }
 #/home/hnrg/HNRG-pipeline-V0.1/new_dbs/GCF_000001405.25.dbSNP153.gz
 #/home/hnrg/HNRG-pipeline-V0.1/dbs/preprocessing_dbs/All_20180423.vcf.gz
 
@@ -293,21 +281,6 @@ File exon_coordinates = "/home/hnrg/HNRG-pipeline-V0.1/libraries/intervalos/ense
     
 # }
 
-# call bptools as step_0_bptools_mma {
-#     input: 
-#     samplename1 = samplename1,
-#     parametros = "-mma",
-#     input_vcf = step3_dbSNP.salida_Snpsift,#step4_1000Genomes.salida_Snpsift,#step3_dbSNP.salida_Snpsift,#input_vcf,
-#     toolpath = toolpath,
-#     java_heap_memory_initial = java_heap_memory_initial,
-#     nombre_step = "step0_splitMAA"
-
-
-#  }
-
-
-
-
 # #Step 5: Annotate with hapmap
 # call Snpsift as step5_hapmap{
 # input:
@@ -343,8 +316,8 @@ File exon_coordinates = "/home/hnrg/HNRG-pipeline-V0.1/libraries/intervalos/ense
 #     java_heap_memory_initial = java_heap_memory_initial,
 #     nombre_step = "step0_splitMAA"
 
-
 # }
+
 call Snpeff as step_1_Snpeff {
 input:
     samplename1 = samplename1,
