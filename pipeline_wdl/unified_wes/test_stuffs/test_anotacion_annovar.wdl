@@ -96,8 +96,10 @@ String annovar_dbpath
 command <<<
 ###anotaciones del workflow anotacion
 #perl ${toolpath}annovar/table_annovar.pl ${vcf_in} ${annovar_dbpath} -vcfinput  -buildver hg19 -remove -out ${out_prefix} -protocol dbnsfp35a,gnomad_exome,gnomad_genome,intervar_20180118 -operation f,f,f,f 
+perl ${toolpath}annovar/table_annovar.pl ${vcf_in} ${annovar_dbpath} -vcfinput  -buildver hg19 -remove -out ${out_prefix} -protocol refGene,avsnp150,gnomad_exome,gnomad_genome,intervar_20180118 -operation g,f,f,f,f
+
 ###anotaciones del excel...
-perl ${toolpath}annovar/table_annovar.pl  ${vcf_in} ${annovar_dbpath} -vcfinput -buildver hg19 -remove -out ${out_prefix} -protocol refGene,avsnp150,esp6500siv2_all,1000g2015aug_all,exac03,gnomad_exome,gnomad_genome,clinvar_20180603,intervar_20180118,dbscsnv11,dbnsfp41a,rmsk,tfbsConsSites,cytoBand,wgRna,targetScanS,genomicSuperDups,dgvMerged,gwasCatalog,ensGene,knownGene -operation  g,f,f,f,f,f,f,f,f,f,f,r,r,r,r,r,r,r,r,g,g -nastring . -otherinfo
+#perl ${toolpath}annovar/table_annovar.pl  ${vcf_in} ${annovar_dbpath} -vcfinput -buildver hg19 -remove -out ${out_prefix} -protocol refGene,avsnp150,esp6500siv2_all,1000g2015aug_all,exac03,gnomad_exome,gnomad_genome,clinvar_20180603,intervar_20180118,dbscsnv11,dbnsfp41a,rmsk,tfbsConsSites,cytoBand,wgRna,targetScanS,genomicSuperDups,dgvMerged,gwasCatalog,ensGene,knownGene -operation  g,f,f,f,f,f,f,f,f,f,f,r,r,r,r,r,r,r,r,g,g -nastring . -otherinfo
 #perl ${toolpath}annovar/table_annovar.pl  ${vcf_in} ${annovar_dbpath} -vcfinput -buildver hg19 -remove -out ${out_prefix} -protocol 1000g2015aug_all,intervar_20180118,gnomad_exome,gnomad_genome -operation  f,f,f,f #-nastring . -otherinfo
 
 
@@ -308,21 +310,13 @@ File exon_coordinates = "/home/hnrg/HNRG-pipeline-V0.1/libraries/intervalos/ense
 
 # }
 
-call Snpeff as step_1_Snpeff {
-input:
-    samplename1 = samplename1,
-    input_vcf = input_vcf,#step_0_bptools_mma.bptools_out,#input_vcf,#,
-    toolpath = toolpath,
-    java_heap_memory_initial = java_heap_memory_initial,
-    reference_version = reference_version
 
-}
 
 call bptools as step_0_bptools_mma {
     input: 
     samplename1 = samplename1,
     parametros = "-mma",
-    input_vcf = step_1_Snpeff.step1_snpeff,#input_vcf,#dbsnp.salida_Snpsift,#intervar_postprocessing.salida_intervar,#input_vcf,#step3_dbSNP.salida_Snpsift,#step4_1000Genomes.salida_Snpsift,#step3_dbSNP.salida_Snpsift,#input_vcf,
+    input_vcf = input_vcf,#step_1_Snpeff.step1_snpeff,#input_vcf,#dbsnp.salida_Snpsift,#intervar_postprocessing.salida_intervar,#input_vcf,#step3_dbSNP.salida_Snpsift,#step4_1000Genomes.salida_Snpsift,#step3_dbSNP.salida_Snpsift,#input_vcf,
     toolpath = toolpath,
     java_heap_memory_initial = java_heap_memory_initial,
     nombre_step = "step0_splitMAA"
@@ -330,17 +324,27 @@ call bptools as step_0_bptools_mma {
 
 }
 
-call Snpsift_nodb as step8_VarType{
+call Snpeff as step_1_Snpeff {
 input:
     samplename1 = samplename1,
-    parametros = "varType",
-    input_vcf = step_0_bptools_mma.bptools_out,#step_1_Snpeff.step1_snpeff,#intervar_postprocessing.salida_intervar,
-    #input_vcf = step7_dbNSFP.salida_Snpsift, #####salida annovar
+    input_vcf = step_0_bptools_mma.bptools_out,#input_vcf,#,
     toolpath = toolpath,
     java_heap_memory_initial = java_heap_memory_initial,
-    nombre_step = "step8_VarType"
+    reference_version = reference_version
 
 }
+
+# call Snpsift_nodb as step8_VarType{
+# input:
+#     samplename1 = samplename1,
+#     parametros = "varType",
+#     input_vcf = step_0_bptools_mma.bptools_out,#step_1_Snpeff.step1_snpeff,#intervar_postprocessing.salida_intervar,
+#     #input_vcf = step7_dbNSFP.salida_Snpsift, #####salida annovar
+#     toolpath = toolpath,
+#     java_heap_memory_initial = java_heap_memory_initial,
+#     nombre_step = "step8_VarType"
+
+# }
 
 # #Step 12: Annotate with ClinVar
 # call Snpsift as step12_clinVar{
