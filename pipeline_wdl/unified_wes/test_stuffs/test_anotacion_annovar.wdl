@@ -399,7 +399,7 @@ input:
 ####step7  annovar
 call annovar {
 input:
-vcf_in = step8_VarType.salida_Snpsift,#step12_clinVar.salida_Snpsift,#step7_dbNSFP.salida_Snpsift,#step_1_Snpeff.step1_snpeff,#step3_dbSNP.salida_Snpsift,#,#step3_dbSNP.salida_Snpsift,# ,#input_vcf,#step_0_bptools_mma.bptools_out,#input_vcf,#step6_Snpsift_GWASCat.salida_Snpsift,
+vcf_in = step_1_Snpeff.step1_snpeff,#step8_VarType.salida_Snpsift,#step12_clinVar.salida_Snpsift,#step7_dbNSFP.salida_Snpsift,#step_1_Snpeff.step1_snpeff,#step3_dbSNP.salida_Snpsift,#,#step3_dbSNP.salida_Snpsift,# ,#input_vcf,#step_0_bptools_mma.bptools_out,#input_vcf,#step6_Snpsift_GWASCat.salida_Snpsift,
 out_prefix = samplename1,
 #File out_prefix
 toolpath = toolpath
