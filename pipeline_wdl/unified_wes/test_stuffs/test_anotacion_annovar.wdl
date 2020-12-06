@@ -305,19 +305,7 @@ File exon_coordinates = "/home/hnrg/HNRG-pipeline-V0.1/libraries/intervalos/ense
 
 #  }
 
-#Step 12: Annotate with ClinVar
-call Snpsift as step12_clinVar{
-input:
-    samplename1 = samplename1,
-    #parametros = "annotate -v -info CLNHGVS,CLNALLE,CLNSRC,CLNORIGIN,CLNSRCID,CLNSIG,CLNDSDB,CLNDSDBID,CLNDBN,CLNACC",
-    parametros = "annotate",
-    input_vcf = step3_dbSNP.salida_Snpsift,#step10_PhastCons.salida_Snpsift,
-    #input_vcf = step11_CADD.salida_Snpsift,
-    toolpath = toolpath,
-    java_heap_memory_initial = java_heap_memory_initial,
-    nombre_step = "step12_clinVar"
 
-}
 
 
 # #Step 5: Annotate with hapmap
