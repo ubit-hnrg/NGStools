@@ -355,19 +355,31 @@ input:
 
 }
 
-#Step 12: Annotate with ClinVar
-call Snpsift as step12_clinVar{
+call Snpsift_nodb as step8_VarType{
 input:
     samplename1 = samplename1,
-    #parametros = "annotate -v -info CLNHGVS,CLNALLE,CLNSRC,CLNORIGIN,CLNSRCID,CLNSIG,CLNDSDB,CLNDSDBID,CLNDBN,CLNACC",
-    parametros = "annotate",
-    input_vcf = step_1_Snpeff.step1_snpeff,#step3_dbSNP.salida_Snpsift,#step10_PhastCons.salida_Snpsift,
-    #input_vcf = step11_CADD.salida_Snpsift,
+    parametros = "varType",
+    input_vcf = step_1_Snpeff.step1_snpeff,#intervar_postprocessing.salida_intervar,
+    #input_vcf = step7_dbNSFP.salida_Snpsift, #####salida annovar
     toolpath = toolpath,
     java_heap_memory_initial = java_heap_memory_initial,
-    nombre_step = "step12_clinVar"
+    nombre_step = "step8_VarType"
 
 }
+
+# #Step 12: Annotate with ClinVar
+# call Snpsift as step12_clinVar{
+# input:
+#     samplename1 = samplename1,
+#     #parametros = "annotate -v -info CLNHGVS,CLNALLE,CLNSRC,CLNORIGIN,CLNSRCID,CLNSIG,CLNDSDB,CLNDSDBID,CLNDBN,CLNACC",
+#     parametros = "annotate",
+#     input_vcf = step_1_Snpeff.step1_snpeff,#step3_dbSNP.salida_Snpsift,#step10_PhastCons.salida_Snpsift,
+#     #input_vcf = step11_CADD.salida_Snpsift,
+#     toolpath = toolpath,
+#     java_heap_memory_initial = java_heap_memory_initial,
+#     nombre_step = "step12_clinVar"
+
+# }
 
 # #Step 7: Annotate with dbNSFP
 # call Snpsift as step7_dbNSFP{
@@ -408,7 +420,7 @@ input:
 ####step7  annovar
 call annovar {
 input:
-vcf_in = step12_clinVar.salida_Snpsift,#step7_dbNSFP.salida_Snpsift,#step_1_Snpeff.step1_snpeff,#step3_dbSNP.salida_Snpsift,#,#step3_dbSNP.salida_Snpsift,# ,#input_vcf,#step_0_bptools_mma.bptools_out,#input_vcf,#step6_Snpsift_GWASCat.salida_Snpsift,
+vcf_in = step8_VarType.salida_Snpsift,#step12_clinVar.salida_Snpsift,#step7_dbNSFP.salida_Snpsift,#step_1_Snpeff.step1_snpeff,#step3_dbSNP.salida_Snpsift,#,#step3_dbSNP.salida_Snpsift,# ,#input_vcf,#step_0_bptools_mma.bptools_out,#input_vcf,#step6_Snpsift_GWASCat.salida_Snpsift,
 out_prefix = samplename1,
 #File out_prefix
 toolpath = toolpath
