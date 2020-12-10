@@ -243,17 +243,7 @@ File exon_coordinates = "/home/hnrg/HNRG-pipeline-V0.1/libraries/intervalos/ense
 
 
 
-# call bptools as step_2_bptools_variant_annotation {
-#  input: 
-#     samplename1 = samplename1,
-#     parametros = "-bpann",
-#     input_vcf = dbsnp.salida_Snpsift,#step_1_Snpeff.step1_snpeff,
-#     toolpath = toolpath,
-#     java_heap_memory_initial = java_heap_memory_initial,
-#     nombre_step = "Step2_VariantAnnotator"
 
-
-# }
 
 
 # #Step 3: Annotate with dbSNP151"
@@ -322,6 +312,18 @@ input:
 
 }
 
+call bptools as step_2_bptools_variant_annotation {
+ input: 
+    samplename1 = samplename1,
+    parametros = "-bpann",
+    input_vcf = step_1_Snpeff.step1_snpeff,#dbsnp.salida_Snpsift,#step_1_Snpeff.step1_snpeff,
+    toolpath = toolpath,
+    java_heap_memory_initial = java_heap_memory_initial,
+    nombre_step = "Step2_VariantAnnotator"
+
+
+}
+
 # call Snpsift_nodb as step8_VarType{
 # input:
 #     samplename1 = samplename1,
@@ -387,7 +389,7 @@ input:
 ####step7  annovar
 call annovar {
 input:
-vcf_in = step_1_Snpeff.step1_snpeff,#step8_VarType.salida_Snpsift,#step12_clinVar.salida_Snpsift,#step7_dbNSFP.salida_Snpsift,#step_1_Snpeff.step1_snpeff,#step3_dbSNP.salida_Snpsift,#,#step3_dbSNP.salida_Snpsift,# ,#input_vcf,#step_0_bptools_mma.bptools_out,#input_vcf,#step6_Snpsift_GWASCat.salida_Snpsift,
+vcf_in = step_2_bptools_variant_annotation.bptools_out,#step_1_Snpeff.step1_snpeff,#step8_VarType.salida_Snpsift,#step12_clinVar.salida_Snpsift,#step7_dbNSFP.salida_Snpsift,#step_1_Snpeff.step1_snpeff,#step3_dbSNP.salida_Snpsift,#,#step3_dbSNP.salida_Snpsift,# ,#input_vcf,#step_0_bptools_mma.bptools_out,#input_vcf,#step6_Snpsift_GWASCat.salida_Snpsift,
 out_prefix = samplename1,
 #File out_prefix
 toolpath = toolpath
