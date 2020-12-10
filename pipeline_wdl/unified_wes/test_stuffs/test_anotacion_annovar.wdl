@@ -243,26 +243,6 @@ File exon_coordinates = "/home/hnrg/HNRG-pipeline-V0.1/libraries/intervalos/ense
 
 
 
-
-
-
-# #Step 3: Annotate with dbSNP151"
-
-
-
-
-
-# call Snpsift as step3_dbSNP {
-# input:
-#     samplename1 = samplename1,
-#     parametros = "annotate",
-#     input_vcf = step_0_bptools_mma.bptools_out,#intervar_postprocessing.salida_intervar,#input_vcf,#,#step4_1000Genomes.salida_Snpsift,#,#step_2_bptools_variant_annotation.bptools_out,
-#     toolpath = toolpath,
-#     java_heap_memory_initial = java_heap_memory_initial,
-#     nombre_step = "step3_dbSNP"
-    
-# }
-
 # #Step 5: Annotate with hapmap
 # call Snpsift as step5_hapmap{
 # input:
@@ -336,19 +316,7 @@ call bptools as step_2_bptools_variant_annotation {
 
 # }
 
-# #Step 12: Annotate with ClinVar
-# call Snpsift as step12_clinVar{
-# input:
-#     samplename1 = samplename1,
-#     #parametros = "annotate -v -info CLNHGVS,CLNALLE,CLNSRC,CLNORIGIN,CLNSRCID,CLNSIG,CLNDSDB,CLNDSDBID,CLNDBN,CLNACC",
-#     parametros = "annotate",
-#     input_vcf = step_1_Snpeff.step1_snpeff,#step3_dbSNP.salida_Snpsift,#step10_PhastCons.salida_Snpsift,
-#     #input_vcf = step11_CADD.salida_Snpsift,
-#     toolpath = toolpath,
-#     java_heap_memory_initial = java_heap_memory_initial,
-#     nombre_step = "step12_clinVar"
 
-# }
 
 # #Step 7: Annotate with dbNSFP
 # call Snpsift as step7_dbNSFP{
@@ -403,6 +371,20 @@ call intervar_postprocessing {
         multianno_txt = annovar.multianno_txt,
         toolpath = toolpath,
         samplename1 = samplename1
+
+}
+
+#Step 12: Annotate with ClinVar
+call Snpsift as step12_clinVar{
+input:
+    samplename1 = samplename1,
+    #parametros = "annotate -v -info CLNHGVS,CLNALLE,CLNSRC,CLNORIGIN,CLNSRCID,CLNSIG,CLNDSDB,CLNDSDBID,CLNDBN,CLNACC",
+    parametros = "annotate",
+    input_vcf = intervar_postprocessing.salida_intervar,#step_1_Snpeff.step1_snpeff,#step3_dbSNP.salida_Snpsift,#step10_PhastCons.salida_Snpsift,
+    #input_vcf = step11_CADD.salida_Snpsift,
+    toolpath = toolpath,
+    java_heap_memory_initial = java_heap_memory_initial,
+    nombre_step = "step12_clinVar"
 
 }
 
@@ -513,7 +495,7 @@ call intervar_postprocessing {
  call hnrg_freq {
 
  input:
-    input_vcf = intervar_postprocessing.salida_intervar,#,step_0_bptools_mma.bptools_out,#step3_dbSNP.salida_Snpsift,#step12_clinVar.salida_Snpsift,#step_0_bptools_mma.bptools_out,#step13_pharmGKB.salida_Snpsift, 
+    input_vcf = step12_clinVar.salida_Snpsift,#intervar_postprocessing.salida_intervar,#,step_0_bptools_mma.bptools_out,#step3_dbSNP.salida_Snpsift,#step12_clinVar.salida_Snpsift,#step_0_bptools_mma.bptools_out,#step13_pharmGKB.salida_Snpsift, 
     samplename1 = samplename1,
     toolpath = toolpath,
     nombre_step = "step14_HNRG_FREQ"
