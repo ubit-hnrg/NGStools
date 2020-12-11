@@ -380,7 +380,7 @@ input:
     samplename1 = samplename1,
     #parametros = "annotate -v -info CLNHGVS,CLNALLE,CLNSRC,CLNORIGIN,CLNSRCID,CLNSIG,CLNDSDB,CLNDSDBID,CLNDBN,CLNACC",
     parametros = "annotate",
-    input_vcf = intervar_postprocessing.salida_intervar,#step_1_Snpeff.step1_snpeff,#step3_dbSNP.salida_Snpsift,#step10_PhastCons.salida_Snpsift,
+    input_vcf = step4_1000Genomes.salida_Snpsift,#intervar_postprocessing.salida_intervar,#step_1_Snpeff.step1_snpeff,#step3_dbSNP.salida_Snpsift,#step10_PhastCons.salida_Snpsift,
     #input_vcf = step11_CADD.salida_Snpsift,
     toolpath = toolpath,
     java_heap_memory_initial = java_heap_memory_initial,
@@ -388,16 +388,16 @@ input:
 
 }
 
-# #Step 4: Annotate with 1000Genomes
-# call Snpsift as step4_1000Genomes {
-# input:
-#     samplename1 = samplename1,
-#     parametros = "annotate",
-#     input_vcf = intervar_postprocessing.salida_intervar,#step_0_bptools_mma.bptools_out,#step_1_Snpeff.step1_snpeff,
-#     toolpath = toolpath,
-#     java_heap_memory_initial = java_heap_memory_initial,
-#     nombre_step = "step4_1000Genomes"
-# }
+#Step 4: Annotate with 1000Genomes
+call Snpsift as step4_1000Genomes {
+input:
+    samplename1 = samplename1,
+    parametros = "annotate",
+    input_vcf = intervar_postprocessing.salida_intervar,#step_0_bptools_mma.bptools_out,#step_1_Snpeff.step1_snpeff,
+    toolpath = toolpath,
+    java_heap_memory_initial = java_heap_memory_initial,
+    nombre_step = "step4_1000Genomes"
+}
 
 # call Snpsift_nodb as dbsnp{
 # input:
