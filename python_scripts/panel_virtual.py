@@ -31,8 +31,8 @@ def lista_genes(path):
     '''
 
     with open(path) as f:
-        genes = list(set(f.read().splitlines()))
-        genes_out = [item for item in genes if item]
+        genes = f.read().splitlines()
+        genes_out = [item.strip() for item in genes if item]
         
     return genes_out
 
