@@ -98,7 +98,7 @@ task cobertura {
         ##
         ##regiones no cubiertas en el intervalo de captura. -bga reporta la profunidad in bedgraph format. reporta las regiones con 0 cobertura. 
         ## por lo que dps se puede filtrar lo no cubierto.-
-        bedtools genomecov -ibam ${input_bam} -bga | awk '$4==0'| bedtools intersect -a intervalo_sorted.bed -b - > ${sample_name}.no_cubierto_intervalo_${pipeline_version}.tsv
+        #bedtools genomecov -ibam ${input_bam} -bga | awk '$4==0'| bedtools intersect -a intervalo_sorted.bed -b - > ${sample_name}.no_cubierto_intervalo_${pipeline_version}.tsv
 
         
         #cp -L ${sample_name}_samtools_nodup_${pipeline_version}.stats ${path_save}
@@ -107,7 +107,7 @@ task cobertura {
         #cp -L ${sample_name}_nodup.hist ${path_save}
         #cp -L ${sample_name}_sex_${pipeline_version}.txt ${path_save} 
         #cp -L ${sample_name}_global_nodup.hist ${path_save}
-        cp -L ${sample_name}.no_cubierto_intervalo_${pipeline_version}.tsv ${path_save}
+        #cp -L ${sample_name}.no_cubierto_intervalo_${pipeline_version}.tsv ${path_save}
        
 
            
@@ -122,7 +122,7 @@ task cobertura {
         File histo_exon = "${sample_name}.ENS_${pipeline_version}.hist"
         #File sex_prediction = "${sample_name}_sex_${pipeline_version}.txt"
         #File nodups = "${sample_name}_nodups_stats_${pipeline_version}.txt"
-        File no_cubierto_intervalo = "${sample_name}.no_cubierto_intervalo_${pipeline_version}.tsv"
+        #File no_cubierto_intervalo = "${sample_name}.no_cubierto_intervalo_${pipeline_version}.tsv"
 
 
     }
@@ -502,7 +502,7 @@ File intervalo_captura
     #Array[File] plot_distribution = make_tsv_reports.distributions_plot_nodups
 #tsv_results
     Array[File] tsv_exon = make_tsv_reports.hist_by_exon
-    Array[File] nocubierto = cobertura.no_cubierto_intervalo
+    #Array[File] nocubierto = cobertura.no_cubierto_intervalo
 
 
     #Array[File] by_exon_depth = cobertura.histo_exon
