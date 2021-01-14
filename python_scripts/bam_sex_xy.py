@@ -38,7 +38,7 @@ else:
 if a >= 0.0601: 
     sex = 'M'
     #print a
-elif ( 0.02 <= a < 0.0601):
+elif (0.02 <= a < 0.0601):
     sex = '?'
     #print a
 elif x == 0 and y == 0:
