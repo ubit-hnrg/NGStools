@@ -291,7 +291,7 @@ Array[File] analysis_readybam
 Array[File] analysis_readybam_index
 String toolpath
 String ngs_toolpath
-Array[File]+ fastp_json_files
+#Array[File]+ fastp_json_files
 Array[String] path_save
 String experiment_path
 String pipeline_v
