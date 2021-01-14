@@ -1125,14 +1125,14 @@ workflow only_bam_wflw {
 
 
  #   Outputs that will be retained when execution is complete  
-  # output {
+   output {
   #  #####outputs workflow uonly_bam_wflw
 
   #  File duplication_metrics = MarkDuplicates.duplicate_metrics
   #  File bqsr_report = GatherBqsrReports.output_bqsr_report
-  #  File analysis_ready_bam = GatherBamFiles.output_bam
-  #  File analysis_ready_bam_index = GatherBamFiles.output_bam_index
-  #  File analysis_ready_bam_md5 = GatherBamFiles.output_bam_md5
+   File analysis_ready_bam = GatherBamFiles.output_bam
+   File analysis_ready_bam_index = GatherBamFiles.output_bam_index
+   File analysis_ready_bam_md5 = GatherBamFiles.output_bam_md5
   #  File gvcf_summary_metrics = CollectGvcfCallingMetrics.summary_metrics
   #  File gvcf_detail_metrics = CollectGvcfCallingMetrics.detail_metrics
   #  File output_gvcf = MergeVCFs.output_vcf
@@ -1151,7 +1151,7 @@ workflow only_bam_wflw {
 
    #"samtools_stat.samtools_stat_TSO_bam","samtools_reports_file.output_global_report"
 
-  #}#OUTPUTS 
+  }#OUTPUTS 
 
 
 }

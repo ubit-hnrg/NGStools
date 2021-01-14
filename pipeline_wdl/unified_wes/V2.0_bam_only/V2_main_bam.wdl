@@ -8,7 +8,7 @@ import './only_bam.wdl' as onlybam #3
 import './ubam2bwa_V2.wdl' as ubam2bwa #2
 #import './jointgenotype_single_V2.wdl' as single_genotypeGVCF #4
 #import './quality_control_V2.wdl' as qual_control #5
-#import './qc.wdl' as qual_control #5
+import './qc_bam.wdl' as qual_control #5
 #import './anotaciones_hnrg_single.wdl' as anotacionesSingle #5
 
 
@@ -147,29 +147,30 @@ task coord_generator {
 
 
 
-# task build_excell_report{
-#     File annovar_tsv
-#     File exon_coverage_report
-#     File plof
-#     String samplename2
-#     String ngs_toolpath
-#     File no_cubierto
-#     String pipeline_version
+task build_excell_report{
+    #File annovar_tsv
+    File exon_coverage_report
+    #File plof
+    String samplename2
+    String ngs_toolpath
+    #File no_cubierto
+    String pipeline_version
 
-#     #String original_sample
+    #String original_sample
   
-#      #/home/hnrg/NGStools/pipeline_wdl/qualityControl/make_excel_report.py ${annovar_tsv}:Variants ${exon_coverage_report}:ExonCoverage ${sample}.output_xlsx
+     #/home/hnrg/NGStools/pipeline_wdl/qualityControl/make_excel_report.py ${annovar_tsv}:Variants ${exon_coverage_report}:ExonCoverage ${sample}.output_xlsx
+     #este anda        ${ngs_toolpath}/pipeline_wdl/qualityControl/make_excel_report.py ${annovar_tsv}:Variants ${exon_coverage_report}:ExonCoverage ${plof}:GnomAD_PLOF ${no_cubierto}:no_cubierto  ${samplename2}_variants_${pipeline_version}.xlsx
 
-#     command{
+    command{
 
-#        ${ngs_toolpath}/pipeline_wdl/qualityControl/make_excel_report.py ${annovar_tsv}:Variants ${exon_coverage_report}:ExonCoverage ${plof}:GnomAD_PLOF ${no_cubierto}:no_cubierto  ${samplename2}_variants_${pipeline_version}.xlsx
+       ${ngs_toolpath}/pipeline_wdl/qualityControl/make_excel_report.py ${exon_coverage_report}:ExonCoverage ${samplename2}_variants_${pipeline_version}.xlsx
    
-#    }    
+   }    
 
-#     output{
-#         File excell_report = '${samplename2}_variants_${pipeline_version}.xlsx'
-#     }
-# }    
+    output{
+        File excell_report = '${samplename2}_variants_${pipeline_version}.xlsx'
+    }
+}    
 
 # task join_annovar_exon_dist {
 # String name
@@ -541,34 +542,34 @@ Array[File] salidas_json = ConvertPairedFastQsToUnmappedBamWf.fastp_json_reports
   }
 
 
-# call qual_control.qual_control {
-#    input: 
-#    #stat_alineamiento = only_bam_wflw.reporte_final,
-#    fastp_json_files = ConvertPairedFastQsToUnmappedBamWf.fastp_json_reports,
-#    path_save = mkdir_samplename.path_out_softlink,
-#    #bams_N_reads = N_reads_bams,#only_bam_wflw.bams_N_reads,
-#    analysis_readybam = only_bam_wflw.analysis_ready_bam,
-#    analysis_readybam_index = only_bam_wflw.analysis_ready_bam_index,
-#    toolpath = toolpath,
-#    ngs_toolpath = ngs_toolpath,
-#    intervalo_captura = intervalo_captura,
-#    pipeline_v= pipeline_version,
-#    experiment_name = basename(tabulatedSampleFilePaths, ".txt"),
-#    exon_coords = coord_generator.exon_restricted, #### ensembl vs intervalo_captura
-#    experiment_path = path_softlink
-#   }
+call qual_control.qual_control {
+   input: 
+   #stat_alineamiento = only_bam_wflw.reporte_final,
+   #fastp_json_files = ConvertPairedFastQsToUnmappedBamWf.fastp_json_reports,
+   path_save = mkdir_samplename.path_out_softlink,
+   #bams_N_reads = N_reads_bams,#only_bam_wflw.bams_N_reads,
+   analysis_readybam = only_bam_wflw.analysis_ready_bam,
+   analysis_readybam_index = only_bam_wflw.analysis_ready_bam_index,
+   toolpath = toolpath,
+   ngs_toolpath = ngs_toolpath,
+   intervalo_captura = intervalo_captura,
+   pipeline_v= pipeline_version,
+   experiment_name = basename(tabulatedSampleFilePaths, ".txt"),
+   exon_coords = generic_exon_coords,#####ensembl crudo para ver que se pierde    ###coord_generator.exon_restricted, #### ensembl vs intervalo_captura
+   experiment_path = path_softlink
+  }
 
 
-# Array[File] exon_tsv = qual_control.tsv_exon
-#  Array[String] array_path_save_byexon = mkdir_samplename.path_out_softlink
-#  Array[Pair[String,File]] samples_by_exon = zip (array_path_save_byexon, exon_tsv)
-#   scatter (pairs in samples_by_exon) {
-#     call symlink_important_files as byexon{
-#         input:
-#         output_to_save = pairs.right,
-#         path_save = pairs.left
-#     }
-#   }
+Array[File] exon_tsv = qual_control.tsv_exon
+ Array[String] array_path_save_byexon = mkdir_samplename.path_out_softlink
+ Array[Pair[String,File]] samples_by_exon = zip (array_path_save_byexon, exon_tsv)
+  scatter (pairs in samples_by_exon) {
+    call symlink_important_files as byexon{
+        input:
+        output_to_save = pairs.right,
+        path_save = pairs.left
+    }
+  }
 
 
  
@@ -643,7 +644,35 @@ Array[File] salidas_json = ConvertPairedFastQsToUnmappedBamWf.fastp_json_reports
 
 
 
-#  ####excel_report
+ ####excel_report
+    scatter (idx in range(length(exon_tsv))){
+         String samplename2 = basename(exon_tsv[idx],"_ENS_local_report.tsv")
+ 
+         call build_excell_report {
+            input:
+            #annovar_tsv = join_annovar_exon_dist.anno_dist,
+            #plof = plof[idx],
+            samplename2 = samplename2,
+            exon_coverage_report = exon_tsv[idx],
+            ngs_toolpath = ngs_toolpath,
+            #no_cubierto = no_cubierto[idx],
+            pipeline_version = pipeline_version
+            
+           }
+} #fin scatter
+
+
+Array[File?] reporte_variantes = build_excell_report.excell_report
+#Array[String] array_path_save_byexon = mkdir_samplename.path_out_softlink
+ Array[Pair[String,File?]] samples_by_variant = zip (array_path_save_byexon, reporte_variantes)
+  scatter (pairs in samples_by_variant) {
+    call symlink_important_files as build_excell_reportbyvariants {
+        input:
+        output_to_save = pairs.right,
+        path_save = pairs.left
+    }
+  }
+
 
 #     Array[File] Tsv_annovar = singleGenotypeGVCFs.annovar_tsv_out
 #     scatter (idx in range(length(Tsv_annovar))){
