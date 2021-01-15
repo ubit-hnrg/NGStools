@@ -90,7 +90,7 @@ task cobertura {
         #histograma restringido a cada exon de ensembl que está en la librería de captura
         
         ##${toolpath}bedtools2/bin/sort ${input_bam} -m 1G |  
-        ${toolpath}bedtools2/bin/coverageBed -a ${ensembl2intervalo_captura} -b ${input_bam} -hist ${sorted} > ${sample_name}.ENS_${pipeline_version}.hist.aux1
+        samtools view -uf 0x2 ${input_bam} | ${toolpath}bedtools2/bin/coverageBed -a ${ensembl2intervalo_captura} -b stdin -hist ${sorted} -g /home/hnrg/HNRG-pipeline-V0.1/references/hs37d5/hs37d5_sizes.genome > ${sample_name}.ENS_${pipeline_version}.hist.aux1
         echo -e 'chr\tstart\tend\ttranscriptID\tgene\texonNumber\tstrand\tDP\tBPs\tIntervalLength\tfrequency' > header.txt
         grep -v '^all' ${sample_name}.ENS_${pipeline_version}.hist.aux1 > ${sample_name}.ENS_${pipeline_version}.hist.aux2
         cat header.txt ${sample_name}.ENS_${pipeline_version}.hist.aux2 > ${sample_name}.ENS_${pipeline_version}.hist
