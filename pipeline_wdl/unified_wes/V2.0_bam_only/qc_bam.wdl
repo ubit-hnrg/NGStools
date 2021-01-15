@@ -43,53 +43,12 @@ task cobertura {
         set -o pipefail
 
         #sort del intervalo de caputura para que funcione bien el coverageBED.
-        sort -k1,1V -k2,2n ${intervalo_captura} > intervalo_sorted.bed
         
-
-        # # # esto reporta la cobertura en cada intervalo de captura y hace un histograma global también con el keyword "all"
-        # # #${toolpath}bedtools2/bin/sort ${input_bam} -m 1G | 
-        # # ${toolpath}bedtools2/bin/coverageBed -a intervalo_sorted.bed -b ${input_bam} -hist ${sorted} > ${sample_name}.hist.aux
-        # # #${toolpath}bedtools2/bin/coverageBed -a ${intervalo_captura} -b ${input_bam} -sorted -hist > ${sample_name}.hist.aux
-        # # echo -e 'chr\tstart\tend\tgene\tDP\tBPs\tIntervalLength\tfrequency' > header.txt
-        # # cat header.txt ${sample_name}.hist.aux > ${sample_name}.hist 
-        # # rm ${sample_name}.hist.aux header.txt
-
-        # # #histograma global del bam restringido a toda la librería
-        # # grep '^all' ${sample_name}.hist > global.hist
-        # # echo -e 'chr\tDP\tBPs\tIntervalLength\tfrequency' > global.header.txt
-        # # cat global.header.txt global.hist > ${sample_name}.global.hist
-        # # rm global.header.txt global.hist
-        
-        # ###sex prediction
-        # ${ngs_toolpath}/python_scripts/bam_sex_xy.py -b ${input_bam} > ${sample_name}_sex_${pipeline_version}.txt
-
-        # ###septiembre,20: se agrega eliminar duplicados.
-        # ${toolpath}samtools view -F1024 -u ${input_bam} > bam_nodups.sam
-        # ${toolpath}samtools stats bam_nodups.sam -t intervalo_sorted.bed > ${sample_name}_samtools_nodup_${pipeline_version}.stats ##samtools stat task
-
-        # ####global_hist for no dups_bams 
-        # ${toolpath}bedtools2/bin/coverageBed -a intervalo_sorted.bed -b bam_nodups.sam -hist ${sorted} > ${sample_name}_nodup.hist.aux
-        # ##${toolpath}bedtools2/bin/coverageBed -a ${intervalo_captura} -b ${input_bam} -sorted -hist > ${sample_name}.hist.aux
-        # echo -e 'chr\tstart\tend\tgene\tDP\tBPs\tIntervalLength\tfrequency' > header_nodup.txt
-        # cat header_nodup.txt ${sample_name}_nodup.hist.aux > ${sample_name}_nodup.hist 
-        # #rm ${sample_name}_nodup.hist.aux header_nodup.txt bam_nodups.sam
-
-        # #histograma global del bam nodup restringido a toda la librería ####for report tsv
-        # grep '^all' ${sample_name}_nodup.hist.aux > global_nodup.hist
-        # echo -e 'chr\tDP\tBPs\tIntervalLength\tfrequency' > global_nodup.header.txt
-        # cat global_nodup.header.txt global_nodup.hist > ${sample_name}_global_nodup.hist
-        # rm global_nodup.header.txt global_nodup.hist ${sample_name}_nodup.hist.aux header_nodup.txt bam_nodups.sam
-
-        
-        #  ####samtools stat ###pestaña alineamiento excel calidad.
-        # ${toolpath}samtools stats ${input_bam} -t ${intervalo_captura} > ${sample_name}_samtools_${pipeline_version}.stats
-        #  /usr/local/bin/plot-bamstats ${sample_name}_samtools_${pipeline_version}.stats -p ${path_save}samtools_plots/${sample_name}
-
-         #### COBERTURA  ##################################
+        #### COBERTURA  ##################################
         #### EXONES     ##################################
         #histograma restringido a cada exon de ensembl que está en la librería de captura
         
-        ##${toolpath}bedtools2/bin/sort ${input_bam} -m 1G |  
+        
         samtools view -uf 0x2 ${input_bam} | ${toolpath}bedtools2/bin/coverageBed -a ${ensembl2intervalo_captura} -b stdin -hist ${sorted} -g /home/hnrg/HNRG-pipeline-V0.1/references/hs37d5/hs37d5_sizes.genome > ${sample_name}.ENS_${pipeline_version}.hist.aux1
         echo -e 'chr\tstart\tend\ttranscriptID\tgene\texonNumber\tstrand\tDP\tBPs\tIntervalLength\tfrequency' > header.txt
         grep -v '^all' ${sample_name}.ENS_${pipeline_version}.hist.aux1 > ${sample_name}.ENS_${pipeline_version}.hist.aux2
@@ -98,16 +57,7 @@ task cobertura {
         ##
         ##regiones no cubiertas en el intervalo de captura. -bga reporta la profunidad in bedgraph format. reporta las regiones con 0 cobertura. 
         ## por lo que dps se puede filtrar lo no cubierto.-
-        #bedtools genomecov -ibam ${input_bam} -bga | awk '$4==0'| bedtools intersect -a intervalo_sorted.bed -b - > ${sample_name}.no_cubierto_intervalo_${pipeline_version}.tsv
-
-        
-        #cp -L ${sample_name}_samtools_nodup_${pipeline_version}.stats ${path_save}
-        #cp -L ${sample_name}_samtools_${pipeline_version}.stats ${path_save}
         cp -L ${sample_name}.ENS_${pipeline_version}.hist ${path_save}
-        #cp -L ${sample_name}_nodup.hist ${path_save}
-        #cp -L ${sample_name}_sex_${pipeline_version}.txt ${path_save} 
-        #cp -L ${sample_name}_global_nodup.hist ${path_save}
-        #cp -L ${sample_name}.no_cubierto_intervalo_${pipeline_version}.tsv ${path_save}
        
 
            
@@ -115,15 +65,7 @@ task cobertura {
     #${sample_name}_${pipeline_version}.txt
 
     output {
-        #File histo_global ="${sample_name}.global.hist"
-        #File histo_global_nodup = "${sample_name}_global_nodup.hist" ### para reporte prof en libreria
-        #File samtools_stat_experiment_bam = "${sample_name}_samtools_${pipeline_version}.stats" 
-        #File samtools_stat_nodup_experiment_bam = "${sample_name}_samtools_nodup_${pipeline_version}.stats"
         File histo_exon = "${sample_name}.ENS_${pipeline_version}.hist"
-        #File sex_prediction = "${sample_name}_sex_${pipeline_version}.txt"
-        #File nodups = "${sample_name}_nodups_stats_${pipeline_version}.txt"
-        #File no_cubierto_intervalo = "${sample_name}.no_cubierto_intervalo_${pipeline_version}.tsv"
-
 
     }
 
