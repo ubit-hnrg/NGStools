@@ -50,7 +50,7 @@ task cobertura {
         
         
         samtools view -uf 0x2 ${input_bam} > proper_pair.bam
-        ${toolpath}bedtools2/bin/coverageBed -b proper_pair.bam -a -a ${ensembl2intervalo_captura} -hist ${sorted} -g /home/hnrg/HNRG-pipeline-V0.1/references/hs37d5/hs37d5_sizes.genome > ${sample_name}.ENS_${pipeline_version}.hist.aux1
+        ${toolpath}bedtools2/bin/coverageBed -b proper_pair.bam -a ${ensembl2intervalo_captura} -hist ${sorted} -g /home/hnrg/HNRG-pipeline-V0.1/references/hs37d5/hs37d5_sizes.genome > ${sample_name}.ENS_${pipeline_version}.hist.aux1
         echo -e 'chr\tstart\tend\ttranscriptID\tgene\texonNumber\tstrand\tDP\tBPs\tIntervalLength\tfrequency' > header.txt
         grep -v '^all' ${sample_name}.ENS_${pipeline_version}.hist.aux1 > ${sample_name}.ENS_${pipeline_version}.hist.aux2
         cat header.txt ${sample_name}.ENS_${pipeline_version}.hist.aux2 > ${sample_name}.ENS_${pipeline_version}.hist
