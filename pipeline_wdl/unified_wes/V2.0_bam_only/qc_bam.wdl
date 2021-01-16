@@ -49,11 +49,12 @@ task cobertura {
         #histograma restringido a cada exon de ensembl que está en la librería de captura
         
         
-        samtools view -uf 0x2 ${input_bam} | ${toolpath}bedtools2/bin/coverageBed -b stdin -a -a ${ensembl2intervalo_captura} -hist ${sorted} -g /home/hnrg/HNRG-pipeline-V0.1/references/hs37d5/hs37d5_sizes.genome > ${sample_name}.ENS_${pipeline_version}.hist.aux1
+        samtools view -uf 0x2 ${input_bam} > proper_pair.bam
+        ${toolpath}bedtools2/bin/coverageBed -b proper_pair.bam -a -a ${ensembl2intervalo_captura} -hist ${sorted} -g /home/hnrg/HNRG-pipeline-V0.1/references/hs37d5/hs37d5_sizes.genome > ${sample_name}.ENS_${pipeline_version}.hist.aux1
         echo -e 'chr\tstart\tend\ttranscriptID\tgene\texonNumber\tstrand\tDP\tBPs\tIntervalLength\tfrequency' > header.txt
         grep -v '^all' ${sample_name}.ENS_${pipeline_version}.hist.aux1 > ${sample_name}.ENS_${pipeline_version}.hist.aux2
         cat header.txt ${sample_name}.ENS_${pipeline_version}.hist.aux2 > ${sample_name}.ENS_${pipeline_version}.hist
-        rm ${sample_name}.ENS_${pipeline_version}.hist.aux1 ${sample_name}.ENS_${pipeline_version}.hist.aux2 header.txt
+        rm ${sample_name}.ENS_${pipeline_version}.hist.aux1 ${sample_name}.ENS_${pipeline_version}.hist.aux2 header.txt proper_pair.bam
         ##
         ##regiones no cubiertas en el intervalo de captura. -bga reporta la profunidad in bedgraph format. reporta las regiones con 0 cobertura. 
         ## por lo que dps se puede filtrar lo no cubierto.-
