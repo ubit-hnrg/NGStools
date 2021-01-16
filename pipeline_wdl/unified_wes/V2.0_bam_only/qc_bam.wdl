@@ -147,7 +147,7 @@ task make_tsv_reports {
         # make tsv coverage report by exon
         python ${ngs_toolpath}/pipeline_wdl/qualityControl/local_coverage_report_ENS_intersect_Library.py -i=${by_exon_cov} -o ${sample_name}_ENS_local_report.tsv -s=${sample_name}
        
-        cp -L  ${sample_name}_ENS_local_report.tsv 
+        cp -L  ${sample_name}_ENS_local_report.tsv ${path_save}
     }
  
     output {
