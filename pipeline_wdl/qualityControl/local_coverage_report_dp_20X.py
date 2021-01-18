@@ -54,12 +54,12 @@ def localdepth(coverage_hist):
 
 def main():
     cov_panel_digital = pd.read_csv(ffile,sep ='\t')
-    results_20X = cov_panel_digital.groupby(['transcriptID','exonNumber']).apply(localdepth)
+    results_20X = cov_panel_digital.groupby(['transcriptID','exonNumber']).apply(localdepth) ###sumo cada 
     res_20X = results_20X[results_20X['dp>=20']>0].copy()
     res_20X = res_20X.reset_index()
     
     ######
-    genes_panel = cov_panel_digital.gene.drop_duplicates().count()
+    genes_panel = cov_panel_digital.gene.drop_duplicates().count() 
     exones_panel = cov_panel_digital.drop_duplicates(['transcriptID','exonNumber']).shape[0]
     bases_panel = cov_panel_digital.BPs.sum()
     bases_20X = res_20X.bases_20X.sum()
