@@ -58,6 +58,12 @@ task cobertura {
         ##
         ##regiones no cubiertas en el intervalo de captura. -bga reporta la profunidad in bedgraph format. reporta las regiones con 0 cobertura. 
         ## por lo que dps se puede filtrar lo no cubierto.-
+        
+        ##intersect con el TSO
+
+
+
+
         cp -L ${sample_name}.ENS_${pipeline_version}.hist ${path_save}
        
 
@@ -137,7 +143,7 @@ task make_tsv_reports {
     
 # make global tsv report
         #python ${ngs_toolpath}/pipeline_wdl/qualityControl/global_coverage_report_inLibrary.py -i=${global_cov} -o ${sample_name}_experiment_global_report.tsv -op ${sample_name}.distributions.eps -s ${sample_name}
-
+#local_coverage_report_ENS_intersect_Library.py
     command {
 
         #!/bin/bash
@@ -145,7 +151,7 @@ task make_tsv_reports {
 
       
         # make tsv coverage report by exon
-        python ${ngs_toolpath}/pipeline_wdl/qualityControl/local_coverage_report_ENS_intersect_Library.py -i=${by_exon_cov} -o ${sample_name}_ENS_local_report.tsv -s=${sample_name}
+        python ${ngs_toolpath}/pipeline_wdl/qualityControl/local_coverage_report_ENS_intersect_Library_full_bam.py -i=${by_exon_cov} -o ${sample_name}_ENS_local_report.tsv -s=${sample_name}
        
         cp -L  ${sample_name}_ENS_local_report.tsv ${path_save}
     }
@@ -191,6 +197,27 @@ task CreateFoFN {
   output {
     File fofn_list = "${fofn_name}.list"
   }
+}
+
+task intersect_bam_tso {
+String sampleID
+String path_save
+File reporte_cob_tsv
+File intervalo_TSO
+String ngs_toolpath
+String toolpath
+
+command {
+${toolpath}bedtools2/bin/intersectBed -a ${reporte_cob_tsv} -b ${intervalo_TSO} -v > ${sampleID}_offtarget_raw.tsv
+
+python ${ngs_toolpath}/python_scripts/coverage_report_filter.py -r ${sampleID}_offtarget_raw.tsv -l ${intervalo_TSO} -o1 ${sampleID}_exones_offtarget_tso.tsv -o2 ${sampleID}_offtarget_notin_tso.tsv
+
+cp -L ${sampleID}_offtarget_raw.tsv ${path_save}
+cp -L ${sampleID}_exones_offtarget_tso.tsv ${path_save}
+cp -L ${sampleID}_offtarget_notin_tso.tsv ${path_save}
+
+}
+
 }
 
 task make_excel {
@@ -274,28 +301,6 @@ File intervalo_captura
       path_save = path_save[idx]
     }
  
-       
-  # call samtools_reports_file {
-
-  # input: 
-  # sampleID = basename(analysis_readybam[idx], '.bam'),#base_file_name,
-  # # total_reads_fastq = bams_N_reads[idx], ###ahora es sobre N_bases
-  # # N_bases_after_filtering_fastq_fastq = fastp_qual.bases_after,
-  # # N_bases_before_filtering_fastq = fastp_qual.bases_before, 
-  # #N_total_reads = read_string(N_total_reads), ###ahora es sobre N_bases
-  # #N_bases_after = read_string(N_bases_after),
-  # #N_bases_before = read_string(N_bases_before),
-  # samtools_dup = cobertura.samtools_stat_nodup_experiment_bam,#nodups,
-  # #ensembl2intervalo_captura = ensembl2intervalo_captura,
-  # N_total_reads = read_string(total_reads_fastq[idx]),
-  # N_bases_before = read_string(N_bases_before_filtering_fastq_fastq[idx]),
-  # N_bases_after =  read_string(N_bases_after_filtering_fastq_fastq[idx]),
-  # #samtools_global_report = samtools_stat.samtools_stat_original_bam,
-  # samtools_library_report = cobertura.samtools_stat_experiment_bam,
-  # ngs_toolpath = ngs_toolpath,
-  # path_save = path_save[idx],
-  # pipeline_version = pipeline_v
-  # }
 
     ###crear tsv 
   call make_tsv_reports {
@@ -308,90 +313,18 @@ File intervalo_captura
       #global_cov_nodups = cobertura.histo_global_nodup,
       pipeline_version = pipeline_v
        
-        }
+      }
+
+    call intersect_bam_tso {
+      input: 
+      sampleID = basename(analysis_readybam[idx], '.bam'),
+      path_save = path_save[idx] ,
+      reporte_cob_tsv = make_tsv_reports.hist_by_exon,
+      intervalo_TSO = intervalo_captura,
+      ngs_toolpath = ngs_toolpath,
+      toolpath = toolpath
  }
-
-
- #reportes global nuevo from ari script
- #Array[File] bams_stat_depth_global_coverage_stats = make_tsv_reports.hist_global
-
- #report por exon... 
- #Array[File] by_exon_report = make_tsv_reports.hist_by_exon
-###reportes calidad fastp
-#  Array[File] fastp_rep = fastp_qual.fastp_stats
-
-#   Array[Pair[String,File]] save_fastp = zip(path_save, fastp_rep)
-#   scatter (pairs in save_fastp) {
-#     call symlink_important_files as copy_fastp {
-#         input:
-#         output_to_save = pairs.right,
-#         path_save = pairs.left
-#     }
-#   }
- 
- 
-
- ###File hist_by_exon = "${sample_name}_ENS_local_report.tsv"  ##este es output y va al main para armar el excel x exones.
-
-
- #Create a file with a list of the generated histo glob_stats for merge in excel report
-  # call CreateFoFN {
-  #   input:
-  #     array_of_files = make_tsv_reports.hist_global,#bams_stat_depth_global_coverage_stats,
-  #     fofn_name = experiment_name
-     
-  # }
-
-#   call CreateFoFN as CreateFoFN_no_dups {
-#     input:
-#       array_of_files = make_tsv_reports.hist_global_nodups,#bams_stat_depth_global_coverage_stats,
-#       fofn_name = experiment_name
-     
-#   }
-
-#  #Create a file with a list of the generated output_global_report
-#   call CreateFoFN as CreateFoFN_samtools{
-#     input:
-#       array_of_files = samtools_reports_file.output_global_report,#stat_alineamiento,
-#       fofn_name = experiment_name
-     
-#   }
-
-#  call CreateFoFN as CreateFoFN_fastp{
-#     input:
-#       array_of_files = fastp_rep,
-#       fofn_name = experiment_name
-     
-#   }
-
-
-#  ####### esto mergea archivos de distintas muestras
-#   # call merge_reports {
-
-#   #   input:  
-#   #   files_to_merge = CreateFoFN.fofn_list,
-#   #   experiment_name = experiment_name,
-#   #   ngs_toolpath = ngs_toolpath
-
-#   # } 
-
-#    call merge_reports as merge_nodups_report{
-
-#     input:  
-#     files_to_merge = CreateFoFN_no_dups.fofn_list,
-#     experiment_name = experiment_name,
-#     ngs_toolpath = ngs_toolpath
-
-#   } 
-
-
-#   call merge_reports as merge_samtools_reports{
-
-#     input:  
-#       files_to_merge = CreateFoFN_samtools.fofn_list,
-#       ngs_toolpath = ngs_toolpath,
-#       experiment_name = experiment_name
-#   } 
+}
 
 
 #   call merge_reports as merge_fastp_reports{
