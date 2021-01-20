@@ -645,33 +645,33 @@ Array[File] exon_tsv = qual_control.tsv_exon
 
 
  ####excel_report
-    scatter (idx in range(length(exon_tsv))){
-         String samplename2 = basename(exon_tsv[idx],"_ENS_local_report.tsv")
+#     scatter (idx in range(length(exon_tsv))){
+#          String samplename2 = basename(exon_tsv[idx],"_ENS_local_report.tsv")
  
-         call build_excell_report {
-            input:
-            #annovar_tsv = join_annovar_exon_dist.anno_dist,
-            #plof = plof[idx],
-            samplename2 = samplename2,
-            exon_coverage_report = exon_tsv[idx],
-            ngs_toolpath = ngs_toolpath,
-            #no_cubierto = no_cubierto[idx],
-            pipeline_version = pipeline_version
+#          call build_excell_report {
+#             input:
+#             #annovar_tsv = join_annovar_exon_dist.anno_dist,
+#             #plof = plof[idx],
+#             samplename2 = samplename2,
+#             exon_coverage_report = exon_tsv[idx],
+#             ngs_toolpath = ngs_toolpath,
+#             #no_cubierto = no_cubierto[idx],
+#             pipeline_version = pipeline_version
             
-           }
-} #fin scatter
+#            }
+# } #fin scatter
 
 
-Array[File?] reporte_variantes = build_excell_report.excell_report
-#Array[String] array_path_save_byexon = mkdir_samplename.path_out_softlink
- Array[Pair[String,File?]] samples_by_variant = zip (array_path_save_byexon, reporte_variantes)
-  scatter (pairs in samples_by_variant) {
-    call symlink_important_files as build_excell_reportbyvariants {
-        input:
-        output_to_save = pairs.right,
-        path_save = pairs.left
-    }
-  }
+# Array[File?] reporte_variantes = build_excell_report.excell_report
+# #Array[String] array_path_save_byexon = mkdir_samplename.path_out_softlink
+#  Array[Pair[String,File?]] samples_by_variant = zip (array_path_save_byexon, reporte_variantes)
+#   scatter (pairs in samples_by_variant) {
+#     call symlink_important_files as build_excell_reportbyvariants {
+#         input:
+#         output_to_save = pairs.right,
+#         path_save = pairs.left
+#     }
+#   }
 
 
 #     Array[File] Tsv_annovar = singleGenotypeGVCFs.annovar_tsv_out
