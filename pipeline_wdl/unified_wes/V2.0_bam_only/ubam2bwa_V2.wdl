@@ -148,7 +148,8 @@ task Serial_SamToFastq_BwaMem_MergeBamAlignment {
         --UNMAP_CONTAMINANT_READS=true \
         --UNMAPPED_READ_STRATEGY=COPY_TO_TAG\
         --ADD_PG_TAG_TO_READS=false
-  done        
+  done
+  rm $output_bwa_prefix.aligned.unmerged.bam ##agu 1/21         
   >>>
   
   output {
