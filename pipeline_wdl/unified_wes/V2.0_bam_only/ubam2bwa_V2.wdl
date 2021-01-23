@@ -150,7 +150,7 @@ task Serial_SamToFastq_BwaMem_MergeBamAlignment {
         --ADD_PG_TAG_TO_READS=false
   done
   rm $*.aligned.unmerged.bam ##agu 1/21 
-  rm $*.merged.unsorted.bam        
+  #rm $*.merged.unsorted.bam        
   >>>
   
   output {
