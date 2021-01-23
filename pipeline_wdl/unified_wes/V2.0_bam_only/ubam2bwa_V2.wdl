@@ -155,7 +155,7 @@ task Serial_SamToFastq_BwaMem_MergeBamAlignment {
   
   output {
     Array[File] output_mergedbam_files = glob("*merged.unsorted.bam")
-    File = path_bams_intermedios = "bams_a_borrar.txt"
+    File path_bams_intermedios = "bams_a_borrar.txt"
   }
 }
 
