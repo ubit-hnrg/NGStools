@@ -148,13 +148,14 @@ task Serial_SamToFastq_BwaMem_MergeBamAlignment {
         --UNMAP_CONTAMINANT_READS=true \
         --UNMAPPED_READ_STRATEGY=COPY_TO_TAG\
         --ADD_PG_TAG_TO_READS=false
+  
   done
-  rm $*.aligned.unmerged.bam ##agu 1/21 
-  #rm $*.merged.unsorted.bam        
+  for f in *.bam; do readlink -f $f >> bams_a_borrar.txt; done      
   >>>
   
   output {
     Array[File] output_mergedbam_files = glob("*merged.unsorted.bam")
+    File = path_bams_intermedios = "bams_a_borrar.txt"
   }
 }
 
