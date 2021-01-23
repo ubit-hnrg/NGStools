@@ -39,6 +39,18 @@ task borrado_fastp {
 
 }
 
+task borrado_bam_intermedio {
+    File path_bams_intermedios
+    
+
+    command <<<
+    while read -r line; do
+    rm "$line"
+    done < "${path_bams_intermedios}"
+    >>>
+
+}
+
 task borrado {
 String archivo_borrar
 
@@ -401,6 +413,11 @@ workflow main_workflow {
         input:
         path1 = ConvertPairedFastQsToUnmappedBamWf.p_borrar1,
         path2 = ConvertPairedFastQsToUnmappedBamWf.p_borrar2
+    }
+
+    call borrado_bam_intermedio {
+    input:
+     path_bams_intermedios = ubamtobwa.output_path_bam_intermedio
     }
  #inputs_bams is an array of files. Each element is a file containing all the aligned and merged bams of a sample.
  scatter (sample_txt in array_of_samples_txt)  {

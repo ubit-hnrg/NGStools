@@ -56,6 +56,7 @@ workflow ubamtobwa {
 
   output {
     Array[File] output_mergedbam_files = Serial_SamToFastq_BwaMem_MergeBamAlignment.output_mergedbam_files
+    File output_path_bam_intermedio = Serial_SamToFastq_BwaMem_MergeBamAlignment.path_bams_intermedios
 
   }
 
