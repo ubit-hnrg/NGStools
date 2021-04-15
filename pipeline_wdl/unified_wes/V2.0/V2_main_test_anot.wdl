@@ -532,7 +532,7 @@ workflow main_workflow {
 
       }
       ####################### anotacion minimal. test
-      call anotacionMinimal.FuncionalAnnotationSingle{
+      call anotacionMinimal.FuncionalAnnotationMinimal{
         input:
         input_vcf = singleGenotypeGVCFs.restricted_vcf, #sin annovar del genotipado , 
         ##input_vcf = singleGenotypeGVCFs.individual_vcfs_annovar,# . 
