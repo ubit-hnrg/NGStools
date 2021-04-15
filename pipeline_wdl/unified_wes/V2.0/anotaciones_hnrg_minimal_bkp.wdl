@@ -233,13 +233,13 @@ command{
     ##test
     ##sort -k1,1V -k2,2n ${exon_coord} >> sorted_exon_bed.bed
     
-    bedtools closest -a head_vcf.vcf -b ${exon_coord} -D a | cut -f1,2,12-18  > ${sample_name}.exon_distance.minimal.tsv
+    bedtools closest -a head_vcf.vcf -b ${exon_coord} -D a | cut -f1,2,12-18  > ${sample_name}.exon_distance.tsv
 
     rm head_vcf.vcf
     }
 
 output {
-File exon_dist = "${sample_name}.exon_distance.minimal.tsv"
+File exon_dist = "${sample_name}.exon_distance.tsv"
 #File exon_dist_to_lib = "${sample_name}.exon_distance_tolib.tsv"
 
 }
@@ -469,7 +469,7 @@ call intervar_postprocessing {
     input_vcf = intervar_postprocessing.salida_intervar,#step13_pharmGKB.salida_Snpsift, 
     samplename1 = samplename1,
     toolpath = toolpath,
-    nombre_step = "_minimal_annot"
+    nombre_step = "_HNRG_FREQ_minimal"
 
     
  }
@@ -505,8 +505,8 @@ call exon_distance {
 
 
 ###tsv file to merge excel file.
-#output {
-#File vcf_exon_distance = exon_distance.exon_dist 
-#}
+output {
+File vcf_exon_distance = exon_distance.exon_dist 
+}
 }
 
