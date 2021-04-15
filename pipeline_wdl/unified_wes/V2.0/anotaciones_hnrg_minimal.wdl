@@ -246,7 +246,7 @@ File exon_dist = "${sample_name}.exon_distance.minimal.tsv"
 }
 
 
-workflow FuncionalAnnotationSingle {
+workflow FuncionalAnnotationMinimal {
 
 File input_vcf 
 ##String path_herramientas#### cambiaar por toolpath

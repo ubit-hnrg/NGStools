@@ -11,7 +11,7 @@ import './jointgenotype_single_V2.wdl' as single_genotypeGVCF #4
 #import './quality_control_V2.wdl' as qual_control #5
 import './qc.wdl' as qual_control #5
 import './anotaciones_hnrg_single.wdl' as anotacionesSingle #5
-import './anotaciones_hnrg_minimal.wdl' as anotacionMinimal #6
+import './anotaciones_hnrg_minimal.wdl' as minimal_annot #6
 
 
 
@@ -532,7 +532,7 @@ workflow main_workflow {
 
       }
       ####################### anotacion minimal. test
-      call anotacionMinimal.FuncionalAnnotationMinimal{
+      call minimal_annot.FuncionalAnnotationMinimal{
         input:
         input_vcf = singleGenotypeGVCFs.restricted_vcf, #sin annovar del genotipado , 
         ##input_vcf = singleGenotypeGVCFs.individual_vcfs_annovar,# . 
