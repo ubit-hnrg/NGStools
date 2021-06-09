@@ -36,6 +36,6 @@ python /home/hnrg/NGStools/pipeline_wdl/qualityControl/make_excel_report.py $pan
 python /home/hnrg/NGStools/pipeline_wdl/qualityControl/local_coverage_report_ENS_intersect_Library_4_covreport.py -i=$sample_name'.hist' -o $sample_name'_digital_exon_cov.tsv' -s=${sample_name}
 
 
-rm $sample_name.hist intervalo_panel_digital.bed $panel_name'_digital_panel_coverage.tsv' $sample_name'.hist.aux' $panel_name'_no_encontrado.tsv' $panel_name'_incluidos.tsv' 
-
-java -jar /home/hnrg/HNRG-pipeline-V0.1/tools/CovReport/CovReport.jar -i $sample_name'_digital_exon_cov.tsv' -s=${sample_name}
+#rm $sample_name.hist intervalo_panel_digital.bed $panel_name'_digital_panel_coverage.tsv' $sample_name'.hist.aux' $panel_name'_no_encontrado.tsv' $panel_name'_incluidos.tsv' 
+rm intervalo_panel_digital.bed $panel_name'_digital_panel_coverage.tsv' $sample_name'.hist.aux' $panel_name'_no_encontrado.tsv' $panel_name'_incluidos.tsv' 
+java -jar /home/hnrg/HNRG-pipeline-V0.1/tools/CovReport/CovReport.jar -i $sample_name'_digital_exon_cov.tsv' -s ${sample_name}
