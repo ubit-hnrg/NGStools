@@ -75,7 +75,7 @@ def main():
     info = ENS_coverage_hist.drop_duplicates(['transcriptID','exonNumber'])[['gene','exonNumber','transcriptID','IntervalLength']]
     results = pd.merge(results,info,on = ['transcriptID','exonNumber'])
     results = results[['transcriptID','gene','exonNumber','IntervalLength','mean_DP','std_DP','dp>=1','dp>=5','dp>=10','dp>=20','dp>=30']]
-    results.sort_values(by=['gene'],inplace = True) ### sort para ordenar los exones en strand - ##agu 8/10
+    results.sort_values(by=['gene','exonNumber'],inplace = True) ### sort para ordenar los exones en strand - ##agu 8/10
     results.to_csv(output_local_coverage,sep = '\t',index = False)
 
 if __name__ == "__main__":
