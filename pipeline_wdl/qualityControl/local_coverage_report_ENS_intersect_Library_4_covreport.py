@@ -45,12 +45,25 @@ def depth_fraction(coverage,thr=0,ZeroDepth=False):
     
     
 def localdepth(coverage_hist):
+
+
+    coverage_hist['cumsum'] = 1- coverage_hist.frequency.cumsum()
+    weighted_stats = DescrStatsW(coverage_hist.DP-1, weights=coverage_hist.BPs, ddof=0)
+    
+    
+   
     local_depth={}
+    local_depth.update({'mean_DP':round(weighted_stats.mean,signif)})
+    #local_depth.update({'median_DP':weighted_stats.quantile(0.5).values[0]})
+    local_depth.update({'std_DP':round(weighted_stats.std,signif)})
+
     local_depth.update({'dp>=1':(round(depth_fraction(coverage_hist,thr=1),signif))*100})
     local_depth.update({'dp>=5':(round(depth_fraction(coverage_hist,thr=5),signif))*100})
     local_depth.update({'dp>=10':(round(depth_fraction(coverage_hist,thr=10),signif))*100})
     local_depth.update({'dp>=20':(round(depth_fraction(coverage_hist,thr=20),signif))*100})
     local_depth.update({'dp>=30':(round(depth_fraction(coverage_hist,thr=30),signif))*100})
+    #local_depth.update({'mean_DP':round(weighted_stats.mean,signif)})
+
     #local_depth.update({'dp>=50':round(depth_fraction(coverage_hist,thr=50),signif)})
     #local_depth.update({'dp>=100':round(depth_fraction(coverage_hist,thr=100),signif)})
     return pd.Series(local_depth)
@@ -61,7 +74,7 @@ def main():
     results = results.reset_index()
     info = ENS_coverage_hist.drop_duplicates(['transcriptID','exonNumber'])[['gene','exonNumber','transcriptID','IntervalLength']]
     results = pd.merge(results,info,on = ['transcriptID','exonNumber'])
-    results = results[['transcriptID','gene','exonNumber','IntervalLength','dp>=1','dp>=5','dp>=10','dp>=20','dp>=30']]
+    results = results[['transcriptID','gene','exonNumber','IntervalLength','mean_DP','std_DP','dp>=1','dp>=5','dp>=10','dp>=20','dp>=30']]
     results.sort_values(by=['gene'],inplace = True) ### sort para ordenar los exones en strand - ##agu 8/10
     results.to_csv(output_local_coverage,sep = '\t',index = False)
 
