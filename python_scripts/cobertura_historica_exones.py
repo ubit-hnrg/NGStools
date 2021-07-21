@@ -2,8 +2,9 @@
 # -*- coding: utf-8 -*-
 
 import pandas as pd
-import numpy as np  
-import csv, sys, os, argparse
+import numpy as np
+from progress.bar import Bar, ChargingBar
+import sys, os, argparse
 
 
 def leer_estadistico(path, aux_var):
