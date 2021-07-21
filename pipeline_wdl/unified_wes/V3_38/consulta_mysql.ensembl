@@ -1,3 +1,7 @@
+## external_db_id 1100 == HGNC
+## external_db_id 1300 == UCSC
+-P 5306 es para hg38
+
 mysql -h ensembldb.ensembl.org -u anonymous -P 5306 homo_sapiens_core_104_38 -se "SELECT DISTINCT
     seq_region.name AS chrom,     exon.seq_region_start AS start,     exon.seq_region_end AS end, transcript.stable_id as stable_id,    gene_names.display_label AS gene_name,     exon_transcript.rank AS exon_number,     exon.seq_region_strand AS strand, transcript.biotype AS bio_type FROM gene JOIN transcript ON transcript.transcript_id = gene.canonical_transcript_id JOIN exon_transcript ON exon_transcript.transcript_id = transcript.transcript_id JOIN exon ON exon_transcript.exon_id = exon.exon_id JOIN seq_region ON seq_region.seq_region_id = gene.seq_region_id LEFT JOIN (     SELECT xref_id, display_label     FROM xref
 WHERE xref.external_db_id = 1100 ) AS gene_names ON gene_names.xref_id = gene.display_xref_id WHERE LEFT(gene.stable_id, 4) <> 'LRG_' ORDER BY seq_region.name, exon.seq_region_start;" > transcriptos_canonicos_ensmbl_104_38.exones
