@@ -101,8 +101,8 @@ task symlink_important_files {
 task coord_generator {
 
   File intervalo_captura
-  File? intervalo_captura2
-  File? intervalo_captura3
+  #File? intervalo_captura2
+  #File? intervalo_captura3
   File chromosome_length
   File generic_exon_coords  ##ensembl
   Int padding
@@ -275,9 +275,9 @@ workflow main_workflow {
 
   ###################### inputs para crear intervalo
   File intervalo_captura
-  File chromosome_length = "'/data/new_dbs/grch38/hg38/chromosome_lengths_GHRCH38.txt'" #"/home/hnrg/HNRG-pipeline-V0.1/libraries/GRCh37/chromosome_lengths_hg19.txt"
+  File chromosome_length = "/data/new_dbs/grch38/hg38/chromosome_lengths_GHRCH38.txt" #"/home/hnrg/HNRG-pipeline-V0.1/libraries/GRCh37/chromosome_lengths_hg19.txt"
   Int padding = "100"
-  Int merge_tolerance = "200"
+  Int merge_tolerance = "200" ##usamos 5000
 
 
     ###################calls 
