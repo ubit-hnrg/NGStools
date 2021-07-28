@@ -101,8 +101,8 @@ task symlink_important_files {
 task coord_generator {
 
   File intervalo_captura
-  #File? intervalo_captura2
-  #File? intervalo_captura3
+  ###File intervalo_captura2
+  ###File intervalo_captura3
   File chromosome_length
   File generic_exon_coords  ##ensembl
   Int padding
