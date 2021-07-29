@@ -35,10 +35,10 @@ task CheckContamination {
     #/usr/gitc/VerifyBamID \
     /home/hnrg/HNRG-pipeline-V0.1/tools/verifyBamID/bin/verifyBamID
     ${toolpath}verifyBamID/bin/verifyBamID \
-    --Verbose \
+    --verbose \
     --NumPC 4 \
-    --Output ${output_prefix} \
-    --BamFile ${input_bam} \
+    --out ${output_prefix} \
+    --bam ${input_bam} \
     --Reference ${ref_fasta} \
     --UDPath ${contamination_sites_ud} \
     --MeanPath ${contamination_sites_mu} \
@@ -801,19 +801,19 @@ workflow only_bam_wflw {
 
 ##############agrego checkcontam; solo para hg38.
 # Estimate level of cross-sample contamination
-  call CheckContamination {
-    input:
-      input_bam = SortAndFixTags.output_bam,
-      input_bam_index = SortAndFixTags.output_bam_index,
-      contamination_sites_ud = contamination_sites_ud,
-      contamination_sites_bed = contamination_sites_bed,
-      contamination_sites_mu = contamination_sites_mu,
-      ref_fasta = ref_fasta,
-      ref_fasta_index = ref_fasta_index,
-      output_prefix = base_file_name + ".preBqsr",
-      contamination_underestimation_factor = 0.75,
-	  toolpath = toolpath
-  }
+  # call CheckContamination {
+  #   input:
+  #     input_bam = SortAndFixTags.output_bam,
+  #     input_bam_index = SortAndFixTags.output_bam_index,
+  #     contamination_sites_ud = contamination_sites_ud,
+  #     contamination_sites_bed = contamination_sites_bed,
+  #     contamination_sites_mu = contamination_sites_mu,
+  #     ref_fasta = ref_fasta,
+  #     ref_fasta_index = ref_fasta_index,
+  #     output_prefix = base_file_name + ".preBqsr",
+  #     contamination_underestimation_factor = 0.75,
+	#   toolpath = toolpath
+  # }
 
 
 
@@ -945,8 +945,8 @@ workflow only_bam_wflw {
       gatk_jar = gatk_jar,
       toolpath = toolpath,
       smith_waterman_implementation = smith_waterman_implementation,
-      contamination = CheckContamination.contamination,
-      #contamination = contamination,
+      #contamination = CheckContamination.contamination,
+      contamination = contamination,
       newqual = newqual
      }
   }
@@ -1030,7 +1030,7 @@ workflow only_bam_wflw {
    File analysis_ready_bam_md5 = GatherBamFiles.output_bam_md5
 
 #####contamination
- File selfSM = CheckContamination.selfSM
+ #File selfSM = CheckContamination.selfSM
 
   #  File gvcf_summary_metrics = CollectGvcfCallingMetrics.summary_metrics
   #  File gvcf_detail_metrics = CollectGvcfCallingMetrics.detail_metrics
