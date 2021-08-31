@@ -36,25 +36,31 @@ def crear_excel(df1,df2,df3, path_out):
     writer = ExcelWriter(path_out)
     
     df1.to_excel(writer,'Variantes_2dos')
-    df2.to_excel(writer,'Cobertura_2dos')
-    df3.to_excel(writer,'ACMG_V3')
+    df2.to_excel(writer,'Cobertura_2dos',index=False)
+    df3.to_excel(writer,'ACMG_V3',index=False)
     
     writer.save()
 
 
 def main(argv):
 
+    parser = argparse.ArgumentParser(description= "A partir del excel de variantes se filtra por los genes de hallazgos secundarios ACMG")
+    parser.add_argument('-v','--variantes', help='Archivo de variantes from ANNOVAR *_variants*.xlsx')
+    parser.add_argument('-a','--acmg', help = 'archivo genes hallazgos secundarios segun ACMG')
+    parser.add_argument('-o','--output', help = 'output path')
+    args = parser.parse_args()
+
     if(len(sys.argv) > 1):
-        if(not os.path.isfile(sys.argv[1])):
+        if(not os.path.isfile(args.variantes)):
             print(sys.argv[1],"no se reconoce el primer archivo")
             sys.exit(1)
-        elif(not os.path.isfile(sys.argv[2])):
+        elif(not os.path.isfile(args.acmg)):
             print(sys.argv[2],"no se reconoce el 2do archivo")
             sys.exit(1)
     
-    excel = sys.argv[1]
-    acmg = sys.argv[2]
-    out_dir = sys.argv[3]
+    excel = args.variantes#sys.argv[1]
+    acmg = args.acmg#sys.argv[2]
+    out_dir = args.output#sys.argv[3]
 
     var, exones = leer_excel(excel)
     genes_acmg, variantes_2do, exones_2do = busqueda_genes_acmg(acmg,var,exones)
@@ -65,6 +71,6 @@ def main(argv):
 
 
 if __name__ == '__main__':
-    main(sys.argv)
+    main(sys.argv[1:])
 
 
