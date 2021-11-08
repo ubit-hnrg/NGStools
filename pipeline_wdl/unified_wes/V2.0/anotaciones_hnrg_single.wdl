@@ -96,7 +96,8 @@ String annovar_dbpath
 command <<<
 
 #perl ${toolpath}annovar/table_annovar.pl ${vcf_in} ${annovar_dbpath} -vcfinput  -buildver hg19 -remove -out ${out_prefix} -protocol dbnsfp35a,gnomad_exome,gnomad_genome,intervar_20180118 -operation f,f,f,f -nastring . 
-perl ${toolpath}annovar/table_annovar.pl ${vcf_in} ${annovar_dbpath} -vcfinput  -buildver hg19 -remove -out ${out_prefix} -protocol dbnsfp35a,gnomad_exome,gnomad_genome,intervar_20180118 -operation f,f,f,f 
+#perl ${toolpath}annovar/table_annovar.pl ${vcf_in} ${annovar_dbpath} --thread 4 -vcfinput  -buildver hg19 -remove -out ${out_prefix} -protocol dbnsfp35a,gnomad_exome,gnomad_genome,intervar_20180118 -operation f,f,f,f 
+perl ${toolpath}annovar/table_annovar.pl ${vcf_in} ${annovar_dbpath} --thread 4 -vcfinput  -buildver hg19 -remove -out ${out_prefix} -protocol dbnsfp42a,gnomad211_exome,gnomad211_genome,intervar_20180118 -operation f,f,f,f 
 
 >>>
 
