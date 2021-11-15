@@ -44,7 +44,7 @@ String reference_version
 command {
 
 set -o pipefail
-java -Xmx${java_heap_memory_initial} -jar ${toolpath}snpEff.jar ${reference_version} -hgvs \
+java -Xmx${java_heap_memory_initial} -jar ${toolpath}SnpEff/snpEff/snpEff.jar ${reference_version} -hgvs \
 -t -lof -noStats -canon -onlyProtein -c ${toolpath}snpEff.config \
 ${input_vcf} > ${samplename1}.step1_SnpEff.vcf 
 }
@@ -71,7 +71,7 @@ String parametros
 
 command {
 set -o pipefail
-java -Xmx${java_heap_memory_initial} -jar ${toolpath}SnpSift.jar ${parametros} ${database} \
+java -Xmx${java_heap_memory_initial} -jar ${toolpath}SnpEff/snpEff/SnpSift.jar ${parametros} ${database} \
 ${input_vcf} > ${samplename1}.${nombre_step}.vcf
 
 }
@@ -148,7 +148,7 @@ File database
 
 command {
 set -o pipefail
-java -Xmx${java_heap_memory_initial} -jar ${toolpath}SnpSift.jar ${parametros} ${database} \
+java -Xmx${java_heap_memory_initial} -jar ${toolpath}SnpEff/snpEff/SnpSift.jar ${parametros} ${database} \
 ${input_vcf} > ${samplename1}.${nombre_step}.vcf
 
 }
@@ -170,7 +170,7 @@ String parametros
 
 command {
 set -o pipefail
-java -Xmx${java_heap_memory_initial} -jar ${toolpath}SnpSift.jar ${parametros} \
+java -Xmx${java_heap_memory_initial} -jar ${toolpath}SnpEff/snpEff/SnpSift.jar ${parametros} \
 ${input_vcf} > ${samplename1}.${nombre_step}.vcf
 
 }
