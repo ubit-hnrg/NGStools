@@ -1,0 +1,129 @@
+{
+  "##COMMENT0": "INPUTS PARA PIPELINE PARA EL ANALISIS DE DATOS NGS V2. UBIT-HNRG AGOSTO 2020",
+
+  "##COMMENT1": "MANDATORY INPUTS",
+  "##COMMENT2": "INPUT-OUTPUT PATHS",
+  "main_workflow.tabulatedSampleFilePaths": "/home/hnrg/testing/minimal_annot_pipeline_v2/input/TSO20200415_EB896.txt",
+  "main_workflow.path_softlink": "/data/resultsHNRG/minimal_annot_pipeline/",
+  
+  "##COMMENT3": "TOOLS & GATK",
+  "main_workflow.toolpath": "/home/hnrg/HNRG-pipeline-V0.1/tools/",
+  "main_workflow.gatk_jar": "gatk-package-4.0.8.1-local.jar",
+  
+  "##COMMENT4": "uBAM METADATA",
+  "main_workflow.run_date": "2020-04-15",
+  "main_workflow.sequencing_center": "UIT-HNRG",
+  "main_workflow.platformmodel": "NextSeq-500",
+  "main_workflow.platform_name": "Illumina",
+  "main_workflow.library_name": "TSO",
+  "main_workflow.readlenght": "151",
+
+
+  "##COMMENT5": "REQUIRED DBs",
+  "main_workflow.ref_name": ".b37",
+  "main_workflow.dbSNP_vcf": "/home/hnrg/HNRG-pipeline-V0.1/dbs/preprocessing_dbs/All_20180423.vcf.gz",
+  "main_workflow.dbSNP_vcf_index": "/home/hnrg/HNRG-pipeline-V0.1/dbs/preprocessing_dbs/All_20180423.vcf.gz.tbi",
+  "main_workflow.known_indels_sites_VCFs": ["/home/hnrg/HNRG-pipeline-V0.1/dbs/preprocessing_dbs/Mills_and_1000G_gold_standard.indels.b37.vcf.gz"],
+  "main_workflow.known_indels_sites_indices": ["/home/hnrg/HNRG-pipeline-V0.1/dbs/preprocessing_dbs/Mills_and_1000G_gold_standard.indels.b37.vcf.gz.tbi"],
+
+  "##COMMENT6": "REFERENCE",
+  "main_workflow.reference_version": "GRCh37.75",
+  "main_workflow.ref_bwt": "/home/hnrg/HNRG-pipeline-V0.1/references/hs37d5/hs37d5.fa.bwt",
+  "main_workflow.ref_pac": "/home/hnrg/HNRG-pipeline-V0.1/references/hs37d5/hs37d5.fa.pac",
+  "main_workflow.ref_dict": "/home/hnrg/HNRG-pipeline-V0.1/references/hs37d5/hs37d5.dict",
+  "main_workflow.ref_sa": "/home/hnrg/HNRG-pipeline-V0.1/references/hs37d5/hs37d5.fa.sa",
+  "main_workflow.ref_ann": "/home/hnrg/HNRG-pipeline-V0.1/references/hs37d5/hs37d5.fa.ann",
+  "main_workflow.ref_fasta_index": "/home/hnrg/HNRG-pipeline-V0.1/references/hs37d5/hs37d5.fa.fai",
+  "main_workflow.ref_fasta": "/home/hnrg/HNRG-pipeline-V0.1/references/hs37d5/hs37d5.fa",
+  "main_workflow.ref_amb": "/home/hnrg/HNRG-pipeline-V0.1/references/hs37d5/hs37d5.fa.amb",
+
+  "##COMMENT7": "EXPERIMENT LIB, INTERVAL LIST, GENERADOR DE INTERVALO",
+  "main_workflow.chromosome_length": "/home/hnrg/HNRG-pipeline-V0.1/libraries/GRCh37/chromosome_lengths_GRCh37_MT.txt",
+  "main_workflow.intervalo_captura": "/home/hnrg/HNRG-pipeline-V0.1/libraries/GRCh37/TruSight_One_v1.1_GRCh37.bed",
+  "main_workflow.generic_exon_coords": "/home/hnrg/HNRG-pipeline-V0.1/libraries/intervalos/ensembl_canonicos_GRCh37_0based.tsv",
+  "main_workflow.padding": "100",
+  "main_workflow.merge_tolerance": "5000",
+
+  "##COMMENT9": "VARIOS. El comando sorted debe estar vacio si la region contiene MT. sino es: -sorted",
+  "main_workflow.qual_control.cobertura.sorted": "-sorted",
+  "main_workflow.pipeline_version":"V2",
+
+
+  "##COMMENT8": "HAPLOTYPECALLER PARAMETERS",
+  "main_workflow.newqual": "true",
+  "main_workflow.gatk_gkl_pairhmm_implementation": "LOGLESS_CACHING",
+  "main_workflow.gatk_gkl_pairhmm_threads": "1",
+  "main_workflow.haplotype_scatter_count": "2",
+  "main_workflow.smith_waterman_implementation": "AVX_ENABLED",
+  "main_workflow.break_bands_at_multiples_of": "1000000",
+
+  "##COMMENT9": "VARIOS",
+  "main_workflow.ubam_list_name": "ubamfiles",
+  "main_workflow.singleGenotypeGVCFs.excess_het_threshold": "54.69",
+  "main_workflow.contamination": "0",
+  "main_workflow.compression_level": "1",
+  "main_workflow.java_heap_memory_initial": "128m",
+  "main_workflow.singleGenotypeGVCFs.gnomad_plof_db": "/home/hnrg/HNRG-pipeline-V0.1/libraries/GRCh37/gnomad_plof_HNRG.tsv",
+
+  
+  "##COMMENT10": "ANNOVAR",
+  "main_workflow.db_annovar": "/home/hnrg/HNRG-pipeline-V0.1/dbs/hg19_annovar/",
+  "main_workflow.annovar_table_pl": "/home/hnrg/HNRG-pipeline-V0.1/tools/annovar/table_annovar.pl",
+  "main_workflow.joinPY": "/home/hnrg/NGStools/pipeline_wdl/process_vcf/join_vcfs.py",
+  
+  "##COMMENT11": "trimm fastp",
+  "main_workflow.trim_front_fastp": "5",
+  "main_workflow.trim_tail_fastp": "5",
+  
+  "##COMMENT12": "bwa",
+  "main_workflow.bwa_commandline": "bwa mem -K 100000000 -p -v 3 -t 4 -Y",
+
+  "##COMMENT13": "DBs anotacion funcional",
+  "main_workflow.FuncionalAnnotationSingle.version_db": "V2.0",
+
+  "##_COMENTARIO": "genotipado conjunto HNRG_FREQ",
+  "main_workflow.FuncionalAnnotationSingle.hnrg_freq.config_file_vcfanno": "/home/hnrg/NGStools/pipeline_wdl/unified_wes/anotacion_funcional_2020/anotacion_freq_HNRG.toml",
+  "main_workflow.FuncionalAnnotationMinimal.hnrg_freq.config_file_vcfanno": "/home/hnrg/NGStools/pipeline_wdl/unified_wes/anotacion_funcional_2020/anotacion_freq_HNRG.toml",
+
+
+  "##_COMENTARIO": "Base de datos actualizada Noviembre 2018.",
+  "main_workflow.FuncionalAnnotationSingle.step3_dbSNP.database": "/home/hnrg/HNRG-pipeline-V0.1/dbs/preprocessing_dbs/All_20180423.vcf.gz",
+  "main_workflow.FuncionalAnnotationSingle.step3_dbSNP.database_index": "/home/hnrg/HNRG-pipeline-V0.1/dbs/preprocessing_dbs/All_20180423.vcf.gz.tbi",
+
+  "##_COMENTARIO": "Base de datos actualizada Noviembre 2018(no cambia desde 8/12/13) .",
+  "main_workflow.FuncionalAnnotationSingle.step4_1000Genomes.database": "/home/hnrg/HNRG-pipeline-V0.1/dbs/GRCh37_snpsift/1000G_omni2.5.b37.vcf.gz",
+  "main_workflow.FuncionalAnnotationSingle.step4_1000Genomes.database_index": "/home/hnrg/HNRG-pipeline-V0.1/dbs/GRCh37_snpsift/1000G_omni2.5.b37.vcf.gz.tbi",
+
+  "##_COMENTARIO": "Base de datos actualizada Noviembre 2018(no cambia desde 8/12/13) .",
+  "main_workflow.FuncionalAnnotationSingle.step5_hapmap.database": "/home/hnrg/HNRG-pipeline-V0.1/dbs/GRCh37_snpsift/hapmap_3.3.b37.vcf",
+  "main_workflow.FuncionalAnnotationSingle.step5_hapmap.database_index": "/home/hnrg/HNRG-pipeline-V0.1/dbs/GRCh37_snpsift/hapmap_3.3.b37.vcf.idx",
+  
+  "##_COMENTARIO": "Base de datos actualizada Noviembre 2018 (29 de oct de 2018)",
+  "main_workflow.FuncionalAnnotationSingle.step6_Snpsift_GWASCat.database": "/home/hnrg/HNRG-pipeline-V0.1/new_dbs/gwas_catalog_v1.0.2-associations_e98_r2019-12-16.tsv",
+
+  "##_COMENTARIO": "step 7 esta comentado",
+  "##_COMENTARIO": "step 8 annovar",
+  "main_workflow.FuncionalAnnotationSingle.annovar.annovar_dbpath": "/home/hnrg/HNRG-pipeline-V0.1/dbs/hg19_annovar/",
+  "main_workflow.FuncionalAnnotationMinimal.annovar.annovar_dbpath": "/home/hnrg/HNRG-pipeline-V0.1/dbs/hg19_annovar/",  
+
+
+  "##_COMENTARIO": "Base de datos actualizada Noviembre 2018 (no cambia desde nov/2014).",
+  "main_workflow.FuncionalAnnotationSingle.step9_EVS.database": "/home/hnrg/HNRG-pipeline-V0.1/dbs/GRCh37_snpsift/ESP6500SI-V2-SSA137.snps_indels.vcf",
+  "main_workflow.FuncionalAnnotationSingle.step9_EVS.database_index": "/home/hnrg/HNRG-pipeline-V0.1/dbs/GRCh37_snpsift/ESP6500SI-V2-SSA137.snps_indels.vcf.idx",
+
+  "##_COMENTARIO": "step 11 comentado",
+  "##_COMENTARIO": "Base de datos actualizada FEBRERO 2020.(ultima version 19/2/19)",
+  "main_workflow.FuncionalAnnotationSingle.step12_clinVar.database": "/home/hnrg/HNRG-pipeline-V0.1/new_dbs/clinvar_20200127.vcf.gz",
+  "main_workflow.FuncionalAnnotationSingle.step12_clinVar.database_index": "/home/hnrg/HNRG-pipeline-V0.1/new_dbs/clinvar_20200127.vcf.gz.tbi",
+
+  "##_COMENTARIO": "Base de datos sacada del bundle de bitgenia... (ACTUALIZAR).",
+  "main_workflow.FuncionalAnnotationSingle.step13_pharmGKB.database_index": "/home/hnrg/HNRG-pipeline-V0.1/dbs/GRCh37_snpsift/PharmGKBvcf_2016.vcf.sidx",
+  "main_workflow.FuncionalAnnotationSingle.step13_pharmGKB.database": "/home/hnrg/HNRG-pipeline-V0.1/dbs/GRCh37_snpsift/PharmGKBvcf_2016.vcf",
+
+  "##_COMENTARIO": "Base de datos actualizada Noviembre 2018.(no cambia desde 27/2/17)",
+  "main_workflow.FuncionalAnnotationSingle.final_annot.database": "/home/hnrg/HNRG-pipeline-V0.1/dbs/GRCh37_snpsift/ExAC.r1.sites.vep.vcf.gz",
+  "main_workflow.FuncionalAnnotationSingle.final_annot.database_index": "/home/hnrg/HNRG-pipeline-V0.1/dbs/GRCh37_snpsift/ExAC.r1.sites.vep.vcf.gz.tbi"
+
+}
+  
+
