@@ -40,12 +40,13 @@ String toolpath
 String java_heap_memory_initial
 String reference_version
 
+###la version 5 de snpeff no soporta el -t, multihread
 
 command {
 
 set -o pipefail
 java -Xmx${java_heap_memory_initial} -jar ${toolpath}SnpEff/snpEff/snpEff.jar ${reference_version} -hgvs \
--t -lof -noStats -canon -onlyProtein -c ${toolpath}snpEff.config \
+ -lof -noStats -canon -onlyProtein -c ${toolpath}snpEff.config \
 ${input_vcf} > ${samplename1}.step1_SnpEff.vcf 
 }
 
