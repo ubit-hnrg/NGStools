@@ -1,0 +1,36 @@
+{
+  "##_COMENTARIO": "inputs gcvs",
+
+  "JointGenotyping.gvcf_file": "File",
+
+  "JointGenotyping.gvcf_idx_file": "File",
+  "JointGenotyping.names_file": "File",
+  "##_COMENTARIO": "salida",
+
+  "JointGenotyping.array_path_save": "String",
+  "JointGenotyping.callset_name": "GH_TSO2021",
+
+  "JointGenotyping.toolpath": "/home/hnrg/HNRG-pipeline-V0.1/tools/",
+
+  "JointGenotyping.gatk_jar": "gatk-package-4.0.8.1-local.jar",
+  "JointGenotyping.experiment_lib": "/home/hnrg/HNRG-pipeline-V0.1/libraries/GRCh37/TruSight_One_v1.1_GRCh37_FLG.bed",
+  "JointGenotyping.generic_exon_coords": "/home/hnrg/HNRG-pipeline-V0.1/libraries/intervalos/ensembl_canonicos_GRCh37_0based.tsv",
+
+
+  "JointGenotyping.merge_tolerance": "5000",
+  
+  
+  "JointGenotyping.excess_het_threshold": "54.69",
+  
+  "JointGenotyping.unpadded_intervals_file": "/home/hnrg/HNRG-pipeline-V0.1/libraries/GRCh37/b37_wgs_consolidated_calling_intervals.list",
+  "JointGenotyping.padding": "100",
+  "JointGenotyping.dbSNP_vcf_index": "/home/hnrg/HNRG-pipeline-V0.1/new_dbs/2021/dbSNP155_GRCh37.vcf.gz.tbi",
+  "JointGenotyping.dbSNP_vcf": "/home/hnrg/HNRG-pipeline-V0.1/new_dbs/2021/dbSNP155_GRCh37.vcf.gz",
+
+  "JointGenotyping.ref_fasta_index": "/home/hnrg/HNRG-pipeline-V0.1/references/hs37d5/hs37d5.fa.fai",
+  "JointGenotyping.ref_dict": "/home/hnrg/HNRG-pipeline-V0.1/references/hs37d5/hs37d5.dict",
+  
+  "JointGenotyping.ref_fasta": "/home/hnrg/HNRG-pipeline-V0.1/references/hs37d5/hs37d5.fa",
+  "JointGenotyping.chromosome_length": "/home/hnrg/HNRG-pipeline-V0.1/libraries/GRCh37/chromosome_lengths_GRCh37_MT.txt"
+}
+

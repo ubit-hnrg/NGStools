@@ -17,9 +17,14 @@ workflow JointGenotyping {
   String gatk_jar
   String toolpath
 
-  Array[String] sample_names
-  Array[File] input_gvcfs 
-  Array[File] input_gvcfs_indices 
+  File gvcf_file
+  File gvcf_idx_file
+  File names_file
+
+  #Array[String] sample_names
+  Array[File] input_gvcfs = read_lines(gvcf_file)
+  Array[String] sample_names = read_lines(names_file)
+  Array[File] input_gvcfs_indices = read_lines(gvcf_idx_file)
 
   File dbSNP_vcf
   File dbSNP_vcf_index
@@ -423,7 +428,7 @@ task CollectVariantCallingMetrics {
       --INPUT ${input_vcf} \
       --DBSNP ${dbSNP_vcf} \
       --OUTPUT ${metrics_filename_prefix} \
-      --THREAD_COUNT 8 \
+      --THREAD_COUNT 4 \
       --TARGET_INTERVALS ${interval_list}
   }
   output {
@@ -571,7 +576,6 @@ task coord_generator {
 
 }
 
-
 task restrict_to_TSO {
   File padded_interval
   File generic_exon_coords
@@ -582,7 +586,7 @@ task restrict_to_TSO {
     set -e
     set -o pipefail
 
-  ${toolpath}bedtools2/bin/intersectBed -wa -a ${generic_exon_coords} -b ${padded_interval} | sort -k1,1 -k2,2n -V | uniq > exon_restricted2interval.bed
+  ${toolpath}bedtools2/bin/intersectBed -a ${generic_exon_coords} -b ${padded_interval} | sort -k1,1 -k2,2n -V | uniq > exon_restricted2interval.bed
   >>>
 
   output {
