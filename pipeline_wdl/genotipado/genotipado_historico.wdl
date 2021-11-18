@@ -557,9 +557,9 @@ task coord_generator {
      
     ${toolpath}bedtools2/bin/mergeBed -i intervalo_b37_padded_${padding}.bed -d ${merge_tolerance} > intervalo_b37_padded_${padding}_merged_${merge_tolerance}.bed
 
-    java -jar ${toolpath}${gatk_jar} BedToIntervalList -I intervalo_b37_padded_${padding}_merged_${merge_tolerance}.bed -O intervalo_b37_padded_${padding}_merged_${merge_tolerance}_preprocessing.interval_list -SD=${ref_dict}  
+    java -jar ${toolpath}${gatk_jar} BedToIntervalList -I intervalo_b37_padded_${padding}_merged_${merge_tolerance}.bed -O intervalo_b37_padded_${padding}_merged_${merge_tolerance}_preprocessing.interval_list -SD ${ref_dict}  
 
-    java -jar ${toolpath}${gatk_jar} BedToIntervalList -I intervalo_b37_padded_${padding}.bed -O intervalo_b37_padded_${padding}.interval_list -SD=${ref_dict}
+    java -jar ${toolpath}${gatk_jar} BedToIntervalList -I intervalo_b37_padded_${padding}.bed -O intervalo_b37_padded_${padding}.interval_list -SD ${ref_dict}
      
 
     cp -L intervalo_b37_padded_${padding}.bed ${path_save}
