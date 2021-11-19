@@ -1,6 +1,6 @@
 #### main anotacion Version 1
 
-import './anotaciones_hnrg_single.wdl' as anotacionesSingle
+import './anotaciones_hnrg_single_2021.wdl' as anotacionesSingle
 
 
 workflow main_workflow {
