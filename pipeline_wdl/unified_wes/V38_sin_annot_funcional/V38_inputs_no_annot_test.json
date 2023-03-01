@@ -1,0 +1,116 @@
+{
+  "##COMMENT0": "INPUTS PARA PIPELINE PARA EL ANALISIS DE DATOS NGS V2. UBIT-HNRG AGOSTO 2020",
+
+  "##COMMENT1": "MANDATORY INPUTS",
+  "##COMMENT2": "INPUT-OUTPUT PATHS",
+  "main_workflow.tabulatedSampleFilePaths": "/data/test_files/fastq_1000/fastq1000.txt",
+  "main_workflow.path_softlink": "/data/resultsHNRG/testV38/",
+
+  "##COMMENT3": "TOOLS & GATK",
+  "main_workflow.gatk_jar": "gatk-package-4.0.8.1-local.jar",
+  "main_workflow.toolpath": "/home/hnrg/HNRG-pipeline-V0.1/tools/",
+  "main_workflow.ngs_toolpath": "/home/hnrg/NGStools",
+
+
+
+  "##COMMENT4": "uBAM METADATA",
+  "main_workflow.run_date": "22-1-2020",
+  "main_workflow.library_name": "TSO",
+  "main_workflow.readlenght": "151",
+  "main_workflow.platformmodel": "NextSeq-500",
+  "main_workflow.sequencing_center": "UIT-HNRG",
+  "main_workflow.platform_name": "Illumina",
+
+
+  "##COMMENT5": "REQUIRED DBs",
+  "main_workflow.ref_name": ".hg38",
+  "main_workflow.dbSNP_vcf": "/data/new_dbs/grch38/dbSNP/dbSNP156_GRCh38.vcf.gz",
+  "main_workflow.dbSNP_vcf_index": "/data/new_dbs/grch38/dbSNP/dbSNP156_GRCh38.vcf.gz.tbi",
+
+
+  "##COMMENT6": "REFERENCE",
+  "main_workflow.reference_version": "GRCh38.p13",
+
+  "main_workflow.ref_fasta": "/data/new_dbs/grch38/hg38_broad/Homo_sapiens_assembly38.fasta",
+  "main_workflow.ref_fasta_index": "/data/new_dbs/grch38/hg38_broad/Homo_sapiens_assembly38.fasta.fai",
+  "main_workflow.ref_dict": "/data/new_dbs/grch38/hg38_broad/Homo_sapiens_assembly38.dict",
+  "main_workflow.ref_sa": "/data/new_dbs/grch38/hg38_broad/Homo_sapiens_assembly38.fasta.64.sa",
+  "main_workflow.ref_ann": "/data/new_dbs/grch38/hg38_broad/Homo_sapiens_assembly38.fasta.64.ann",
+  "main_workflow.ref_pac": "/data/new_dbs/grch38/hg38_broad/Homo_sapiens_assembly38.fasta.64.pac",
+  "main_workflow.ref_amb": "/data/new_dbs/grch38/hg38_broad/Homo_sapiens_assembly38.fasta.64.amb",
+  "main_workflow.ref_alt": "/data/new_dbs/grch38/hg38_broad/Homo_sapiens_assembly38.fasta.64.alt",
+  "main_workflow.ref_bwt": "/data/new_dbs/grch38/hg38_broad/Homo_sapiens_assembly38.fasta.64.bwt",
+
+  "##COMMENT7": "EXPERIMENT LIB, INTERVAL LIST, GENERADOR DE INTERVALO",
+  "main_workflow.padding": "100",
+  "main_workflow.generic_exon_coords": "/home/hnrg/HNRG-pipeline-V0.1/libraries/intervalos/transcriptos_canonicos_ensmbl_104_38.tsv",
+
+  "main_workflow.intervalo_captura": "/home/hnrg/HNRG-pipeline-V0.1/libraries/intervalos/GRCH37/TSO/TruSight_One_v1.1_GRCH37_2_38.bed",
+
+
+  "main_workflow.singleGenotypeGVCFs.snp_filter_level": "99.7",
+  "main_workflow.haplotype_database_file": "/data/new_dbs/grch38/intervalos/Homo_sapiens_assembly38.haplotype_database.txt",
+  
+  "main_workflow.contamination_sites_mu": "/data/new_dbs/grch38/intervalos/1000g.phase3.100k.b38.vcf.gz.dat.mu",
+
+  "main_workflow.contamination_sites_ud": "/data/new_dbs/grch38/intervalos/1000g.phase3.100k.b38.vcf.gz.dat.UD",
+  "main_workflow.contamination_sites_bed": "/data/new_dbs/grch38/intervalos/1000g.phase3.100k.b38.vcf.gz.dat.bed",
+
+  "main_workflow.annovar_table_pl": "/home/hnrg/HNRG-pipeline-V0.1/tools/annovar/table_annovar.pl",
+  
+  "main_workflow.gatk_gkl_pairhmm_threads": "1",
+  
+  "main_workflow.snp_recalibration_tranche_values": ["100.0", "99.95", "99.9", "99.8", "99.6", "99.5", "99.4", "99.3", "99.0", "98.0", "97.0", "90.0" ],
+  "main_workflow.snp_recalibration_annotation_values": ["QD", "MQRankSum", "ReadPosRankSum", "FS", "MQ", "SOR", "DP"],
+  "main_workflow.indel_recalibration_tranche_values": ["100.0", "99.95", "99.9", "99.5", "99.0", "97.0", "96.0", "95.0", "94.0", "93.5", "93.0", "92.0", "91.0", "90.0"],
+  "main_workflow.indel_recalibration_annotation_values": ["FS", "ReadPosRankSum", "MQRankSum", "QD", "SOR", "DP"],
+  
+  "##COMMENT9": "VARIOS. El comando sorted debe estar vacio si la region contiene MT. sino es: -sorted",
+  "main_workflow.qual_control.cobertura.sorted": "-sorted",
+  "main_workflow.pipeline_version": "V38",
+
+
+  "##COMMENT8": "HAPLOTYPECALLER PARAMETERS",
+  "main_workflow.newqual": "true",
+
+  "main_workflow.gatk_gkl_pairhmm_implementation": "LOGLESS_CACHING",
+  "main_workflow.smith_waterman_implementation": "AVX_ENABLED",
+  "main_workflow.haplotype_scatter_count": "2",
+  "main_workflow.break_bands_at_multiples_of": "1000000",
+
+  "##COMMENT9": "VARIOS",
+  "main_workflow.ubam_list_name": "ubamfiles", 
+   "main_workflow.java_heap_memory_initial": "128m",
+   "main_workflow.contamination": "0",
+   "main_workflow.compression_level": "1",
+
+
+  "main_workflow.hapmap_resource_vcf": "/data/new_dbs/grch38/bundle_gatk_hg38/hapmap_3.3.hg38.vcf.gz",
+  "main_workflow.hapmap_resource_vcf_index": "/data/new_dbs/grch38/bundle_gatk_hg38/hapmap_3.3.hg38.vcf.gz.tbi",
+  "main_workflow.omni_resource_vcf": "/data/new_dbs/grch38/bundle_gatk_hg38/1000G_omni2.5.hg38.vcf.gz",
+  "main_workflow.omni_resource_vcf_index": "/data/new_dbs/grch38/bundle_gatk_hg38/1000G_omni2.5.hg38.vcf.gz.tbi",
+  "main_workflow.one_thousand_genomes_resource_vcf": "/data/new_dbs/grch38/bundle_gatk_hg38/1000G_phase1.snps.high_confidence.hg38.vcf.gz",
+  "main_workflow.one_thousand_genomes_resource_vcf_index": "/data/new_dbs/grch38/bundle_gatk_hg38/1000G_phase1.snps.high_confidence.hg38.vcf.gz.tbi",
+  "main_workflow.mills_resource_vcf": "/data/new_dbs/grch38/bundle_gatk_hg38/Mills_and_1000G_gold_standard.indels.hg38.vcf.gz",
+  "main_workflow.mills_resource_vcf_index": "/data/new_dbs/grch38/bundle_gatk_hg38/Mills_and_1000G_gold_standard.indels.hg38.vcf.gz.tbi",
+  "main_workflow.axiomPoly_resource_vcf": "/data/new_dbs/grch38/bundle_gatk_hg38/Axiom_Exome_Plus.genotypes.all_populations.poly.hg38.vcf.gz",
+  "main_workflow.axiomPoly_resource_vcf_index": "/data/new_dbs/grch38/bundle_gatk_hg38/Axiom_Exome_Plus.genotypes.all_populations.poly.hg38.vcf.gz.tbi",
+  
+  "main_workflow.bwa_commandline": "bwa mem -K 100000000 -p -v 3 -t 4 -Y",
+    
+  "main_workflow.singleGenotypeGVCFs.SNPsVariantRecalibratorClassic.model_report": "File? (optional)",
+  "main_workflow.singleGenotypeGVCFs.indel_filter_level": "99.7",
+
+  "main_workflow.known_indels_sites_VCFs": ["/data/new_dbs/grch38/bundle_gatk_hg38/Mills_and_1000G_gold_standard.indels.hg38.vcf.gz\", \"/data/new_dbs/grch38/bundle_gatk_hg38/Homo_sapiens_assembly38.known_indels.vcf.gz"],
+  "main_workflow.known_indels_sites_indices": ["/data/new_dbs/grch38/bundle_gatk_hg38/Mills_and_1000G_gold_standard.indels.hg38.vcf.gz.tbi\", \"/data/new_dbs/grch38/bundle_gatk_hg38/Homo_sapiens_assembly38.known_indels.vcf.gz.tbi"],
+  
+  "main_workflow.trim_front_fastp": "4",
+  "main_workflow.trim_tail_fastp": "4",
+
+  
+  "main_workflow.db_annovar": "/home/hnrg/HNRG-pipeline-V0.1/dbs/hg19_annovar/",
+  "main_workflow.joinPY": "/home/hnrg/NGStools/pipeline_wdl/process_vcf/join_vcfs.py",
+
+
+}
+
