@@ -1,0 +1,97 @@
+img(style="width:500px; display:block; margin:0 auto;"
+    src="file:///home/hnrg/testing/reportes/pug_template/conicet.png")
+
+#sidebar: p Laboratorio de Bioinformática Traslacional 2020.
+p.
+:markdown
+ #### Identificación de la muesta:
+
+:markdown
+  **Muestra:** {{ title }}
+p.
+:markdown
+  **Nombre corrida:** {{ TSO }}
+p.
+:markdown
+  **Fecha corrida:** {{ fecha }}
+p.
+ 
+:markdown
+ #### Marcador de genero:
+{{ pdf_tools.dataframe_to_html(genero, extra_classes=['ui','compact', 'table'], index = False) }}
+p.
+
+
+:markdown
+  ####  Bases en la muestra:
+{{ pdf_tools.dataframe_to_html(bases, extra_classes=['ui','compact', 'table'], index = False) }}
+p.
+
+:markdown
+  ####  Antes del filtrado:
+{{ pdf_tools.dataframe_to_html(antes, extra_classes=['ui','compact', 'table'], index = False) }}
+p.
+
+:markdown
+  #### Despues del filtrado:
+{{ pdf_tools.dataframe_to_html(desp, extra_classes=['ui', 'compact'], index = False) }}
+p.
+{{ pdf_tools.dataframe_to_html(NNN, extra_classes=['ui','compact', 'table'], index = False) }}
+
+
+:markdown
+ #### Profundidad en libreria:
+{{ pdf_tools.dataframe_to_html(stats_dp, extra_classes=['ui','compact', 'table'], index = False) }}
+p.
+{{ pdf_tools.dataframe_to_html(dp, extra_classes=['ui','compact', 'table'], index = False) }}
+
+
+:markdown
+ #### Marcador de Alineamiento:
+ {{ pdf_tools.dataframe_to_html(al_Gbases, extra_classes=['ui','compact', 'table'], index = False) }}
+p.
+{{ pdf_tools.dataframe_to_html(al_reads, extra_classes=['ui','compact', 'table'], index = False) }}
+p.
+{{ pdf_tools.dataframe_to_html(al_rates, extra_classes=['ui','compact', 'table'], index = False) }}
+p.
+{{ pdf_tools.dataframe_to_html(al_lib, extra_classes=['ui','compact', 'table'], index = False) }}
+p.
+
+//:markdown
+// ##  **Pipeline bionformatico:**
+
+//p.
+:markdown
+  **Referencia:** GRCh37.75. 
+p.
+:markdown
+  **Plataforma:** Illumina NextSeq500. 
+p.
+//:markdown
+  **PipelineHNRG:** Versión: {{ version }}. Gatk-package-4.0.8.1, fastp 0.20.0, Bwa 0.7.15-r1140, bedtools v2.28.0, SAMTOOLS_VERSION 1.9, VCFtools (0.1.17),cromwell-37. 
+p.
+//:markdown
+  **Anotación funcional:** dbSNP: All_20180423 v151, indels_site: Mills_and_1000G_gold_standard.indels.b37, hapmap_3.3, 1000G_omni2.5.b37, Gwas_catalog_v1.0.2-associations_e96_r2019-04-06, ESP6500SI-V2-SSA137.snps_indels, Clinvar_20190219, PharmGKBvcf_2016, ExAC.r1.sites.vep, SnpEff 4.3t. **Annovar:** refGene, avsnp150, esp6500siv2_all, 1000g2015aug_all, exac03, gnomad_exome, gnomad_genome, clinvar_20180603,dbscsnv11, dbnsfp35a, rmsk, tfbsConsSites, cytoBand, wgRna, targetScanS, genomicSuperDups, dgvMerged, gwasCatalog, ensGene, knownGene, intervar_20180118.
+
+
+//.ui.piled.segment: p.
+  alguna observacion por ejemplo...
+  
+.ui.container
+  .ui.icon.message.yellow.block-center
+    i.exclamation.circle.icon
+    .content
+      .header-center Descargo de responsabilidad.
+      p.
+        Los estudios de secuenciación masiva no poseen una sensibilidad del 100%. Las variantes identificadas deben ser interpretadas dentro
+        del contexto del conocimiento actual de las causas genéticas de la alteración que motiva el análisis y de la sensibilidad de las herramientas 
+        bioinformáticas utilizadas.
+      p.
+        En el estudio sólo se identifican variantes situadas en la lista de genes analizados y que se detallan en la hoja excel. Cualquier otra
+        alteración fuera de la lista de interés no se estudiará ni reportará.
+      p.
+        Esta técnica no detecta las variantes estructurales asociadas a inversiones y traslocaciones.
+      p.
+        Los estudios de secuenciación masiva se encuentran en fase de implantación. Para una correcta interpretación de los resultados, se
+        recomienda validar los mismos con otras pruebas de diagnóstico molecular.
+
