@@ -120,9 +120,9 @@ task Serial_SamToFastq_BwaMem_MergeBamAlignment {
 
 
 
-  for ubamfile in ${sep=' ' array_input_ubams}  ; do
-        output_bwa_prefix=$(basename $ubamfile .unmapped.bam) \
-        metrics_filename=$($output_bwa_prefix".unmapped.quality_yield_metrics")\
+  for ubamfile in ${sep=' ' array_input_ubams}  ; do \
+        export output_bwa_prefix=$(basename $ubamfile .unmapped.bam) 
+        export metrics_filename=$($output_bwa_prefix".unmapped.quality_yield_metrics")
 
         java -Xms2000m -jar ${toolpath}${gatk_jar} \
         CollectQualityYieldMetrics \
