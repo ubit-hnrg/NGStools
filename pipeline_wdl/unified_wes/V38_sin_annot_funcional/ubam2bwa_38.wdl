@@ -114,11 +114,9 @@ task Serial_SamToFastq_BwaMem_MergeBamAlignment {
   # listing the reference contigs that are "alternative".
   File ref_alt
 
-  command <<<
-    set -o pipefail
-    set -e
-
-
+ #set -o pipefail
+ #   set -e
+  command <<< 
 
   for ubamfile in ${sep=' ' array_input_ubams}  ; do \
         output_bwa_prefix=$(basename $ubamfile .unmapped.bam) 
