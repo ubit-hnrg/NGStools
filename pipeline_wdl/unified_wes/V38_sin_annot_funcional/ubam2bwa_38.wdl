@@ -121,18 +121,18 @@ task Serial_SamToFastq_BwaMem_MergeBamAlignment {
 
 
   for ubamfile in ${sep=' ' array_input_ubams}  ; do
-        output_bwa_prefix=$(basename $ubamfile .unmapped.bam)  
-        metrics_filename=$($output_bwa_prefix".unmapped.quality_yield_metrics")
+        output_bwa_prefix=$(basename $ubamfile .unmapped.bam) \
+        metrics_filename=$($output_bwa_prefix".unmapped.quality_yield_metrics")\
 
         java -Xms2000m -jar ${toolpath}${gatk_jar} \
         CollectQualityYieldMetrics \
         INPUT=$ubamfile \
         OQ=true \
-        OUTPUT=$metrics_filename
-           # set the bash variable needed for the command-line
-           bash_ref_fasta=${ref_fasta}
-           # if ref_alt has data in it,
-           if [ -s ${ref_alt} ]; then 
+        OUTPUT=$metrics_filename \
+           # set the bash variable needed for the command-line \
+           bash_ref_fasta=${ref_fasta} \
+           # if ref_alt has data in it, \
+           if [ -s ${ref_alt} ]; then \
 
    java -Dsamjdk.compression_level=${compression_level} -Xmx${java_heap_memory_initial} -jar ${toolpath}${gatk_jar} \
         SamToFastq \
@@ -141,7 +141,7 @@ task Serial_SamToFastq_BwaMem_MergeBamAlignment {
         --INTERLEAVE=true \
         --NON_PF=true | \
         ${toolpath}${bwa_commandline} ${ref_fasta} /dev/stdin - 2> >(tee $output_filename.unmerged.bwa.stderr.log >&2) | \
-        ${toolpath}samtools view -1 - > $output_bwa_prefix.aligned.unmerged.bam
+        ${toolpath}samtools view -1 - > $output_bwa_prefix.aligned.unmerged.bam \
   
     java -Dsamjdk.compression_level=${compression_level} -Xms3000m -jar \
     ${toolpath}${gatk_jar} \
@@ -171,10 +171,10 @@ task Serial_SamToFastq_BwaMem_MergeBamAlignment {
         --PROGRAM_GROUP_COMMAND_LINE="${bwa_commandline} ${ref_fasta}" \
         --UNMAP_CONTAMINANT_READS=true \
         --UNMAPPED_READ_STRATEGY=COPY_TO_TAG\
-        --ADD_PG_TAG_TO_READS=false
+        --ADD_PG_TAG_TO_READS=false \
 
          grep -m1 "read .* ALT contigs" $output_bwa_prefix.bwa.stderr.log | \
-         grep -v "read 0 ALT contigs"
+         grep -v "read 0 ALT contigs" \
 
          # else ref_alt is empty or could not be found
          else
@@ -193,9 +193,9 @@ task Serial_SamToFastq_BwaMem_MergeBamAlignment {
           PROGRAM="MeanQualityByCycle" \
           PROGRAM="QualityScoreDistribution" \
           METRIC_ACCUMULATION_LEVEL="null" \
-          METRIC_ACCUMULATION_LEVEL="ALL_READS"
+          METRIC_ACCUMULATION_LEVEL="ALL_READS" \
 
-          touch $output_bwa_prefix.insert_size_metrics
+          touch $output_bwa_prefix.insert_size_metrics \
           touch $output_bwa_prefix.insert_size_histogram.pdf
       done        
   >>>
