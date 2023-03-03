@@ -122,16 +122,16 @@ task coord_generator {
      
     ${toolpath}bedtools2/bin/mergeBed -i ${library_name}_padded_${padding}.bed -d ${merge_tolerance} > ${library_name}_padded_${padding}_merged_${merge_tolerance}.bed
 
-    java -jar ${toolpath}${gatk_jar} BedToIntervalList -I=${library_name}_padded_${padding}_merged_${merge_tolerance}.bed -O=${library_name}_padded_${padding}_merged_${merge_tolerance}_preprocessing.interval_list -SD=${ref_dict}
+    # java -jar ${toolpath}${gatk_jar} BedToIntervalList -I=${library_name}_padded_${padding}_merged_${merge_tolerance}.bed -O=${library_name}_padded_${padding}_merged_${merge_tolerance}_preprocessing.interval_list -SD=${ref_dict}
 
-    java -jar ${toolpath}${gatk_jar} BedToIntervalList -I=${library_name}_padded_${padding}.bed -O=${library_name}_padded_${padding}.interval_list -SD=${ref_dict}
+    # java -jar ${toolpath}${gatk_jar} BedToIntervalList -I=${library_name}_padded_${padding}.bed -O=${library_name}_padded_${padding}.interval_list -SD=${ref_dict}
      
   
     cp -L ${intervalo_captura} ${path_save}
     cp -L ${library_name}_padded_${padding}.bed ${path_save}
 
-    cp -L ${library_name}_padded_${padding}_merged_${merge_tolerance}_preprocessing.interval_list ${path_save}
-    cp -L ${library_name}_padded_${padding}.interval_list ${path_save}
+    # cp -L ${library_name}_padded_${padding}_merged_${merge_tolerance}_preprocessing.interval_list ${path_save}
+    # cp -L ${library_name}_padded_${padding}.interval_list ${path_save}
     cp -L exon_restricted2_${library_name}.bed ${path_save}
   >>>
 
@@ -139,8 +139,8 @@ task coord_generator {
     File padded_coord = "${library_name}_padded_${padding}.bed"
     File exon_restricted = "exon_restricted2_${library_name}.bed" ##for quality_control
 
-    File interval_list = "${library_name}_padded_${padding}_merged_${merge_tolerance}_preprocessing.interval_list"
-    File eval_interval_list = "${library_name}_padded_${padding}.interval_list"
+    #File interval_list = "${library_name}_padded_${padding}_merged_${merge_tolerance}_preprocessing.interval_list"
+    #File eval_interval_list = "${library_name}_padded_${padding}.interval_list"
   }
 
 }
@@ -250,7 +250,7 @@ workflow main_workflow {
 
 
   ###coordenadas exonicas (usamos ENSEMBL)
-  File generic_exon_coords = "/home/hnrg/HNRG-pipeline-V0.1/libraries/intervalos/transcriptos_canonicos_ensmbl_104_38.tsv"
+  File generic_exon_coords = "/home/hnrg/HNRG-pipeline-V0.1/libraries/intervalos/transcriptos_canonicos_ensmbl_104_38_sorted.tsv"
   
   ###save location
   String path_softlink
@@ -304,6 +304,14 @@ workflow main_workflow {
 
 
  ###### fin contaminacion
+
+######intervalos evaluacion
+File wes_calling_interval_list = "/data/new_dbs/grch38/eval_calling_intervals/illumina/whole_exome_illumina_coding_v1.Homo_sapiens_assembly38.targets.interval_list" #"/data/new_dbs/grch38/eval_calling_intervals/exome_calling_regions.v1.1.interval_list"
+File eval_interval_list = "/data/new_dbs/grch38/eval_calling_intervals/exome_evaluation_regions.v1.interval_list"
+File wgs_calling_interval_list = "/data/new_dbs/grch38/eval_calling_intervals/wgs_calling_regions.hg38.interval_list"
+File wgs_evaluation_interval_list = "/data/new_dbs/grch38/eval_calling_intervals/wgs_evaluation_regions.hg38.interval_list"
+
+
 
 #File haplotype_database_file = "/data/new_dbs/grch38/intervalos/Homo_sapiens_assembly38.haplotype_database.txt" #Homo_sapiens_assembly38.haplotype_database.txt
 
@@ -475,14 +483,14 @@ workflow main_workflow {
       dbSNP_vcf_index = dbSNP_vcf_index,
       known_indels_sites_VCFs = known_indels_sites_VCFs,
       known_indels_sites_indices = known_indels_sites_indices,
-      wes_calling_interval_list = coord_generator.eval_interval_list,#coord_generator.interval_list,
+      wes_calling_interval_list = wes_calling_interval_list, #coord_generator.eval_interval_list,#coord_generator.interval_list,
       break_bands_at_multiples_of = break_bands_at_multiples_of,
       haplotype_scatter_count = haplotype_scatter_count,
       compression_level = compression_level,
       gatk_gkl_pairhmm_implementation = gatk_gkl_pairhmm_implementation,
       gatk_gkl_pairhmm_threads = gatk_gkl_pairhmm_threads,
-      wgs_calling_interval_list = coord_generator.eval_interval_list,#coord_generator.interval_list, 
-      wgs_evaluation_interval_list = coord_generator.eval_interval_list,# coord_generator.interval_list,
+      wgs_calling_interval_list = wgs_calling_interval_list,#coord_generator.eval_interval_list,#coord_generator.interval_list, 
+      wgs_evaluation_interval_list = wgs_evaluation_interval_list,#coord_generator.eval_interval_list,# coord_generator.interval_list,
       gatk_jar = gatk_jar,
       toolpath = toolpath,
       #haplotype_database_file  = haplotype_database_file,
@@ -498,7 +506,7 @@ workflow main_workflow {
     call single_genotypeGVCF.singleGenotypeGVCFs {
         input:
         #num_gvcfs= cantidad_gvcf,
-        eval_interval_list   = coord_generator.eval_interval_list,
+        eval_interval_list  = eval_interval_list, # coord_generator.eval_interval_list,
         array_path_save = mkdir_samplename.path_out_softlink,
         dbSNP_vcf = dbSNP_vcf,
         dbSNP_vcf_index = dbSNP_vcf_index,
