@@ -128,7 +128,7 @@ task Serial_SamToFastq_BwaMem_MergeBamAlignment {
         CollectQualityYieldMetrics \
         -I=$ubamfile \
         -OQ=true \
-        -O=${metrics_filename} \
+        -O=$metrics_filename \
            # set the bash variable needed for the command-line \
            bash_ref_fasta=${ref_fasta} \
            # if ref_alt has data in it, \
