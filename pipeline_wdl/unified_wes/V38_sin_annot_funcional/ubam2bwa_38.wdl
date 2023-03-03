@@ -126,9 +126,9 @@ task Serial_SamToFastq_BwaMem_MergeBamAlignment {
 
         java -Xms2000m -jar ${toolpath}${gatk_jar} \
         CollectQualityYieldMetrics \
-        INPUT=$ubamfile \
-        OQ=true \
-        OUTPUT=$metrics_filename \
+        -I=$ubamfile \
+        -OQ=true \
+        -O=$metrics_filename \
            # set the bash variable needed for the command-line \
            bash_ref_fasta=${ref_fasta} \
            # if ref_alt has data in it, \
@@ -184,16 +184,16 @@ task Serial_SamToFastq_BwaMem_MergeBamAlignment {
 
           java -Xms5000m -jar ${toolpath}${gatk_jar} \
           CollectMultipleMetrics \
-          INPUT=$output_bwa_prefix.merged.unsorted.bam \
-          OUTPUT=$output_bwa_prefix.readgroup \
-          ASSUME_SORTED=true \
-          PROGRAM="null" \
-          PROGRAM="CollectBaseDistributionByCycle" \
-          PROGRAM="CollectInsertSizeMetrics" \
-          PROGRAM="MeanQualityByCycle" \
-          PROGRAM="QualityScoreDistribution" \
-          METRIC_ACCUMULATION_LEVEL="null" \
-          METRIC_ACCUMULATION_LEVEL="ALL_READS" \
+          -I=$output_bwa_prefix.merged.unsorted.bam \
+          -O=$output_bwa_prefix.readgroup \
+          -ASSUME_SORTED=true \
+          -PROGRAM="null" \
+          -PROGRAM="CollectBaseDistributionByCycle" \
+          -PROGRAM="CollectInsertSizeMetrics" \
+          -PROGRAM="MeanQualityByCycle" \
+          -PROGRAM="QualityScoreDistribution" \
+          -METRIC_ACCUMULATION_LEVEL="null" \
+          -METRIC_ACCUMULATION_LEVEL="ALL_READS" \
 
           touch $output_bwa_prefix.insert_size_metrics \
           touch $output_bwa_prefix.insert_size_histogram.pdf
