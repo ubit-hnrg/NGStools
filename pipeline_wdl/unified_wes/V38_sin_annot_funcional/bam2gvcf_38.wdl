@@ -404,13 +404,14 @@ task CheckContamination {
   File ref_fasta_index
   String output_prefix
   Float contamination_underestimation_factor
+  String toolpath
 
   command <<<
     set -e
 
     # creates a ${output_prefix}.selfSM file, a TSV file with 2 rows, 19 columns.
     # First row are the keys (e.g., SEQ_SM, RG, FREEMIX), second row are the associated values
-    /usr/gitc/VerifyBamID \
+    ${toolpath}VerifyBamID/bin/VerifyBamID \
     --Verbose \
     --NumPC 4 \
     --Output ${output_prefix} \
@@ -447,6 +448,8 @@ task CheckContamination {
  
   output {
     File selfSM = "${output_prefix}.selfSM"
+    File depthSM = "${output_prefix}.depthSM"
+    File log = "${output_prefix}.log"
     Float contamination = read_float(stdout())
   }
 }
@@ -906,6 +909,7 @@ workflow bam2gvcf {
   #./TruSight_One_v1_padded_100_GRCh37.bed 
 
  #########agrego 2023 hg38
+ #esto es con verify bam id. 
   #File? contamination_sites_vcf
   #File? contamination_sites_vcf_index
   #File? fingerprint_genotypes_file # if this file is empty (0-length) the workflow should not do fingerprint comparison (as there are no fingerprints for the sample)
@@ -1194,7 +1198,7 @@ workflow bam2gvcf {
       
   input_vcf = MergeVCFs.output_vcf,
   input_vcf_index = MergeVCFs.output_vcf_index,
-  metrics_basename = base_file_name + ".g.vcf.gz",
+  metrics_basename = base_file_name, #+ ".g.vcf.gz",
   dbSNP_vcf = dbSNP_vcf,
   dbSNP_vcf_index = dbSNP_vcf_index,
   ref_dict = ref_dict,
