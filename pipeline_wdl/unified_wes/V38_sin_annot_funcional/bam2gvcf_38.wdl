@@ -1004,7 +1004,8 @@ workflow bam2gvcf {
       ref_fasta = ref_fasta,
       ref_fasta_index = ref_fasta_index,
       output_prefix = base_file_name + ".preBqsr",
-      contamination_underestimation_factor = 0.75
+      contamination_underestimation_factor = 0.75,
+      toolpath = toolpath
   }
 
 
