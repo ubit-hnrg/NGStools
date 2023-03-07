@@ -994,19 +994,19 @@ workflow bam2gvcf {
   }
 
   # Estimate level of cross-sample contamination
-  call CheckContamination {
-    input:
-      input_bam = SortAndFixTags.output_bam,
-      input_bam_index = SortAndFixTags.output_bam_index,
-      contamination_sites_ud = contamination_sites_ud,
-      contamination_sites_bed = contamination_sites_bed,
-      contamination_sites_mu = contamination_sites_mu,
-      ref_fasta = ref_fasta,
-      ref_fasta_index = ref_fasta_index,
-      output_prefix = base_file_name + ".preBqsr",
-      contamination_underestimation_factor = 0.75,
-      toolpath = toolpath
-  }
+  #call CheckContamination {
+  #  input:
+  #    input_bam = SortAndFixTags.output_bam,
+  #    input_bam_index = SortAndFixTags.output_bam_index,
+  #    contamination_sites_ud = contamination_sites_ud,
+  #    contamination_sites_bed = contamination_sites_bed,
+  #    contamination_sites_mu = contamination_sites_mu,
+  #    ref_fasta = ref_fasta,
+  #    ref_fasta_index = ref_fasta_index,
+  #    output_prefix = base_file_name + ".preBqsr",
+  #    contamination_underestimation_factor = 0.75,
+  #    toolpath = toolpath
+  #}
 
 
 
@@ -1150,7 +1150,7 @@ workflow bam2gvcf {
       gatk_jar = gatk_jar,
       toolpath = toolpath,
       smith_waterman_implementation = smith_waterman_implementation,
-      contamination = CheckContamination.contamination, #contamination,
+      contamination =contamination, # CheckContamination.contamination, #contamination,
       ##agrego esto
       #contamination = PreBqsrCheckContamination.contamination,
       
