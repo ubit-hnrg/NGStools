@@ -1188,7 +1188,7 @@ workflow bam2gvcf {
   ref_fasta = ref_fasta,
   ref_fasta_index = ref_fasta_index,
   ref_dict = ref_dict,
-  wgs_calling_interval_list = wgs_calling_interval_list,
+  wgs_calling_interval_list = wes_calling_interval_list, #wgs_calling_interval_list,
   gatk_jar = gatk_jar,
   toolpath = toolpath
   }
