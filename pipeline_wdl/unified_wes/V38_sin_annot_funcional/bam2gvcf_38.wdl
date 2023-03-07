@@ -494,14 +494,17 @@ task HaplotypeCaller {
       -ip 100 \
       -contamination ${default=0 contamination} \
       --max-alternate-alleles 3 \
+      -variant_index_parameter 128000 \
+      -variant_index_type LINEAR \
       -ERC GVCF \
+      --read_filter OverclippedRead \
       --pair-hmm-implementation ${gatk_gkl_pairhmm_implementation} \
       --native-pair-hmm-threads ${gatk_gkl_pairhmm_threads} \
       --smith-waterman ${smith_waterman_implementation} \
       --use-new-qual-calculator ${newqual} \
       --bam-output= ${gvcf_basename}_haplotype.bam ###realigned reads \
       ## -new-qual \
-      -GQB 10 -GQB 20 -GQB 30 -GQB 40 -GQB 50 -GQB 60 -GQB 70 -GQB 80 -GQB 90 \
+      #-GQB 10 -GQB 20 -GQB 30 -GQB 40 -GQB 50 -GQB 60 -GQB 70 -GQB 80 -GQB 90 \
 
        
   >>>
