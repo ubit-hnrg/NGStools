@@ -494,8 +494,6 @@ task HaplotypeCaller {
       -ip 100 \
       --contamination ${default=0 contamination} \
       --max-alternate-alleles 3 \
-      --variant_index_parameter 128000 \
-      --variant_index_type LINEAR \
       -ERC GVCF \
       --read_filter OverclippedRead \
       --pair-hmm-implementation ${gatk_gkl_pairhmm_implementation} \
