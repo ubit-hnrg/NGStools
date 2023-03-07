@@ -500,7 +500,7 @@ task HaplotypeCaller {
       --smith-waterman ${smith_waterman_implementation} \
       --use-new-qual-calculator ${newqual} \
       --bam-output= ${gvcf_basename}_haplotype.bam ###realigned reads \
-      -new-qual \
+      ## -new-qual \
       -GQB 10 -GQB 20 -GQB 30 -GQB 40 -GQB 50 -GQB 60 -GQB 70 -GQB 80 -GQB 90 \
 
        
