@@ -480,7 +480,7 @@ task CollectVariantCallingMetrics {
       --INPUT ${input_vcf} \
       --DBSNP ${dbSNP_vcf} \
       --OUTPUT ${metrics_filename_prefix} \
-      --THREAD_COUNT 8 \
+      --THREAD_COUNT 4 \
       --TARGET_INTERVALS ${interval_list}
   }
   output {
@@ -731,7 +731,7 @@ task symlink_important_files2 {
 task SNPsVariantRecalibrator {
   String recalibration_filename
   String tranches_filename
-  File? model_report
+  #File? model_report
 
   Array[String] recalibration_tranche_values
   Array[String] recalibration_annotation_values
@@ -750,10 +750,11 @@ task SNPsVariantRecalibrator {
 
     String gatk_jar
   String toolpath
+#      ${"--input-model " + model_report + " --output-tranches-for-scatter "} \
 
 
   command {
-    java  --java-options "-Xmx3g -Xms3g" \
+    java -Xmx3g -Xms3g \
       -jar ${toolpath}${gatk_jar} VariantRecalibrator \
       -V ${sites_only_variant_filtered_vcf} \
       -O ${recalibration_filename} \
@@ -762,7 +763,7 @@ task SNPsVariantRecalibrator {
       -tranche ${sep=' -tranche ' recalibration_tranche_values} \
       -an ${sep=' -an ' recalibration_annotation_values} \
       -mode SNP \
-      ${"--input-model " + model_report + " --output-tranches-for-scatter "} \
+      ${"--input-model " + " --output-tranches-for-scatter "} \
       --max-gaussians 6 \
       -resource hapmap,known=false,training=true,truth=true,prior=15:${hapmap_resource_vcf} \
       -resource omni,known=false,training=true,truth=true,prior=12:${omni_resource_vcf} \
@@ -799,7 +800,7 @@ task IndelsVariantRecalibrator {
 
 
   command {
-    java --java-options "-Xmx24g -Xms24g" \
+    java -Xmx24g -Xms24g \
       -jar ${toolpath}${gatk_jar} VariantRecalibrator \
       -V ${sites_only_variant_filtered_vcf} \
       -O ${recalibration_filename} \
