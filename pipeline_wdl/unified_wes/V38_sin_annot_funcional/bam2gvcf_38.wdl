@@ -495,7 +495,6 @@ task HaplotypeCaller {
       --contamination ${default=0 contamination} \
       --max-alternate-alleles 3 \
       -ERC GVCF \
-      --read_filter OverclippedRead \
       --pair-hmm-implementation ${gatk_gkl_pairhmm_implementation} \
       --native-pair-hmm-threads ${gatk_gkl_pairhmm_threads} \
       --smith-waterman ${smith_waterman_implementation} \
