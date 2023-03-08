@@ -94,71 +94,71 @@ workflow singleGenotypeGVCFs {
  #####agrego marzo 23
 
 
-   call IndelsVariantRecalibrator {
-    input:
-      sites_only_variant_filtered_vcf = HardFilterAndMakeSitesOnlyVcf.variant_filtered_vcf,#SitesOnlyGatherVcf.output_vcf,
-      sites_only_variant_filtered_vcf_index = HardFilterAndMakeSitesOnlyVcf.variant_filtered_vcf_index,#SitesOnlyGatherVcf.output_vcf_index,
-      recalibration_filename = callset_name + ".indels.recal",
-      tranches_filename = callset_name + ".indels.tranches",
-      recalibration_tranche_values = indel_recalibration_tranche_values,
-      recalibration_annotation_values = indel_recalibration_annotation_values,
-      mills_resource_vcf = mills_resource_vcf,
-      mills_resource_vcf_index = mills_resource_vcf_index,
-      axiomPoly_resource_vcf = axiomPoly_resource_vcf,
-      axiomPoly_resource_vcf_index = axiomPoly_resource_vcf_index,
-      dbsnp_resource_vcf = dbsnp_resource_vcf,
-      dbsnp_resource_vcf_index = dbsnp_resource_vcf_index,
-      gatk_jar = gatk_jar,
-      toolpath = toolpath
+   #call IndelsVariantRecalibrator {
+   # input:
+   #   sites_only_variant_filtered_vcf = HardFilterAndMakeSitesOnlyVcf.variant_filtered_vcf,#SitesOnlyGatherVcf.output_vcf,
+   #   sites_only_variant_filtered_vcf_index = HardFilterAndMakeSitesOnlyVcf.variant_filtered_vcf_index,#SitesOnlyGatherVcf.output_vcf_index,
+   #   recalibration_filename = callset_name + ".indels.recal",
+   #   tranches_filename = callset_name + ".indels.tranches",
+   #   recalibration_tranche_values = indel_recalibration_tranche_values,
+   #   recalibration_annotation_values = indel_recalibration_annotation_values,
+   #   mills_resource_vcf = mills_resource_vcf,
+   #   mills_resource_vcf_index = mills_resource_vcf_index,
+   #   axiomPoly_resource_vcf = axiomPoly_resource_vcf,
+   #   axiomPoly_resource_vcf_index = axiomPoly_resource_vcf_index,
+   #   dbsnp_resource_vcf = dbsnp_resource_vcf,
+   #   dbsnp_resource_vcf_index = dbsnp_resource_vcf_index,
+   #   gatk_jar = gatk_jar,
+   #   toolpath = toolpath
        
-  }
+  #}
 
-      call SNPsVariantRecalibrator as SNPsVariantRecalibratorClassic {
-      input:
-          sites_only_variant_filtered_vcf = HardFilterAndMakeSitesOnlyVcf.variant_filtered_vcf,# SitesOnlyGatherVcf.output_vcf,
-          sites_only_variant_filtered_vcf_index = HardFilterAndMakeSitesOnlyVcf.variant_filtered_vcf_index,# SitesOnlyGatherVcf.output_vcf_index,
-          recalibration_filename = callset_name + ".snps.recal",
-          tranches_filename = callset_name + ".snps.tranches",
-          recalibration_tranche_values = snp_recalibration_tranche_values,
-          recalibration_annotation_values = snp_recalibration_annotation_values,
-          hapmap_resource_vcf = hapmap_resource_vcf,
-          hapmap_resource_vcf_index = hapmap_resource_vcf_index,
-          omni_resource_vcf = omni_resource_vcf,
-          omni_resource_vcf_index = omni_resource_vcf_index,
-          one_thousand_genomes_resource_vcf = one_thousand_genomes_resource_vcf,
-          one_thousand_genomes_resource_vcf_index = one_thousand_genomes_resource_vcf_index,
-          dbsnp_resource_vcf = dbsnp_resource_vcf,
-          dbsnp_resource_vcf_index = dbsnp_resource_vcf_index,
-          gatk_jar = gatk_jar,
-          toolpath = toolpath 
+      #call SNPsVariantRecalibrator as SNPsVariantRecalibratorClassic {
+      #input:
+      #    sites_only_variant_filtered_vcf = HardFilterAndMakeSitesOnlyVcf.variant_filtered_vcf,# SitesOnlyGatherVcf.output_vcf,
+      #    sites_only_variant_filtered_vcf_index = HardFilterAndMakeSitesOnlyVcf.variant_filtered_vcf_index,# SitesOnlyGatherVcf.output_vcf_index,
+      #    recalibration_filename = callset_name + ".snps.recal",
+      #    tranches_filename = callset_name + ".snps.tranches",
+      #    recalibration_tranche_values = snp_recalibration_tranche_values,
+      #    recalibration_annotation_values = snp_recalibration_annotation_values,
+      #    hapmap_resource_vcf = hapmap_resource_vcf,
+      #    hapmap_resource_vcf_index = hapmap_resource_vcf_index,
+      #    omni_resource_vcf = omni_resource_vcf,
+      #    omni_resource_vcf_index = omni_resource_vcf_index,
+      #    one_thousand_genomes_resource_vcf = one_thousand_genomes_resource_vcf,
+      #    one_thousand_genomes_resource_vcf_index = one_thousand_genomes_resource_vcf_index,
+      #    dbsnp_resource_vcf = dbsnp_resource_vcf,
+      #    dbsnp_resource_vcf_index = dbsnp_resource_vcf_index,
+      #    gatk_jar = gatk_jar,
+      #    toolpath = toolpath 
           
-    }
+    #}
 
 
   #scatter (idx in range(length(HardFilterAndMakeSitesOnlyVcf.variant_filtered_vcf))) {
-    call ApplyRecalibration {
-      input:
-        recalibrated_vcf_filename = callset_name + ".filtered" + ".vcf.gz",
-        input_vcf = HardFilterAndMakeSitesOnlyVcf.variant_filtered_vcf,
-        input_vcf_index = HardFilterAndMakeSitesOnlyVcf.variant_filtered_vcf_index,
-        indels_recalibration = IndelsVariantRecalibrator.recalibration,
-        indels_recalibration_index = IndelsVariantRecalibrator.recalibration_index,
-        indels_tranches = IndelsVariantRecalibrator.tranches,
-        snps_recalibration = SNPsVariantRecalibratorClassic.recalibration,
-        snps_recalibration_index = SNPsVariantRecalibratorClassic.recalibration_index,
-        snps_tranches = SNPsVariantRecalibratorClassic.tranches,
-        indel_filter_level = indel_filter_level,
-        snp_filter_level = snp_filter_level,
-        gatk_jar = gatk_jar,
-        toolpath = toolpath
-    }
+  #  call ApplyRecalibration {
+  #    input:
+  #      recalibrated_vcf_filename = callset_name + ".filtered" + ".vcf.gz",
+  #      input_vcf = HardFilterAndMakeSitesOnlyVcf.variant_filtered_vcf,
+  #      input_vcf_index = HardFilterAndMakeSitesOnlyVcf.variant_filtered_vcf_index,
+  #      indels_recalibration = IndelsVariantRecalibrator.recalibration,
+  #      indels_recalibration_index = IndelsVariantRecalibrator.recalibration_index,
+  #      indels_tranches = IndelsVariantRecalibrator.tranches,
+  #      snps_recalibration = SNPsVariantRecalibratorClassic.recalibration,
+  #      snps_recalibration_index = SNPsVariantRecalibratorClassic.recalibration_index,
+  #      snps_tranches = SNPsVariantRecalibratorClassic.tranches,
+  #      indel_filter_level = indel_filter_level,
+  #      snp_filter_level = snp_filter_level,
+  #      gatk_jar = gatk_jar,
+  #      toolpath = toolpath
+  #  }
   #}
 ########
 
   call GatherVcfs as FinalGatherVcf {
     input:
-    input_vcfs_fofn  = ApplyRecalibration.recalibrated_vcf, # HardFilterAndMakeSitesOnlyVcf.variant_filtered_vcf,
-    input_vcf_indexes_fofn = ApplyRecalibration.recalibrated_vcf,#HardFilterAndMakeSitesOnlyVcf.variant_filtered_vcf_index,
+    input_vcfs_fofn  = HardFilterAndMakeSitesOnlyVcf.variant_filtered_vcf,#ApplyRecalibration.recalibrated_vcf, # 
+    input_vcf_indexes_fofn = HardFilterAndMakeSitesOnlyVcf.variant_filtered_vcf_index, #ApplyRecalibration.recalibrated_vcf,#
     output_vcf_name = callset_name+"."+pipeline_version+".vcf.gz",
     gatk_jar = gatk_jar,
     toolpath = toolpath
