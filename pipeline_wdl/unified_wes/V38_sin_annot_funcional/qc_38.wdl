@@ -81,8 +81,9 @@ task cobertura {
         rm global_nodup.header.txt global_nodup.hist ${sample_name}_nodup.hist.aux header_nodup.txt bam_nodups.sam
 
         
+        #${toolpath}samtools stats ${input_bam} -t ${intervalo_captura} > ${sample_name}_samtools_${pipeline_version}.stats
          ####samtools stat ###pestaña alineamiento excel calidad.
-        ${toolpath}samtools stats ${input_bam} -t ${intervalo_captura} > ${sample_name}_samtools_${pipeline_version}.stats
+        ${toolpath}samtools stats ${input_bam} -t intervalo_sorted.bed > ${sample_name}_samtools_${pipeline_version}.stats
          /usr/local/bin/plot-bamstats ${sample_name}_samtools_${pipeline_version}.stats -p ${path_save}samtools_plots/${sample_name}
 
          #### COBERTURA  ##################################
