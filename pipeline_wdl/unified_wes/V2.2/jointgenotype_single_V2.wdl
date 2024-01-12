@@ -291,7 +291,7 @@ task GenotypeGVCFs {
     set -e
 
 
-    java -Xmx4g -Xms4g -jar ${toolpath}${gatk_jar}\
+    java -Xmx1g -Xms1g -jar ${toolpath}${gatk_jar}\
      GenotypeGVCFs \
      -R ${ref_fasta} \
      -O ${output_vcf_filename} \
@@ -311,31 +311,21 @@ task GenotypeGVCFs {
 task HardFilterAndMakeSitesOnlyVcf {
   File vcf
   File vcf_index
-  Float? excess_het_threshold
-  File interval_list
+  Float excess_het_threshold
+
   String variant_filtered_vcf_filename
   String sites_only_vcf_filename
 
   String gatk_jar
   String toolpath
 
-###### agrego 
-###       --filter-expression "QD < 2.0 || FS > 30.0 || SOR > 3.0 || MQ < 40.0 || MQRankSum < -3.0 || ReadPosRankSum < -3.0" \
-#   --filter-name "HardFiltered" \
-# -L 
-##quito
-# --filter-expression "ExcessHet > ${excess_het_threshold}" \
-     # --filter-name ExcessHet \
-#
-#     
   command {
     set -e
 
     java -Xmx3g -Xms3g -jar ${toolpath}${gatk_jar}\
       VariantFiltration \
-     --filter-expression "QD < 2.0 || FS > 30.0 || SOR > 3.0 || MQ < 40.0 || MQRankSum < -3.0 || ReadPosRankSum < -3.0" \
-     --filter-name "HardFiltered" \
-     -L ${interval_list} \
+      --filter-expression "ExcessHet > ${excess_het_threshold}" \
+      --filter-name ExcessHet \
       -O ${variant_filtered_vcf_filename} \
       -V ${vcf}
 
@@ -580,16 +570,15 @@ task annovar{
     File variants_reduction = '/home/hnrg/HNRG-pipeline-V0.1/tools/annovar/variants_reduction.pl'
 
 
-    String db_annovar = '/home/hnrg/HNRG-pipeline-V0.1/tools/annovar/hg38/'
-    String sample 
+    String db_annovar
+    String sample
     
-    # perl ${annovar_table_pl} ${one_sample_vcf} ${db_annovar} -vcfinput -buildver hg38 -thread 4 -remove -out ${sample} -protocol refGene,intervar_20180118,esp6500siv2_all,1000g2015aug_all,exac03,gnomad211_exome,gnomad312_genome,clinvar_20221231,dbscsnv11,dbnsfp42a,rmsk,tfbsConsSites,cytoBand,wgRna,targetScanS,genomicSuperDups,dgvMerged,gwasCatalog,ensGene,knownGene -operation  g,f,f,f,f,f,f,f,f,f,r,r,r,r,r,r,r,r,g,g -nastring . -otherinfo
-## refGene,intervar_20180118,esp6500siv2_all,1000g2015aug_all,exac03,gnomad312_exome,gnomad312_genome,clinvar_20221231,dbscsnv11,dbnsfp42a,rmsk,tfbsConsSites,cytoBand,wgRna,targetScanS,genomicSuperDups,dgvMerged,gwasCatalog,ensGene,knownGene -operation  g,f,f,f,f,f,f,f,f,f,r,r,r,r,r,r,r,r,g,g
-#--slicing_threshold 10bp away from splicesite. 
     command<<<
-        perl ${annovar_table_pl} ${one_sample_vcf} ${db_annovar} -vcfinput -buildver hg38 -thread 4 -remove -out ${sample} -protocol refGene,intervar_20180118,esp6500siv2_all,1000g2015aug_all,exac03,gnomad40_exome,gnomad40_genome,clinvar_20221231,dbscsnv11,dbnsfp42a,rmsk,tfbsConsSites,cytoBand,wgRna,targetScanS,genomicSuperDups,dgvMerged,gwasCatalog,ensGene,knownGene -operation  g,f,f,f,f,f,f,f,f,f,r,r,r,r,r,r,r,r,g,g -nastring . -otherinfo --slicing_threshold 10 , -polish -intronhgvs
+        perl ${annovar_table_pl} ${one_sample_vcf} ${db_annovar} -vcfinput -buildver hg19 -thread 4 -remove -out ${sample} -protocol refGene,intervar_20180118,esp6500siv2_all,1000g2015aug_all,exac03,gnomad211_exome,gnomad211_genome,clinvar_20210501,dbscsnv11,dbnsfp42a,rmsk,tfbsConsSites,cytoBand,wgRna,targetScanS,genomicSuperDups,dgvMerged,gwasCatalog,ensGene,knownGene -operation  g,f,f,f,f,f,f,f,f,f,r,r,r,r,r,r,r,r,g,g -nastring . -otherinfo
 
-    
+        #perl ${annovar_table_pl} ${one_sample_vcf} ${db_annovar} -vcfinput -buildver hg19 -remove -out ${sample} -protocol refGene,avsnp150,esp6500siv2_all,1000g2015aug_all,exac03,gnomad_exome,gnomad_genome,clinvar_20180603,intervar_20180118,dbscsnv11,dbnsfp35a,rmsk,tfbsConsSites,cytoBand,wgRna,targetScanS,genomicSuperDups,dgvMerged,gwasCatalog,ensGene,knownGene -operation  g,f,f,f,f,f,f,f,f,f,f,r,r,r,r,r,r,r,r,g,g -nastring . -otherinfo
+        #perl ${annovar_table_pl} ${one_sample_vcf} ${db_annovar} -vcfinput -buildver hg19 -remove -out ${sample} -protocol refGene,knownGene,intervar_20180118 -operation  g,g,f -nastring . -otherinfo
+
     >>>
 
     output {

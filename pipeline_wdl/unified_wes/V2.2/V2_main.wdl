@@ -1,23 +1,22 @@
-##### V38 pipeline UIT enero 2024
-## alineamiento a hg38
+##### V2 pipeline UIT Agosto 2020
+## genotipado individual
+## reporte en pdf
 ## 
 
 
-
-import './fastq2ubam_38.wdl' as fastq2ubam #1
-import './ubam2bwa_38.wdl' as ubam2bwa #2
-import './bam2gvcf_38.wdl' as bamtogvcf #3
-import './jointgenotype_single_38.wdl' as single_genotypeGVCF #4
-import './qc_38.wdl' as qual_control #5
-import './anotaciones_hnrg_single_38.wdl' as anotacionesSingle #5
-import './anotaciones_hnrg_minimal_38.wdl' as minimal_annot #6
-
+import './fastq2ubam_V2.wdl' as fastq2ubam #1
+import './bam2gvcf_V2.wdl' as bamtogvcf #3
+import './ubam2bwa_V2.wdl' as ubam2bwa #2
+import './jointgenotype_single_V2.wdl' as single_genotypeGVCF #4
+#import './quality_control_V2.wdl' as qual_control #5
+import './qc.wdl' as qual_control #5
+import './anotaciones_hnrg_single.wdl' as anotacionesSingle #5
 
 
 
 
 ###########################TASKS
-
+##creo q vuela este task por el de abajo
 task mkdir {
     String path_softlink
 
@@ -139,12 +138,36 @@ task coord_generator {
     File padded_coord = "${library_name}_padded_${padding}.bed"
     File exon_restricted = "exon_restricted2_${library_name}.bed" ##for quality_control
 
+    #File interval_restricted = "exon_restricted2interval.bed" ##for quality_control
+    #File merged_padded_coord = "intervalo_b37_padded_merged_${merge_tolerance}.bed"
     File interval_list = "${library_name}_padded_${padding}_merged_${merge_tolerance}_preprocessing.interval_list"
     File eval_interval_list = "${library_name}_padded_${padding}.interval_list"
   }
 
 }
 
+
+# task restrict_to_TSO {
+#   File padded_interval
+#   File generic_exon_coords
+#   String toolpath
+
+#   command <<<
+#    #!/bin/bash
+#     set -e
+#     set -o pipefail
+
+#   ${toolpath}bedtools2/bin/intersectBed -wa -a ${generic_exon_coords} -b ${padded_interval} | sort -k1,1 -k2,2n -V | uniq > exon_restricted2interval.bed
+#   >>>
+
+#   output {
+
+#     File interval_restricted = "exon_restricted2interval.bed"
+
+
+#   }
+
+# }
 
 task build_excell_report{
     File annovar_tsv
@@ -155,7 +178,10 @@ task build_excell_report{
     File no_cubierto
     String pipeline_version
 
-    
+    #String original_sample
+  
+     #/home/hnrg/NGStools/pipeline_wdl/qualityControl/make_excel_report.py ${annovar_tsv}:Variants ${exon_coverage_report}:ExonCoverage ${sample}.output_xlsx
+
     command{
 
        ${ngs_toolpath}/pipeline_wdl/qualityControl/make_excel_report.py ${annovar_tsv}:Variants ${exon_coverage_report}:ExonCoverage ${plof}:GnomAD_PLOF ${no_cubierto}:no_cubierto  ${samplename2}_variants_${pipeline_version}.xlsx
@@ -181,7 +207,9 @@ String pipeline_version
 command {
 
  ${ngs_toolpath}/python_scripts/join_annovar_exon_dist.py -d ${exon_dist} -a ${annovar_variants} -o ${name}.anno_variants.tsv
-  
+  #echo "${S1}"
+  #echo "${S2}"
+
  }
 
 output {
@@ -241,7 +269,7 @@ workflow main_workflow {
   String sequencing_center =  "UIT-HNRG" 
   String readlenght 
   String ubam_list_name = "ubamfiles"
-  String ref_name = ".hg38"
+  String ref_name = ".b37"
 
   ###GATK
   String gatk_jar = "gatk-package-4.0.8.1-local.jar"
@@ -250,7 +278,7 @@ workflow main_workflow {
 
 
   ###coordenadas exonicas (usamos ENSEMBL)
-  File generic_exon_coords = "/home/hnrg/HNRG-pipeline-V0.1/libraries/intervalos/transcriptos_canonicos_ensmbl_104_38.tsv"
+  File generic_exon_coords = "/home/hnrg/HNRG-pipeline-V0.1/libraries/intervalos/ensembl_canonicos_GRCh37_0based.tsv"
   
   ###save location
   String path_softlink
@@ -260,25 +288,25 @@ workflow main_workflow {
   String bwa_commandline = "bwa mem -K 100000000 -p -v 3 -t 4 -Y"
   
   ########## referencia
-  File ref_fasta = "/data/new_dbs/grch38/GRCh38_alignment.fa.ann"
-  File ref_fasta_index = "/data/new_dbs/grch38/GRCh38_alignment.fa.fai"
-  File ref_dict = "/data/new_dbs/grch38/GRCh38_alignment.dict"
-  File ref_amb = "/data/new_dbs/grch38/GRCh38_alignment.fa.amb"
-  File ref_ann = "/data/new_dbs/grch38/GRCh38_alignment.fa.ann"
-  File ref_bwt = "/data/new_dbs/grch38/GRCh38_alignment.fa.bwt"
-  File ref_pac = "/data/new_dbs/grch38/GRCh38_alignment.fa.pac"
-  File ref_sa = "/data/new_dbs/grch38/GRCh38_alignment.fa.sa"
+  File ref_fasta = "/home/hnrg/HNRG-pipeline-V0.1/references/hs37d5/hs37d5.fa.ann"
+  File ref_fasta_index = "/home/hnrg/HNRG-pipeline-V0.1/references/hs37d5/hs37d5.fa.fai"
+  File ref_dict = "/home/hnrg/HNRG-pipeline-V0.1/references/hs37d5/hs37d5.dict"
+  File ref_amb = "/home/hnrg/HNRG-pipeline-V0.1/references/hs37d5/hs37d5.fa.amb"
+  File ref_ann = "/home/hnrg/HNRG-pipeline-V0.1/references/hs37d5/hs37d5.fa.ann"
+  File ref_bwt = "/home/hnrg/HNRG-pipeline-V0.1/references/hs37d5/hs37d5.fa.bwt"
+  File ref_pac = "/home/hnrg/HNRG-pipeline-V0.1/references/hs37d5/hs37d5.fa.pac"
+  File ref_sa = "/home/hnrg/HNRG-pipeline-V0.1/references/hs37d5/hs37d5.fa.sa"
     
   
-  File dbSNP_vcf = "/data/new_dbs/grch38/dbSNP/dbSNP156_GRCh38.vcf.gz"
-  File dbSNP_vcf_index = "/data/new_dbs/grch38/dbSNP/dbSNP156_GRCh38.vcf.gz.tbi"
+  File dbSNP_vcf = "/home/hnrg/HNRG-pipeline-V0.1/dbs/preprocessing_dbs/All_20180423.vcf.gz"
+  File dbSNP_vcf_index = "/home/hnrg/HNRG-pipeline-V0.1/dbs/preprocessing_dbs/All_20180423.vcf.gz.tbi"
   ###bam2gvcf input
-  Array[File] known_indels_sites_VCFs = ["/data/new_dbs/grch38/bundle_gatk_hg38/Mills_and_1000G_gold_standard.indels.hg38.vcf.gz","/data/new_dbs/grch38/bundle_gatk_hg38/Homo_sapiens_assembly38.known_indels.vcf.gz"]
-  Array[File] known_indels_sites_indices = ["/data/new_dbs/grch38/bundle_gatk_hg38/Mills_and_1000G_gold_standard.indels.hg38.vcf.gz.tbi","/data/new_dbs/grch38/bundle_gatk_hg38/Homo_sapiens_assembly38.known_indels.vcf.gz.tbi"]
+  Array[File] known_indels_sites_VCFs = ["/home/hnrg/HNRG-pipeline-V0.1/dbs/preprocessing_dbs/Mills_and_1000G_gold_standard.indels.b37.vcf.gz"]
+  Array[File] known_indels_sites_indices = ["/home/hnrg/HNRG-pipeline-V0.1/dbs/preprocessing_dbs/Mills_and_1000G_gold_standard.indels.b37.vcf.gz.tbi"]
 
   ##### parametros trimmeado fastp
-  Int trim_front_fastp = "4" 
-  Int trim_tail_fastp = "4"
+  Int trim_front_fastp = "5" 
+  Int trim_tail_fastp = "5"
     
   Int break_bands_at_multiples_of = "1000000"
   Int haplotype_scatter_count = "2"
@@ -298,12 +326,11 @@ workflow main_workflow {
 
 
   ##################anotacion funcional
-  String reference_version = "GRCh38.14"
+  String reference_version = "GRCh37.75"
 
 
   ##annovar
-  ###############agregar path a la 38
-  String db_annovar = "/home/hnrg/HNRG-pipeline-V0.1/dbs/hg19_annovar/" #path annovar 
+  String db_annovar = "/home/hnrg/HNRG-pipeline-V0.1/dbs/hg19_annovar/" #path annovar
     
     
     ###esto creo q vuela
@@ -313,7 +340,7 @@ workflow main_workflow {
 
   ###################### inputs para crear intervalo
   File intervalo_captura
-  File chromosome_length = "/data/new_dbs/grch38/chromosome_lengths_hg38.txt" #"/home/hnrg/HNRG-pipeline-V0.1/libraries/GRCh37/chromosome_lengths_hg19.txt"
+  File chromosome_length = "/home/hnrg/HNRG-pipeline-V0.1/libraries/GRCh37/chromosome_lengths_GRCh37_MT.txt" #"/home/hnrg/HNRG-pipeline-V0.1/libraries/GRCh37/chromosome_lengths_hg19.txt"
   Int padding = "100"
   Int merge_tolerance = "200"
 
@@ -502,24 +529,6 @@ workflow main_workflow {
         
 
       }
-      ####################### anotacion minimal. test
-      #call minimal_annot.FuncionalAnnotationMinimal{
-      #  input:
-      #  input_vcf = singleGenotypeGVCFs.restricted_vcf, #sin annovar del genotipado , 
-      #  ##input_vcf = singleGenotypeGVCFs.individual_vcfs_annovar,# . 
-      #  path_save = mkdir_samplename.path_out_softlink,
-      #  toolpath = toolpath,
-      #  samplename1 = sample_name,
-      #  java_heap_memory_initial = "12g",
-      #  pipeline_version = pipeline_version,
-      #  exon_coordinates = generic_exon_coords,#coord_generator.interval_restricted,
-        #exon_coordinates_to_lib =  coord_generator.exon_restricted,
-       # reference_version = reference_version
-        
-
-      #}
-
-
 
    } ###fin scatter gvcf
 

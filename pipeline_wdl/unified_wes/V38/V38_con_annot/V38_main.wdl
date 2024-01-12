@@ -10,7 +10,6 @@ import './bam2gvcf_38.wdl' as bamtogvcf #3
 import './jointgenotype_single_38.wdl' as single_genotypeGVCF #4
 import './qc_38.wdl' as qual_control #5
 import './anotaciones_hnrg_single_38.wdl' as anotacionesSingle #5
-import './anotaciones_hnrg_minimal_38.wdl' as minimal_annot #6
 
 
 
@@ -600,7 +599,7 @@ Array[File] exon_tsv = qual_control.tsv_exon
 
 
 ####for pdf purpose 
-  Array[File] alineamiento_rep = qual_control.reporte_final_alineamiento#bam2gvcf.reporte_final ### archivo para mergear... estadistica en la libreria del experimento
+  Array[File] alineamiento_rep = qual_control.reporte_final_alineamiento #bam2gvcf.reporte_final ### archivo para mergear... estadistica en la libreria del experimento
   Array[File] global = qual_control.depth_global_cov_stats 
   Array[Pair[String,File]] global_report = zip (array_path_save_byexon, global)
   scatter (pairs in global_report) {

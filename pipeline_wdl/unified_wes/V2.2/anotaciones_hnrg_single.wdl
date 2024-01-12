@@ -1,5 +1,5 @@
 ############################
-### pipeline anotacion funcional para hg38
+### pipeline anotacion funcional
 #################
 
 
@@ -38,19 +38,15 @@ File input_vcf
 String samplename1
 String toolpath
 String java_heap_memory_initial
-String reference_version = "GRCh38.mane.1.2.refseq"
+String reference_version
 
 ###la version 5 de snpeff no soporta el -t, multihread
 
-#java -Xmx${java_heap_memory_initial} -jar ${toolpath}SnpEff/snpEff/snpEff.jar ${reference_version} -hgvs \
-# -lof -noStats -canon -onlyProtein -c ${toolpath}SnpEff/snpEff/snpEff.config \
-#${input_vcf} > ${samplename1}.step1_SnpEff.vcf
 command {
 
 set -o pipefail
 java -Xmx${java_heap_memory_initial} -jar ${toolpath}SnpEff/snpEff/snpEff.jar ${reference_version} -hgvs \
- -lof -noStats -geneID -canon  -c ${toolpath}SnpEff/snpEff/snpEff
- .config \
+ -lof -noStats -canon -onlyProtein -c ${toolpath}SnpEff/snpEff/snpEff.config \
 ${input_vcf} > ${samplename1}.step1_SnpEff.vcf 
 }
 
@@ -102,7 +98,7 @@ command <<<
 
 #perl ${toolpath}annovar/table_annovar.pl ${vcf_in} ${annovar_dbpath} -vcfinput  -buildver hg19 -remove -out ${out_prefix} -protocol dbnsfp35a,gnomad_exome,gnomad_genome,intervar_20180118 -operation f,f,f,f -nastring . 
 #perl ${toolpath}annovar/table_annovar.pl ${vcf_in} ${annovar_dbpath} --thread 4 -vcfinput  -buildver hg19 -remove -out ${out_prefix} -protocol dbnsfp35a,gnomad_exome,gnomad_genome,intervar_20180118 -operation f,f,f,f 
-perl ${toolpath}annovar/table_annovar.pl ${vcf_in} ${annovar_dbpath} -vcfinput -buildver hg38 -thread 4 -remove -out ${out_prefix} -protocol dbnsfp42a,gnomad312_exome,gnomad312_genome,intervar_20180118 -operation f,f,f,f 
+perl ${toolpath}annovar/table_annovar.pl ${vcf_in} ${annovar_dbpath} -vcfinput -buildver hg19 -thread 4 -remove -out ${out_prefix} -protocol dbnsfp42a,gnomad211_exome,gnomad211_genome,intervar_20180118 -operation f,f,f,f 
 
 >>>
 
@@ -415,7 +411,6 @@ input:
 
 #Step 10: Annotate with PhastCons
 #http://hgdownload.soe.ucsc.edu/goldenPath/hg19/phastCons100way/
-#/data/
 
 call Snpsift_nodb as step10_PhastCons{
 input:
@@ -456,28 +451,28 @@ input:
 }
 
 #Step 13: Annotate with PharmGKB
-#call Snpsift as step13_pharmGKB{
-#input:
-#    samplename1 = samplename1,
-#    parametros = "annotate -v -info PGKB_INDEX,PGKB_GENE,PGKB_DRUG,PGKB_TYPE,PGKB_EVIDENCE,PGKB_DISEASE,PGKB_RACE",
-#    input_vcf = step12_clinVar.salida_Snpsift,
-#    toolpath = toolpath,
-#    java_heap_memory_initial = java_heap_memory_initial,
-#    nombre_step = "step13_pharmGKB"
+call Snpsift as step13_pharmGKB{
+input:
+    samplename1 = samplename1,
+    parametros = "annotate -v -info PGKB_INDEX,PGKB_GENE,PGKB_DRUG,PGKB_TYPE,PGKB_EVIDENCE,PGKB_DISEASE,PGKB_RACE",
+    input_vcf = step12_clinVar.salida_Snpsift,
+    toolpath = toolpath,
+    java_heap_memory_initial = java_heap_memory_initial,
+    nombre_step = "step13_pharmGKB"
 
 }
 
 
- #call hnrg_freq {
+ call hnrg_freq {
 
- #input:
- #   input_vcf = step12_clinVar.salida_Snpsift,   # step13_pharmGKB.salida_Snpsift, 
- #   samplename1 = samplename1,
- #   toolpath = toolpath,
- #   nombre_step = "step14_HNRG_FREQ"
+ input:
+    input_vcf = step13_pharmGKB.salida_Snpsift, 
+    samplename1 = samplename1,
+    toolpath = toolpath,
+    nombre_step = "step14_HNRG_FREQ"
 
     
- #}
+ }
 
 
 #Step 14: Annotate with ExAC
@@ -485,7 +480,7 @@ call Snpsift as final_annot{
 input:
     samplename1 = samplename1,
     parametros = "annotate -v -info AN_Adj,AC_Adj,AC_Het,AC_Hom,AC_Hemi,POPMAX,VQSLOD,GQ_MEAN,GQ_STDDEV,HWP",
-    input_vcf = step12_clinVar.salida_Snpsift, # hnrg_freq.out_vcfanno,
+    input_vcf = hnrg_freq.out_vcfanno,
     toolpath = toolpath,
     java_heap_memory_initial = java_heap_memory_initial,
     nombre_step = "final_annot_"+pipeline_version

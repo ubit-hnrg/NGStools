@@ -9,8 +9,7 @@ import './ubam2bwa_38.wdl' as ubam2bwa #2
 import './bam2gvcf_38.wdl' as bamtogvcf #3
 import './jointgenotype_single_38.wdl' as single_genotypeGVCF #4
 import './qc_38.wdl' as qual_control #5
-import './anotaciones_hnrg_single_38.wdl' as anotacionesSingle #5
-import './anotaciones_hnrg_minimal_38.wdl' as minimal_annot #6
+
 
 
 
@@ -487,21 +486,21 @@ workflow main_workflow {
 
 
 
-    call anotacionesSingle.FuncionalAnnotationSingle {
-        input:
-        input_vcf = singleGenotypeGVCFs.restricted_vcf, #sin annovar del genotipado , 
-        ##input_vcf = singleGenotypeGVCFs.individual_vcfs_annovar,# . 
-        path_save = mkdir_samplename.path_out_softlink,
-        toolpath = toolpath,
-        samplename1 = sample_name,
-        java_heap_memory_initial = "12g",
-        pipeline_version = pipeline_version,
-        exon_coordinates = generic_exon_coords,#coord_generator.interval_restricted,
-        #exon_coordinates_to_lib =  coord_generator.exon_restricted,
-        reference_version = reference_version
+    #call anotacionesSingle.FuncionalAnnotationSingle {
+    #    input:
+    #    input_vcf = singleGenotypeGVCFs.restricted_vcf, #sin annovar del genotipado , 
+    #    ##input_vcf = singleGenotypeGVCFs.individual_vcfs_annovar,# . 
+    #    path_save = mkdir_samplename.path_out_softlink,
+    #    toolpath = toolpath,
+    #    samplename1 = sample_name,
+    #    java_heap_memory_initial = "12g",
+    #    pipeline_version = pipeline_version,
+    #    exon_coordinates = generic_exon_coords,#coord_generator.interval_restricted,
+    #    #exon_coordinates_to_lib =  coord_generator.exon_restricted,
+    #    reference_version = reference_version
         
 
-      }
+    #  }
       ####################### anotacion minimal. test
       #call minimal_annot.FuncionalAnnotationMinimal{
       #  input:

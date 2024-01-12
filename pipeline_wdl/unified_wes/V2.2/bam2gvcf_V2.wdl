@@ -21,12 +21,58 @@ task samtools_stat{
   >>>
   output {
 
-  
+  #File samtools_stats = 
+  #File samtools_reduced_bam = $name'_samtools_reduced.stats'
+  #File samtools_stat_original_bam = "${name}_orig_samtools.stats"
+  #File samtools_stat_TSO_bam = "${name}_experiment_lib_samtools.stats"
   File samtools_stat_experiment_bam = "${name}_experiment_lib_samtools.stats" 
 
   }
 
 }
+
+
+# task samtools_reports_file {
+
+#   String sampleID
+#   Int N_total_reads_bam
+#   #File samtools_global_report ##no va mas, necesita el numero total de reads
+#   File samtools_library_report
+#   String toolpath
+
+#   command {
+#   /home/hnrg/NGStools/pipeline_wdl/qualityControl/samtools_stats_report_v1.0.py -N=${N_total_reads_bam}  -l=${samtools_library_report} -o=${sampleID}_samtools_report.tsv
+
+#   }
+
+#   output {
+ 
+#   File output_global_report = "${sampleID}_samtools_report.tsv" 
+
+#   }
+
+# }
+
+
+
+
+# task bams_reads {
+#    File bam
+#    String toolpath
+#    String sample_name
+#    #  echo ${sample_name}\t$({toolpath}samtools view -c ${bam})
+
+#    command {
+  
+#     echo |${toolpath}samtools view -c ${bam} 
+#    }
+
+#    output {
+#    String sampl = sample_name
+#    Int N_reads = read_int(stdout())
+#    }
+
+# }
 
 
 task reduce_bam {
@@ -81,16 +127,7 @@ task MarkDuplicates {
       --OPTICAL_DUPLICATE_PIXEL_DISTANCE=2500 \
       --ASSUME_SORT_ORDER="queryname" \
       --CREATE_MD5_FILE=true \
-      --CLEAR_DT="false" \
-      --ADD_PG_TAG_TO_READS=false
     }
-
-    ####se agrega
-    ##       CLEAR_DT="false" \
-    ##  ADD_PG_TAG_TO_READS=false
-    ##
-    ##
-    #######
   output {
     File output_bam = "${output_bam_basename}.bam"
     File duplicate_metrics = "${metrics_filename}"
@@ -396,58 +433,14 @@ task HaplotypeCaller {
       -O ${gvcf_basename}.g.vcf.gz \
       -L ${interval_list} \
       -ip 100 \
-      -contamination ${default=0 contamination} \
+      -contamination ${default=null contamination} \
       --max-alternate-alleles 6 \
       -ERC GVCF \
       --pair-hmm-implementation ${gatk_gkl_pairhmm_implementation} \
       --native-pair-hmm-threads ${gatk_gkl_pairhmm_threads} \
       --smith-waterman ${smith_waterman_implementation} \
       --use-new-qual-calculator ${newqual} \
-      --bam-output= ${gvcf_basename}_haplotype.bam ###realigned reads \
-      -new-qual \
-      -GQB 10 -GQB 20 -GQB 30 -GQB 40 -GQB 50 -GQB 60 -GQB 70 -GQB 80 -GQB 90 \
-      --standard-min-confidence-threshold-for-calling 30.0 \ ## algunos usan 10.0
-      --min-pruning 3 \
-      --read-filter OverclippedReadFilter \
-      --annotation MappingQuality \
-      --annotation ReadPosRankSumTest \
-      --annotation MappingQualityRankSumTest \
-       --annotation InbreedingCoeff \
-       --use-posteriors-to-calculate-qual false \
-       --dont-use-dragstr-priors false \
-       --annotate-with-num-discovered-alleles false \
-       --heterozygosity 0.001 \
-       --indel-heterozygosity 1.25E-4 \
-       --heterozygosity-stdev 0.01 \
-       --max-genotype-count 1024 \
-       --sample-ploidy 2 \
-       --num-reference-samples-if-no-call 0 \
-       --genotype-assignment-method USE_PLS_TO_ASSIGN \
-       --contamination-fraction-to-filter 0.0 \
-       --output-mode EMIT_VARIANTS_ONLY \
-       --all-site-pls false \
-       --flow-likelihood-parallel-threads 0 \
-       --flow-likelihood-optimized-comp false \
-        --flow-use-t0-tag false \
-        --flow-probability-threshold 0.003 \
-        --flow-remove-non-single-base-pair-indels false \
-        --flow-remove-one-zero-probs false \
-        --flow-quantization-bins 121 \
-        --flow-fill-empty-bins-value 0.001 \
-        --flow-symmetric-indel-probs false \
-        --flow-report-insertion-or-deletion false \
-        --flow-disallow-probs-larger-than-call false \
-        --flow-lump-probs false \
-        --flow-retain-max-n-probs-base-format false \
-        --flow-probability-scaling-factor 10 \
-        --flow-order-cycle-length 4 \
-        --flow-number-of-uncertain-flows-to-clip 0 \
-        --flow-nucleotide-of-first-uncertain-flow T \
-        --keep-boundary-flows false \
-
-
-      ##### test 
-
+      --bam-output= ${gvcf_basename}_haplotype.bam ###realigned reads
 
        
 >>>
@@ -512,118 +505,6 @@ task MergeVCFs {
   }
 }
 
-############################# GATK 2018, ver  si funciona. 
-
-task HardfilterVCF {
-  input {
-    File input_vcf
-    File input_vcf_index
-    String vcf_basename
-    File interval_list
-    Int preemptible_tries
-  }
-  String output_vcf_name = vcf_basename + ".filtered.vcf.gz"
-  command {
-    java -Xms3000m -jar ${toolpath}${gatk_jar} \
-      VariantFiltration \
-      -V ~{input_vcf} \
-      -L ~{interval_list} \
-      --filter-expression "QD < 2.0 || FS > 30.0 || SOR > 3.0 || MQ < 40.0 || MQRankSum < -3.0 || ReadPosRankSum < -3.0" \
-      --filter-name "HardFiltered" \
-      -O ~{output_vcf_name}
-  }
-  output {
-      File output_vcf = "~{output_vcf_name}"
-      File output_vcf_index = "~{output_vcf_name}.tbi"
-      }
-
-}
-
-#####CNNscorevariants es experimental. ojo.
-task CNNScoreVariants {
-
-  input {
-    File? bamout
-    File? bamout_index
-    File input_vcf
-    File input_vcf_index
-    String vcf_basename
-    File ref_fasta
-    File ref_fasta_index
-    File ref_dict
-    Int preemptible_tries
-  }
-
-  String base_vcf = basename(input_vcf)
-  #Boolean is_compressed = basename(base_vcf, "gz") != base_vcf
-  #String vcf_suffix = if is_compressed then ".vcf.gz" else ".vcf"
-  #String vcf_index_suffix = if is_compressed then ".tbi" else ".idx"
-  #String output_vcf = base_vcf + ".scored" + vcf_suffix
-  #String output_vcf_index = output_vcf + vcf_index_suffix
-
-  String bamout_param = if defined(bamout) then "-I ~{bamout}" else ""
-  String tensor_type = if defined(bamout) then "read-tensor" else "reference"
-
-  command {
-     java -Xmx10g -jar ${toolpath}${gatk_jar} \
-      CNNScoreVariants \
-       -V ~{input_vcf} \
-       -R ~{ref_fasta} \
-       -O ~{output_vcf} \
-       ~{bamout_param} \
-       -tensor-type ~{tensor_type}
-  }
-
-  output {
-    File scored_vcf = "{output_vcf}"
-    File scored_vcf_index = "{output_vcf_index}"
-  }
-}
-
-task FilterVariantTranches {
-
-  input {
-    File input_vcf
-    File input_vcf_index
-    String vcf_basename
-    Array[String] snp_tranches
-    Array[String] indel_tranches
-    File hapmap_resource_vcf
-    File hapmap_resource_vcf_index
-    File omni_resource_vcf
-    File omni_resource_vcf_index
-    File one_thousand_genomes_resource_vcf
-    File one_thousand_genomes_resource_vcf_index
-    File dbsnp_resource_vcf
-    File dbsnp_resource_vcf_index
-    String info_key
-    Int preemptible_tries
-  }
-
-
-  command {
-
-    gatk --java-options -Xmx6g FilterVariantTranches \
-      -V ~{input_vcf} \
-      -O ~{vcf_basename}.filtered.vcf.gz \
-      ~{sep=" " prefix("--snp-tranche ", snp_tranches)} \
-      ~{sep=" " prefix("--indel-tranche ", indel_tranches)} \
-      --resource ~{hapmap_resource_vcf} \
-      --resource ~{omni_resource_vcf} \
-      --resource ~{one_thousand_genomes_resource_vcf} \
-      --resource ~{dbsnp_resource_vcf} \
-      --info-key ~{info_key} \
-      --create-output-variant-index true
-  }
-
-  output {
-    File filtered_vcf = "{vcf_basename}.filtered.vcf.gz"
-    File filtered_vcf_index = "{vcf_basename}.filtered.vcf.gz.tbi"
-  }
-}
-
-########################### fin gatk nuevo 
-
 # Validate a GVCF with -gvcf specific validation
 task ValidateGVCF {
   File input_vcf
@@ -683,75 +564,6 @@ task CollectGvcfCallingMetrics {
   }
 }
 
-
-#############task nuevos
-#
-# Check that the fingerprints of separate readgroups all match
-
-task CrossCheckFingerprints {
-  Array[File] input_bams
-  Array[File] input_bam_indexes
-  File? haplotype_database_file
-  String metrics_filename
-  String java_heap_memory_initial
-  String tool_path
-  String gatk_jar
-  
-  command <<<
-    java -Dsamjdk.buffer_size=131072 \
-      -XX:GCTimeLimit=50 -XX:GCHeapFreeLimit=10 -Xmx${java_heap_memory_initial} \
-      -jar ${toolpath}${gatk_jar} \
-      CrosscheckReadGroupFingerprints \
-      OUTPUT=${metrics_filename} \
-      HAPLOTYPE_MAP=${haplotype_database_file} \
-      EXPECT_ALL_READ_GROUPS_TO_MATCH=true \
-      INPUT=${sep=' INPUT=' input_bams} \
-      LOD_THRESHOLD=-20.0
-  >>>
-  output {
-    File metrics = "${metrics_filename}" 
-     }
-}
-
-# Check that the fingerprint of the sample BAM matches the sample array
-task CheckFingerprint {
-  File input_bam
-  File input_bam_index
-  String output_basename
-  File? haplotype_database_file
-  File? genotypes
-  String sample
-  String java_heap_memory_initial
-   String gatk_jar
-
-  String tool_path
-  
-  command <<<
-    java -Dsamjdk.buffer_size=131072 \
-      -XX:GCTimeLimit=50 -XX:GCHeapFreeLimit=10 -Xmx${java_heap_memory_initial}  \
-      -jar ${toolpath}${gatk_jar} \
-      CheckFingerprint \
-      INPUT=${input_bam} \
-      OUTPUT=${output_basename} \
-      GENOTYPES=${genotypes} \
-      HAPLOTYPE_MAP=${haplotype_database_file} \
-      SAMPLE_ALIAS="${sample}" \
-      IGNORE_READ_GROUPS=true
-  >>>
- 
-  output {
-    File summary_metrics = "${output_basename}.fingerprinting_summary_metrics"
-    File detail_metrics = "${output_basename}.fingerprinting_detail_metrics" 
-   }
-}
-
-
-
-
-
-
-############# fin task nuevos
-
 #task path_borrado {
 #File path1
 #Array[String] path2 
@@ -777,6 +589,203 @@ task symlink_important_files {
        cp -L ${output_to_save} ${path_save}
     }
 }
+
+
+################################################ agrego quality_control 
+###fastp
+
+# task fastp_qual {
+#   File inputs_json_report
+#   String report_name = basename(inputs_json_report, ".txt")
+
+#   #${sep=' -I ' input_bqsr_reports}
+#   command <<<
+#   /home/hnrg/NGStools/pipeline_wdl/qualityControl/estadistica_fastp.py -i ${inputs_json_report} -o ${report_name}_fastp_report.tsv
+#   >>>
+
+#   output {
+#     File fastp_stats = "${report_name}_fastp_report.tsv"
+
+#   }
+# }
+
+
+# ####paso1 para calidad de bams
+# task bam_depth {
+
+#   File input_bam
+#   File Exon_coords
+  
+
+#   ###herramientas
+#   String name = basename(input_bam, ".bam")
+#   String toolpath
+#   String pipeline_version
+
+#   command <<<
+
+#   #!/bin/bash
+#   set -e
+#   set -o pipefail
+  
+#   #reduce bam
+#   ${toolpath}bedtools2/bin/intersectBed -a ${input_bam} -b ${Exon_coords} > ${name}_exonTSO_reduced.bam
+
+#   ###ya que estamos, prediccion de sexo:
+#   /home/hnrg/NGStools/python_scripts/bam_sex_xy.py -b ${name}_exonTSO_reduced.bam > ${name}_sex.txt
+
+#   #Bam coverage. No está estrictamente limitado al intervalo porque contiene grandes zonas con cobertura CERO 
+#   #que están presentes por una mínima interseccion con el intervalo buscado)
+#   ${toolpath}bedtools2/bin/genomeCoverageBed -ibam ${name}_exonTSO_reduced.bam -bga > ${name}_exon.coverage
+
+#   # Left outer join EXON_coords and BAM coverage. Intermediate file. Incorpora a cada intervalo la covertura, (pero sigue preservando zonas con mínima intersección que traen ruido)
+#   ${toolpath}bedtools2/bin/intersectBed -a ${Exon_coords} -b ${name}_exon.coverage -loj > ${name}_loj.txt
+
+
+#   #esto limita la covertura estrictamente al intervalo paddeado.
+#   # Es decicr, esta linea elimina las grandes zonas del bam con cobertura zero que tenían unas pocas bases de interseccion con el intervalo buscado
+#   # primero: reordeno las columnas de loj.txt, para que las coordenadas start end no sean las del exon, sino las de la cobertura
+#   #awk -F"\t" '{print $6"\t"$7"\t"$8"\t"$9"\t"$4"\t"$5"\t"$1"\t"$2"\t"$3}' ${name}_loj.txt > ${name}_loj_sorted_cols.tsv
+
+#   ### para el intervalo de ENSEMBL usar el de abajo y no el de arriba:
+#   awk -F"\t" '{print $8"\t"$9"\t"$10"\t"$11"\t"$5"\t"$4"\t"$6"\t"$7"\t"$1"\t"$2"\t"$3}' ${name}_loj.txt > ${name}_loj_sorted_cols.tsv
+
+#   ${toolpath}bedtools2/bin/intersectBed -a ${name}_loj_sorted_cols.tsv -b ${Exon_coords}  > ${name}_loj_exon_filtered.coverage
+
+#   echo -e 'chr\tstart\tend\tcount\tgeneSymbol\tENSEMBL_ID\texon_number\tstrand\texon_chr\texon_start\texon_end' > header.tsv
+#   cat header.tsv ${name}_loj_exon_filtered.coverage > ${name}_exon_filtered_coverage.tsv
+#   rm ${name}_loj_exon_filtered.coverage ${name}_loj_sorted_cols.tsv header.tsv ${name}_exon.coverage ${name}_loj.txt
+
+#   #####coverage statistics cambio la forma del input... 
+#   #/home/hnrg/NGStools/pipeline_wdl/qualityControl/coverage_statistics_v1.0.py -i ${name}_exon_filtered_coverage.tsv -g ${name}_global_coverage_statistics.tsv -e ${name}_coverage_statistics_by_exon.tsv -s ${name}
+
+#   ###usamos este con ENS
+#   /home/hnrg/NGStools/pipeline_wdl/qualityControl/coverage_statistics_v1.0_ENS.py -i ${name}_exon_filtered_coverage.tsv -g ${name}_global_coverage_statistics_${pipeline_version}.tsv -e ${name}_coverage_statistics_by_exon_${pipeline_version}.tsv -s ${name}
+
+#   rm ${name}_exonTSO_reduced.bam ${name}_exon_filtered_coverage.tsv
+#   >>>
+
+
+#   output {
+#     File cov_stats_by_exon = "${name}_coverage_statistics_by_exon_${pipeline_version}.tsv"
+#     File glob_cov_stats = "${name}_global_coverage_statistics_${pipeline_version}.tsv"
+#     File sex_prediction = "${name}_sex.txt"
+#     String sample_Name = "${name}"
+#   }
+
+# }
+
+
+
+# #####task del summary_metrics de samtools
+# task samtools_stat{
+
+#   String toolpath
+#   File TSO_bed #./TruSight_One_v1_padded_100_GRCh37.bed
+#   File input_orig_bam
+#   String name = basename(input_orig_bam, ".bam")
+
+#   command {
+
+#   ##paso1
+#   ###$name=$(basename ${input_orig_bam} .bam)
+
+#   ${toolpath}samtools stats ${input_orig_bam}  > ${name}_orig_samtools.stats
+
+#   #paso2
+#   ##input es el bam original  y el intervalo de captura
+#   ${toolpath}samtools stats ${input_orig_bam} -t ${TSO_bed} > ${name}_experiment_lib_samtools.stats
+
+#   }
+#   output {
+
+#     #File samtools_reduced_bam = $name'_samtools_reduced.stats'
+#     File samtools_stat_original_bam = "${name}_orig_samtools.stats"
+#     File samtools_stat_TSO_bam = "${name}_experiment_lib_samtools.stats"
+
+#   }
+
+# }
+
+
+# ##/home/hnrg/NGStools/pipeline_wdl/qualityControl/samtools_stats_report.py
+
+# task samtools_reports_file {
+
+#   String sampleID
+#   File samtools_library_report
+#   String toolpath
+#   String pipeline_version
+
+
+#   command {
+#     /home/hnrg/NGStools/pipeline_wdl/qualityControl/samtools_stats_report_v1.0.py -l=${samtools_library_report} -o=${sampleID}_samtools_report_${pipeline_version}.tsv
+#   }
+
+#   output {
+ 
+#     File output_global_report = "${sampleID}_samtools_report_${pipeline_version}.tsv" 
+
+#   }
+
+# }
+
+
+# #####
+
+# task merge_reports {
+# ####inputs del paso1 
+# File files_to_merge
+# String TSO_name
+
+# command<<<
+# /home/hnrg/NGStools/pipeline_wdl/qualityControl/merge_sample_reports.py -i ${files_to_merge} -o ${TSO_name}.merged_report
+# >>>
+
+# output {
+# File merged_report = "${TSO_name}.merged_report"
+
+# }
+
+# }
+
+# task CreateFoFN {
+#   # Command parameters
+#   Array[File] array_of_files
+#   String fofn_name
+  
+#   command {
+#     mv ${write_lines(array_of_files)}  ${fofn_name}.list \
+   
+#   }
+#   output {
+#     File fofn_list = "${fofn_name}.list"
+#   }
+# }
+
+# task make_excel {
+#   String pipeline_version
+#   String Tso_name
+#   File tabla1
+#   String pestana1
+#   File tabla2
+#   String pestana2
+#   File tabla3
+#   String pestana3
+
+#   command{
+#     /home/hnrg/NGStools/pipeline_wdl/qualityControl/make_excel_report.py ${tabla1}:${pestana1} ${tabla2}:${pestana2} ${tabla3}:${pestana3} ${Tso_name}_qual_report_${pipeline_version}.xlsx
+ 
+#   }
+
+#   output {
+#     File reporte_excel = "${Tso_name}_qual_report_${pipeline_version}.xlsx"
+
+#   }
+
+# }
+
+#################333
 
 
 ##############################################    WORKFLOW
@@ -872,9 +881,6 @@ workflow bam2gvcf {
   # }
   #   #}
 
-
-
-##########esto lo tengo que checkear
   call reduce_bam {
     input:
     input_bam = MarkDuplicates.output_bam, 
@@ -902,22 +908,6 @@ workflow bam2gvcf {
     gatk_jar = gatk_jar,
     toolpath = toolpath      
   }
-
-########esto es nuevo
- if (defined(haplotype_database_file)) {
-   # Check identity of fingerprints across readgroups
-    call CrossCheckFingerprints {
-      input:
-        input_bams = SortAndFixTags.output_bam,
-        input_bam_indexes = SortAndFixTags.output_bam_index,
-        haplotype_database_file = haplotype_database_file,
-        metrics_filename = sample_name + ".crosscheck",
-		tool_path = tool_path
-    }
-  }
-#
-######### terminar de definir checkfingerprint
-
 
   # Create list of sequences for scatter-gather parallelization 
   call CreateSequenceGroupingTSV {
@@ -999,26 +989,6 @@ workflow bam2gvcf {
   #}
   #}
 
-
-##########agregamos 2023
-#
- if (defined(haplotype_database_file) && defined(fingerprint_genotypes_file)) {
-    # Check the sample BAM fingerprint against the sample array
-    call CheckFingerprint {
-      input:
-        input_bam = GatherBamFiles.output_bam,
-        input_bam_index = GatherBamFiles.output_bam_index,
-        haplotype_database_file = haplotype_database_file,
-        genotypes = fingerprint_genotypes_file,
-        output_basename = base_file_name,
-        sample = base_file_name,
-		    tool_path = tool_path
-    }
-  }
-####
-
-
-######
   ############################ fin data preprocessing ##############################  
   ## Output :
   ## - A clean BAM file and its index, suitable for variant discovery analyses.
@@ -1177,10 +1147,7 @@ workflow bam2gvcf {
    #File reporte_final = samtools_reports_file.output_global_report ### archivo para mergear... estadistica en la libreria del experimento
 
 
-   File? cross_check_fingerprints_metrics = CrossCheckFingerprints.metrics
-   File? fingerprint_summary_metrics = CheckFingerprint.summary_metrics
-   File? fingerprint_detail_metrics = CheckFingerprint.detail_metrics
-
+   #"samtools_stat.samtools_stat_TSO_bam","samtools_reports_file.output_global_report"
 
   } 
 

@@ -580,21 +580,21 @@ task annovar{
     File variants_reduction = '/home/hnrg/HNRG-pipeline-V0.1/tools/annovar/variants_reduction.pl'
 
 
-    String db_annovar = '/home/hnrg/HNRG-pipeline-V0.1/tools/annovar/hg38/'
+    String db_annovar = '/data/new_dbs/annovar/hg38/'
     String sample 
     
     # perl ${annovar_table_pl} ${one_sample_vcf} ${db_annovar} -vcfinput -buildver hg38 -thread 4 -remove -out ${sample} -protocol refGene,intervar_20180118,esp6500siv2_all,1000g2015aug_all,exac03,gnomad211_exome,gnomad312_genome,clinvar_20221231,dbscsnv11,dbnsfp42a,rmsk,tfbsConsSites,cytoBand,wgRna,targetScanS,genomicSuperDups,dgvMerged,gwasCatalog,ensGene,knownGene -operation  g,f,f,f,f,f,f,f,f,f,r,r,r,r,r,r,r,r,g,g -nastring . -otherinfo
 ## refGene,intervar_20180118,esp6500siv2_all,1000g2015aug_all,exac03,gnomad312_exome,gnomad312_genome,clinvar_20221231,dbscsnv11,dbnsfp42a,rmsk,tfbsConsSites,cytoBand,wgRna,targetScanS,genomicSuperDups,dgvMerged,gwasCatalog,ensGene,knownGene -operation  g,f,f,f,f,f,f,f,f,f,r,r,r,r,r,r,r,r,g,g
 #--slicing_threshold 10bp away from splicesite. 
     command<<<
-        perl ${annovar_table_pl} ${one_sample_vcf} ${db_annovar} -vcfinput -buildver hg38 -thread 4 -remove -out ${sample} -protocol refGene,intervar_20180118,esp6500siv2_all,1000g2015aug_all,exac03,gnomad40_exome,gnomad40_genome,clinvar_20221231,dbscsnv11,dbnsfp42a,rmsk,tfbsConsSites,cytoBand,wgRna,targetScanS,genomicSuperDups,dgvMerged,gwasCatalog,ensGene,knownGene -operation  g,f,f,f,f,f,f,f,f,f,r,r,r,r,r,r,r,r,g,g -nastring . -otherinfo --slicing_threshold 10 , -polish -intronhgvs
+        perl ${annovar_table_pl} ${one_sample_vcf} ${db_annovar} -vcfinput -buildver hg38 -thread 4 -remove -out ${sample} -protocol refGene,intervar_20180118,esp6500siv2_all,1000g2015aug_all,exac03,gnomad40_exome,gnomad40_genome,clinvar_20221231,dbscsnv11,rmsk,tfbsConsSites,cytoBand,wgRna,targetScanS,genomicSuperDups,dgvMerged,gwasCatalog,ensGene,knownGene -operation  g,f,f,f,f,f,f,f,f,r,r,r,r,r,r,r,r,g,g -nastring . -otherinfo --slicing_threshold 10 , -polish -intronhgvs
 
-    
+    ###dbnsfp con q anoto? con snpsift?
     >>>
 
     output {
-        File annovar_vcf = '${sample}.hg19_multianno.vcf'
-        File annovar_txt = '${sample}.hg19_multianno.txt'
+        File annovar_vcf = '${sample}.hg38_multianno.vcf'
+        File annovar_txt = '${sample}.hg38_multianno.txt'
     }
 
 }
@@ -621,16 +621,16 @@ task get_tsv_from_annovar {
 
 
     # meto header (dejando el campo 'Otherinfo' que despues va a aser remplazado por las columnas del vcf original)
-    head -n1 ${annovar_txt} > ${sample}.hg19_multianno.tsv
+    head -n1 ${annovar_txt} > ${sample}.hg38_multianno.tsv
     # vuelo las tres columnas de otherinfo
-    tail -n+2 ${annovar_txt}|cut -f$nl0,$nl1,$nl2 --complement >>  ${sample}.hg19_multianno.tsv;
+    tail -n+2 ${annovar_txt}|cut -f$nl0,$nl1,$nl2 --complement >>  ${sample}.hg38_multianno.tsv;
     vcf_header=$(grep '#CH' ${annovar_vcf});
 
     #remplazo el header
-    sed -i "s/Otherinfo/$vcf_header/g" ${sample}.hg19_multianno.tsv;
+    sed -i "s/Otherinfo/$vcf_header/g" ${sample}.hg38_multianno.tsv;
 
     #join one multianno tsv file AND joint genotyped vcf. This script (join_vcf.py) also postprocess Intervar columns.
-    python ${joinPY} --multianno_tsv=${sample}.hg19_multianno.tsv --vcf_multisample=${restrictedVCF} --output=${sample}.multianno_restrict.tsv
+    python ${joinPY} --multianno_tsv=${sample}.hg38_multianno.tsv --vcf_multisample=${restrictedVCF} --output=${sample}.multianno_restrict.tsv
     #change dots by tabs.
     sed -i -e "s|\.	|	|g" ${sample}.multianno_restrict.tsv
     
