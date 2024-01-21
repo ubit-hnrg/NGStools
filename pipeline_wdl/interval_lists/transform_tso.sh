@@ -1,5 +1,5 @@
 #!/bin/bash
-repo_path='/home/ariel/repos/HNRG-pipeline-V0.1'
+repo_path='/home/hnrg/HNRG-pipeline-V0.1'
 filename=$(basename "$1")
 basename=${filename%%.*}
 merging_tolerance=$2   ## second argument refere to merge tolerance length

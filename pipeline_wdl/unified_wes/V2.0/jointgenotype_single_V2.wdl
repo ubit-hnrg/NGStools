@@ -291,7 +291,7 @@ task GenotypeGVCFs {
     set -e
 
 
-    java -Xmx1g -Xms1g -jar ${toolpath}${gatk_jar}\
+    java -Xmx4g -Xms4g -jar ${toolpath}${gatk_jar}\
      GenotypeGVCFs \
      -R ${ref_fasta} \
      -O ${output_vcf_filename} \

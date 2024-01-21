@@ -283,7 +283,7 @@ task ImportGVCFs {
     -L ${interval} \
     --sample-name-map inputs.list  \
     --reader-threads 4 \
-    -ip 500
+    -ip 100
 
     tar -cf ${workspace_dir_name}.tar ${workspace_dir_name}
   
