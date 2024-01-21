@@ -694,62 +694,62 @@ task CollectGvcfCallingMetrics {
 #
 # Check that the fingerprints of separate readgroups all match
 
-task CrossCheckFingerprints {
-  Array[File] input_bams
-  Array[File] input_bam_indexes
-  File? haplotype_database_file
-  String metrics_filename
-  String java_heap_memory_initial
-  String toolpath
-  String gatk_jar
+#task CrossCheckFingerprints {
+#  Array[File] input_bams
+#  Array[File] input_bam_indexes
+#  File? haplotype_database_file
+#  String metrics_filename
+#  String java_heap_memory_initial
+#  String toolpath
+#  String gatk_jar
   
-  command <<<
-    java -Dsamjdk.buffer_size=131072 \
-      -XX:GCTimeLimit=50 -XX:GCHeapFreeLimit=10 -Xmx${java_heap_memory_initial} \
-      -jar ${toolpath}${gatk_jar} \
-      CrosscheckReadGroupFingerprints \
-      OUTPUT=${metrics_filename} \
-      HAPLOTYPE_MAP=${haplotype_database_file} \
-      EXPECT_ALL_READ_GROUPS_TO_MATCH=true \
-      INPUT=${sep=' INPUT=' input_bams} \
-      LOD_THRESHOLD=-20.0
-  >>>
-  output {
-    File metrics = "${metrics_filename}" 
-     }
-}
+#  command <<<
+#    java -Dsamjdk.buffer_size=131072 \
+#      -XX:GCTimeLimit=50 -XX:GCHeapFreeLimit=10 -Xmx${java_heap_memory_initial} \
+#      -jar ${toolpath}${gatk_jar} \
+#      CrosscheckReadGroupFingerprints \
+#      OUTPUT=${metrics_filename} \
+#      HAPLOTYPE_MAP=${haplotype_database_file} \
+#      EXPECT_ALL_READ_GROUPS_TO_MATCH=true \
+#      INPUT=${sep=' INPUT=' input_bams} \
+#      LOD_THRESHOLD=-20.0
+#  >>>
+#  output {
+#    File metrics = "${metrics_filename}" 
+#     }
+#}
 
 # Check that the fingerprint of the sample BAM matches the sample array
-task CheckFingerprint {
-  File input_bam
-  File input_bam_index
-  String output_basename
-  File? haplotype_database_file
-  File? genotypes
-  String sample
-  String java_heap_memory_initial
-   String gatk_jar
+#task CheckFingerprint {
+#  File input_bam
+#  File input_bam_index
+#  String output_basename
+#  File? haplotype_database_file
+#  File? genotypes
+#  String sample
+#  String java_heap_memory_initial
+#   String gatk_jar
 
-  String toolpath
+#  String toolpath
   
-  command <<<
-    java -Dsamjdk.buffer_size=131072 \
-      -XX:GCTimeLimit=50 -XX:GCHeapFreeLimit=10 -Xmx${java_heap_memory_initial}  \
-      -jar ${toolpath}${gatk_jar} \
-      CheckFingerprint \
-      INPUT=${input_bam} \
-      OUTPUT=${output_basename} \
-      GENOTYPES=${genotypes} \
-      HAPLOTYPE_MAP=${haplotype_database_file} \
-      SAMPLE_ALIAS="${sample}" \
-      IGNORE_READ_GROUPS=true
-  >>>
+#  command <<<
+#    java -Dsamjdk.buffer_size=131072 \
+#      -XX:GCTimeLimit=50 -XX:GCHeapFreeLimit=10 -Xmx${java_heap_memory_initial}  \
+#      -jar ${toolpath}${gatk_jar} \
+#      CheckFingerprint \
+#      INPUT=${input_bam} \
+#      OUTPUT=${output_basename} \
+#      GENOTYPES=${genotypes} \
+#      HAPLOTYPE_MAP=${haplotype_database_file} \
+#      SAMPLE_ALIAS="${sample}" \
+#      IGNORE_READ_GROUPS=true
+#  >>>
  
-  output {
-    File summary_metrics = "${output_basename}.fingerprinting_summary_metrics"
-    File detail_metrics = "${output_basename}.fingerprinting_detail_metrics" 
-   }
-}
+#  output {
+#    File summary_metrics = "${output_basename}.fingerprinting_summary_metrics"
+#    File detail_metrics = "${output_basename}.fingerprinting_detail_metrics" 
+#   }
+#}
 
 
 
