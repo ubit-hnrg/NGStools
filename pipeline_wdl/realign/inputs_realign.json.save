@@ -1,0 +1,35 @@
+{
+  "main_workflow.ref_name": ".b37",
+  "main_workflow.bam2gvcf.smith_waterman_implementation": "String",
+  "##COMMENT4": "REFERENCES",
+  "main_workflow.ref_ann": "/home/hnrg/testing/pedido_chicas/chr2_reference/chr2_hsf37d5.fa.ann",
+  "main_workflow.ref_dict": "/home/hnrg/testing/pedido_chicas/chr2_reference/chr2_hsf37d5.dict",
+  "main_workflow.ref_bwt": "home/hnrg/testing/pedido_chicas/chr2_reference/chr2_hsf37d5.fa.bwt",
+  "main_workflow.ref_pac": "/home/hnrg/testing/pedido_chicas/chr2_reference/chr2_hsf37d5.fa.pac",
+  "main_workflow.ref_sa": "/home/hnrg/testing/pedido_chicas/chr2_reference/chr2_hsf37d5.fa.sa",
+  "main_workflow.ref_fasta_index": "/home/hnrg/testing/pedido_chicas/chr2_reference/chr2_hsf37d5.fa.fai",
+  "main_workflow.ref_amb": "/home/hnrg/testing/pedido_chicas/chr2_reference/chr2_hsf37d5.fa.amb",
+  "main_workflow.ref_fasta": "/home/hnrg/testing/pedido_chicas/chr2_reference/chr2_hsf37d5.fa",
+
+
+
+  "main_workflow.tabulatedSampleFilePaths": "gatk-package-4.0.8.1-local.jar",
+  "main_workflow.gatk_jar": "gatk-package-4.0.8.1-local.jar",
+  "main_workflow.toolpath": "/home/hnrg/HNRG-pipeline-V0.1/tools/",
+  "main_workflow.path_softlink": "/data/resultsHNRG/chr2/",
+
+  "main_workflow.library_name": "TSO",
+  "main_workflow.ubam_list_name": "ubam",
+
+  "main_workflow.platformmodel": "NextSeq-500",
+
+  "main_workflow.platform_name": "Illumina",
+  "main_workflow.run_date": "2019-12-16",
+
+  "main_workflow.readlenght": "151",
+  "main_workflow.chromosome_length": "/home/hnrg/HNRG-pipeline-V0.1/libraries/GRCh37/chromosome_lengths_GRCh37.txt",
+  "main_workflow.generic_exon_coords": "/home/hnrg/testing/intersect/files/intersect_ensembl_Tso.bed",
+  "main_workflow.experiment_lib": "/home/hnrg/HNRG-pipeline-V0.1/libraries/GRCh37/TruSight_One_v1.1_GRCh37.bed.gz"
+
+
+}

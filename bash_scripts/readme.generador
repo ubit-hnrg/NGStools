@@ -1,0 +1,5 @@
+## Mirame (:
+##Copia en el lugar.
+
+####### el generador agrega el basename del archivo al final de la linea. (sin agregarselo al header) $1=archivo a identificar $2=path a buscar ej:NE1910638/NE1910638_exones_offtarget_tso.tsv , $3 como se identificara al archivo.
+ 
