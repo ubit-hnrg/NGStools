@@ -526,15 +526,15 @@ task HardfilterVCF {
   command {
     java -Xms3000m -jar ${toolpath}${gatk_jar} \
       VariantFiltration \
-      -V ~{input_vcf} \
-      -L ~{interval_list} \
+      -V ${input_vcf} \
+      -L ${interval_list} \
       --filter-expression "QD < 2.0 || FS > 30.0 || SOR > 3.0 || MQ < 40.0 || MQRankSum < -3.0 || ReadPosRankSum < -3.0" \
       --filter-name "HardFiltered" \
-      -O ~{output_vcf_name}
+      -O ${output_vcf_name}
   }
   output {
-      File output_vcf = "~{output_vcf_name}"
-      File output_vcf_index = "~{output_vcf_name}.tbi"
+      File output_vcf = "${output_vcf_name}"
+      File output_vcf_index = "${output_vcf_name}.tbi"
       }
 
 }
@@ -561,17 +561,17 @@ task CNNScoreVariants {
   #String output_vcf = base_vcf + ".scored" + vcf_suffix
   #String output_vcf_index = output_vcf + vcf_index_suffix
 
-  String bamout_param = if defined(bamout) then "-I ~{bamout}" else ""
+  String bamout_param = if defined(bamout) then "-I ${bamout}" else ""
   String tensor_type = if defined(bamout) then "read-tensor" else "reference"
 
   command {
      java -Xmx10g -jar ${toolpath}${gatk_jar} \
       CNNScoreVariants \
-       -V ~{input_vcf} \
-       -R ~{ref_fasta} \
-       -O ~{output_vcf} \
-       ~{bamout_param} \
-       -tensor-type ~{tensor_type}
+       -V ${input_vcf} \
+       -R ${ref_fasta} \
+       -O ${output_vcf} \
+       ${bamout_param} \
+       -tensor-type ${tensor_type}
   }
 
   output {
@@ -604,15 +604,15 @@ task FilterVariantTranches {
   command {
 
     gatk --java-options -Xmx6g FilterVariantTranches \
-      -V ~{input_vcf} \
-      -O ~{vcf_basename}.filtered.vcf.gz \
-      ~{sep=" " prefix("--snp-tranche ", snp_tranches)} \
-      ~{sep=" " prefix("--indel-tranche ", indel_tranches)} \
-      --resource ~{hapmap_resource_vcf} \
-      --resource ~{omni_resource_vcf} \
-      --resource ~{one_thousand_genomes_resource_vcf} \
-      --resource ~{dbsnp_resource_vcf} \
-      --info-key ~{info_key} \
+      -V ${input_vcf} \
+      -O ${vcf_basename}.filtered.vcf.gz \
+      ${sep=" " prefix("--snp-tranche ", snp_tranches)} \
+      ${sep=" " prefix("--indel-tranche ", indel_tranches)} \
+      --resource ${hapmap_resource_vcf} \
+      --resource ${omni_resource_vcf} \
+      --resource ${one_thousand_genomes_resource_vcf} \
+      --resource ${dbsnp_resource_vcf} \
+      --info-key ${info_key} \
       --create-output-variant-index true
   }
 
