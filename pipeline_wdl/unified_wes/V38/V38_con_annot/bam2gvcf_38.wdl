@@ -515,7 +515,7 @@ task MergeVCFs {
 ############################# GATK 2018, ver  si funciona. 
 
 task HardfilterVCF {
-  input {
+
     File input_vcf
     File input_vcf_index
     String vcf_basename
@@ -542,7 +542,7 @@ task HardfilterVCF {
 #####CNNscorevariants es experimental. ojo.
 task CNNScoreVariants {
 
-  input {
+  
     File? bamout
     File? bamout_index
     File input_vcf
@@ -582,7 +582,7 @@ task CNNScoreVariants {
 
 task FilterVariantTranches {
 
-  input {
+  
     File input_vcf
     File input_vcf_index
     String vcf_basename
