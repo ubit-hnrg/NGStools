@@ -424,7 +424,7 @@ input:
 call Snpsift_nodb as step10_PhastCons{
 input:
     samplename1 = samplename1, #### crearlo para la 38, bajando
-    parametros = "phastCons -v /home/hnrg/HNRG-pipeline-V0.1/dbs/GRCh37_snpsift/snpEff/data/phastCons",
+    parametros = "phastCons -v /data/new_dbs/annot/phastCons/",
     input_vcf = step8_VarType, # step9_EVS.salida_Snpsift,
     toolpath = toolpath,
     java_heap_memory_initial = java_heap_memory_initial,
