@@ -1208,7 +1208,9 @@ workflow bam2gvcf {
   toolpath = toolpath
   }
   
-  #####agrego calls quality control
+  #####
+
+  
 
 
 
