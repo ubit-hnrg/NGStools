@@ -45,7 +45,22 @@
   "main_workflow.padding": "100",
   "main_workflow.generic_exon_coords": "/home/hnrg/HNRG-pipeline-V0.1/libraries/intervalos/transcriptos_canonicos_ensmbl_104_38.tsv",
   "main_workflow.intervalo_captura": "File",
+<<<<<<< HEAD
+<<<<<<< HEAD
 
+=======
+  "main_workflow.singleGenotypeGVCFs.snp_filter_level": "99.7",
+  "main_workflow.haplotype_database_file": "/data/new_dbs/grch38/intervalos/Homo_sapiens_assembly38.haplotype_database.txt",
+
+ "##COMMENT7": "INTERVAL LIST eval y calling",
+  "main_workflow.wgs_evaluation_interval_list": "/data/new_dbs/grch38/eval_calling_intervals/wgs_evaluation_regions.hg38.interval_list",
+  "main_workflow.eval_interval_list": "/data/new_dbs/grch38/eval_calling_intervals/exome_evaluation_regions.v1.interval_list",
+  "main_workflow.wgs_calling_interval_list": "/data/new_dbs/grch38/eval_calling_intervals/wgs_calling_regions.hg38.interval_list",
+  "main_workflow.wes_calling_interval_list": "/data/new_dbs/grch38/eval_calling_intervals/illumina/whole_exome_illumina_coding_v1.Homo_sapiens_assembly38.targets.interval_list",
+>>>>>>> 7c73c2e474f0398580eca10d0fff9585b50b0733
+=======
+
+>>>>>>> 911b063e68b640114374c29015a978cfdddbe850
 
   
   "##COMMENT17": "contamination check",
