@@ -521,6 +521,9 @@ task HardfilterVCF {
     String vcf_basename
     File interval_list
     Int preemptible_tries
+    String gatk_jar
+    String toolpath
+
   
   String output_vcf_name = vcf_basename + ".filtered.vcf.gz"
   command {
@@ -552,19 +555,22 @@ task CNNScoreVariants {
     File ref_fasta_index
     File ref_dict
     Int preemptible_tries
+    String gatk_jar
+    String toolpath
+
   
 
   String base_vcf = basename(input_vcf)
-  #Boolean is_compressed = basename(base_vcf, "gz") != base_vcf
-  #String vcf_suffix = if is_compressed then ".vcf.gz" else ".vcf"
-  #String vcf_index_suffix = if is_compressed then ".tbi" else ".idx"
-  #String output_vcf = base_vcf + ".scored" + vcf_suffix
-  #String output_vcf_index = output_vcf + vcf_index_suffix
+  Boolean is_compressed = basename(base_vcf, "gz") != base_vcf
+  String vcf_suffix = if is_compressed then ".vcf.gz" else ".vcf"
+  String vcf_index_suffix = if is_compressed then ".tbi" else ".idx"
+  String output_vcf = base_vcf + ".scored" + vcf_suffix
+  String output_vcf_index = output_vcf + vcf_index_suffix
 
   String bamout_param = if defined(bamout) then "-I ${bamout}" else ""
   String tensor_type = if defined(bamout) then "read-tensor" else "reference"
 
-  command {
+  command <<<
      java -Xmx10g -jar ${toolpath}${gatk_jar} \
       CNNScoreVariants \
        -V ${input_vcf} \
@@ -572,11 +578,11 @@ task CNNScoreVariants {
        -O ${output_vcf} \
        ${bamout_param} \
        -tensor-type ${tensor_type}
-  }
+  >>>
 
   output {
-    File scored_vcf = "{output_vcf}"
-    File scored_vcf_index = "{output_vcf_index}"
+    File scored_vcf = "${output_vcf}"
+    File scored_vcf_index = "${output_vcf_index}"
   }
 }
 
@@ -617,8 +623,8 @@ task FilterVariantTranches {
   }
 
   output {
-    File filtered_vcf = "{vcf_basename}.filtered.vcf.gz"
-    File filtered_vcf_index = "{vcf_basename}.filtered.vcf.gz.tbi"
+    File filtered_vcf = "${vcf_basename}.filtered.vcf.gz"
+    File filtered_vcf_index = "${vcf_basename}.filtered.vcf.gz.tbi"
   }
 }
 
@@ -694,7 +700,7 @@ task CrossCheckFingerprints {
   File? haplotype_database_file
   String metrics_filename
   String java_heap_memory_initial
-  String tool_path
+  String toolpath
   String gatk_jar
   
   command <<<
@@ -724,7 +730,7 @@ task CheckFingerprint {
   String java_heap_memory_initial
    String gatk_jar
 
-  String tool_path
+  String toolpath
   
   command <<<
     java -Dsamjdk.buffer_size=131072 \
@@ -807,6 +813,7 @@ workflow bam2gvcf {
   File wes_calling_interval_list
   Int break_bands_at_multiples_of
   Int haplotype_scatter_count
+  File haplotype_database_file
 
   ##################################
   Int compression_level
@@ -911,8 +918,8 @@ workflow bam2gvcf {
         input_bams = SortAndFixTags.output_bam,
         input_bam_indexes = SortAndFixTags.output_bam_index,
         haplotype_database_file = haplotype_database_file,
-        metrics_filename = sample_name + ".crosscheck",
-		tool_path = tool_path
+        metrics_filename = base_file_name + ".crosscheck",
+		toolpath = toolpath
     }
   }
 #
@@ -1002,19 +1009,19 @@ workflow bam2gvcf {
 
 ##########agregamos 2023
 #
- if (defined(haplotype_database_file) && defined(fingerprint_genotypes_file)) {
+ #if (defined(haplotype_database_file) && defined(fingerprint_genotypes_file)) {
     # Check the sample BAM fingerprint against the sample array
-    call CheckFingerprint {
-      input:
-        input_bam = GatherBamFiles.output_bam,
-        input_bam_index = GatherBamFiles.output_bam_index,
-        haplotype_database_file = haplotype_database_file,
-        genotypes = fingerprint_genotypes_file,
-        output_basename = base_file_name,
-        sample = base_file_name,
-		    tool_path = tool_path
-    }
-  }
+  #  call CheckFingerprint {
+  #    input:
+  #      input_bam = GatherBamFiles.output_bam,
+  #      input_bam_index = GatherBamFiles.output_bam_index,
+  #      haplotype_database_file = haplotype_database_file,
+  #      genotypes = fingerprint_genotypes_file,
+  #      output_basename = base_file_name,
+  #      sample = base_file_name,
+#		    toolpath = toolpath
+ #   }
+  #}
 ####
 
 
@@ -1177,9 +1184,9 @@ workflow bam2gvcf {
    #File reporte_final = samtools_reports_file.output_global_report ### archivo para mergear... estadistica en la libreria del experimento
 
 
-   File? cross_check_fingerprints_metrics = CrossCheckFingerprints.metrics
-   File? fingerprint_summary_metrics = CheckFingerprint.summary_metrics
-   File? fingerprint_detail_metrics = CheckFingerprint.detail_metrics
+   #File? cross_check_fingerprints_metrics = CrossCheckFingerprints.metrics
+   #File? fingerprint_summary_metrics = CheckFingerprint.summary_metrics
+   #File? fingerprint_detail_metrics = CheckFingerprint.detail_metrics
 
 
   } 

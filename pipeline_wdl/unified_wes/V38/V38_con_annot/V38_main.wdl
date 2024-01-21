@@ -274,6 +274,7 @@ workflow main_workflow {
   ###bam2gvcf input
   Array[File] known_indels_sites_VCFs = ["/data/new_dbs/grch38/bundle_gatk_hg38/Mills_and_1000G_gold_standard.indels.hg38.vcf.gz","/data/new_dbs/grch38/bundle_gatk_hg38/Homo_sapiens_assembly38.known_indels.vcf.gz"]
   Array[File] known_indels_sites_indices = ["/data/new_dbs/grch38/bundle_gatk_hg38/Mills_and_1000G_gold_standard.indels.hg38.vcf.gz.tbi","/data/new_dbs/grch38/bundle_gatk_hg38/Homo_sapiens_assembly38.known_indels.vcf.gz.tbi"]
+  File haplotype_database_file
 
   ##### parametros trimmeado fastp
   Int trim_front_fastp = "4" 
@@ -447,6 +448,7 @@ workflow main_workflow {
       gatk_jar = gatk_jar,
       toolpath = toolpath,
       ngs_toolpath = ngs_toolpath,
+      haplotype_database_file = haplotype_database_file,
 
       smith_waterman_implementation = smith_waterman_implementation,
       contamination = contamination,

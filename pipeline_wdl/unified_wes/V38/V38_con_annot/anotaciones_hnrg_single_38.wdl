@@ -366,7 +366,7 @@ input:
     java_heap_memory_initial = java_heap_memory_initial,
     nombre_step = "step7_dbNSFP"
 #
-#}
+}
 
 #####step8  annovar
 call annovar {
@@ -425,7 +425,7 @@ call Snpsift_nodb as step10_PhastCons{
 input:
     samplename1 = samplename1, #### crearlo para la 38, bajando
     parametros = "phastCons -v /data/new_dbs/annot/phastCons/",
-    input_vcf = step8_VarType, # step9_EVS.salida_Snpsift,
+    input_vcf = step8_VarType.salida_Snpsift, # step9_EVS.salida_Snpsift,
     toolpath = toolpath,
     java_heap_memory_initial = java_heap_memory_initial,
     nombre_step = "step10_PhastCons"
@@ -459,18 +459,18 @@ input:
 
 
 #Step 12: Annotate with ClinVar
-call Snpsift as step12_clinVar{
-input:
-    samplename1 = samplename1,
-    #parametros = "annotate -v -info CLNHGVS,CLNALLE,CLNSRC,CLNORIGIN,CLNSRCID,CLNSIG,CLNDSDB,CLNDSDBID,CLNDBN,CLNACC",
-    parametros = "annotate",
-    input_vcf = step10_PhastCons.salida_Snpsift,
-    #input_vcf = step11_dbNSFP.salida_Snpsift,
-    toolpath = toolpath,
-    java_heap_memory_initial = java_heap_memory_initial,
-    nombre_step = "step12_clinVar"
+#call Snpsift as step12_clinVar{
+#input:
+#    samplename1 = samplename1,
+#    #parametros = "annotate -v -info CLNHGVS,CLNALLE,CLNSRC,CLNORIGIN,CLNSRCID,CLNSIG,CLNDSDB,CLNDSDBID,CLNDBN,CLNACC",
+#    parametros = "annotate",
+#    input_vcf = step10_PhastCons.salida_Snpsift,
+#    #input_vcf = step11_dbNSFP.salida_Snpsift,
+#    toolpath = toolpath,
+#    java_heap_memory_initial = java_heap_memory_initial,
+#    nombre_step = "step12_clinVar"
 
-}
+#}
 
 #Step 13: Annotate with PharmGKB
 #call Snpsift as step13_pharmGKB{
@@ -482,7 +482,7 @@ input:
 #    java_heap_memory_initial = java_heap_memory_initial,
 #    nombre_step = "step13_pharmGKB"
 
-}
+
 
 
  #call hnrg_freq {
@@ -498,8 +498,24 @@ input:
 
 
 #Step 14: Annotate with ExAC
+#Step 12: Annotate with ClinVar
+call Snpsift as step12_clinVar_final_annot{
+input:
+    samplename1 = samplename1,
+    #parametros = "annotate -v -info CLNHGVS,CLNALLE,CLNSRC,CLNORIGIN,CLNSRCID,CLNSIG,CLNDSDB,CLNDSDBID,CLNDBN,CLNACC",
+    parametros = "annotate",
+    input_vcf = step10_PhastCons.salida_Snpsift,
+    #input_vcf = step11_dbNSFP.salida_Snpsift,
+    toolpath = toolpath,
+    java_heap_memory_initial = java_heap_memory_initial,
+    nombre_step = "final_annot_"+pipeline_version
+
+}
+
+
 #call Snpsift as final_annot{
 #input:
+
 #    samplename1 = samplename1,
 #    parametros = "annotate -v -info AN_Adj,AC_Adj,AC_Het,AC_Hom,AC_Hemi,POPMAX,VQSLOD,GQ_MEAN,GQ_STDDEV,HWP",
 #    input_vcf = step12_clinVar.salida_Snpsift, # hnrg_freq.out_vcfanno,
@@ -511,7 +527,7 @@ input:
 
 call exon_distance {
     input:
-    vcf_ok = step12_clinVar.salida_Snpsift, #final_annot.salida_Snpsift,
+    vcf_ok = step12_clinVar_final_annot.salida_Snpsift, #step12_clinVar.salida_Snpsift, #final_annot.salida_Snpsift,
     exon_coord = exon_coordinates,
     #exon_coordinates_to_lib = exon_coordinates_to_lib,
     sample_name = samplename1,
@@ -520,7 +536,7 @@ call exon_distance {
 
  call symlink_important_files {
          input:
-        output_to_save = final_annot.salida_Snpsift,
+        output_to_save = step12_clinVar_final_annot.salida_Snpsift,#final_annot.salida_Snpsift,
         output_to_save2 = exon_distance.exon_dist,
         path_save = path_save
     }

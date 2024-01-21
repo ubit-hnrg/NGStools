@@ -95,7 +95,7 @@ workflow singleGenotypeGVCFs {
   }
   
 
-  call restrict_vcf{
+  call restrict_vcf {
     input:
     VCF  = FinalGatherVcf.output_vcf,
     region_padded_bed = region_padded_bed,
@@ -118,7 +118,7 @@ workflow singleGenotypeGVCFs {
 
   call annovar {
             input:
-            one_sample_vcf =  restrict_vcf.VCF_restricted,#filtro_no_calls.one_sample_vcf,,#get_individual_vcf.one_sample_vcf,
+            one_sample_vcf =  restrict_vcf.VCF_restricted, #filtro_no_calls.one_sample_vcf,,#get_individual_vcf.one_sample_vcf,
             sample = sample_name,#idsample.idsample,
             annovar_table_pl = annovar_table_pl,
             db_annovar = db_annovar
