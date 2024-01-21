@@ -694,30 +694,30 @@ task CollectGvcfCallingMetrics {
 #
 # Check that the fingerprints of separate readgroups all match
 
-#task CrossCheckFingerprints {
-#  Array[File] input_bams
-#  Array[File] input_bam_indexes
-#  File? haplotype_database_file
-#  String metrics_filename
-#  String java_heap_memory_initial
-#  String toolpath
-#  String gatk_jar
+task CrossCheckFingerprints {
+  Array[File] input_bams
+  Array[File] input_bam_indexes
+  File? haplotype_database_file
+  String metrics_filename
+  String java_heap_memory_initial
+  String toolpath
+  String gatk_jar
   
-#  command <<<
-#    java -Dsamjdk.buffer_size=131072 \
-#      -XX:GCTimeLimit=50 -XX:GCHeapFreeLimit=10 -Xmx${java_heap_memory_initial} \
-#      -jar ${toolpath}${gatk_jar} \
-#      CrosscheckReadGroupFingerprints \
-#      OUTPUT=${metrics_filename} \
-#      HAPLOTYPE_MAP=${haplotype_database_file} \
-#      EXPECT_ALL_READ_GROUPS_TO_MATCH=true \
-#      INPUT=${sep=' INPUT=' input_bams} \
-#      LOD_THRESHOLD=-20.0
-#  >>>
-#  output {
-#    File metrics = "${metrics_filename}" 
-#     }
-#}
+  command <<<
+    java -Dsamjdk.buffer_size=131072 \
+      -XX:GCTimeLimit=50 -XX:GCHeapFreeLimit=10 -Xmx${java_heap_memory_initial} \
+      -jar ${toolpath}${gatk_jar} \
+      CrosscheckReadGroupFingerprints \
+      OUTPUT=${metrics_filename} \
+            HAPLOTYPE_MAP=${haplotype_database_file} \
+      EXPECT_ALL_READ_GROUPS_TO_MATCH=true \
+      INPUT=${sep=' INPUT=' input_bams} \
+      LOD_THRESHOLD=-20.0
+  >>>
+  output {
+    File metrics = "${metrics_filename}" 
+     }
+}
 
 # Check that the fingerprint of the sample BAM matches the sample array
 #task CheckFingerprint {
