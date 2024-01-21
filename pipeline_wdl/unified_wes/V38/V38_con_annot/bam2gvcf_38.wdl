@@ -521,7 +521,7 @@ task HardfilterVCF {
     String vcf_basename
     File interval_list
     Int preemptible_tries
-  }
+  
   String output_vcf_name = vcf_basename + ".filtered.vcf.gz"
   command {
     java -Xms3000m -jar ${toolpath}${gatk_jar} \
@@ -552,7 +552,7 @@ task CNNScoreVariants {
     File ref_fasta_index
     File ref_dict
     Int preemptible_tries
-  }
+  
 
   String base_vcf = basename(input_vcf)
   #Boolean is_compressed = basename(base_vcf, "gz") != base_vcf
@@ -598,7 +598,7 @@ task FilterVariantTranches {
     File dbsnp_resource_vcf_index
     String info_key
     Int preemptible_tries
-  }
+  
 
 
   command {
