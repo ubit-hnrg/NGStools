@@ -18,4 +18,3 @@ with open(args.outfile, 'w') as outfile:
   fq.close()
 
 outfile.close()
-

@@ -1,9 +1,9 @@
 [[annotation]]
-file="/home/hnrg/HNRG_freq.vcf.gz" 
+file="/data/resultsHNRG/genotipado_historico/20190820/GHdb_20190820/GHdb_20190820.vcf.gz" 
 # ID and FILTER are special fields that pull the ID and FILTER columns from the VCF
-fields=["AC_HNRG","AN_HNRG","NS_HNRG"]
-ops=["min","min","self"]
-names=["FREQUENCY","SAMPLES_FREQUENCY","DOMAIN_FREQUENCY"]
+fields=["AC","AN","AF"]
+ops=["min","min","min"]
+names=["FREQUENCY","SAMPLES_FREQUENCY","DOMAIN_FREQUENCY=-1;AF_HNRG"]
 
 #[[postannotation]]
 #fields=["FREQUENCY"]
@@ -17,8 +17,8 @@ names=["FREQUENCY","SAMPLES_FREQUENCY","DOMAIN_FREQUENCY"]
 #name="SAMPLES_FREQUENCY"
 #type="Float"
 
-[[postannotation]]
-fields=["DOMAIN_FREQUENCY"]
-op="lua:domain(DOMAIN_FREQUENCY)"
-name="DOMAIN_FREQUENCY"
-type="Float"
+#[[postannotation]]
+#fields=["DOMAIN_FREQUENCY"]
+#op="lua:domain(DOMAIN_FREQUENCY)"
+#name="DOMAIN_FREQUENCY"
+#type="String"

@@ -117,6 +117,7 @@ task coord_generator {
 
      ####Exon_restricted interval for quality_control  ${library_name}_padded_${padding}.bed | sort -k1,1 -k2,2n -V 
     ${toolpath}bedtools2/bin/intersectBed -a ${generic_exon_coords} -b ${intervalo_captura}|sort -k1,1V -k2,2n - > exon_restricted2_${library_name}.bed
+    ##${toolpath}bedtools2/bin/intersectBed -a ${generic_exon_coords} -b ${intervalo_captura} > exon_restricted2_${library_name}.bed
 
     
     ###merged

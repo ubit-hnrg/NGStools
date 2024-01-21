@@ -1,5 +1,5 @@
 [[annotation]]
-file="/data/resultsHNRG/genotipado_historico/20200131/GHdb_20200131/GHdb_20200131.vcf.gz" 
+file="/data/resultsHNRG/Genotipado_historico/Genotipado_historico_muestrasunicas2022.vcf.gz" 
 # ID and FILTER are special fields that pull the ID and FILTER columns from the VCF
 fields=["AC","AN","AF"]
 ops=["min","min","min"]

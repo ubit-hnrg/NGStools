@@ -45,7 +45,7 @@
   "main_workflow.padding": "100",
   "main_workflow.generic_exon_coords": "/home/hnrg/HNRG-pipeline-V0.1/libraries/intervalos/transcriptos_canonicos_ensmbl_104_38.tsv",
 
-  "main_workflow.intervalo_captura": "/home/hnrg/HNRG-pipeline-V0.1/libraries/intervalos/GRCH37/TSO/TruSight_One_v1.1_GRCH37_2_38.bed",
+  "main_workflow.intervalo_captura": "/home/hnrg/HNRG-pipeline-V0.1/libraries/intervalos/GRCH37/TSO/TruSight_One_v1.1_GRCH37_2_38_nochr.bed",
 
 
   "main_workflow.singleGenotypeGVCFs.snp_filter_level": "99.7",

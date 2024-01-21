@@ -32,7 +32,6 @@ def main(argv):
     if len(sys.argv) != 2:
         raise SystemExit(f'Uso adecuado: {sys.argv[0]} fasta_file (*.gz)')
     
-    #informe_camion(sys.argv[1],sys.argv[2],sys.argv[3])
     aux = leo_fasta(sys.argv[1])
     total = sum(aux.values())
     for k, v in sorted(aux.items(), key=itemgetter(1)):
