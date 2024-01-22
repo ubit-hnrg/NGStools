@@ -115,10 +115,10 @@ task Serial_SamToFastq_BwaMem_MergeBamAlignment {
 
    java -Dsamjdk.compression_level=${compression_level} -Xmx${java_heap_memory_initial} -jar ${toolpath}${gatk_jar} \
         SamToFastq \
-        --INPUT $ubamfile \
-        -F /dev/stdout \
-        --INTERLEAVE true \
-        --NON_PF true | \
+        INPUT=$ubamfile \
+        FASTQ=/dev/stdout \
+        INTERLEAVE=true \
+        NON_PF=true | \
         ${toolpath}${bwa_commandline} ${ref_fasta} /dev/stdin - 2> >(tee $output_filename.unmerged.bwa.stderr.log >&2) | \
         ${toolpath}samtools view -1 - > $output_bwa_prefix.aligned.unmerged.bam
   
@@ -153,7 +153,7 @@ task Serial_SamToFastq_BwaMem_MergeBamAlignment {
         --ADD_PG_TAG_TO_READS false
   done        
   >>>
-  
+
   
   #####se agrega de gatk2017
 # ATTRIBUTES_TO_REMOVE=NM \
