@@ -116,7 +116,7 @@ task Serial_SamToFastq_BwaMem_MergeBamAlignment {
    java -Dsamjdk.compression_level=${compression_level} -Xmx${java_heap_memory_initial} -jar ${toolpath}${gatk_jar} \
         SamToFastq \
         -I $ubamfile \
-        FASTQ=/dev/stdout \
+        -F /dev/stdout \
         --INTERLEAVE true \
         -NON_PF true | \
         ${toolpath}${bwa_commandline} ${ref_fasta} /dev/stdin - 2> >(tee $output_filename.unmerged.bwa.stderr.log >&2) | \
