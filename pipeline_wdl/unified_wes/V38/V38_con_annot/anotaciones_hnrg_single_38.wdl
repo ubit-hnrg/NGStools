@@ -354,7 +354,7 @@ input:
 }
 
 #Step 7: Annotate with dbNSFP
-call Snpsift as step7_dbNSFP{
+call Snpsift_nodb as step7_dbNSFP{
 input:
     samplename1 = samplename1,
     #parametros = 'dbnsfp -v -f "hg18_pos(1-coor),hg38_chr,hg38_pos,genename,Uniprot_acc,Uniprot_id,cds_strand,CADD_raw,CADD_phred,CADD_raw_rankscore,SIFT_score,SIFT_converted_rankscore,SIFT_pred,Polyphen2_HDIV_score,Polyphen2_HDIV_pred,Polyphen2_HDIV_rankscore,Polyphen2_HVAR_score,Polyphen2_HVAR_pred,Polyphen2_HVAR_rankscore,MutationTaster_score,MutationTaster_converted_rankscore,MutationTaster_pred,MutationAssessor_score,MutationAssessor_rankscore,MutationAssessor_pred,FATHMM_score,FATHMM_rankscore,FATHMM_pred,VEST3_score,VEST3_rankscore,GERP++_RS,GERP++_RS_rankscore,COSMIC_ID,COSMIC_CNT,phyloP46way_placental,phyloP100way_vertebrate,phastCons46way_placental,phastCons100way_vertebrate,Ensembl_geneid,Ensembl_transcriptid"  -db',

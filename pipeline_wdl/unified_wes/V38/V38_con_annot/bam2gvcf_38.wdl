@@ -699,7 +699,7 @@ task CrossCheckFingerprints {
   Array[File] input_bam_indexes
   File? haplotype_database_file
   String metrics_filename
-  String java_heap_memory_initial
+  String java_heap_memory_initial = "2g"
   String toolpath
   String gatk_jar
   
@@ -919,6 +919,8 @@ workflow bam2gvcf {
         input_bam_indexes = SortAndFixTags.output_bam_index,
         haplotype_database_file = haplotype_database_file,
         metrics_filename = base_file_name + ".crosscheck",
+        java_heap_memory_initial = java_heap_memory_initial,
+        gatk_jar = gatk_jar, 
 		toolpath = toolpath
     }
   }

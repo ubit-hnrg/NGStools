@@ -65,6 +65,7 @@ workflow singleGenotypeGVCFs {
     excess_het_threshold = excess_het_threshold,
     variant_filtered_vcf_filename = callset_name + ".single.variant_filtered.vcf.gz",
     sites_only_vcf_filename = callset_name + ".single.sites_only.variant_filtered.vcf.gz",
+    interval_list = region_padded_bed,
     gatk_jar = gatk_jar,
     toolpath = toolpath
    
