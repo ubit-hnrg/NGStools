@@ -121,13 +121,14 @@ task coord_generator {
      
     ${toolpath}bedtools2/bin/mergeBed -i ${library_name}_padded_${padding}.bed -d ${merge_tolerance} > ${library_name}_padded_${padding}_merged_${merge_tolerance}.bed
 
-    java -jar ${toolpath}${gatk_jar} BedToIntervalList -I=${library_name}_padded_${padding}_merged_${merge_tolerance}.bed -O=${library_name}_padded_${padding}_merged_${merge_tolerance}_preprocessing.interval_list -SD=${ref_dict}
+    java -jar ${toolpath}${gatk_jar} BedToIntervalList -I ${library_name}_padded_${padding}_merged_${merge_tolerance}.bed -O ${library_name}_padded_${padding}_merged_${merge_tolerance}_preprocessing.interval_list -SD ${ref_dict}
 
-    java -jar ${toolpath}${gatk_jar} BedToIntervalList -I=${library_name}_padded_${padding}.bed -O=${library_name}_padded_${padding}.interval_list -SD=${ref_dict}
+    java -jar ${toolpath}${gatk_jar} BedToIntervalList -I ${library_name}_padded_${padding}.bed -O ${library_name}_padded_${padding}.interval_list -SD ${ref_dict}
      
   
     cp -L ${intervalo_captura} ${path_save}
-    cp -L ${library_name}_padded_${padding}.bed ${path_save}
+    cp -L ${library_name}_padded_${padding}.bed ${path_sav
+    e}
 
     cp -L ${library_name}_padded_${padding}_merged_${merge_tolerance}_preprocessing.interval_list ${path_save}
     cp -L ${library_name}_padded_${padding}.interval_list ${path_save}
