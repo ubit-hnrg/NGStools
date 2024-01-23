@@ -695,8 +695,9 @@ task CollectGvcfCallingMetrics {
 # Check that the fingerprints of separate readgroups all match
 
 task CrossCheckFingerprints {
-  Array[File] input_bams
-  Array[File] input_bam_indexes
+  File input_bams
+  #Array[File] input_bam_indexes
+  File input_bam_indexes
   File? haplotype_database_file
   String metrics_filename
   String java_heap_memory_initial = "2g"
