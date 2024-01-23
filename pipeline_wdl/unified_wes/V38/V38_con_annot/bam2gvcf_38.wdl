@@ -74,15 +74,15 @@ task MarkDuplicates {
   command {
     java -Dsamjdk.compression_level=${compression_level} -Xms4000m -jar ${toolpath}${gatk_jar} \
       MarkDuplicates \
-      --INPUT=${sep=' --INPUT=' input_bams} \
-      --OUTPUT=${output_bam_basename}.bam \
-      --METRICS_FILE=${metrics_filename} \
-      --VALIDATION_STRINGENCY=SILENT \
-      --OPTICAL_DUPLICATE_PIXEL_DISTANCE=2500 \
-      --ASSUME_SORT_ORDER="queryname" \
-      --CREATE_MD5_FILE=true \
-      --CLEAR_DT="false" \
-      --ADD_PG_TAG_TO_READS=false
+      --INPUT ${sep=' --INPUT ' input_bams} \
+      --OUTPUT ${output_bam_basename}.bam \
+      --METRICS_FILE ${metrics_filename} \
+      --VALIDATION_STRINGENCY SILENT \
+      --OPTICAL_DUPLICATE_PIXEL_DISTANCE 2500 \
+      --ASSUME_SORT_ORDER "queryname" \
+      --CREATE_MD5_FILE true \
+      --CLEAR_DT "false" \
+      --ADD_PG_TAG_TO_READS false
     }
 
     ####se agrega
@@ -296,10 +296,10 @@ String gatk_jar
   command {
     java -Dsamjdk.compression_level=${compression_level} -Xmx3g -jar ${toolpath}${gatk_jar} \
       GatherBamFiles \
-      -I=${sep=' -I=' input_bams} \
-      -O=${output_bam_basename}.bam \
-      --CREATE_INDEX=true \
-      --CREATE_MD5_FILE=true
+      -I ${sep=' -I' input_bams} \
+      -O ${output_bam_basename}.bam \
+      --CREATE_INDEX true \
+      --CREATE_MD5_FILE true
     }
   
   output {
@@ -333,13 +333,13 @@ task ScatterIntervalList {
     mkdir out
     java -Dsamjdk.compression_level=${compression_level} -Xmx1g -jar ${toolpath}${gatk_jar} \
       IntervalListTools \
-      -I=${interval_list} \
-      -O=out \
-      --SCATTER_COUNT=${scatter_count} \
-      --SUBDIVISION_MODE=BALANCING_WITHOUT_INTERVAL_SUBDIVISION_WITH_OVERFLOW \
-      --UNIQUE=true \
-      --SORT=true \
-      --BREAK_BANDS_AT_MULTIPLES_OF=${break_bands_at_multiples_of} 
+      -I ${interval_list} \
+      -O out \
+      --SCATTER_COUNT ${scatter_count} \
+      --SUBDIVISION_MODE BALANCING_WITHOUT_INTERVAL_SUBDIVISION_WITH_OVERFLOW \
+      --UNIQUE true \
+      --SORT true \
+      --BREAK_BANDS_AT_MULTIPLES_OF ${break_bands_at_multiples_of} 
       
 
     python3 <<CODE
@@ -474,10 +474,10 @@ String gatk_jar
   command {
     java -Dsamjdk.compression_level=${compression_level} -Xmx3g -jar ${toolpath}${gatk_jar} \
       GatherBamFiles \
-      -I=${sep=' -I=' input_bams} \
-      -O=${output_bam_basename}_haplotype.bam \
-      --CREATE_INDEX=true \
-      --CREATE_MD5_FILE=true
+      -I ${sep=' -I' input_bams} \
+      -O ${output_bam_basename}_haplotype.bam \
+      --CREATE_INDEX true \
+      --CREATE_MD5_FILE true
     }
   
   output {
@@ -502,8 +502,8 @@ task MergeVCFs {
   command {
     java -Xms2000m -jar ${toolpath}${gatk_jar} \
       MergeVcfs \
-      -I=${sep=' -I=' input_vcfs} \
-      -O=${output_vcf_name} 
+      -I ${sep=' -I' input_vcfs} \
+      -O ${output_vcf_name} 
   }
 
   output {
@@ -675,12 +675,12 @@ task CollectGvcfCallingMetrics {
   command {
     java -Xms2000m -jar ${toolpath}${gatk_jar} \
       CollectVariantCallingMetrics \
-      -I=${input_vcf} \
-      -O=${metrics_basename} \
-      --DBSNP=${dbSNP_vcf} \
-      --SEQUENCE_DICTIONARY=${ref_dict} \
-      --TARGET_INTERVALS=${wgs_evaluation_interval_list} \
-      --GVCF_INPUT=true
+      -I ${input_vcf} \
+      -O ${metrics_basename} \
+      --DBSNP ${dbSNP_vcf} \
+      --SEQUENCE_DICTIONARY ${ref_dict} \
+      --TARGET_INTERVALS ${wgs_evaluation_interval_list} \
+      --GVCF_INPUT true
   }
  
   output {
@@ -708,11 +708,11 @@ task CrossCheckFingerprints {
       -XX:GCTimeLimit=50 -XX:GCHeapFreeLimit=10 -Xmx${java_heap_memory_initial} \
       -jar ${toolpath}${gatk_jar} \
       CrosscheckReadGroupFingerprints \
-      OUTPUT=${metrics_filename} \
-            HAPLOTYPE_MAP=${haplotype_database_file} \
-      EXPECT_ALL_READ_GROUPS_TO_MATCH=true \
-      INPUT=${sep=' INPUT=' input_bams} \
-      LOD_THRESHOLD=-20.0
+      OUTPUT ${metrics_filename} \
+      HAPLOTYPE_MAP ${haplotype_database_file} \
+      EXPECT_ALL_READ_GROUPS_TO_MATCH true \
+      INPUT ${sep=' INPUT ' input_bams} \
+      LOD_THRESHOLD -20.0
   >>>
   output {
     File metrics = "${metrics_filename}" 
