@@ -705,7 +705,7 @@ task CrossCheckFingerprints {
   String gatk_jar
   
   command <<<
-    java -Dsamjdk.buffer_size=131072 \
+    java \
       -XX:GCTimeLimit=50 -XX:GCHeapFreeLimit=10 -Xmx${java_heap_memory_initial} \
       -jar ${toolpath}${gatk_jar} \
       CrosscheckReadGroupFingerprints \
@@ -911,20 +911,20 @@ workflow bam2gvcf {
     toolpath = toolpath      
   }
 
-########esto es nuevo
- if (defined(haplotype_database_file)) {
+########esto es nuevo sirve para checkear swap de muestras, contaminacion... mas que nada en muestras tumorales
+ #if (defined(haplotype_database_file)) {
    # Check identity of fingerprints across readgroups
-    call CrossCheckFingerprints {
-      input:
-        input_bams = SortAndFixTags.output_bam,
-        input_bam_indexes = SortAndFixTags.output_bam_index,
-        haplotype_database_file = haplotype_database_file,
-        metrics_filename = base_file_name + ".crosscheck",
-        java_heap_memory_initial = java_heap_memory_initial,
-        gatk_jar = gatk_jar, 
-		toolpath = toolpath
-    }
-  }
+  #  call CrossCheckFingerprints {
+  #    input:
+  #      input_bams = SortAndFixTags.output_bam,
+  #      input_bam_indexes = SortAndFixTags.output_bam_index,
+  #      haplotype_database_file = haplotype_database_file,
+  #      metrics_filename = base_file_name + ".crosscheck",
+  #      java_heap_memory_initial = java_heap_memory_initial,
+  #      gatk_jar = gatk_jar, 
+##		toolpath = toolpath
+  #  }
+  #}
 #
 ######### terminar de definir checkfingerprint
 
