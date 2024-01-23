@@ -406,42 +406,7 @@ task HaplotypeCaller {
       --bam-output ${gvcf_basename}_haplotype.bam \ ###realigned reads \
       -GQB 10 -GQB 20 -GQB 30 -GQB 40 -GQB 50 -GQB 60 -GQB 70 -GQB 80 -GQB 90 \
       --standard-min-confidence-threshold-for-calling 30.0 \ ## algunos usan 10.0 mirar. 
-      --read-filter OverclippedReadFilter \
-      --annotation MappingQuality \
-      --annotation ReadPosRankSumTest \
-      --annotation MappingQualityRankSumTest \
-       --annotation InbreedingCoeff \
-       --use-posteriors-to-calculate-qual false \
-       --dont-use-dragstr-priors false \
-       --annotate-with-num-discovered-alleles false \
-       --heterozygosity 0.001 \
-       --indel-heterozygosity 1.25E-4 \
-       --heterozygosity-stdev 0.01 \
-       --max-genotype-count 1024 \
-       --sample-ploidy 2 \
-       --num-reference-samples-if-no-call 0 \
-       --genotype-assignment-method USE_PLS_TO_ASSIGN \
-       --contamination-fraction-to-filter 0.0 \
-       --output-mode EMIT_VARIANTS_ONLY \
-       --all-site-pls false \
-       --flow-likelihood-parallel-threads 0 \
-       --flow-likelihood-optimized-comp false \
-        --flow-use-t0-tag false \
-        --flow-probability-threshold 0.003 \
-        --flow-remove-non-single-base-pair-indels false \
-        --flow-remove-one-zero-probs false \
-        --flow-quantization-bins 121 \
-        --flow-fill-empty-bins-value 0.001 \
-        --flow-symmetric-indel-probs false \
-        --flow-report-insertion-or-deletion false \
-        --flow-disallow-probs-larger-than-call false \
-        --flow-lump-probs false \
-        --flow-retain-max-n-probs-base-format false \
-        --flow-probability-scaling-factor 10 \
-        --flow-order-cycle-length 4 \
-        --flow-number-of-uncertain-flows-to-clip 0 \
-        --flow-nucleotide-of-first-uncertain-flow T \
-        --keep-boundary-flows false \
+      
 
 
       ##### test 
