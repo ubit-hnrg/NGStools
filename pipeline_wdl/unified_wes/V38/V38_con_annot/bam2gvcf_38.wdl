@@ -700,7 +700,7 @@ task CrossCheckFingerprints {
   File input_bam_indexes
   File? haplotype_database_file
   String metrics_filename
-  String java_heap_memory_initial = "2g"
+  String java_heap_memory_initial = "10g"
   String toolpath
   String gatk_jar
   
