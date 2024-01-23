@@ -709,11 +709,11 @@ task CrossCheckFingerprints {
       -XX:GCTimeLimit=50 -XX:GCHeapFreeLimit=10 -Xmx${java_heap_memory_initial} \
       -jar ${toolpath}${gatk_jar} \
       CrosscheckReadGroupFingerprints \
-      OUTPUT ${metrics_filename} \
-      HAPLOTYPE_MAP ${haplotype_database_file} \
-      EXPECT_ALL_READ_GROUPS_TO_MATCH true \
-      INPUT ${sep=' INPUT ' input_bams} \
-      LOD_THRESHOLD -20.0
+      --OUTPUT ${metrics_filename} \
+      --HAPLOTYPE_MAP ${haplotype_database_file} \
+      --EXPECT_ALL_READ_GROUPS_TO_MATCH true \
+      --INPUT ${sep='--INPUT ' input_bams} \
+      --LOD_THRESHOLD -20.0
   >>>
   output {
     File metrics = "${metrics_filename}" 
