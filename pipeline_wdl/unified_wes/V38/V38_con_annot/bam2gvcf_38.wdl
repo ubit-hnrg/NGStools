@@ -238,7 +238,7 @@ task GatherBqsrReports {
   command {
     java -Xms3000m -jar ${toolpath}${gatk_jar} \
       GatherBQSRReports \
-      -I ${sep='-I ' input_bqsr_reports} \
+      -I ${sep=' -I ' input_bqsr_reports} \
       -O ${output_report_filename}
     }
  
@@ -296,7 +296,7 @@ String gatk_jar
   command {
     java -Dsamjdk.compression_level=${compression_level} -Xmx3g -jar ${toolpath}${gatk_jar} \
       GatherBamFiles \
-      -I ${sep='-I ' input_bams} \
+      -I ${sep=' -I ' input_bams} \
       -O ${output_bam_basename}.bam \
       --CREATE_INDEX true \
       --CREATE_MD5_FILE true
@@ -474,7 +474,7 @@ String gatk_jar
   command {
     java -Dsamjdk.compression_level=${compression_level} -Xmx3g -jar ${toolpath}${gatk_jar} \
       GatherBamFiles \
-      -I ${sep='-I ' input_bams} \
+      -I ${sep=' -I ' input_bams} \
       -O ${output_bam_basename}_haplotype.bam \
       --CREATE_INDEX true \
       --CREATE_MD5_FILE true
@@ -502,7 +502,7 @@ task MergeVCFs {
   command {
     java -Xms2000m -jar ${toolpath}${gatk_jar} \
       MergeVcfs \
-      -I ${sep='-I ' input_vcfs} \
+      -I ${sep=' -I ' input_vcfs} \
       -O ${output_vcf_name} 
   }
 
@@ -712,7 +712,7 @@ task CrossCheckFingerprints {
       --OUTPUT ${metrics_filename} \
       --HAPLOTYPE_MAP ${haplotype_database_file} \
       --EXPECT_ALL_READ_GROUPS_TO_MATCH true \
-      --INPUT ${sep='--INPUT ' input_bams} \
+      --INPUT ${sep=' --INPUT ' input_bams} \
       --LOD_THRESHOLD -20.0
   >>>
   output {
