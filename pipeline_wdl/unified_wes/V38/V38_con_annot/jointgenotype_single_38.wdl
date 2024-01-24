@@ -342,8 +342,8 @@ task HardFilterAndMakeSitesOnlyVcf {
 
     java -Xmx3g -Xms3g -jar ${toolpath}${gatk_jar} \
       MakeSitesOnlyVcf \
-     -I=${variant_filtered_vcf_filename} \
-     -O=${sites_only_vcf_filename}
+     -I ${variant_filtered_vcf_filename} \
+     -O ${sites_only_vcf_filename}
 
   }
 
