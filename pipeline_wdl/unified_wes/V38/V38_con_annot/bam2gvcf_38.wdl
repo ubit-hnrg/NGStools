@@ -404,12 +404,10 @@ task HaplotypeCaller {
       --smith-waterman ${smith_waterman_implementation} \
       --use-new-qual-calculator ${newqual} \
       -GQB 10 -GQB 20 -GQB 30 -GQB 40 -GQB 50 -GQB 60 -GQB 70 -GQB 80 -GQB 90 \
-      --standard-min-confidence-threshold-for-calling 30.0 \ ## algunos usan 10.0 mirar.
-      --bam-output ${gvcf_basename}_haplotype.bam  ###realigned reads \
+      --standard-min-confidence-threshold-for-calling 30 \ ## algunos usan 10.0 mirar.
+      --bam-output ${gvcf_basename}_haplotype.bam \ ###realigned reads \
        
-      
-
-
+    
       ##### test 
 
 
