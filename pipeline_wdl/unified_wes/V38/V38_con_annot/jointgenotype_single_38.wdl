@@ -576,9 +576,9 @@ output {
 task annovar{
     File one_sample_vcf
     File annovar_table_pl
-    File convert2annovar = '/home/hnrg/HNRG-pipeline-V0.1/tools/annovar/convert2annovar.pl'
-    File annotate_variation = '/home/hnrg/HNRG-pipeline-V0.1/tools/annovar/annotate_variation.pl'
-    File variants_reduction = '/home/hnrg/HNRG-pipeline-V0.1/tools/annovar/variants_reduction.pl'
+    File convert2annovar = '/home/hnrg/HNRG-pipeline-V0.1/tools/annovar/2024/annovar/convert2annovar.pl'
+    File annotate_variation = '/home/hnrg/HNRG-pipeline-V0.1/tools/annovar/2024/annovar/annotate_variation.pl'
+    File variants_reduction = '/home/hnrg/HNRG-pipeline-V0.1/tools/annovar/2024/annovar/variants_reduction.pl'
 
 
     String db_annovar = '/data/new_dbs/annovar/hg38/humandb/'
