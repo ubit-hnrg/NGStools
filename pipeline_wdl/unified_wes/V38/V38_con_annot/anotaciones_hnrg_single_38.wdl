@@ -102,7 +102,7 @@ command <<<
 
 #perl ${toolpath}annovar/table_annovar.pl ${vcf_in} ${annovar_dbpath} -vcfinput  -buildver hg19 -remove -out ${out_prefix} -protocol dbnsfp35a,gnomad_exome,gnomad_genome,intervar_20180118 -operation f,f,f,f -nastring . 
 #perl ${toolpath}annovar/table_annovar.pl ${vcf_in} ${annovar_dbpath} --thread 4 -vcfinput  -buildver hg19 -remove -out ${out_prefix} -protocol dbnsfp35a,gnomad_exome,gnomad_genome,intervar_20180118 -operation f,f,f,f 
-perl ${toolpath}annovar/table_annovar.pl ${vcf_in} ${annovar_dbpath} -vcfinput -buildver hg38 -thread 4 -remove -out ${out_prefix} -protocol gnomad40_exome,gnomad40_genome,intervar_20180118 -operation f,f,f -nastring . -slicing_threshold 10 , -polish -intronhgvs
+perl ${toolpath}annovar/table_annovar.pl ${vcf_in} ${annovar_dbpath} -vcfinput -buildver hg38 -thread 4 -remove -out ${out_prefix} -protocol gnomad40_exome,gnomad40_genome,intervar_20180118 -operation f,f,f -nastring . -polish -intronhgvs 30
 #refGene,intervar_20180118,esp6500siv2_all,1000g2015aug_all,exac03,gnomad40_exome,gnomad40_genome,clinvar_20221231,dbscsnv11,rmsk,tfbsConsSites,cytoBand,wgRna,targetScanS,genomicSuperDups,dgvMerged,gwasCatalog,ensGene,knownGene -operation  g,f,f,f,f,f,f,f,f,r,r,r,r,r,r,r,r,g,g -nastring . -otherinfo --slicing_threshold 10 , -polish -intronhgvs
 >>>
 
@@ -374,7 +374,6 @@ call annovar {
 input:
 #vcf_in = step6_Snpsift_GWASCat.salida_Snpsift,
 vcf_in = step7_dbNSFP.salida_Snpsift,
-
 out_prefix = samplename1,
 #File out_prefix
 toolpath = toolpath
