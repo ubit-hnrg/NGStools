@@ -594,7 +594,7 @@ task annovar{
 ## refGene,intervar_20180118,esp6500siv2_all,1000g2015aug_all,exac03,gnomad312_exome,gnomad312_genome,clinvar_20221231,dbscsnv11,dbnsfp42a,rmsk,tfbsConsSites,cytoBand,wgRna,targetScanS,genomicSuperDups,dgvMerged,gwasCatalog,ensGene,knownGene -operation  g,f,f,f,f,f,f,f,f,f,r,r,r,r,r,r,r,r,g,g
 #--slicing_threshold 10bp away from splicesite. 
     command<<<
-        perl ${toolpath}annovar/2024/annovar/table_annovar.pl ${one_sample_vcf} ${db_annovar} -vcfinput -buildver hg38 -thread 4 -remove -out ${sample} -protocol refGene,intervar_20180118,esp6500siv2_all,1000g2015aug_all,exac03,gnomad40_exome,gnomad40_genome,clinvar_20221231,dbscsnv11,rmsk,cytoBand,wgRna,genomicSuperDups,dgvMerged,gwasCatalog,ensGene,knownGene -operation g,f,f,f,f,f,f,f,f,r,r,r,r,r,r,g,g -nastring . --otherinfo -polish -intronhgvs 30
+        perl ${toolpath}annovar/2024/annovar/table_annovar.pl ${one_sample_vcf} ${db_annovar} -vcfinput -buildver hg38 -thread 4 -remove -out ${sample} -protocol refGene,intervar_20180118,esp6500siv2_all,1000g2015aug_all,exac03,gnomad40_exome,gnomad40_genome,clinvar_20221231,dbscsnv11,rmsk,cytoBand,wgRna,genomicSuperDups,dgvMerged,gwasCatalog,ensGene,knownGene -operation g,f,f,f,f,f,f,f,f,r,r,r,r,r,r,g,g -nastring . --otherinfo -polish -intronhgvs 30 -minqueryfrac 0.5
         #refGene,intervar_20180118,esp6500siv2_all,1000g2015aug_all,exac03,gnomad40_exome,gnomad40_genome,clinvar_20221231,dbscsnv11,rmsk,tfbsConsSites,cytoBand,wgRna,targetScanS,genomicSuperDups,dgvMerged,gwasCatalog,ensGene,knownGene -operation  g,f,f,f,f,f,f,f,f,r,r,r,r,r,r,r,r,g,g -nastring . -otherinfo --slicing_threshold 30 -polish -intronhgvs
 
     ###dbnsfp con q anoto? con snpsift?
@@ -622,16 +622,32 @@ task get_tsv_from_annovar {
     File gnomad_plof ###gnomad plof for hnrg -> lo usan en brasil.
 
     command <<<
+    
     #columnas a cortar (localizando Otherinfo column y las 2 siguientes)
-    nl0=$(head -n1 ${annovar_txt}|tr '\t' '\n'|nl|grep 'Otherinfo'|cut -f1)
-    nl1=$((nl0 + 1))
-    nl2=$((nl0 + 2))
+    #nl0=$(head -n1 ${annovar_txt}|tr '\t' '\n'|nl|grep 'Otherinfo'|cut -f1)
+    #nl1=$((nl0 + 1))
+    #nl2=$((nl0 + 2))
+    ###modifico para hacer dinamico el rango de otherinfo cols enero2024
+
+    header=$(head -n1 ${annovar_txt})
+
+# Utiliza awk para obtener los números de las columnas que contienen "Otherinfo"
+otherinfo_cols=$(echo "$header" | awk '{
+    for(i = 1; i <= NF; i++) {
+        if($i ~ /Otherinfo/) {
+            printf "%s,", i;
+        }
+    }
+}' | sed 's/,$//')
+
 
 
     # meto header (dejando el campo 'Otherinfo' que despues va a aser remplazado por las columnas del vcf original)
     head -n1 ${annovar_txt} > ${sample}.hg38_multianno.tsv
     # vuelo las tres columnas de otherinfo
-    tail -n+2 ${annovar_txt}|cut -f$nl0,$nl1,$nl2 --complement >>  ${sample}.hg38_multianno.tsv;
+    #tail -n+2 ${annovar_txt}|cut -f$nl0,$nl1,$nl2 --complement >>  ${sample}.hg38_multianno.tsv; modifico para usar el rango dinamco
+        tail -n+2 ${annovar_txt}|cut -f$otherinfo_cols --complement >>  ${sample}.hg38_multianno.tsv;
+
     vcf_header=$(grep '#CH' ${annovar_vcf});
 
     #remplazo el header
