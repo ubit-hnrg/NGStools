@@ -661,8 +661,8 @@ task get_tsv_from_annovar {
 # Convierte los números de columna en un rango para 'cut'
 cut_range=$(echo $otherinfo_cols | sed 's/,/,/g')
 
-head -n1 $archivo | cut -f$cut_range --complement >  ${sample}.hg38_multianno.tsv
-tail -n+2 $archivo | cut -f$cut_range --complement >>  ${sample}.hg38_multianno.tsv
+head -n1 ${annovar_txt} | cut -f$cut_range --complement >  ${sample}.hg38_multianno.tsv
+tail -n+2 ${annovar_txt} | cut -f$cut_range --complement >>  ${sample}.hg38_multianno.tsv
 
 vcf_header=$(grep '#CH' ${annovar_vcf});
 otherinfo_index=4
