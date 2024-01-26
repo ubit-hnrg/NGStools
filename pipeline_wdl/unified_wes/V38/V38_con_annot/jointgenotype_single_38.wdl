@@ -666,6 +666,8 @@ tail -n+2 ${annovar_txt} | cut -f$cut_range --complement >>  ${sample}.hg38_mult
 
 vcf_header=$(grep '#CH' ${annovar_vcf});
 otherinfo_index=4
+vcf_col_index=1
+
 total_vcf_fields=$(echo $vcf_header | awk '{print NF}')
 
 # Bucle para reemplazar Otherinfo4, Otherinfo5, ..., Otherinfo10
