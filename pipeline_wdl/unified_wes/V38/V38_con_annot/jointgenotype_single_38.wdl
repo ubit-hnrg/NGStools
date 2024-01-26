@@ -122,6 +122,8 @@ workflow singleGenotypeGVCFs {
             one_sample_vcf =  restrict_vcf.VCF_restricted, #filtro_no_calls.one_sample_vcf,,#get_individual_vcf.one_sample_vcf,
             sample = sample_name,#idsample.idsample,
             annovar_table_pl = annovar_table_pl,
+            toolpath = toolpath,
+
             db_annovar = db_annovar
          }
 
@@ -576,9 +578,13 @@ output {
 task annovar{
     File one_sample_vcf
     File annovar_table_pl
-    File convert2annovar = '/home/hnrg/HNRG-pipeline-V0.1/tools/annovar/2024/annovar/convert2annovar.pl'
-    File annotate_variation = '/home/hnrg/HNRG-pipeline-V0.1/tools/annovar/2024/annovar/annotate_variation.pl'
-    File variants_reduction = '/home/hnrg/HNRG-pipeline-V0.1/tools/annovar/2024/annovar/variants_reduction.pl'
+    String toolpath
+
+    #File convert2annovar = '/home/hnrg/HNRG-pipeline-V0.1/tools/annovar/2024/annovar/convert2annovar.pl'
+    #File annotate_variation = '/home/hnrg/HNRG-pipeline-V0.1/tools/annovar/2024/annovar/annotate_variation.pl'
+    #File variants_reduction = '/home/hnrg/HNRG-pipeline-V0.1/tools/annovar/2024/annovar/variants_reduction.pl'
+    #File coding_change = '/home/hnrg/HNRG-pipeline-V0.1/tools/annovar/2024/annovar/coding_change.pl'
+    #File retrieve_seq_from_fasta = '/home/hnrg/HNRG-pipeline-V0.1/tools/annovar/2024/annovar/retrieve_seq_from_fasta.pl'
 
 
     String db_annovar = '/data/new_dbs/annovar/hg38/humandb/'
@@ -588,7 +594,7 @@ task annovar{
 ## refGene,intervar_20180118,esp6500siv2_all,1000g2015aug_all,exac03,gnomad312_exome,gnomad312_genome,clinvar_20221231,dbscsnv11,dbnsfp42a,rmsk,tfbsConsSites,cytoBand,wgRna,targetScanS,genomicSuperDups,dgvMerged,gwasCatalog,ensGene,knownGene -operation  g,f,f,f,f,f,f,f,f,f,r,r,r,r,r,r,r,r,g,g
 #--slicing_threshold 10bp away from splicesite. 
     command<<<
-        perl ${annovar_table_pl} ${one_sample_vcf} ${db_annovar} -vcfinput -buildver hg38 -thread 4 -remove -out ${sample} -protocol refGene,intervar_20180118,esp6500siv2_all,1000g2015aug_all,exac03,gnomad40_exome,gnomad40_genome,clinvar_20221231,dbscsnv11,rmsk,cytoBand,wgRna,genomicSuperDups,dgvMerged,gwasCatalog,ensGene,knownGene -operation g,f,f,f,f,f,f,f,f,r,r,r,r,r,r,g,g -nastring . -otherinfo -polish -intronhgvs 30
+        perl ${toolpath}2024/annovar/table_annovar.pl ${one_sample_vcf} ${db_annovar} -vcfinput -buildver hg38 -thread 4 -remove -out ${sample} -protocol refGene,intervar_20180118,esp6500siv2_all,1000g2015aug_all,exac03,gnomad40_exome,gnomad40_genome,clinvar_20221231,dbscsnv11,rmsk,cytoBand,wgRna,genomicSuperDups,dgvMerged,gwasCatalog,ensGene,knownGene -operation g,f,f,f,f,f,f,f,f,r,r,r,r,r,r,g,g -nastring . -otherinfo -polish -intronhgvs 30
         #refGene,intervar_20180118,esp6500siv2_all,1000g2015aug_all,exac03,gnomad40_exome,gnomad40_genome,clinvar_20221231,dbscsnv11,rmsk,tfbsConsSites,cytoBand,wgRna,targetScanS,genomicSuperDups,dgvMerged,gwasCatalog,ensGene,knownGene -operation  g,f,f,f,f,f,f,f,f,r,r,r,r,r,r,r,r,g,g -nastring . -otherinfo --slicing_threshold 30 -polish -intronhgvs
 
     ###dbnsfp con q anoto? con snpsift?
