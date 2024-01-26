@@ -624,34 +624,62 @@ task get_tsv_from_annovar {
     command <<<
     
     #columnas a cortar (localizando Otherinfo column y las 2 siguientes)
-    #nl0=$(head -n1 ${annovar_txt}|tr '\t' '\n'|nl|grep 'Otherinfo'|cut -f1)
+    #nl0=$(head -n1 ${annovar_txt}|tr '\t' '\n'|nl|grep 'Otherinfo1'|cut -f1)
     #nl1=$((nl0 + 1))
     #nl2=$((nl0 + 2))
     ###modifico para hacer dinamico el rango de otherinfo cols enero2024
 
-    header=$(head -n1 ${annovar_txt})
+    #header=$(head -n1 ${annovar_txt})
 
 # Utiliza awk para obtener los números de las columnas que contienen "Otherinfo"
-otherinfo_cols=$(echo "$header" | awk '{
+#otherinfo_cols=$(echo "$header" | awk '{
+#    for(i = 1; i <= NF; i++) {
+#        if($i ~ /Otherinfo/) {
+#            printf "%s,", i;
+#        }
+#    }
+#}' | sed 's/,$//')
+
+
+
+    # meto header (dejando el campo 'Otherinfo' que despues va a ser remplazado por las columnas del vcf original)
+    #head -n1 ${annovar_txt} > ${sample}.hg38_multianno.tsv
+    # vuelo las tres columnas de otherinfo
+    #tail -n+2 ${annovar_txt}|cut -f$nl0,$nl1,$nl2 --complement >>  ${sample}.hg38_multianno.tsv; #modifico para usar el rango dinamco
+    #tail -n+2 ${annovar_txt}|cut -f$otherinfo_cols --complement >>  ${sample}.hg38_multianno.tsv;
+
+    #####agu enero 2024
+    header=$(head -n1 ${annovar_txt})
+    otherinfo_cols=$(echo "$header" | awk '{
     for(i = 1; i <= NF; i++) {
-        if($i ~ /Otherinfo/) {
+        if($i == "Otherinfo1" || $i == "Otherinfo2" || $i == "Otherinfo3") {
             printf "%s,", i;
         }
     }
 }' | sed 's/,$//')
 
+# Convierte los números de columna en un rango para 'cut'
+cut_range=$(echo $otherinfo_cols | sed 's/,/,/g')
 
+head -n1 $archivo | cut -f$cut_range --complement >  ${sample}.hg38_multianno.tsv
+tail -n+2 $archivo | cut -f$cut_range --complement >>  ${sample}.hg38_multianno.tsv
 
-    # meto header (dejando el campo 'Otherinfo' que despues va a aser remplazado por las columnas del vcf original)
-    head -n1 ${annovar_txt} > ${sample}.hg38_multianno.tsv
-    # vuelo las tres columnas de otherinfo
-    #tail -n+2 ${annovar_txt}|cut -f$nl0,$nl1,$nl2 --complement >>  ${sample}.hg38_multianno.tsv; modifico para usar el rango dinamco
-        tail -n+2 ${annovar_txt}|cut -f$otherinfo_cols --complement >>  ${sample}.hg38_multianno.tsv;
+vcf_header=$(grep '#CH' ${annovar_vcf});
+otherinfo_index=4
+total_vcf_fields=$(echo $vcf_header | awk '{print NF}')
 
-    vcf_header=$(grep '#CH' ${annovar_vcf});
+# Bucle para reemplazar Otherinfo4, Otherinfo5, ..., Otherinfo10
+for (( ; otherinfo_index<=13 && vcf_col_index<=total_vcf_fields; otherinfo_index++, vcf_col_index++ )); do
+    # Extrae el elemento actual del encabezado VCF
+    vcf_field=$(echo $vcf_header | awk -v col=$vcf_col_index '{print $col}')
+
+    # Reemplaza "OtherinfoX" con el campo correspondiente del VCF
+    sed -i "s/Otherinfo$otherinfo_index/$vcf_field/" ${sample}.hg38_multianno.tsv
+done
+#####fin agu 
 
     #remplazo el header
-    sed -i "s/Otherinfo/$vcf_header/g" ${sample}.hg38_multianno.tsv;
+    #sed -i "s/Otherinfo/$vcf_header/g" ${sample}.hg38_multianno.tsv;
 
     #join one multianno tsv file AND joint genotyped vcf. This script (join_vcf.py) also postprocess Intervar columns.
     python ${joinPY} --multianno_tsv=${sample}.hg38_multianno.tsv --vcf_multisample=${restrictedVCF} --output=${sample}.multianno_restrict.tsv
