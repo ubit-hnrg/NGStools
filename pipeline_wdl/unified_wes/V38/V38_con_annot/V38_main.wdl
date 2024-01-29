@@ -240,10 +240,9 @@ workflow main_workflow {
   String sequencing_center =  "UIT-HNRG" 
   String readlenght 
   String ubam_list_name = "ubamfiles"
-  String ref_name = ".hg38"
 
   ###GATK
-  String gatk_jar = "gatk-package-4.0.8.1-local.jar"
+  String gatk_jar = "gatk-package-4.5.0.0-local.jar"
   String toolpath = "/home/hnrg/HNRG-pipeline-V0.1/tools/"
   String ngs_toolpath = "/home/hnrg/NGStools"
 
@@ -372,7 +371,6 @@ workflow main_workflow {
     call ubam2bwa.ubamtobwa {
         input:
         array_unmapped_bams = ConvertPairedFastQsToUnmappedBamWf.output_ubams,
-        ref_name = ref_name,
         compression_level = compression_level,
         java_heap_memory_initial = java_heap_memory_initial,
         bwa_commandline = bwa_commandline,

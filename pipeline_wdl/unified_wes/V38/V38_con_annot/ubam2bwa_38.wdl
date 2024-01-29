@@ -10,8 +10,6 @@ workflow ubamtobwa {
     ### PATH local de las herramientas sacadas de docker
     String gatk_jar
     String toolpath
-    ####### Reference name, .b37 , .hg19, etc. 
-    String ref_name
     ########################command line para el bwa 
     String bwa_commandline
     ########## referencia
