@@ -50,8 +50,7 @@ command {
 
 set -o pipefail
 java -Xmx${java_heap_memory_initial} -jar ${toolpath}SnpEff/snpEff/snpEff.jar ${reference_version} -hgvs \
- -lof -noStats -geneID -canon  -c ${toolpath}SnpEff/snpEff/snpEff
- .config \
+ -lof -noStats -geneID -canon  -c ${toolpath}SnpEff/snpEff/snpEff.config \
 ${input_vcf} > ${samplename1}.step1_SnpEff.vcf 
 }
 
