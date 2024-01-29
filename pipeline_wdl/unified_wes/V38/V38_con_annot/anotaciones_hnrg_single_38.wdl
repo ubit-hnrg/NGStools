@@ -22,7 +22,8 @@ command {
 set -o pipefail
 
 
-java -Xmx${java_heap_memory_initial} -jar ${toolpath}bptools.jar ${parametros} ${input_vcf} ${samplename1}.${nombre_step}.vcf
+java -Xmx${java_heap_memory_initial} -jar ${toolpath}/bptools/bptools.jar ${parametros} ${input_vcf} ${samplename1}.${nombre_step}.vcf
+
 }
 
 
