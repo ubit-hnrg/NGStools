@@ -298,7 +298,7 @@ workflow main_workflow {
 
 
   ##################anotacion funcional
-  String reference_version = "GRCh38.14"
+  String reference_version = "GRCh38.mane.1.2.refseq"
 
 
   ##annovar
