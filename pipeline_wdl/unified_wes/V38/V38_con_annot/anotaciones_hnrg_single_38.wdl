@@ -255,6 +255,7 @@ File exon_dist = "${sample_name}.exon_distance.tsv"
     File input_vcf
     String samplename1
     String toolpath
+    String nombre_step
     command {
     python3  ${toolpath}python_tools/acmg_bayesian_classificator.py ${input_vcf} ${samplename1}.${nombre_step}.vcf
     }
