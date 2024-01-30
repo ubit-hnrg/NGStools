@@ -517,10 +517,10 @@ input:
 
 call acmg_bayesian_class {
     input:
-    input_vcf = step10_PhastCons.salida_Snpsift
+    input_vcf = step10_PhastCons.salida_Snpsift,
     samplename1 = samplename1,
     toolpath = toolpath,
-    nombre_step = "step12_acmg"
+    nombre_step = "step11_acmg"
 }
 
  #
