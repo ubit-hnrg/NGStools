@@ -196,7 +196,8 @@ task symlink_important_files {
 
        cp -L ${output_to_save} ${path_save}
        cp -L ${output_to_save2} ${path_save}
-       gzip -c ${output_to_save} > ${path_save}
+       aux_name=$(basename ${output_to_save})
+       gzip -c ${output_to_save} > ${path_save}'/'$aux_name'.gz'
     }
 }
 
