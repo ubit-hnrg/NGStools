@@ -193,8 +193,10 @@ task symlink_important_files {
     File output_to_save2
     String path_save
     command{
+
        cp -L ${output_to_save} ${path_save}
        cp -L ${output_to_save2} ${path_save}
+       gzip -c ${output_to_save} > ${path_save}
     }
 }
 
@@ -248,6 +250,23 @@ File exon_dist = "${sample_name}.exon_distance.tsv"
 
 }
 }
+
+ task acmg_bayesian_class {
+    File input_vcf
+    String samplename1
+    String toolpath
+    command {
+    python3  ${toolpath}python_tools/acmg_bayesian_classificator.py ${input_vcf} ${samplename1}.${nombre_step}.vcf
+    }
+
+    output {
+    File out_vcf = "${samplename1}.${nombre_step}.vcf"
+    }
+
+}
+
+
+
 
 
 workflow FuncionalAnnotationSingle {
@@ -496,6 +515,22 @@ input:
     
  #}
 
+call acmg_bayesian_class {
+    input:
+    input_vcf = step10_PhastCons.salida_Snpsift
+    samplename1 = samplename1,
+    toolpath = toolpath,
+    nombre_step = "step12_acmg"
+}
+
+ #
+ #   input_vcf = step12_clinVar.salida_Snpsift,   # step13_pharmGKB.salida_Snpsift, 
+ #   samplename1 = samplename1,
+ #   toolpath = toolpath,
+ #   nombre_step = "step14_HNRG_FREQ"
+
+    
+ #}
 
 #Step 14: Annotate with ExAC
 #Step 12: Annotate with ClinVar
@@ -504,7 +539,7 @@ input:
     samplename1 = samplename1,
     #parametros = "annotate -v -info CLNHGVS,CLNALLE,CLNSRC,CLNORIGIN,CLNSRCID,CLNSIG,CLNDSDB,CLNDSDBID,CLNDBN,CLNACC",
     parametros = "annotate",
-    input_vcf = step10_PhastCons.salida_Snpsift,
+    input_vcf =  acmg_bayesian_class.out_vcf, #step10_PhastCons.salida_Snpsift,
     #input_vcf = step11_dbNSFP.salida_Snpsift,
     toolpath = toolpath,
     java_heap_memory_initial = java_heap_memory_initial,
