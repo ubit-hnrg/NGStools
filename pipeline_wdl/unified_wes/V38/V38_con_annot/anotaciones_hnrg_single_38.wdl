@@ -95,7 +95,6 @@ String toolpath
 String out_prefix
 String annovar_dbpath 
 #dbpath=/home/hnrg/HNRG-pipeline-V0.1/dbs/hg19_annovar/
-#annovar=/home/bitgenia/dbs/annovar/table_annovar.pl
 
 
 command <<<
@@ -201,6 +200,12 @@ task symlink_important_files {
     }
 }
 
+
+[[postannotation]]
+fields=["gnomad40_exome_AF_grpmax", "gnomad40_genome_AF_grpmax"]
+op="lua:gnomad_exomes_AF_popmax, gnomad_genome_AF_popmax"
+name="AF"
+type="String"
 
 task hnrg_freq {
 
@@ -362,6 +367,7 @@ input:
 
 }
 
+
 #Step 6: Annotate with GWASCat (with extra fields)
 call Snpsift_GWASCat as step6_Snpsift_GWASCat{
 input:
@@ -390,11 +396,24 @@ input:
 #
 }
 
+#Step 7: Annotate with alphamissense
+call Snpsift_nodb as step_alphamissense {
+input:
+    samplename1 = samplename1,
+  
+    parametros = 'Annotate -info UNIPROT_ID,TRANSCRIPT_ID,PROTEIN_VARIANT,AM_PATHOGENICITY,AM_CLASS -db /data/new_dbs/annot/alphamissense/AlphaMissense_hg38.tsv.gz',
+    input_vcf = step7_dbNSFP.salida_Snpsift,
+    toolpath = toolpath,
+    java_heap_memory_initial = java_heap_memory_initial,
+    nombre_step = "step_alphamissense"
+#
+}
+
 #####step8  annovar
 call annovar {
 input:
 #vcf_in = step6_Snpsift_GWASCat.salida_Snpsift,
-vcf_in = step7_dbNSFP.salida_Snpsift,
+vcf_in = step_alphamissense.salida_Snpsift,
 out_prefix = samplename1,
 #File out_prefix
 toolpath = toolpath
