@@ -201,11 +201,6 @@ task symlink_important_files {
 }
 
 
-[[postannotation]]
-fields=["gnomad40_exome_AF_grpmax", "gnomad40_genome_AF_grpmax"]
-op="lua:gnomad_exomes_AF_popmax, gnomad_genome_AF_popmax"
-name="AF"
-type="String"
 
 task hnrg_freq {
 
