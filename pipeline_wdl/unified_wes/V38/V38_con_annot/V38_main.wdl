@@ -121,7 +121,7 @@ task coord_generator {
      
     ${toolpath}bedtools2/bin/mergeBed -i ${library_name}_padded_${padding}.bed -d ${merge_tolerance} > ${library_name}_padded_${padding}_merged_${merge_tolerance}.bed
 
-    java -jar ${toolpath}${gatk_jar} BedToIntervalList -I ${library_name}_padded_${padding}_merged_${merge_tolerance}.bed -O ${library_name}_padded_${padding}_merged_${merge_tolerance}_preprocessing.interval_list -SD ${ref_dict}
+    #java -jar ${toolpath}${gatk_jar} BedToIntervalList -I ${library_name}_padded_${padding}_merged_${merge_tolerance}.bed -O ${library_name}_padded_${padding}_merged_${merge_tolerance}_preprocessing.interval_list -SD ${ref_dict}
 
     java -jar ${toolpath}${gatk_jar} BedToIntervalList -I ${library_name}_padded_${padding}.bed -O ${library_name}_padded_${padding}.interval_list -SD ${ref_dict}
      
@@ -129,7 +129,7 @@ task coord_generator {
     cp -L ${intervalo_captura} ${path_save}
     cp -L ${library_name}_padded_${padding}.bed ${path_save}
 
-    cp -L ${library_name}_padded_${padding}_merged_${merge_tolerance}_preprocessing.interval_list ${path_save}
+    #cp -L ${library_name}_padded_${padding}_merged_${merge_tolerance}_preprocessing.interval_list ${path_save}
     cp -L ${library_name}_padded_${padding}.interval_list ${path_save}
     cp -L exon_restricted2_${library_name}.bed ${path_save}
   >>>
@@ -138,7 +138,7 @@ task coord_generator {
     File padded_coord = "${library_name}_padded_${padding}.bed"
     File exon_restricted = "exon_restricted2_${library_name}.bed" ##for quality_control
 
-    File interval_list = "${library_name}_padded_${padding}_merged_${merge_tolerance}_preprocessing.interval_list"
+    #File interval_list = "${library_name}_padded_${padding}_merged_${merge_tolerance}_preprocessing.interval_list"
     File eval_interval_list = "${library_name}_padded_${padding}.interval_list"
   }
 
