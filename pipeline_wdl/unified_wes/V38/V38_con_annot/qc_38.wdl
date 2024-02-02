@@ -157,7 +157,7 @@ task make_tsv_reports {
 # make global tsv report
         #python ${ngs_toolpath}/pipeline_wdl/qualityControl/global_coverage_report_inLibrary.py -i=${global_cov} -o ${sample_name}_experiment_global_report.tsv -op ${sample_name}.distributions.eps -s ${sample_name}
 
-    command {
+    command <<<
 
         #!/bin/bash
         set -e
@@ -172,7 +172,7 @@ task make_tsv_reports {
 
         cp -L  ${sample_name}_ENS_local_report.tsv ${sample_name}_experiment_nodups_global_report.tsv ${sample_name}_nodups_distributions.eps ${path_save}
         ####${sample_name}.distributions.eps ${sample_name}_experiment_global_report.tsv
-    }
+    >>>
  
     output {
         File hist_by_exon = "${sample_name}_ENS_local_report.tsv" 
