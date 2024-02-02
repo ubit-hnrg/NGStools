@@ -46,20 +46,7 @@ task cobertura {
         sort -k1,1V -k2,2n ${intervalo_captura} > intervalo_sorted.bed
         
 
-        # # esto reporta la cobertura en cada intervalo de captura y hace un histograma global también con el keyword "all"
-        # #${toolpath}bedtools2/bin/sort ${input_bam} -m 1G | 
-        # ${toolpath}bedtools2/bin/coverageBed -a intervalo_sorted.bed -b ${input_bam} -hist ${sorted} > ${sample_name}.hist.aux
-        # #${toolpath}bedtools2/bin/coverageBed -a ${intervalo_captura} -b ${input_bam} -sorted -hist > ${sample_name}.hist.aux
-        # echo -e 'chr\tstart\tend\tgene\tDP\tBPs\tIntervalLength\tfrequency' > header.txt
-        # cat header.txt ${sample_name}.hist.aux > ${sample_name}.hist 
-        # rm ${sample_name}.hist.aux header.txt
-
-        # #histograma global del bam restringido a toda la librería
-        # grep '^all' ${sample_name}.hist > global.hist
-        # echo -e 'chr\tDP\tBPs\tIntervalLength\tfrequency' > global.header.txt
-        # cat global.header.txt global.hist > ${sample_name}.global.hist
-        # rm global.header.txt global.hist
-        
+  
         ###sex prediction
         ${ngs_toolpath}/python_scripts/bam_sex_xy.py -b ${input_bam} > ${sample_name}_sex_${pipeline_version}.txt
 
@@ -103,13 +90,12 @@ task cobertura {
         
         cp -L ${sample_name}_samtools_nodup_${pipeline_version}.stats ${path_save}
         cp -L ${sample_name}_samtools_${pipeline_version}.stats ${path_save}
-        cp -L ${sample_name}.ENS_${pipeline_version}.hist ${path_save}
+        #cp -L ${sample_name}.ENS_${pipeline_version}.hist ${path_save}
         #cp -L ${sample_name}_nodup.hist ${path_save}
         cp -L ${sample_name}_sex_${pipeline_version}.txt ${path_save} 
-        cp -L ${sample_name}_global_nodup.hist ${path_save}
+        #cp -L ${sample_name}_global_nodup.hist ${path_save}
         cp -L ${sample_name}.no_cubierto_intervalo_${pipeline_version}.tsv ${path_save}
-       
-
+    
            
     }
     #${sample_name}_${pipeline_version}.txt
@@ -124,34 +110,10 @@ task cobertura {
         #File nodups = "${sample_name}_nodups_stats_${pipeline_version}.txt"
         File no_cubierto_intervalo = "${sample_name}.no_cubierto_intervalo_${pipeline_version}.tsv"
 
-
     }
 
 }
-#   task sex_pred {
 
-#     File input_bam
-#     File input_bam_index
-#     String sample_name = basename( input_bam,'.bam')
-#     String ngs_toolpath
-#     String path_save 
-       
-#     command <<<
-#       #!/bin/bash
-#       set -e
-#       set -o pipefail
-
-#       ####prediccion de sexo para reporte pdf
-#       ###ya que estamos, prediccion de sexo:
-#       ${ngs_toolpath}/python_scripts/bam_sex_xy.py -b ${input_bam} > ${sample_name}_sex_${pipeline_version}.txt
-#       cp -L ${sample_name}_sex_${pipeline_version}.txt ${path_save} 
-      
-#     >>>
-
-#   output {
-#     File sex_prediction = "${sample_name}_sex_${pipeline_version}.txt"
-#     }
-#     }
 
 
 task samtools_reports_file {
@@ -204,8 +166,10 @@ task make_tsv_reports {
         python ${ngs_toolpath}/pipeline_wdl/qualityControl/global_coverage_report_inLibrary.py -i=${global_cov_nodups} -o ${sample_name}_experiment_nodups_global_report.tsv -op ${sample_name}_nodups_distributions.eps -s ${sample_name}
 
         # make tsv coverage report by exon
-        python ${ngs_toolpath}/pipeline_wdl/qualityControl/local_coverage_report_ENS_intersect_Library.py -i=${by_exon_cov} -o ${sample_name}_ENS_local_report.tsv -s=${sample_name}
-       
+        #python ${ngs_toolpath}/pipeline_wdl/qualityControl/local_coverage_report_ENS_intersect_Library.py -i=${by_exon_cov} -o ${sample_name}_ENS_local_report.tsv -s=${sample_name}
+        ## solucion en awk mega rapida enero 2024 agu
+        awk -f ${ngs_toolpath}/pipeline_wdl/qualityControl/local_coverage_report_ENS_intersect_Library_hg38.awk ${by_exon_cov} | sort -k1,1 -k4,4 | awk 'BEGIN {print "gene\ttranscriptID\texonNumber\tstart\tend\tstrand\tIntervalLength\tdp>=1\tdp>=10\tdp>=20\tdp>=30\tdp>=50\tdp>=100"} {print}' > ${sample_name}_ENS_local_report.tsv
+
         cp -L  ${sample_name}_ENS_local_report.tsv ${sample_name}_experiment_nodups_global_report.tsv ${sample_name}_nodups_distributions.eps ${path_save}
         ####${sample_name}.distributions.eps ${sample_name}_experiment_global_report.tsv
     }

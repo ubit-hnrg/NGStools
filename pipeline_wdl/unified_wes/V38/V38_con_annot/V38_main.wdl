@@ -157,7 +157,7 @@ task build_excell_report{
     
     command{
 
-       ${ngs_toolpath}/pipeline_wdl/qualityControl/make_excel_report.py ${annovar_tsv}:Variants ${exon_coverage_report}:ExonCoverage ${plof}:GnomAD_PLOF ${no_cubierto}:no_cubierto  ${samplename2}_variants_${pipeline_version}.xlsx
+       python3 ${ngs_toolpath}/pipeline_wdl/qualityControl/make_excel_report_opt2.py ${annovar_tsv}:Variants ${exon_coverage_report}:ExonCoverage ${plof}:GnomAD_PLOF ${no_cubierto}:no_cubierto  ${samplename2}_variants_${pipeline_version}.xlsx
    
    }    
 
