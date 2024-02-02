@@ -85,7 +85,7 @@ task cobertura {
         ##
         ##regiones no cubiertas en el intervalo de captura. -bga reporta la profunidad in bedgraph format. reporta las regiones con 0 cobertura. 
         ## por lo que dps se puede filtrar lo no cubierto.-
-        ${toolpath}bedtools-2.31.1/bedtools2/bin/ genomecov -ibam ${input_bam} -bga | awk '$4==0'| ${toolpath}bedtools-2.31.1/bedtools2/bin/ intersect -a intervalo_sorted.bed -b - > ${sample_name}.no_cubierto_intervalo_${pipeline_version}.tsv
+        ${toolpath}bedtools-2.31.1/bedtools2/bin/genomeCoverageBed -ibam ${input_bam} -bga | awk '$4==0'| ${toolpath}bedtools-2.31.1/bedtools2/bin/intersectBed -a intervalo_sorted.bed -b - > ${sample_name}.no_cubierto_intervalo_${pipeline_version}.tsv
 
         
         cp -L ${sample_name}_samtools_nodup_${pipeline_version}.stats ${path_save}
