@@ -55,7 +55,7 @@ task cobertura {
         ${toolpath}samtools stats bam_nodups.sam -t intervalo_sorted.bed > ${sample_name}_samtools_nodup_${pipeline_version}.stats ##samtools stat task
 
         ####global_hist for no dups_bams 
-        ${toolpath}bedtools2/bin/coverageBed -a intervalo_sorted.bed -b bam_nodups.sam -hist ${sorted} > ${sample_name}_nodup.hist.aux
+       ${toolpath}bedtools-2.31.1/bedtools2/bin/coverageBed -a intervalo_sorted.bed -b bam_nodups.sam -hist ${sorted} > ${sample_name}_nodup.hist.aux
         ##${toolpath}bedtools2/bin/coverageBed -a ${intervalo_captura} -b ${input_bam} -sorted -hist > ${sample_name}.hist.aux
         echo -e 'chr\tstart\tend\tgene\tDP\tBPs\tIntervalLength\tfrequency' > header_nodup.txt
         cat header_nodup.txt ${sample_name}_nodup.hist.aux > ${sample_name}_nodup.hist 
