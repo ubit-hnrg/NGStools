@@ -51,11 +51,11 @@ task cobertura {
         ${ngs_toolpath}/python_scripts/bam_sex_xy_chr.py -b ${input_bam} > ${sample_name}_sex_${pipeline_version}.txt
 
         ###septiembre,20: se agrega eliminar duplicados.
-        ${toolpath}samtools view -F1024 -u ${input_bam} > bam_nodups.sam
-        ${toolpath}samtools stats bam_nodups.sam -t intervalo_sorted.bed > ${sample_name}_samtools_nodup_${pipeline_version}.stats ##samtools stat task
+        ${toolpath}samtools view -F1024 -u ${input_bam} -b > bam_nodups.bam
+        ${toolpath}samtools stats bam_nodups.bam -t intervalo_sorted.bed > ${sample_name}_samtools_nodup_${pipeline_version}.stats ##samtools stat task
 
         ####global_hist for no dups_bams 
-       ${toolpath}bedtools-2.31.1/bedtools2/bin/coverageBed -a intervalo_sorted.bed -b bam_nodups.sam -hist ${sorted} > ${sample_name}_nodup.hist.aux
+       ${toolpath}bedtools-2.31.1/bedtools2/bin/coverageBed -a intervalo_sorted.bed -b bam_nodups.bam -hist ${sorted} > ${sample_name}_nodup.hist.aux
         ##${toolpath}bedtools2/bin/coverageBed -a ${intervalo_captura} -b ${input_bam} -sorted -hist > ${sample_name}.hist.aux
         echo -e 'chr\tstart\tend\tgene\tDP\tBPs\tIntervalLength\tfrequency' > header_nodup.txt
         cat header_nodup.txt ${sample_name}_nodup.hist.aux > ${sample_name}_nodup.hist 
@@ -65,7 +65,7 @@ task cobertura {
         grep '^all' ${sample_name}_nodup.hist.aux > global_nodup.hist
         echo -e 'chr\tDP\tBPs\tIntervalLength\tfrequency' > global_nodup.header.txt
         cat global_nodup.header.txt global_nodup.hist > ${sample_name}_global_nodup.hist
-        rm global_nodup.header.txt global_nodup.hist ${sample_name}_nodup.hist.aux header_nodup.txt bam_nodups.sam
+        rm global_nodup.header.txt global_nodup.hist ${sample_name}_nodup.hist.aux header_nodup.txt bam_nodups.bam
 
         
          ####samtools stat ###pestaña alineamiento excel calidad.
