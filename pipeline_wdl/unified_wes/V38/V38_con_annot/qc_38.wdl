@@ -51,8 +51,8 @@ task cobertura {
         ${ngs_toolpath}/python_scripts/bam_sex_xy_chr.py -b ${input_bam} > ${sample_name}_sex_${pipeline_version}.txt
 
         ###septiembre,20: se agrega eliminar duplicados.
-        ${toolpath}samtools view -F1024 -u ${input_bam} -b > bam_nodups.bam
-        ${toolpath}samtools stats bam_nodups.bam -t intervalo_sorted.bed > ${sample_name}_samtools_nodup_${pipeline_version}.stats ##samtools stat task
+        ${toolpath}samtool1.19/samtools/samtools view -F1024 -u ${input_bam} -b > bam_nodups.bam
+        ${toolpath}samtool1.19/samtools/samtools stats bam_nodups.bam -t intervalo_sorted.bed > ${sample_name}_samtools_nodup_${pipeline_version}.stats ##samtools stat task
 
         ####global_hist for no dups_bams 
        ${toolpath}bedtools-2.31.1/bedtools2/bin/coverageBed -a intervalo_sorted.bed -b bam_nodups.bam -hist ${sorted} > ${sample_name}_nodup.hist.aux
@@ -69,7 +69,7 @@ task cobertura {
 
         
          ####samtools stat ###pestaña alineamiento excel calidad.
-        ${toolpath}samtools stats ${input_bam} -t ${intervalo_captura} > ${sample_name}_samtools_${pipeline_version}.stats
+         ${toolpath}samtool1.19/samtools/samtools stats ${input_bam} -t ${intervalo_captura} > ${sample_name}_samtools_${pipeline_version}.stats
          /usr/local/bin/plot-bamstats ${sample_name}_samtools_${pipeline_version}.stats -p ${path_save}samtools_plots/${sample_name}
 
          #### COBERTURA  ##################################
