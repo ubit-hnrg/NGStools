@@ -254,7 +254,7 @@ task ImportGVCFs {
     # a significant amount of non-heap memory for native libraries.
     # Also, testing has shown that the multithreaded reader initialization
     # does not scale well beyond 5 threads, so don't increase beyond that.
-    java -Xmx1g -Xms1g -jar ${toolpath}${gatk_jar} \
+    java -Xmx4g -Xms4g -jar ${toolpath}${gatk_jar} \
     GenomicsDBImport \
     --genomicsdb-workspace-path ${workspace_dir_name} \
     --batch-size ${batch_size} \
@@ -440,7 +440,7 @@ task GatherMetrics {
     set -o pipefail
 
     
-    java -Xmx2g -Xms2g -jar ${toolpath}${gatk_jar} \
+    java -Xmx4g -Xms4g -jar ${toolpath}${gatk_jar} \
     AccumulateVariantCallingMetrics \
     --INPUT ${sep=" --INPUT " input_details_fofn} \
     --OUTPUT ${output_prefix}

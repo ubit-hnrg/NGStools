@@ -72,7 +72,7 @@ task MarkDuplicates {
    # While query-grouped isn't actually query-sorted, it's good enough for MarkDuplicates with ASSUME_SORT_ORDER="queryname"
    #-Xmx${java_heap_memory_initial}
   command {
-    java -Dsamjdk.compression_level=${compression_level} -Xms4000m -jar ${toolpath}${gatk_jar} \
+    java -Dsamjdk.compression_level=${compression_level} -Xms6000m -jar ${toolpath}${gatk_jar} \
       MarkDuplicates \
       --INPUT ${sep=' --INPUT ' input_bams} \
       --OUTPUT ${output_bam_basename}.bam \
@@ -113,7 +113,7 @@ task SortAndFixTags {
     command {
      set -o pipefail
 
-     java -Dsamjdk.compression_level=${compression_level} -Xms4000m -jar ${toolpath}${gatk_jar} \
+     java -Dsamjdk.compression_level=${compression_level} -Xms6000m -jar ${toolpath}${gatk_jar} \
       SortSam \
       --INPUT ${input_bam} \
       --OUTPUT /dev/stdout \
@@ -121,7 +121,7 @@ task SortAndFixTags {
       --CREATE_INDEX false \
       --CREATE_MD5_FILE false \
       | \
-     java -Dsamjdk.compression_level=${compression_level} -Xms4000m -jar ${toolpath}${gatk_jar} \
+     java -Dsamjdk.compression_level=${compression_level} -Xms6000m -jar ${toolpath}${gatk_jar} \
       SetNmMdAndUqTags \
       --INPUT /dev/stdin \
       --OUTPUT ${output_bam_basename}.bam \
@@ -208,7 +208,7 @@ task BaseRecalibrator {
   String toolpath
 
   command { 
-    java -Xms4000m -DGATK_STACKTRACE_ON_USER_EXCEPTION=true -jar ${toolpath}${gatk_jar} \
+    java -Xms8000m -DGATK_STACKTRACE_ON_USER_EXCEPTION=true -jar ${toolpath}${gatk_jar} \
       BaseRecalibrator \
       -R ${ref_fasta} \
       -I ${input_bam} \
@@ -236,7 +236,7 @@ task GatherBqsrReports {
 
 
   command {
-    java -Xms3000m -jar ${toolpath}${gatk_jar} \
+    java -Xms5000m -jar ${toolpath}${gatk_jar} \
       GatherBQSRReports \
       -I ${sep=' -I ' input_bqsr_reports} \
       -O ${output_report_filename}
@@ -264,7 +264,7 @@ task ApplyBQSR {
  
 
   command {  
-    java -Xms3000m -jar ${toolpath}${gatk_jar} \
+    java -Xms7000m -jar ${toolpath}${gatk_jar} \
       ApplyBQSR \
       -R ${ref_fasta} \
       -I ${input_bam} \
@@ -294,7 +294,7 @@ String gatk_jar
   String toolpath
   
   command {
-    java -Dsamjdk.compression_level=${compression_level} -Xmx3g -jar ${toolpath}${gatk_jar} \
+    java -Dsamjdk.compression_level=${compression_level} -Xmx5g -jar ${toolpath}${gatk_jar} \
       GatherBamFiles \
       -I ${sep=' -I ' input_bams} \
       -O ${output_bam_basename}.bam \
@@ -331,7 +331,7 @@ task ScatterIntervalList {
   command <<<
     set -e
     mkdir out
-    java -Dsamjdk.compression_level=${compression_level} -Xmx1g -jar ${toolpath}${gatk_jar} \
+    java -Dsamjdk.compression_level=${compression_level} -Xmx3g -jar ${toolpath}${gatk_jar} \
       IntervalListTools \
       -I ${interval_list} \
       -O out \
@@ -389,7 +389,7 @@ task HaplotypeCaller {
   #
   command <<<
       
-      java -Xmx2g -jar ${toolpath}${gatk_jar} \
+      java -Xmx5g -jar ${toolpath}${gatk_jar} \
       HaplotypeCaller \
       -R ${ref_fasta} \
       -I ${input_bam} \
@@ -434,7 +434,7 @@ String gatk_jar
   String toolpath
   
   command {
-    java -Dsamjdk.compression_level=${compression_level} -Xmx3g -jar ${toolpath}${gatk_jar} \
+    java -Dsamjdk.compression_level=${compression_level} -Xmx6g -jar ${toolpath}${gatk_jar} \
       GatherBamFiles \
       -I ${sep=' -I ' input_bams} \
       -O ${output_bam_basename}_haplotype.bam \
@@ -462,7 +462,7 @@ task MergeVCFs {
   # Using MergeVcfs instead of GatherVcfs so we can create indices
   # See https://github.com/broadinstitute/picard/issues/789 for relevant GatherVcfs ticket
   command {
-    java -Xms2000m -jar ${toolpath}${gatk_jar} \
+    java -Xms4000m -jar ${toolpath}${gatk_jar} \
       MergeVcfs \
       -I ${sep=' -I ' input_vcfs} \
       -O ${output_vcf_name} 
@@ -489,7 +489,7 @@ task HardfilterVCF {
   
   String output_vcf_name = vcf_basename + ".filtered.vcf.gz"
   command {
-    java -Xms3000m -jar ${toolpath}${gatk_jar} \
+    java -Xms6000m -jar ${toolpath}${gatk_jar} \
       VariantFiltration \
       -V ${input_vcf} \
       -L ${interval_list} \
@@ -608,7 +608,7 @@ task ValidateGVCF {
 
 
   command {
-    java -Xms3000m -jar ${toolpath}${gatk_jar} \
+    java -Xms5000m -jar ${toolpath}${gatk_jar} \
       ValidateVariants \
       -V ${input_vcf} \
       --reference ${ref_fasta} \
@@ -635,7 +635,7 @@ task CollectGvcfCallingMetrics {
 
 
   command {
-    java -Xms2000m -jar ${toolpath}${gatk_jar} \
+    java -Xms5000m -jar ${toolpath}${gatk_jar} \
       CollectVariantCallingMetrics \
       -I ${input_vcf} \
       -O ${metrics_basename} \
