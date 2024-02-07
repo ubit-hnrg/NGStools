@@ -208,7 +208,7 @@ task BaseRecalibrator {
   String toolpath
 
   command { 
-    java -Xms18g -DGATK_STACKTRACE_ON_USER_EXCEPTION=true -jar ${toolpath}${gatk_jar} \
+    java -Xms24g -DGATK_STACKTRACE_ON_USER_EXCEPTION=true -jar ${toolpath}${gatk_jar} \
       BaseRecalibrator \
       -R ${ref_fasta} \
       -I ${input_bam} \
@@ -294,7 +294,7 @@ String gatk_jar
   String toolpath
   
   command {
-    java -Dsamjdk.compression_level=${compression_level} -Xmx5g -jar ${toolpath}${gatk_jar} \
+    java -Dsamjdk.compression_level=${compression_level} -Xmx10g -jar ${toolpath}${gatk_jar} \
       GatherBamFiles \
       -I ${sep=' -I ' input_bams} \
       -O ${output_bam_basename}.bam \
