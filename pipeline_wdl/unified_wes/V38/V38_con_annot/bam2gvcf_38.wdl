@@ -208,7 +208,7 @@ task BaseRecalibrator {
   String toolpath
 
   command { 
-    java -Xms4g -DGATK_STACKTRACE_ON_USER_EXCEPTION=true -jar ${toolpath}${gatk_jar} \
+    java -Xms4g -Xmx10g  -DGATK_STACKTRACE_ON_USER_EXCEPTION=true -jar ${toolpath}${gatk_jar} \
       BaseRecalibrator \
       -R ${ref_fasta} \
       -I ${input_bam} \
