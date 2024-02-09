@@ -41,10 +41,11 @@ task borrado_fastp {
 }
 
 task borrado {
-String archivo_borrar
+File archivo_borrar
 
 command <<<
-readlink -f ${archivo_borrar} | xargs rm
+#readlink -f ${archivo_borrar} | xargs rm
+rm ${archivo_borrar}
 >>>
 }
 
@@ -454,6 +455,15 @@ workflow main_workflow {
       java_heap_memory_initial = java_heap_memory_initial,
       intervalo_captura = intervalo_captura    
       } 
+
+     scatter (file in ConvertPairedFastQsToUnmappedBamWf.output_ubams){
+#     
+      call borrado {
+        input:
+        archivo_borrar = file
+
+      }
+     }
 
     ######single_genotype
     call single_genotypeGVCF.singleGenotypeGVCFs {

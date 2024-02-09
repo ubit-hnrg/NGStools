@@ -276,6 +276,7 @@ task ApplyBQSR {
       --add-output-sam-program-record \
       --create-output-bam-md5 \
       --use-original-qualities
+  
   }
 
   output {
@@ -740,11 +741,20 @@ task CrossCheckFingerprints {
 #}
 
 
+task borrar_intermedios {
+    File path_borrar
+    command{
+      rm ${path_borrar} 
+    }
+}
+
+
 task symlink_important_files {
     File output_to_save
     String path_save
     command{
        cp -L ${output_to_save} ${path_save}
+       rm ${output_to_save}
     }
 }
 
@@ -965,11 +975,11 @@ workflow bam2gvcf {
   }
 
   #scatter (paths in ApplyBQSR.recalibrated_bam){
-  #call borrado as borrar_Applybqsr { 
-  # 
-  #  input:
-  #    archivo_borrar = paths
-  #}
+ #call path_borrado {
+ #   input:
+ #   path1 = fastp.fastq_cleaned_R1,
+ #   path2 = fastp.fastq_cleaned_R2
+ # }
   #}
 
 
@@ -1109,25 +1119,37 @@ workflow bam2gvcf {
   toolpath = toolpath
   }
   
-  #####agrego calls quality control
+  #####agrego borrado 
+  Array[File] borrados = ["${reduce_bam.output_reduced_bam}","${ApplyBQSR.recalibrated_bam }","${SortAndFixTags.output_bam}","${MarkDuplicates.output_bam}"]
+
 
 
 
 
   Array[File] salidas = ["${GatherBamFilesHaplotype.output_bam}","${GatherBamFilesHaplotype.output_bam_index}","${GatherBamFiles.output_bam}","${GatherBamFiles.output_bam_index}","${MergeVCFs.output_vcf}","${MergeVCFs.output_vcf_index}","${CollectGvcfCallingMetrics.summary_metrics}","${CollectGvcfCallingMetrics.detail_metrics}"]# ,"${samtools_stat.samtools_stat_TSO_bam}","${samtools_reports_file.output_global_report}"]
 
-  scatter (paths in salidas) {
-    call symlink_important_files {
+  scatter (paths in borrados) {
+    call borrar_intermedios {
     input:
-    output_to_save = paths,
-    path_save = path_save
+    path_borrar = paths
+    
     }
   }
 
+scatter (file in ConvertPairedFastQsToUnmappedBamWf.output_ubams){
+#     
+      call borrado {
+        input:
+        archivo_borrar = file
+
+      }
+     }
 
  #   Outputs that will be retained when execution is complete  
   output {
    #####outputs workflow ubam2gvcf
+   #File p_borrar1 = path_borrado.path_borrar1 
+   #File p_borrar2 = path_borrado.path_borrar2
 
    File duplication_metrics = MarkDuplicates.duplicate_metrics
    File bqsr_report = GatherBqsrReports.output_bqsr_report
