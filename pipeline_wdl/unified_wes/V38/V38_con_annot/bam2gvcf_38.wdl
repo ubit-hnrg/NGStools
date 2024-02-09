@@ -208,7 +208,9 @@ task BaseRecalibrator {
   String toolpath
 
   command { 
-    java -Xms4g -Xmx6g  -DGATK_STACKTRACE_ON_USER_EXCEPTION=true -jar ${toolpath}${gatk_jar} \
+    java --java-options "-XX:GCTimeLimit=50 -XX:GCHeapFreeLimit=10 -XX:+PrintFlagsFinal \
+      -XX:+PrintGCTimeStamps -XX:+PrintGCDateStamps -XX:+PrintGCDetails \
+      -Xloggc:gc_log.log -Xms4000m" -jar ${toolpath}${gatk_jar} \
       BaseRecalibrator \
       -R ${ref_fasta} \
       -I ${input_bam} \
