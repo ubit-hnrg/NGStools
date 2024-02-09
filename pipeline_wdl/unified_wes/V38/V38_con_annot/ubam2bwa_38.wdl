@@ -150,8 +150,7 @@ task Serial_SamToFastq_BwaMem_MergeBamAlignment {
         --UNMAPPED_READ_STRATEGY COPY_TO_TAG\
         --ADD_PG_TAG_TO_READS false
 
-        #mepa que puede andar sino vuela
-        rm $ubamfile 
+        
 
 
   done        
