@@ -456,7 +456,8 @@ workflow main_workflow {
       intervalo_captura = intervalo_captura    
       } 
 
-     scatter (file in ConvertPairedFastQsToUnmappedBamWf.output_ubams){
+Array [File] intermedio_borrar = ConvertPairedFastQsToUnmappedBamWf.output_ubams
+     scatter (file in intermedio_borrar){
 #     
       call borrado {
         input:
