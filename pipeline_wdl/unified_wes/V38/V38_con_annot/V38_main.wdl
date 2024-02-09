@@ -456,15 +456,6 @@ workflow main_workflow {
       intervalo_captura = intervalo_captura    
       } 
 
-Array [File] intermedio_borrar = ConvertPairedFastQsToUnmappedBamWf.output_ubams
-     scatter (file in intermedio_borrar){
-#     
-      call borrado {
-        input:
-        archivo_borrar = file
-
-      }
-     }
 
     ######single_genotype
     call single_genotypeGVCF.singleGenotypeGVCFs {
@@ -532,6 +523,16 @@ Array [File] intermedio_borrar = ConvertPairedFastQsToUnmappedBamWf.output_ubams
 
 
    } ###fin scatter gvcf
+
+   Array [File] intermedio_borrar = ConvertPairedFastQsToUnmappedBamWf.output_ubams
+     scatter (file in intermedio_borrar){
+#     
+      call borrado {
+        input:
+        archivo_borrar = file
+
+      }
+     }
 
 #####creo aca va lo nuevo con todas las N_bases del fastq. Creo...
    #Array[Int] N_reads_bams = bam2gvcf.N_reads_bam
