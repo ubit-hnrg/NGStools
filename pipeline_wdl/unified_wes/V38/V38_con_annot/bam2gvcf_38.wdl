@@ -1136,14 +1136,7 @@ workflow bam2gvcf {
     }
   }
 
-scatter (file in ConvertPairedFastQsToUnmappedBamWf.output_ubams){
-#     
-      call borrar_intermedios as borrado2 {
-        input:
-        path_borrar = file
 
-      }
-     }
 
  #   Outputs that will be retained when execution is complete  
   output {
