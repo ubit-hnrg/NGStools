@@ -208,8 +208,7 @@ task BaseRecalibrator {
   String toolpath
 
   command { 
-    java --java-options "-XX:GCTimeLimit=50 -XX:GCHeapFreeLimit=10 -XX:+PrintFlagsFinal \
-      -XX:+PrintGCTimeStamps -XX:+PrintGCDateStamps -XX:+PrintGCDetails \
+    java --java-options "-XX:GCTimeLimit=50 -XX:GCHeapFreeLimit=10 \
       -Xloggc:gc_log.log -Xms4000m" -jar ${toolpath}${gatk_jar} \
       BaseRecalibrator \
       -R ${ref_fasta} \
