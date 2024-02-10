@@ -744,10 +744,9 @@ task CrossCheckFingerprints {
 task borrar_intermedios {
     Array[File] path_borrar
     command <<<
-    set -euo pipefail
-    #while read -r line; do
-    rm ~{sep=' ' path_borrar}
-    #done < "${path_borrar}"
+    #!/bin/bash
+        set -e
+        ~{sep=' ' path_borrar} | xargs rm -f
     >>>
 }
 
