@@ -238,7 +238,7 @@ task GatherBqsrReports {
 
 
   command {
-    java -Xms5000m -jar ${toolpath}${gatk_jar} \
+    java -Xms3000m -jar ${toolpath}${gatk_jar} \
       GatherBQSRReports \
       -I ${sep=' -I ' input_bqsr_reports} \
       -O ${output_report_filename}
@@ -266,7 +266,7 @@ task ApplyBQSR {
  
 
   command {  
-    java -Xms4g -Xmx6g -jar ${toolpath}${gatk_jar} \
+    java -Xms3g -Xmx5g -XX:GCHeapFreeLimit=10 -jar ${toolpath}${gatk_jar} \
       ApplyBQSR \
       -R ${ref_fasta} \
       -I ${input_bam} \
@@ -297,7 +297,7 @@ String gatk_jar
   String toolpath
   
   command {
-    java -Dsamjdk.compression_level=${compression_level} -Xmx10g -jar ${toolpath}${gatk_jar} \
+    java -Dsamjdk.compression_level=${compression_level} -Xmx4g -XX:GCHeapFreeLimit=10 -jar ${toolpath}${gatk_jar} \
       GatherBamFiles \
       -I ${sep=' -I ' input_bams} \
       -O ${output_bam_basename}.bam \
@@ -438,7 +438,7 @@ String gatk_jar
   String toolpath
   
   command {
-    java -Dsamjdk.compression_level=${compression_level} -Xmx6g -jar ${toolpath}${gatk_jar} \
+    java -Dsamjdk.compression_level=${compression_level} -Xmx6g -XX:GCHeapFreeLimit=10 -jar ${toolpath}${gatk_jar} \
       GatherBamFiles \
       -I ${sep=' -I ' input_bams} \
       -O ${output_bam_basename}_haplotype.bam \
@@ -466,7 +466,7 @@ task MergeVCFs {
   # Using MergeVcfs instead of GatherVcfs so we can create indices
   # See https://github.com/broadinstitute/picard/issues/789 for relevant GatherVcfs ticket
   command {
-    java -Xms4000m -jar ${toolpath}${gatk_jar} \
+    java -Xms4000m -XX:GCHeapFreeLimit=10 -jar ${toolpath}${gatk_jar} \
       MergeVcfs \
       -I ${sep=' -I ' input_vcfs} \
       -O ${output_vcf_name} 
