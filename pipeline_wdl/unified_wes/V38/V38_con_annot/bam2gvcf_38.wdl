@@ -1133,7 +1133,7 @@ workflow bam2gvcf {
   #scatter (paths in borrados) {
     call borrar_intermedios {
     input:
-    path_borrar = paths
+    path_borrar = salidas
     
     }
   #}
