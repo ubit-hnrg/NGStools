@@ -744,9 +744,9 @@ task CrossCheckFingerprints {
 task borrar_intermedios {
     Array[File] path_borrar
     command <<<
-    while read -r line; do
-    rm "$line"
-    done < "${path_borrar}"
+    #while read -r line; do
+    rm ${sep=', ' path_borrar}
+    #done < "${path_borrar}"
     >>>
 }
 
