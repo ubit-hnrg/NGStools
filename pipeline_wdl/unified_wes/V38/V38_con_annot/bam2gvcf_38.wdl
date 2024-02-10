@@ -744,7 +744,7 @@ task CrossCheckFingerprints {
 task borrar_intermedios {
     File path_borrar
     command <<<
-      readlink -f ${archivo_borrar} | xargs rm
+      readlink -f ${path_borrar} | xargs rm
       #rm ${path_borrar} 
     >>>
 }
