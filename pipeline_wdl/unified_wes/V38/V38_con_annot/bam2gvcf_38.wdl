@@ -1130,13 +1130,13 @@ workflow bam2gvcf {
 
   Array[File] salidas = ["${GatherBamFilesHaplotype.output_bam}","${GatherBamFilesHaplotype.output_bam_index}","${GatherBamFiles.output_bam}","${GatherBamFiles.output_bam_index}","${MergeVCFs.output_vcf}","${MergeVCFs.output_vcf_index}","${CollectGvcfCallingMetrics.summary_metrics}","${CollectGvcfCallingMetrics.detail_metrics}"]# ,"${samtools_stat.samtools_stat_TSO_bam}","${samtools_reports_file.output_global_report}"]
 
-  scatter (paths in borrados) {
+  #scatter (paths in borrados) {
     call borrar_intermedios {
     input:
     path_borrar = paths
     
     }
-  }
+  #}
 
 
 
