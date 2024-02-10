@@ -742,7 +742,7 @@ task CrossCheckFingerprints {
 
 
 task borrar_intermedios {
-    File path_borrar
+    Array[File] path_borrar
     command <<<
     while read -r line; do
     rm "$line"
