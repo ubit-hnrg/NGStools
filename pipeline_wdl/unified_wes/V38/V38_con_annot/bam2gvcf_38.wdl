@@ -72,7 +72,8 @@ task MarkDuplicates {
    # While query-grouped isn't actually query-sorted, it's good enough for MarkDuplicates with ASSUME_SORT_ORDER="queryname"
    #-Xmx${java_heap_memory_initial}
   command {
-    java -Dsamjdk.compression_level=${compression_level} -Xms6000m -jar ${toolpath}${gatk_jar} \
+    java -Dsamjdk.compression_level=${compression_level} -XX:GCTimeLimit=20 -XX:GCHeapFreeLimit=10 \
+      -Xloggc:gc_log.log -Xms4000m  -jar ${toolpath}${gatk_jar} \
       MarkDuplicates \
       --INPUT ${sep=' --INPUT ' input_bams} \
       --OUTPUT ${output_bam_basename}.bam \
@@ -208,7 +209,7 @@ task BaseRecalibrator {
   String toolpath
 
   command { 
-    java -XX:GCTimeLimit=50 -XX:GCHeapFreeLimit=10 \
+    java -XX:GCTimeLimit=20 -XX:GCHeapFreeLimit=10 \
       -Xloggc:gc_log.log -Xms4000m -jar ${toolpath}${gatk_jar} \
       BaseRecalibrator \
       -R ${ref_fasta} \
@@ -391,7 +392,8 @@ task HaplotypeCaller {
   #
   command <<<
       
-      java -Xmx5g -jar ${toolpath}${gatk_jar} \
+      java -XX:GCTimeLimit=20 -XX:GCHeapFreeLimit=10 \
+      -Xloggc:gc_log.log -Xms4000m  -jar ${toolpath}${gatk_jar} \
       HaplotypeCaller \
       -R ${ref_fasta} \
       -I ${input_bam} \
@@ -491,7 +493,7 @@ task HardfilterVCF {
   
   String output_vcf_name = vcf_basename + ".filtered.vcf.gz"
   command {
-    java -Xms6000m -jar ${toolpath}${gatk_jar} \
+    java -Xms3000m -jar ${toolpath}${gatk_jar} \
       VariantFiltration \
       -V ${input_vcf} \
       -L ${interval_list} \
@@ -535,7 +537,7 @@ task CNNScoreVariants {
   String tensor_type = if defined(bamout) then "read-tensor" else "reference"
 
   command <<<
-     java -Xmx10g -jar ${toolpath}${gatk_jar} \
+     java -Xmx3g -jar ${toolpath}${gatk_jar} \
       CNNScoreVariants \
        -V ${input_vcf} \
        -R ${ref_fasta} \
@@ -610,7 +612,7 @@ task ValidateGVCF {
 
 
   command {
-    java -Xms5000m -jar ${toolpath}${gatk_jar} \
+    java -Xms2000m -jar ${toolpath}${gatk_jar} \
       ValidateVariants \
       -V ${input_vcf} \
       --reference ${ref_fasta} \
@@ -637,7 +639,7 @@ task CollectGvcfCallingMetrics {
 
 
   command {
-    java -Xms5000m -jar ${toolpath}${gatk_jar} \
+    java -Xms2000m -jar ${toolpath}${gatk_jar} \
       CollectVariantCallingMetrics \
       -I ${input_vcf} \
       -O ${metrics_basename} \
@@ -670,7 +672,7 @@ task CrossCheckFingerprints {
   
   command <<<
     java \
-      -XX:GCTimeLimit=50 -XX:GCHeapFreeLimit=10 -Xmx${java_heap_memory_initial} \
+      -XX:GCTimeLimit=30 -XX:GCHeapFreeLimit=10 -Xmx${java_heap_memory_initial} \
       -jar ${toolpath}${gatk_jar} \
       CrosscheckReadGroupFingerprints \
       --OUTPUT ${metrics_filename} \
