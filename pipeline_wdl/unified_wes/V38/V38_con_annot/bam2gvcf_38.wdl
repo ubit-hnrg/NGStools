@@ -209,8 +209,8 @@ task BaseRecalibrator {
   String toolpath
 
   command { 
-    java -XX:GCTimeLimit=20 -XX:GCHeapFreeLimit=10 \
-      -Xloggc:gc_log.log -Xms1000m -jar ${toolpath}${gatk_jar} \
+    java -XX:GCTimeLimit=20 -XX:GCHeapFreeLimit=10 -XX:+UseParallelGC -XX:ParallelGCThreads=2 \
+      -Xloggc:gc_log.log -Xms2000m -jar ${toolpath}${gatk_jar} \
       BaseRecalibrator \
       -R ${ref_fasta} \
       -I ${input_bam} \
@@ -266,7 +266,7 @@ task ApplyBQSR {
  
 
   command {  
-    java -Xms3g -Xmx5g -XX:GCHeapFreeLimit=10 -jar ${toolpath}${gatk_jar} \
+    java -Xms2g -Xmx4g -XX:GCHeapFreeLimit=10 -XX:+UseParallelGC -XX:ParallelGCThreads=2 -jar ${toolpath}${gatk_jar} \
       ApplyBQSR \
       -R ${ref_fasta} \
       -I ${input_bam} \
@@ -392,7 +392,7 @@ task HaplotypeCaller {
   #
   command <<<
       
-      java -XX:GCTimeLimit=20 -XX:GCHeapFreeLimit=10 \
+      java -XX:GCTimeLimit=20 -XX:GCHeapFreeLimit=10 -XX:+UseParallelGC -XX:ParallelGCThreads=2 \
       -Xloggc:gc_log.log -Xms4000m  -jar ${toolpath}${gatk_jar} \
       HaplotypeCaller \
       -R ${ref_fasta} \
