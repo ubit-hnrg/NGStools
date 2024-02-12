@@ -210,7 +210,7 @@ task BaseRecalibrator {
 
   command { 
     java -XX:GCTimeLimit=20 -XX:GCHeapFreeLimit=10 \
-      -Xloggc:gc_log.log -Xms4000m -jar ${toolpath}${gatk_jar} \
+      -Xloggc:gc_log.log -Xms1000m -jar ${toolpath}${gatk_jar} \
       BaseRecalibrator \
       -R ${ref_fasta} \
       -I ${input_bam} \
