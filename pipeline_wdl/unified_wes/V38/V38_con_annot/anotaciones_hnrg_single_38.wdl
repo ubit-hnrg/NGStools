@@ -282,13 +282,8 @@ String reference_version
 String path_save
 String pipeline_version
 File exon_coordinates
-File db_dbNSFP = "/data/new_dbs/annot/dbNSFP/dbNSFP4.5a.txt.gz"
+#File db_dbNSFP = "/data/new_dbs/annot/dbNSFP/dbNSFP4.5a.txt.gz"
 #File exon_coordinates_to_lib
-
-
-
-
-
 
 
 
