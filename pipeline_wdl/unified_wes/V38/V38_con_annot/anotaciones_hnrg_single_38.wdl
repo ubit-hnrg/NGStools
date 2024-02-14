@@ -469,7 +469,7 @@ input:
 call Snpsift as step9_PhastCons{
 input:
     samplename1 = samplename1, #### crearlo para la 38, bajando
-    parametros = "phastCons ", #/data/new_dbs/annot/phastCons/",
+    parametros = "phastCons /data/new_dbs/annot/phastCons/", #/data/new_dbs/annot/phastCons/",
     input_vcf = step8_VarType.salida_Snpsift, # step9_EVS.salida_Snpsift,
     toolpath = toolpath,
     java_heap_memory_initial = java_heap_memory_initial,
