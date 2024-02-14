@@ -479,7 +479,7 @@ input:
 
 #Step 11: Annotate with CADD (Combined Annotation Dependent Depletion) - 1000 Genome variants
 
-call Snpsift as step10_CADD{
+call Snpsift as step10_dbscSNV{
 input:
     samplename1 = samplename1,
     parametros = "Annotate -info RefSeq,Ensembl,RefSeq_region,RefSeq_gene,RefSeq_functional_consequence,RefSeq_id_c.change_p.change,Ensembl_region,Ensembl_gene,Ensembl_functional_consequence,Ensembl_id_c.change_p.change,ada_score,rf_score",
