@@ -466,7 +466,7 @@ input:
 #http://hgdownload.soe.ucsc.edu/goldenPath/hg19/phastCons100way/
 #/data/
 
-call Snpsift as step9_PhastCons{
+call Snpsift_nodb as step9_PhastCons{
 input:
     samplename1 = samplename1, #### crearlo para la 38, bajando
     parametros = "phastCons /data/new_dbs/annot/phastCons/", #/data/new_dbs/annot/phastCons/",
