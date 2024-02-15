@@ -657,45 +657,45 @@ Array[File] exon_tsv = qual_control.tsv_exon
   }
 
 
-   Array[File] array1 = bam2gvcf.borro1
-     scatter (file in array1){
-#     
-      call borrado as borrado2 {
-        input:
-        archivo_borrar = file
+#    Array[File] array1 = bam2gvcf.borro1
+#      scatter (file in array1){
+# #     
+#       call borrado as borrado2 {
+#         input:
+#         archivo_borrar = file
 
-      }
-     }
+#       }
+#      }
 
-Array[File] array2 = bam2gvcf.borro2
-     scatter (file in array2){
-#     
-      call borrado as borrado3 {
-        input:
-        archivo_borrar = file
+# Array[File] array2 = bam2gvcf.borro2
+#      scatter (file in array2){
+# #     
+#       call borrado as borrado3 {
+#         input:
+#         archivo_borrar = file
 
-      }
-     }
+#       }
+#      }
 
-     Array[File] array3 = bam2gvcf.borro3
-     scatter (file in array3){
-#     
-      call borrado as borrado4 {
-        input:
-        archivo_borrar = file
+#      Array[File] array3 = bam2gvcf.borro3
+#      scatter (file in array3){
+# #     
+#       call borrado as borrado4 {
+#         input:
+#         archivo_borrar = file
 
-      }
-     }
+#       }
+#      }
 
-     Array[File] array4 = bam2gvcf.borro4
-     scatter (file in array4){
-#     
-      call borrado as borrado5 {
-        input:
-        archivo_borrar = file
+#      Array[File] array4 = bam2gvcf.borro4
+#      scatter (file in array4){
+# #     
+#       call borrado as borrado5 {
+#         input:
+#         archivo_borrar = file
 
-      }
-     }
+#       }
+#      }
 
   #Array[File] fastp_qual = quality_control_V2.fastp_rep_out
   Array[File] sex_pred= qual_control.bams_sex_prediction

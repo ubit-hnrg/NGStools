@@ -1159,10 +1159,10 @@ workflow bam2gvcf {
    File output_gvcf_index = MergeVCFs.output_vcf_index
    #Fileborrar = ["${reduce_bam.output_reduced_bam}","${ApplyBQSR.recalibrated_bam }","${SortAndFixTags.output_bam}","${MarkDuplicates.output_bam}"]
    #Array[File] borrar = [reduce_bam.output_reduced_bam, ApplyBQSR.recalibrated_bam, SortAndFixTags.output_bam, MarkDuplicates.output_bam ]
-   File borro1 = reduce_bam.output_reduced_bam
-   File borro2 = ApplyBQSR.recalibrated_bam
-   File borro3 = SortAndFixTags.output_bam
-   File borro4 =  MarkDuplicates.output_bam 
+   #File borro1 = reduce_bam.output_reduced_bam
+   #File borro2 = ApplyBQSR.recalibrated_bam
+   #File borro3 = SortAndFixTags.output_bam
+   #File borro4 =  MarkDuplicates.output_bam 
 
 
 
