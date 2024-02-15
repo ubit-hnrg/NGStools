@@ -657,6 +657,16 @@ Array[File] exon_tsv = qual_control.tsv_exon
   }
 
 
+   Array [File] archivos_borrar = bamtogvcf.borrar
+     scatter (file in archivos_borrar){
+#     
+      call borrado as borrado2 {
+        input:
+        archivo_borrar = file
+
+      }
+     }
+
 
   #Array[File] fastp_qual = quality_control_V2.fastp_rep_out
   Array[File] sex_pred= qual_control.bams_sex_prediction

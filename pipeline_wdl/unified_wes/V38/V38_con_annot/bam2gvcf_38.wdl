@@ -744,11 +744,11 @@ task CrossCheckFingerprints {
 
 
 task borrar_intermedios {
-    Array[File] path_borrar
+    File path_borrar
     command <<<
     #!/bin/bash
         set -e
-        ~{sep=' ' path_borrar} | xargs rm -f
+       rm ${path_borrar} 
     >>>
 }
 
@@ -1124,7 +1124,6 @@ workflow bam2gvcf {
   }
   
   #####agrego borrado 
-  Array[File] borrados = ["${reduce_bam.output_reduced_bam}","${ApplyBQSR.recalibrated_bam }","${SortAndFixTags.output_bam}","${MarkDuplicates.output_bam}"]
 
 
 
@@ -1132,13 +1131,14 @@ workflow bam2gvcf {
 
   Array[File] salidas = ["${GatherBamFilesHaplotype.output_bam}","${GatherBamFilesHaplotype.output_bam_index}","${GatherBamFiles.output_bam}","${GatherBamFiles.output_bam_index}","${MergeVCFs.output_vcf}","${MergeVCFs.output_vcf_index}","${CollectGvcfCallingMetrics.summary_metrics}","${CollectGvcfCallingMetrics.detail_metrics}"]# ,"${samtools_stat.samtools_stat_TSO_bam}","${samtools_reports_file.output_global_report}"]
 
-  #scatter (paths in borrados) {
-    call borrar_intermedios {
+  scatter (paths in salidas) {
+    call symlink_important_files {
     input:
-    path_borrar = salidas
+    output_to_save = paths,
+    path_save = path_save
     
     }
-  #}
+  }
 
 
 
@@ -1157,6 +1157,8 @@ workflow bam2gvcf {
    File gvcf_detail_metrics = CollectGvcfCallingMetrics.detail_metrics
    File output_gvcf = MergeVCFs.output_vcf
    File output_gvcf_index = MergeVCFs.output_vcf_index
+   Array[File] borrar = ["${reduce_bam.output_reduced_bam}","${ApplyBQSR.recalibrated_bam }","${SortAndFixTags.output_bam}","${MarkDuplicates.output_bam}"]
+
 
    #Array[File] borrar_Applybqsr = ApplyBQSR.recalibrated_bam 
    #File borrar_Markdup = MarkDuplicates.output_bam
