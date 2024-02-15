@@ -22,7 +22,7 @@ command {
 set -o pipefail
 
 
-java -Xms${java_heap_memory_initial} -jar ${toolpath}/bptools/bptools.jar ${parametros} ${input_vcf} ${samplename1}.${nombre_step}.vcf
+java -Xms${java_heap_memory_initial}-Xmx12g -jar ${toolpath}/bptools/bptools.jar ${parametros} ${input_vcf} ${samplename1}.${nombre_step}.vcf
 
 }
 
@@ -49,7 +49,7 @@ String reference_version = "GRCh38.mane.1.2.refseq"
 command {
 
 set -o pipefail
-java -Xms${java_heap_memory_initial} -jar ${toolpath}SnpEff/snpEff/snpEff.jar ${reference_version} -hgvs \
+java -Xms${java_heap_memory_initial} -Xmx12g -jar ${toolpath}SnpEff/snpEff/snpEff.jar ${reference_version} -hgvs \
  -lof -noStats -geneID -canon  -c ${toolpath}SnpEff/snpEff/snpEff.config \
 ${input_vcf} > ${samplename1}.step1_SnpEff.vcf 
 }
@@ -76,7 +76,7 @@ String parametros
 
 command {
 set -o pipefail
-java -Xms${java_heap_memory_initial} -jar ${toolpath}SnpEff/snpEff/SnpSift.jar ${parametros} ${database} \
+java -Xms${java_heap_memory_initial} -Xmx12g -jar ${toolpath}SnpEff/snpEff/SnpSift.jar ${parametros} ${database} \
 ${input_vcf} > ${samplename1}.${nombre_step}.vcf
 
 }
@@ -153,7 +153,7 @@ File database
 
 command {
 set -o pipefail
-java -Xms${java_heap_memory_initial} -jar ${toolpath}SnpEff/snpEff/SnpSift.jar ${parametros} ${database} \
+java -Xms${java_heap_memory_initial} -Xmx12g -jar ${toolpath}SnpEff/snpEff/SnpSift.jar ${parametros} ${database} \
 ${input_vcf} > ${samplename1}.${nombre_step}.vcf
 
 }
@@ -175,7 +175,7 @@ String parametros
 
 command {
 set -o pipefail
-java -Xms${java_heap_memory_initial} -jar ${toolpath}SnpEff/snpEff/SnpSift.jar ${parametros} \
+java -Xms${java_heap_memory_initial} -Xmx12g -jar ${toolpath}SnpEff/snpEff/SnpSift.jar ${parametros} \
 ${input_vcf} > ${samplename1}.${nombre_step}.vcf
 
 }
