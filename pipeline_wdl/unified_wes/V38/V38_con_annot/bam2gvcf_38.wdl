@@ -114,7 +114,7 @@ task SortAndFixTags {
     command {
      set -o pipefail
 
-     java -Dsamjdk.compression_level=${compression_level} -Xms6000m -jar ${toolpath}${gatk_jar} \
+     java -Dsamjdk.compression_level=${compression_level} -Xms4000m -jar ${toolpath}${gatk_jar} \
       SortSam \
       --INPUT ${input_bam} \
       --OUTPUT /dev/stdout \
@@ -122,7 +122,7 @@ task SortAndFixTags {
       --CREATE_INDEX false \
       --CREATE_MD5_FILE false \
       | \
-     java -Dsamjdk.compression_level=${compression_level} -Xms6000m -jar ${toolpath}${gatk_jar} \
+     java -Dsamjdk.compression_level=${compression_level} -Xms4000m -jar ${toolpath}${gatk_jar} \
       SetNmMdAndUqTags \
       --INPUT /dev/stdin \
       --OUTPUT ${output_bam_basename}.bam \
@@ -393,7 +393,7 @@ task HaplotypeCaller {
   command <<<
       
       java -XX:GCTimeLimit=20 -XX:GCHeapFreeLimit=10 -XX:+UseParallelGC -XX:ParallelGCThreads=2 \
-      -Xloggc:gc_log.log -Xms4000m  -jar ${toolpath}${gatk_jar} \
+      -Xloggc:gc_log.log -Xms3000m  -jar ${toolpath}${gatk_jar} \
       HaplotypeCaller \
       -R ${ref_fasta} \
       -I ${input_bam} \

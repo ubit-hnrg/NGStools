@@ -657,7 +657,7 @@ Array[File] exon_tsv = qual_control.tsv_exon
   }
 
 
-   Array [File] archivos_borrar = bamtogvcf.borrar
+   Array [File] archivos_borrar = bam2gvcf.borrar
      scatter (file in archivos_borrar){
 #     
       call borrado as borrado2 {
