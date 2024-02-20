@@ -65,6 +65,7 @@ workflow singleGenotypeGVCFs {
     excess_het_threshold = excess_het_threshold,
     variant_filtered_vcf_filename = callset_name + ".single.variant_filtered.vcf.gz",
     sites_only_vcf_filename = callset_name + ".single.sites_only.variant_filtered.vcf.gz",
+    interval_list = region_padded_bed,
     gatk_jar = gatk_jar,
     toolpath = toolpath
    
@@ -95,13 +96,21 @@ workflow singleGenotypeGVCFs {
   }
   
 
-  call restrict_vcf{
+  call restrict_vcf {
     input:
     VCF  = FinalGatherVcf.output_vcf,
     region_padded_bed = region_padded_bed,
     toolpath = toolpath
   }
 
+call exon_distance {
+    input:
+    vcf_ok = restrict_vcf.VCF_restricted, #step12_clinVar.salida_Snpsift, #final_annot.salida_Snpsift,
+    exon_coord = exon_coordinates,
+    #exon_coordinates_to_lib = exon_coordinates_to_lib,
+    sample_name = samplename1,
+    path_save = path_save
+}
 #   call filtro_no_calls {
 #     input:
 #     gatk_jar = gatk_jar,
@@ -118,9 +127,11 @@ workflow singleGenotypeGVCFs {
 
   call annovar {
             input:
-            one_sample_vcf =  restrict_vcf.VCF_restricted,#filtro_no_calls.one_sample_vcf,,#get_individual_vcf.one_sample_vcf,
+            one_sample_vcf =  restrict_vcf.VCF_restricted, #filtro_no_calls.one_sample_vcf,,#get_individual_vcf.one_sample_vcf,
             sample = sample_name,#idsample.idsample,
             annovar_table_pl = annovar_table_pl,
+            toolpath = toolpath,
+
             db_annovar = db_annovar
          }
 
@@ -162,6 +173,9 @@ call symlink_important_files2 {
   output {
     # outputs from the small callset path through the wdl
   
+   File vcf_exon_distance = exon_distance.exon_dist 
+
+
 
    File? restricted_vcf = restrict_vcf.VCF_restricted
    File? outputvcf = FinalGatherVcf.output_vcf
@@ -251,7 +265,7 @@ task ImportGVCFs {
     # a significant amount of non-heap memory for native libraries.
     # Also, testing has shown that the multithreaded reader initialization
     # does not scale well beyond 5 threads, so don't increase beyond that.
-    java -Xmx1g -Xms1g -jar ${toolpath}${gatk_jar} \
+    java -Xmx4g -Xms4g -jar ${toolpath}${gatk_jar} \
     GenomicsDBImport \
     --genomicsdb-workspace-path ${workspace_dir_name} \
     --batch-size ${batch_size} \
@@ -341,8 +355,8 @@ task HardFilterAndMakeSitesOnlyVcf {
 
     java -Xmx3g -Xms3g -jar ${toolpath}${gatk_jar} \
       MakeSitesOnlyVcf \
-     -I=${variant_filtered_vcf_filename} \
-     -O=${sites_only_vcf_filename}
+     -I ${variant_filtered_vcf_filename} \
+     -O ${sites_only_vcf_filename}
 
   }
 
@@ -381,7 +395,7 @@ task GatherVcfs {
 
     java -Xmx6g -Xms6g -jar ${toolpath}${gatk_jar}\
     IndexFeatureFile \
-  --feature-file ${output_vcf_name}
+  --input ${output_vcf_name}
   >>>
  
   output {
@@ -437,7 +451,7 @@ task GatherMetrics {
     set -o pipefail
 
     
-    java -Xmx2g -Xms2g -jar ${toolpath}${gatk_jar} \
+    java -Xmx4g -Xms4g -jar ${toolpath}${gatk_jar} \
     AccumulateVariantCallingMetrics \
     --INPUT ${sep=" --INPUT " input_details_fofn} \
     --OUTPUT ${output_prefix}
@@ -575,26 +589,31 @@ output {
 task annovar{
     File one_sample_vcf
     File annovar_table_pl
-    File convert2annovar = '/home/hnrg/HNRG-pipeline-V0.1/tools/annovar/convert2annovar.pl'
-    File annotate_variation = '/home/hnrg/HNRG-pipeline-V0.1/tools/annovar/annotate_variation.pl'
-    File variants_reduction = '/home/hnrg/HNRG-pipeline-V0.1/tools/annovar/variants_reduction.pl'
+    String toolpath
+
+    #File convert2annovar = '/home/hnrg/HNRG-pipeline-V0.1/tools/annovar/2024/annovar/convert2annovar.pl'
+    #File annotate_variation = '/home/hnrg/HNRG-pipeline-V0.1/tools/annovar/2024/annovar/annotate_variation.pl'
+    #File variants_reduction = '/home/hnrg/HNRG-pipeline-V0.1/tools/annovar/2024/annovar/variants_reduction.pl'
+    #File coding_change = '/home/hnrg/HNRG-pipeline-V0.1/tools/annovar/2024/annovar/coding_change.pl'
+    #File retrieve_seq_from_fasta = '/home/hnrg/HNRG-pipeline-V0.1/tools/annovar/2024/annovar/retrieve_seq_from_fasta.pl'
 
 
-    String db_annovar = '/home/hnrg/HNRG-pipeline-V0.1/tools/annovar/hg38/'
+    String db_annovar = '/data/new_dbs/annovar/hg38/humandb/'
     String sample 
     
     # perl ${annovar_table_pl} ${one_sample_vcf} ${db_annovar} -vcfinput -buildver hg38 -thread 4 -remove -out ${sample} -protocol refGene,intervar_20180118,esp6500siv2_all,1000g2015aug_all,exac03,gnomad211_exome,gnomad312_genome,clinvar_20221231,dbscsnv11,dbnsfp42a,rmsk,tfbsConsSites,cytoBand,wgRna,targetScanS,genomicSuperDups,dgvMerged,gwasCatalog,ensGene,knownGene -operation  g,f,f,f,f,f,f,f,f,f,r,r,r,r,r,r,r,r,g,g -nastring . -otherinfo
 ## refGene,intervar_20180118,esp6500siv2_all,1000g2015aug_all,exac03,gnomad312_exome,gnomad312_genome,clinvar_20221231,dbscsnv11,dbnsfp42a,rmsk,tfbsConsSites,cytoBand,wgRna,targetScanS,genomicSuperDups,dgvMerged,gwasCatalog,ensGene,knownGene -operation  g,f,f,f,f,f,f,f,f,f,r,r,r,r,r,r,r,r,g,g
 #--slicing_threshold 10bp away from splicesite. 
     command<<<
-        perl ${annovar_table_pl} ${one_sample_vcf} ${db_annovar} -vcfinput -buildver hg38 -thread 4 -remove -out ${sample} -protocol refGene,intervar_20180118,esp6500siv2_all,1000g2015aug_all,exac03,gnomad40_exome,gnomad40_genome,clinvar_20221231,dbscsnv11,dbnsfp42a,rmsk,tfbsConsSites,cytoBand,wgRna,targetScanS,genomicSuperDups,dgvMerged,gwasCatalog,ensGene,knownGene -operation  g,f,f,f,f,f,f,f,f,f,r,r,r,r,r,r,r,r,g,g -nastring . -otherinfo --slicing_threshold 10 , -polish -intronhgvs
+        perl ${toolpath}annovar/2024/annovar/table_annovar.pl ${one_sample_vcf} ${db_annovar} -vcfinput -buildver hg38 -thread 4 -remove -out ${sample} -protocol refGene,intervar_20180118,esp6500siv2_all,1000g2015aug_all,exac03,gnomad40_exome,gnomad40_genome,clinvar_20221231,dbscsnv11,rmsk,cytoBand,wgRna,genomicSuperDups,dgvMerged,gwasCatalog,ensGene,knownGene -operation g,f,f,f,f,f,f,f,f,r,r,r,r,r,r,g,g -nastring . --otherinfo -polish -intronhgvs 30
+        #refGene,intervar_20180118,esp6500siv2_all,1000g2015aug_all,exac03,gnomad40_exome,gnomad40_genome,clinvar_20221231,dbscsnv11,rmsk,tfbsConsSites,cytoBand,wgRna,targetScanS,genomicSuperDups,dgvMerged,gwasCatalog,ensGene,knownGene -operation  g,f,f,f,f,f,f,f,f,r,r,r,r,r,r,r,r,g,g -nastring . -otherinfo --slicing_threshold 30 -polish -intronhgvs
 
-    
+    ###dbnsfp con q anoto? con snpsift?
     >>>
 
     output {
-        File annovar_vcf = '${sample}.hg19_multianno.vcf'
-        File annovar_txt = '${sample}.hg19_multianno.txt'
+        File annovar_vcf = '${sample}.hg38_multianno.vcf'
+        File annovar_txt = '${sample}.hg38_multianno.txt'
     }
 
 }
@@ -614,23 +633,69 @@ task get_tsv_from_annovar {
     File gnomad_plof ###gnomad plof for hnrg -> lo usan en brasil.
 
     command <<<
+    
     #columnas a cortar (localizando Otherinfo column y las 2 siguientes)
-    nl0=$(head -n1 ${annovar_txt}|tr '\t' '\n'|nl|grep 'Otherinfo'|cut -f1)
-    nl1=$((nl0 + 1))
-    nl2=$((nl0 + 2))
+    #nl0=$(head -n1 ${annovar_txt}|tr '\t' '\n'|nl|grep 'Otherinfo1'|cut -f1)
+    #nl1=$((nl0 + 1))
+    #nl2=$((nl0 + 2))
+    ###modifico para hacer dinamico el rango de otherinfo cols enero2024
+
+    #header=$(head -n1 ${annovar_txt})
+
+# Utiliza awk para obtener los números de las columnas que contienen "Otherinfo"
+#otherinfo_cols=$(echo "$header" | awk '{
+#    for(i = 1; i <= NF; i++) {
+#        if($i ~ /Otherinfo/) {
+#            printf "%s,", i;
+#        }
+#    }
+#}' | sed 's/,$//')
 
 
-    # meto header (dejando el campo 'Otherinfo' que despues va a aser remplazado por las columnas del vcf original)
-    head -n1 ${annovar_txt} > ${sample}.hg19_multianno.tsv
+
+    # meto header (dejando el campo 'Otherinfo' que despues va a ser remplazado por las columnas del vcf original)
+    #head -n1 ${annovar_txt} > ${sample}.hg38_multianno.tsv
     # vuelo las tres columnas de otherinfo
-    tail -n+2 ${annovar_txt}|cut -f$nl0,$nl1,$nl2 --complement >>  ${sample}.hg19_multianno.tsv;
-    vcf_header=$(grep '#CH' ${annovar_vcf});
+    #tail -n+2 ${annovar_txt}|cut -f$nl0,$nl1,$nl2 --complement >>  ${sample}.hg38_multianno.tsv; #modifico para usar el rango dinamco
+    #tail -n+2 ${annovar_txt}|cut -f$otherinfo_cols --complement >>  ${sample}.hg38_multianno.tsv;
+
+    #####agu enero 2024
+    header=$(head -n1 ${annovar_txt})
+    otherinfo_cols=$(echo "$header" | awk '{
+    for(i = 1; i <= NF; i++) {
+        if($i == "Otherinfo1" || $i == "Otherinfo2" || $i == "Otherinfo3") {
+            printf "%s,", i;
+        }
+    }
+}' | sed 's/,$//')
+
+# Convierte los números de columna en un rango para 'cut'
+cut_range=$(echo $otherinfo_cols | sed 's/,/,/g')
+
+head -n1 ${annovar_txt} | cut -f$cut_range --complement >  ${sample}.hg38_multianno.tsv
+tail -n+2 ${annovar_txt} | cut -f$cut_range --complement >>  ${sample}.hg38_multianno.tsv
+
+vcf_header=$(grep '#CH' ${annovar_vcf});
+otherinfo_index=4
+vcf_col_index=1
+
+total_vcf_fields=$(echo $vcf_header | awk '{print NF}')
+
+# Bucle para reemplazar Otherinfo4, Otherinfo5, ..., Otherinfo10
+for (( ; otherinfo_index<=13 && vcf_col_index<=total_vcf_fields; otherinfo_index++, vcf_col_index++ )); do
+    # Extrae el elemento actual del encabezado VCF
+    vcf_field=$(echo $vcf_header | awk -v col=$vcf_col_index '{print $col}')
+
+    # Reemplaza "OtherinfoX" con el campo correspondiente del VCF
+    sed -i "s/Otherinfo$otherinfo_index/$vcf_field/" ${sample}.hg38_multianno.tsv
+done
+#####fin agu 
 
     #remplazo el header
-    sed -i "s/Otherinfo/$vcf_header/g" ${sample}.hg19_multianno.tsv;
+    #sed -i "s/Otherinfo/$vcf_header/g" ${sample}.hg38_multianno.tsv;
 
     #join one multianno tsv file AND joint genotyped vcf. This script (join_vcf.py) also postprocess Intervar columns.
-    python ${joinPY} --multianno_tsv=${sample}.hg19_multianno.tsv --vcf_multisample=${restrictedVCF} --output=${sample}.multianno_restrict.tsv
+    python ${joinPY} --multianno_tsv=${sample}.hg38_multianno.tsv --vcf_multisample=${restrictedVCF} --output=${sample}.multianno_restrict.tsv
     #change dots by tabs.
     sed -i -e "s|\.	|	|g" ${sample}.multianno_restrict.tsv
     
@@ -657,4 +722,33 @@ task symlink_important_files2 {
        cp -L ${output_to_save1} ${path_save} #${sample} 
        cp -L ${output_to_save3} ${path_save} #${sample}
     }
+}
+
+task exon_distance {
+File vcf_ok
+File exon_coord
+String sample_name
+#File exon_coordinates_to_lib
+String path_save
+
+command{
+    #!/bin/bash
+    set -e
+
+    grep "^#" ${vcf_ok} > head_vcf.vcf
+    grep -v "#" ${vcf_ok}| sort -k1,1 -k2,2n >> head_vcf.vcf
+    
+    ##test
+    ##sort -k1,1V -k2,2n ${exon_coord} >> sorted_exon_bed.bed
+    
+    bedtools closest -a head_vcf.vcf -b ${exon_coord} -D a | cut -f1,2,12-18  > ${sample_name}.exon_distance.tsv
+
+    rm head_vcf.vcf
+    }
+
+output {
+File exon_dist = "${sample_name}.exon_distance.tsv"
+#File exon_dist_to_lib = "${sample_name}.exon_distance_tolib.tsv"
+
+}
 }

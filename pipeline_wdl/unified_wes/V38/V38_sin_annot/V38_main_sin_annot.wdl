@@ -297,12 +297,12 @@ workflow main_workflow {
 
 
   ##################anotacion funcional
-  String reference_version = "GRCh38.14"
+  String reference_version = "GRCh38.mane.1.2.refseq"
 
 
   ##annovar
   ###############agregar path a la 38
-  String db_annovar = "/home/hnrg/HNRG-pipeline-V0.1/dbs/hg19_annovar/" #path annovar 
+  String db_annovar = "/data/new_dbs/annovar/hg38/humandb" #path annovar 
     
     
     ###esto creo q vuela
@@ -312,7 +312,7 @@ workflow main_workflow {
 
   ###################### inputs para crear intervalo
   File intervalo_captura
-  File chromosome_length = "/data/new_dbs/grch38/chromosome_lengths_hg38.txt" #"/home/hnrg/HNRG-pipeline-V0.1/libraries/GRCh37/chromosome_lengths_hg19.txt"
+  File chromosome_length = "/data/new_dbs/grch38/hg38_broad/chromosome_lenght_hg38_broad.txt" #"/home/hnrg/HNRG-pipeline-V0.1/libraries/GRCh37/chromosome_lengths_hg19.txt"
   Int padding = "100"
   Int merge_tolerance = "200"
 
@@ -650,7 +650,7 @@ Array[File] exon_tsv = qual_control.tsv_exon
   Array[File] sex_pred= qual_control.bams_sex_prediction
   Array[File] gene_list = singleGenotypeGVCFs.annovar_gene_list 
   Array[File] plof = singleGenotypeGVCFs.gene_plof_file 
-  Array[File] exon_distances = FuncionalAnnotationSingle.vcf_exon_distance
+  Array[File] exon_distances = singleGenotypeGVCFs.vcf_exon_distance
   Array[File] no_cubierto = qual_control.nocubierto
 
 

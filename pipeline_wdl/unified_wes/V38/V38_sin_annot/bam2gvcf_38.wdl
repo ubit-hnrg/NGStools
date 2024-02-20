@@ -72,17 +72,18 @@ task MarkDuplicates {
    # While query-grouped isn't actually query-sorted, it's good enough for MarkDuplicates with ASSUME_SORT_ORDER="queryname"
    #-Xmx${java_heap_memory_initial}
   command {
-    java -Dsamjdk.compression_level=${compression_level} -Xms4000m -jar ${toolpath}${gatk_jar} \
+    java -Dsamjdk.compression_level=${compression_level} -XX:GCTimeLimit=20 -XX:GCHeapFreeLimit=10 \
+      -Xloggc:gc_log.log -Xms4000m  -jar ${toolpath}${gatk_jar} \
       MarkDuplicates \
-      --INPUT=${sep=' --INPUT=' input_bams} \
-      --OUTPUT=${output_bam_basename}.bam \
-      --METRICS_FILE=${metrics_filename} \
-      --VALIDATION_STRINGENCY=SILENT \
-      --OPTICAL_DUPLICATE_PIXEL_DISTANCE=2500 \
-      --ASSUME_SORT_ORDER="queryname" \
-      --CREATE_MD5_FILE=true \
-      --CLEAR_DT="false" \
-      --ADD_PG_TAG_TO_READS=false
+      --INPUT ${sep=' --INPUT ' input_bams} \
+      --OUTPUT ${output_bam_basename}.bam \
+      --METRICS_FILE ${metrics_filename} \
+      --VALIDATION_STRINGENCY SILENT \
+      --OPTICAL_DUPLICATE_PIXEL_DISTANCE 2500 \
+      --ASSUME_SORT_ORDER "queryname" \
+      --CREATE_MD5_FILE true \
+      --CLEAR_DT "false" \
+      --ADD_PG_TAG_TO_READS false
     }
 
     ####se agrega
@@ -208,7 +209,8 @@ task BaseRecalibrator {
   String toolpath
 
   command { 
-    java -Xms4000m -DGATK_STACKTRACE_ON_USER_EXCEPTION=true -jar ${toolpath}${gatk_jar} \
+    java -XX:GCTimeLimit=20 -XX:GCHeapFreeLimit=10 -XX:+UseParallelGC -XX:ParallelGCThreads=2 \
+      -Xloggc:gc_log.log -Xms2000m -jar ${toolpath}${gatk_jar} \
       BaseRecalibrator \
       -R ${ref_fasta} \
       -I ${input_bam} \
@@ -264,7 +266,7 @@ task ApplyBQSR {
  
 
   command {  
-    java -Xms3000m -jar ${toolpath}${gatk_jar} \
+    java -Xms2g -Xmx4g -XX:GCHeapFreeLimit=10 -XX:+UseParallelGC -XX:ParallelGCThreads=2 -jar ${toolpath}${gatk_jar} \
       ApplyBQSR \
       -R ${ref_fasta} \
       -I ${input_bam} \
@@ -275,6 +277,7 @@ task ApplyBQSR {
       --add-output-sam-program-record \
       --create-output-bam-md5 \
       --use-original-qualities
+  
   }
 
   output {
@@ -294,12 +297,12 @@ String gatk_jar
   String toolpath
   
   command {
-    java -Dsamjdk.compression_level=${compression_level} -Xmx3g -jar ${toolpath}${gatk_jar} \
+    java -Dsamjdk.compression_level=${compression_level} -Xmx4g -XX:GCHeapFreeLimit=10 -jar ${toolpath}${gatk_jar} \
       GatherBamFiles \
-      -I=${sep=' -I=' input_bams} \
-      -O=${output_bam_basename}.bam \
-      --CREATE_INDEX=true \
-      --CREATE_MD5_FILE=true
+      -I ${sep=' -I ' input_bams} \
+      -O ${output_bam_basename}.bam \
+      --CREATE_INDEX true \
+      --CREATE_MD5_FILE true
     }
   
   output {
@@ -331,15 +334,15 @@ task ScatterIntervalList {
   command <<<
     set -e
     mkdir out
-    java -Dsamjdk.compression_level=${compression_level} -Xmx1g -jar ${toolpath}${gatk_jar} \
+    java -Dsamjdk.compression_level=${compression_level} -Xmx3g -jar ${toolpath}${gatk_jar} \
       IntervalListTools \
-      -I=${interval_list} \
-      -O=out \
-      --SCATTER_COUNT=${scatter_count} \
-      --SUBDIVISION_MODE=BALANCING_WITHOUT_INTERVAL_SUBDIVISION_WITH_OVERFLOW \
-      --UNIQUE=true \
-      --SORT=true \
-      --BREAK_BANDS_AT_MULTIPLES_OF=${break_bands_at_multiples_of} 
+      -I ${interval_list} \
+      -O out \
+      --SCATTER_COUNT ${scatter_count} \
+      --SUBDIVISION_MODE BALANCING_WITHOUT_INTERVAL_SUBDIVISION_WITH_OVERFLOW \
+      --UNIQUE true \
+      --SORT true \
+      --BREAK_BANDS_AT_MULTIPLES_OF ${break_bands_at_multiples_of} 
       
 
     python3 <<CODE
@@ -389,7 +392,8 @@ task HaplotypeCaller {
   #
   command <<<
       
-      java -Xmx2g -jar ${toolpath}${gatk_jar} \
+      java -XX:GCTimeLimit=20 -XX:GCHeapFreeLimit=10 -XX:+UseParallelGC -XX:ParallelGCThreads=2 \
+      -Xloggc:gc_log.log -Xms3000m  -jar ${toolpath}${gatk_jar} \
       HaplotypeCaller \
       -R ${ref_fasta} \
       -I ${input_bam} \
@@ -403,49 +407,11 @@ task HaplotypeCaller {
       --native-pair-hmm-threads ${gatk_gkl_pairhmm_threads} \
       --smith-waterman ${smith_waterman_implementation} \
       --use-new-qual-calculator ${newqual} \
-      --bam-output= ${gvcf_basename}_haplotype.bam ###realigned reads \
-      -new-qual \
       -GQB 10 -GQB 20 -GQB 30 -GQB 40 -GQB 50 -GQB 60 -GQB 70 -GQB 80 -GQB 90 \
-      --standard-min-confidence-threshold-for-calling 30.0 \ ## algunos usan 10.0
-      --min-pruning 3 \
-      --read-filter OverclippedReadFilter \
-      --annotation MappingQuality \
-      --annotation ReadPosRankSumTest \
-      --annotation MappingQualityRankSumTest \
-       --annotation InbreedingCoeff \
-       --use-posteriors-to-calculate-qual false \
-       --dont-use-dragstr-priors false \
-       --annotate-with-num-discovered-alleles false \
-       --heterozygosity 0.001 \
-       --indel-heterozygosity 1.25E-4 \
-       --heterozygosity-stdev 0.01 \
-       --max-genotype-count 1024 \
-       --sample-ploidy 2 \
-       --num-reference-samples-if-no-call 0 \
-       --genotype-assignment-method USE_PLS_TO_ASSIGN \
-       --contamination-fraction-to-filter 0.0 \
-       --output-mode EMIT_VARIANTS_ONLY \
-       --all-site-pls false \
-       --flow-likelihood-parallel-threads 0 \
-       --flow-likelihood-optimized-comp false \
-        --flow-use-t0-tag false \
-        --flow-probability-threshold 0.003 \
-        --flow-remove-non-single-base-pair-indels false \
-        --flow-remove-one-zero-probs false \
-        --flow-quantization-bins 121 \
-        --flow-fill-empty-bins-value 0.001 \
-        --flow-symmetric-indel-probs false \
-        --flow-report-insertion-or-deletion false \
-        --flow-disallow-probs-larger-than-call false \
-        --flow-lump-probs false \
-        --flow-retain-max-n-probs-base-format false \
-        --flow-probability-scaling-factor 10 \
-        --flow-order-cycle-length 4 \
-        --flow-number-of-uncertain-flows-to-clip 0 \
-        --flow-nucleotide-of-first-uncertain-flow T \
-        --keep-boundary-flows false \
-
-
+      --standard-min-confidence-threshold-for-calling 20 \
+      --bam-output ${gvcf_basename}_haplotype.bam 
+       
+    
       ##### test 
 
 
@@ -472,12 +438,12 @@ String gatk_jar
   String toolpath
   
   command {
-    java -Dsamjdk.compression_level=${compression_level} -Xmx3g -jar ${toolpath}${gatk_jar} \
+    java -Dsamjdk.compression_level=${compression_level} -Xmx6g -XX:GCHeapFreeLimit=10 -jar ${toolpath}${gatk_jar} \
       GatherBamFiles \
-      -I=${sep=' -I=' input_bams} \
-      -O=${output_bam_basename}_haplotype.bam \
-      --CREATE_INDEX=true \
-      --CREATE_MD5_FILE=true
+      -I ${sep=' -I ' input_bams} \
+      -O ${output_bam_basename}_haplotype.bam \
+      --CREATE_INDEX true \
+      --CREATE_MD5_FILE true
     }
   
   output {
@@ -500,10 +466,10 @@ task MergeVCFs {
   # Using MergeVcfs instead of GatherVcfs so we can create indices
   # See https://github.com/broadinstitute/picard/issues/789 for relevant GatherVcfs ticket
   command {
-    java -Xms2000m -jar ${toolpath}${gatk_jar} \
+    java -Xms4000m -XX:GCHeapFreeLimit=10 -jar ${toolpath}${gatk_jar} \
       MergeVcfs \
-      -I=${sep=' -I=' input_vcfs} \
-      -O=${output_vcf_name} 
+      -I ${sep=' -I ' input_vcfs} \
+      -O ${output_vcf_name} 
   }
 
   output {
@@ -515,26 +481,29 @@ task MergeVCFs {
 ############################# GATK 2018, ver  si funciona. 
 
 task HardfilterVCF {
-  input {
+
     File input_vcf
     File input_vcf_index
     String vcf_basename
     File interval_list
     Int preemptible_tries
-  }
+    String gatk_jar
+    String toolpath
+
+  
   String output_vcf_name = vcf_basename + ".filtered.vcf.gz"
   command {
     java -Xms3000m -jar ${toolpath}${gatk_jar} \
       VariantFiltration \
-      -V ~{input_vcf} \
-      -L ~{interval_list} \
+      -V ${input_vcf} \
+      -L ${interval_list} \
       --filter-expression "QD < 2.0 || FS > 30.0 || SOR > 3.0 || MQ < 40.0 || MQRankSum < -3.0 || ReadPosRankSum < -3.0" \
       --filter-name "HardFiltered" \
-      -O ~{output_vcf_name}
+      -O ${output_vcf_name}
   }
   output {
-      File output_vcf = "~{output_vcf_name}"
-      File output_vcf_index = "~{output_vcf_name}.tbi"
+      File output_vcf = "${output_vcf_name}"
+      File output_vcf_index = "${output_vcf_name}.tbi"
       }
 
 }
@@ -542,7 +511,7 @@ task HardfilterVCF {
 #####CNNscorevariants es experimental. ojo.
 task CNNScoreVariants {
 
-  input {
+  
     File? bamout
     File? bamout_index
     File input_vcf
@@ -552,37 +521,40 @@ task CNNScoreVariants {
     File ref_fasta_index
     File ref_dict
     Int preemptible_tries
-  }
+    String gatk_jar
+    String toolpath
+
+  
 
   String base_vcf = basename(input_vcf)
-  #Boolean is_compressed = basename(base_vcf, "gz") != base_vcf
-  #String vcf_suffix = if is_compressed then ".vcf.gz" else ".vcf"
-  #String vcf_index_suffix = if is_compressed then ".tbi" else ".idx"
-  #String output_vcf = base_vcf + ".scored" + vcf_suffix
-  #String output_vcf_index = output_vcf + vcf_index_suffix
+  Boolean is_compressed = basename(base_vcf, "gz") != base_vcf
+  String vcf_suffix = if is_compressed then ".vcf.gz" else ".vcf"
+  String vcf_index_suffix = if is_compressed then ".tbi" else ".idx"
+  String output_vcf = base_vcf + ".scored" + vcf_suffix
+  String output_vcf_index = output_vcf + vcf_index_suffix
 
-  String bamout_param = if defined(bamout) then "-I ~{bamout}" else ""
+  String bamout_param = if defined(bamout) then "-I ${bamout}" else ""
   String tensor_type = if defined(bamout) then "read-tensor" else "reference"
 
-  command {
-     java -Xmx10g -jar ${toolpath}${gatk_jar} \
+  command <<<
+     java -Xmx3g -jar ${toolpath}${gatk_jar} \
       CNNScoreVariants \
-       -V ~{input_vcf} \
-       -R ~{ref_fasta} \
-       -O ~{output_vcf} \
-       ~{bamout_param} \
-       -tensor-type ~{tensor_type}
-  }
+       -V ${input_vcf} \
+       -R ${ref_fasta} \
+       -O ${output_vcf} \
+       ${bamout_param} \
+       -tensor-type ${tensor_type}
+  >>>
 
   output {
-    File scored_vcf = "{output_vcf}"
-    File scored_vcf_index = "{output_vcf_index}"
+    File scored_vcf = "${output_vcf}"
+    File scored_vcf_index = "${output_vcf_index}"
   }
 }
 
 task FilterVariantTranches {
 
-  input {
+  
     File input_vcf
     File input_vcf_index
     String vcf_basename
@@ -598,27 +570,27 @@ task FilterVariantTranches {
     File dbsnp_resource_vcf_index
     String info_key
     Int preemptible_tries
-  }
+  
 
 
   command {
 
     gatk --java-options -Xmx6g FilterVariantTranches \
-      -V ~{input_vcf} \
-      -O ~{vcf_basename}.filtered.vcf.gz \
-      ~{sep=" " prefix("--snp-tranche ", snp_tranches)} \
-      ~{sep=" " prefix("--indel-tranche ", indel_tranches)} \
-      --resource ~{hapmap_resource_vcf} \
-      --resource ~{omni_resource_vcf} \
-      --resource ~{one_thousand_genomes_resource_vcf} \
-      --resource ~{dbsnp_resource_vcf} \
-      --info-key ~{info_key} \
+      -V ${input_vcf} \
+      -O ${vcf_basename}.filtered.vcf.gz \
+      ${sep=" " prefix("--snp-tranche ", snp_tranches)} \
+      ${sep=" " prefix("--indel-tranche ", indel_tranches)} \
+      --resource ${hapmap_resource_vcf} \
+      --resource ${omni_resource_vcf} \
+      --resource ${one_thousand_genomes_resource_vcf} \
+      --resource ${dbsnp_resource_vcf} \
+      --info-key ${info_key} \
       --create-output-variant-index true
   }
 
   output {
-    File filtered_vcf = "{vcf_basename}.filtered.vcf.gz"
-    File filtered_vcf_index = "{vcf_basename}.filtered.vcf.gz.tbi"
+    File filtered_vcf = "${vcf_basename}.filtered.vcf.gz"
+    File filtered_vcf_index = "${vcf_basename}.filtered.vcf.gz.tbi"
   }
 }
 
@@ -640,7 +612,7 @@ task ValidateGVCF {
 
 
   command {
-    java -Xms3000m -jar ${toolpath}${gatk_jar} \
+    java -Xms2000m -jar ${toolpath}${gatk_jar} \
       ValidateVariants \
       -V ${input_vcf} \
       --reference ${ref_fasta} \
@@ -669,12 +641,12 @@ task CollectGvcfCallingMetrics {
   command {
     java -Xms2000m -jar ${toolpath}${gatk_jar} \
       CollectVariantCallingMetrics \
-      -I=${input_vcf} \
-      -O=${metrics_basename} \
-      --DBSNP=${dbSNP_vcf} \
-      --SEQUENCE_DICTIONARY=${ref_dict} \
-      --TARGET_INTERVALS=${wgs_evaluation_interval_list} \
-      --GVCF_INPUT=true
+      -I ${input_vcf} \
+      -O ${metrics_basename} \
+      --DBSNP ${dbSNP_vcf} \
+      --SEQUENCE_DICTIONARY ${ref_dict} \
+      --TARGET_INTERVALS ${wgs_evaluation_interval_list} \
+      --GVCF_INPUT true
   }
  
   output {
@@ -689,24 +661,25 @@ task CollectGvcfCallingMetrics {
 # Check that the fingerprints of separate readgroups all match
 
 task CrossCheckFingerprints {
-  Array[File] input_bams
-  Array[File] input_bam_indexes
+  File input_bams
+  #Array[File] input_bam_indexes
+  File input_bam_indexes
   File? haplotype_database_file
   String metrics_filename
-  String java_heap_memory_initial
-  String tool_path
+  String java_heap_memory_initial = "10g"
+  String toolpath
   String gatk_jar
   
   command <<<
-    java -Dsamjdk.buffer_size=131072 \
-      -XX:GCTimeLimit=50 -XX:GCHeapFreeLimit=10 -Xmx${java_heap_memory_initial} \
+    java \
+      -XX:GCTimeLimit=30 -XX:GCHeapFreeLimit=10 -Xmx${java_heap_memory_initial} \
       -jar ${toolpath}${gatk_jar} \
       CrosscheckReadGroupFingerprints \
-      OUTPUT=${metrics_filename} \
-      HAPLOTYPE_MAP=${haplotype_database_file} \
-      EXPECT_ALL_READ_GROUPS_TO_MATCH=true \
-      INPUT=${sep=' INPUT=' input_bams} \
-      LOD_THRESHOLD=-20.0
+      --OUTPUT ${metrics_filename} \
+      --HAPLOTYPE_MAP ${haplotype_database_file} \
+      --EXPECT_ALL_READ_GROUPS_TO_MATCH true \
+      --INPUT ${sep=' --INPUT ' input_bams} \
+      --LOD_THRESHOLD -20.0
   >>>
   output {
     File metrics = "${metrics_filename}" 
@@ -714,36 +687,36 @@ task CrossCheckFingerprints {
 }
 
 # Check that the fingerprint of the sample BAM matches the sample array
-task CheckFingerprint {
-  File input_bam
-  File input_bam_index
-  String output_basename
-  File? haplotype_database_file
-  File? genotypes
-  String sample
-  String java_heap_memory_initial
-   String gatk_jar
+#task CheckFingerprint {
+#  File input_bam
+#  File input_bam_index
+#  String output_basename
+#  File? haplotype_database_file
+#  File? genotypes
+#  String sample
+#  String java_heap_memory_initial
+#   String gatk_jar
 
-  String tool_path
+#  String toolpath
   
-  command <<<
-    java -Dsamjdk.buffer_size=131072 \
-      -XX:GCTimeLimit=50 -XX:GCHeapFreeLimit=10 -Xmx${java_heap_memory_initial}  \
-      -jar ${toolpath}${gatk_jar} \
-      CheckFingerprint \
-      INPUT=${input_bam} \
-      OUTPUT=${output_basename} \
-      GENOTYPES=${genotypes} \
-      HAPLOTYPE_MAP=${haplotype_database_file} \
-      SAMPLE_ALIAS="${sample}" \
-      IGNORE_READ_GROUPS=true
-  >>>
+#  command <<<
+#    java -Dsamjdk.buffer_size=131072 \
+#      -XX:GCTimeLimit=50 -XX:GCHeapFreeLimit=10 -Xmx${java_heap_memory_initial}  \
+#      -jar ${toolpath}${gatk_jar} \
+#      CheckFingerprint \
+#      INPUT=${input_bam} \
+#      OUTPUT=${output_basename} \
+#      GENOTYPES=${genotypes} \
+#      HAPLOTYPE_MAP=${haplotype_database_file} \
+#      SAMPLE_ALIAS="${sample}" \
+#      IGNORE_READ_GROUPS=true
+#  >>>
  
-  output {
-    File summary_metrics = "${output_basename}.fingerprinting_summary_metrics"
-    File detail_metrics = "${output_basename}.fingerprinting_detail_metrics" 
-   }
-}
+#  output {
+#    File summary_metrics = "${output_basename}.fingerprinting_summary_metrics"
+#    File detail_metrics = "${output_basename}.fingerprinting_detail_metrics" 
+#   }
+#}
 
 
 
@@ -770,11 +743,22 @@ task CheckFingerprint {
 #}
 
 
+task borrar_intermedios {
+    File path_borrar
+    command <<<
+    #!/bin/bash
+        set -e
+       rm ${path_borrar} 
+    >>>
+}
+
+
 task symlink_important_files {
     File output_to_save
     String path_save
     command{
        cp -L ${output_to_save} ${path_save}
+       rm ${output_to_save}
     }
 }
 
@@ -807,6 +791,7 @@ workflow bam2gvcf {
   File wes_calling_interval_list
   Int break_bands_at_multiples_of
   Int haplotype_scatter_count
+  File haplotype_database_file
 
   ##################################
   Int compression_level
@@ -903,18 +888,20 @@ workflow bam2gvcf {
     toolpath = toolpath      
   }
 
-########esto es nuevo
- if (defined(haplotype_database_file)) {
+########esto es nuevo sirve para checkear swap de muestras, contaminacion... mas que nada en muestras tumorales
+ #if (defined(haplotype_database_file)) {
    # Check identity of fingerprints across readgroups
-    call CrossCheckFingerprints {
-      input:
-        input_bams = SortAndFixTags.output_bam,
-        input_bam_indexes = SortAndFixTags.output_bam_index,
-        haplotype_database_file = haplotype_database_file,
-        metrics_filename = sample_name + ".crosscheck",
-		tool_path = tool_path
-    }
-  }
+  #  call CrossCheckFingerprints {
+  #    input:
+  #      input_bams = SortAndFixTags.output_bam,
+  #      input_bam_indexes = SortAndFixTags.output_bam_index,
+  #      haplotype_database_file = haplotype_database_file,
+  #      metrics_filename = base_file_name + ".crosscheck",
+  #      java_heap_memory_initial = java_heap_memory_initial,
+  #      gatk_jar = gatk_jar, 
+##		toolpath = toolpath
+  #  }
+  #}
 #
 ######### terminar de definir checkfingerprint
 
@@ -992,29 +979,29 @@ workflow bam2gvcf {
   }
 
   #scatter (paths in ApplyBQSR.recalibrated_bam){
-  #call borrado as borrar_Applybqsr { 
-  # 
-  #  input:
-  #    archivo_borrar = paths
-  #}
+ #call path_borrado {
+ #   input:
+ #   path1 = fastp.fastq_cleaned_R1,
+ #   path2 = fastp.fastq_cleaned_R2
+ # }
   #}
 
 
 ##########agregamos 2023
 #
- if (defined(haplotype_database_file) && defined(fingerprint_genotypes_file)) {
+ #if (defined(haplotype_database_file) && defined(fingerprint_genotypes_file)) {
     # Check the sample BAM fingerprint against the sample array
-    call CheckFingerprint {
-      input:
-        input_bam = GatherBamFiles.output_bam,
-        input_bam_index = GatherBamFiles.output_bam_index,
-        haplotype_database_file = haplotype_database_file,
-        genotypes = fingerprint_genotypes_file,
-        output_basename = base_file_name,
-        sample = base_file_name,
-		    tool_path = tool_path
-    }
-  }
+  #  call CheckFingerprint {
+  #    input:
+  #      input_bam = GatherBamFiles.output_bam,
+  #      input_bam_index = GatherBamFiles.output_bam_index,
+  #      haplotype_database_file = haplotype_database_file,
+  #      genotypes = fingerprint_genotypes_file,
+  #      output_basename = base_file_name,
+  #      sample = base_file_name,
+#		    toolpath = toolpath
+ #   }
+  #}
 ####
 
 
@@ -1136,7 +1123,8 @@ workflow bam2gvcf {
   toolpath = toolpath
   }
   
-  #####agrego calls quality control
+  #####agrego borrado 
+
 
 
 
@@ -1148,13 +1136,17 @@ workflow bam2gvcf {
     input:
     output_to_save = paths,
     path_save = path_save
+    
     }
   }
+
 
 
  #   Outputs that will be retained when execution is complete  
   output {
    #####outputs workflow ubam2gvcf
+   #File p_borrar1 = path_borrado.path_borrar1 
+   #File p_borrar2 = path_borrado.path_borrar2
 
    File duplication_metrics = MarkDuplicates.duplicate_metrics
    File bqsr_report = GatherBqsrReports.output_bqsr_report
@@ -1165,6 +1157,14 @@ workflow bam2gvcf {
    File gvcf_detail_metrics = CollectGvcfCallingMetrics.detail_metrics
    File output_gvcf = MergeVCFs.output_vcf
    File output_gvcf_index = MergeVCFs.output_vcf_index
+   #Fileborrar = ["${reduce_bam.output_reduced_bam}","${ApplyBQSR.recalibrated_bam }","${SortAndFixTags.output_bam}","${MarkDuplicates.output_bam}"]
+   #Array[File] borrar = [reduce_bam.output_reduced_bam, ApplyBQSR.recalibrated_bam, SortAndFixTags.output_bam, MarkDuplicates.output_bam ]
+   #File borro1 = reduce_bam.output_reduced_bam
+   #File borro2 = ApplyBQSR.recalibrated_bam
+   #File borro3 = SortAndFixTags.output_bam
+   #File borro4 =  MarkDuplicates.output_bam 
+
+
 
    #Array[File] borrar_Applybqsr = ApplyBQSR.recalibrated_bam 
    #File borrar_Markdup = MarkDuplicates.output_bam
@@ -1177,9 +1177,9 @@ workflow bam2gvcf {
    #File reporte_final = samtools_reports_file.output_global_report ### archivo para mergear... estadistica en la libreria del experimento
 
 
-   File? cross_check_fingerprints_metrics = CrossCheckFingerprints.metrics
-   File? fingerprint_summary_metrics = CheckFingerprint.summary_metrics
-   File? fingerprint_detail_metrics = CheckFingerprint.detail_metrics
+   #File? cross_check_fingerprints_metrics = CrossCheckFingerprints.metrics
+   #File? fingerprint_summary_metrics = CheckFingerprint.summary_metrics
+   #File? fingerprint_detail_metrics = CheckFingerprint.detail_metrics
 
 
   } 

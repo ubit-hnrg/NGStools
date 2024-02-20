@@ -384,6 +384,7 @@ task Create_inputs_for_preprocesing {
   }
 }
 
+
 task path_borrado {
   Array[String] path1
   Array[String] path2 

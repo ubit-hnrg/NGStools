@@ -10,8 +10,6 @@ workflow ubamtobwa {
     ### PATH local de las herramientas sacadas de docker
     String gatk_jar
     String toolpath
-    ####### Reference name, .b37 , .hg19, etc. 
-    String ref_name
     ########################command line para el bwa 
     String bwa_commandline
     ########## referencia
@@ -115,44 +113,49 @@ task Serial_SamToFastq_BwaMem_MergeBamAlignment {
 
    java -Dsamjdk.compression_level=${compression_level} -Xmx${java_heap_memory_initial} -jar ${toolpath}${gatk_jar} \
         SamToFastq \
-        --INPUT=$ubamfile \
-        -F=/dev/stdout \
-        --INTERLEAVE=true \
-        --NON_PF=true | \
+        -I $ubamfile \
+        -F /dev/stdout \
+        --INTERLEAVE true \
+        -NON_PF true | \
         ${toolpath}${bwa_commandline} ${ref_fasta} /dev/stdin - 2> >(tee $output_filename.unmerged.bwa.stderr.log >&2) | \
         ${toolpath}samtools view -1 - > $output_bwa_prefix.aligned.unmerged.bam
   
     java -Dsamjdk.compression_level=${compression_level} -Xms3000m -jar \
     ${toolpath}${gatk_jar} \
         MergeBamAlignment \
-        --VALIDATION_STRINGENCY=SILENT \
-        --EXPECTED_ORIENTATIONS=FR \
-        --ATTRIBUTES_TO_RETAIN=X0 \
-        --ATTRIBUTES_TO_REMOVE=NM \
-        --ATTRIBUTES_TO_REMOVE=MD \
-        --ALIGNED_BAM=$output_bwa_prefix.aligned.unmerged.bam \
-        --UNMAPPED_BAM=$ubamfile \
-        -O=$output_bwa_prefix.merged.unsorted.bam \
-        -R=${ref_fasta} \
-        --PAIRED_RUN=true \
-        --SORT_ORDER="unsorted" \
-        --IS_BISULFITE_SEQUENCE=false \
-        --ALIGNED_READS_ONLY=false \
-        --CLIP_ADAPTERS=false \
-        --MAX_RECORDS_IN_RAM=2000000 \
-        --ADD_MATE_CIGAR=true \
-        --MAX_INSERTIONS_OR_DELETIONS=-1 \
-        --PRIMARY_ALIGNMENT_STRATEGY=MostDistant \
-        --ALIGNER_PROPER_PAIR_FLAGS=true \
-        -PG="bwamem" \
-        --PROGRAM_GROUP_NAME="bwamem" \
-        --PROGRAM_GROUP_VERSION="${bwa_version}" \
-        --PROGRAM_GROUP_COMMAND_LINE="${bwa_commandline} ${ref_fasta}" \
-        --UNMAP_CONTAMINANT_READS=true \
-        --UNMAPPED_READ_STRATEGY=COPY_TO_TAG\
-        --ADD_PG_TAG_TO_READS=false
+        --VALIDATION_STRINGENCY SILENT \
+        --EXPECTED_ORIENTATIONS FR \
+        --ATTRIBUTES_TO_RETAIN X0 \
+        --ATTRIBUTES_TO_REMOVE NM \
+        --ATTRIBUTES_TO_REMOVE MD \
+        --ALIGNED_BAM $output_bwa_prefix.aligned.unmerged.bam \
+        --UNMAPPED_BAM $ubamfile \
+        -O $output_bwa_prefix.merged.unsorted.bam \
+        -R ${ref_fasta} \
+        --PAIRED_RUN true \
+        --SORT_ORDER "unsorted" \
+        --IS_BISULFITE_SEQUENCE false \
+        --ALIGNED_READS_ONLY false \
+        --CLIP_ADAPTERS false \
+        --MAX_RECORDS_IN_RAM 2000000 \
+        --ADD_MATE_CIGAR true \
+        --MAX_INSERTIONS_OR_DELETIONS -1 \
+        --PRIMARY_ALIGNMENT_STRATEGY MostDistant \
+        --ALIGNER_PROPER_PAIR_FLAGS true \
+        -PG "bwamem2" \
+        --PROGRAM_GROUP_NAME "bwamem2" \
+        --PROGRAM_GROUP_VERSION "${bwa_version}" \
+        --PROGRAM_GROUP_COMMAND_LINE "${bwa_commandline} ${ref_fasta}" \
+        --UNMAP_CONTAMINANT_READS true \
+        --UNMAPPED_READ_STRATEGY COPY_TO_TAG\
+        --ADD_PG_TAG_TO_READS false
+
+        
+
+
   done        
   >>>
+
   
   #####se agrega de gatk2017
 # ATTRIBUTES_TO_REMOVE=NM \
