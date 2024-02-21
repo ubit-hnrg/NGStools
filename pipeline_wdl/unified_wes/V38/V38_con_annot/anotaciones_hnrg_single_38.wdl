@@ -359,14 +359,15 @@ call bptools as step_2_bptools_variant_annotation {
 
 
 
-call vcfanno_dbNSFP {
-    input:
-    input_vcf = step_2_bptools_variant_annotation.bptools_out,
-     samplename1 = samplename1,
-     toolpath = toolpath, 
-     nombre_step = "step3_dbNSFP_freq",
-     base_de_datos = base_de_datos
-}
+#call vcfanno_dbNSFP {
+#    input:
+#    input_vcf = step_2_bptools_variant_annotation.bptools_out,
+#     samplename1 = samplename1,
+#     toolpath = toolpath, 
+#     nombre_step = "step3_dbNSFP_freq"
+#     #base_de_datos = base_de_datos
+#}
+
 call Snpsift as step3_dbNSFP{
 input:
     samplename1 = samplename1,
@@ -378,7 +379,7 @@ input:
     # este va, saque lo de popomax .. parametros = 'DbNsfp -f "MPC_score,BayesDel_addAF_pred,BayesDel_addAF_score,BayesDel_noAF_pred,BayesDel_noAF_score,CADD_phred,CADD_raw,CADD_raw_rankscore,DANN_rankscore,DANN_score,Ensembl_geneid,Ensembl_proteinid,Ensembl_transcriptid,FATHMM_converted_rankscore,FATHMM_pred,FATHMM_score,GENCODE_basic,GERP++_RS,GERP++_RS_rankscore,HGVSc_ANNOVAR,HGVSc_VEP,HGVSc_snpEff,HGVSp_ANNOVAR,HGVSp_VEP,HGVSp_snpEff,LRT_converted_rankscore,LRT_pred,LRT_score,M-CAP_pred,M-CAP_rankscore,M-CAP_score,MetaSVM_score,MutationTaster_converted_rankscore,MutationTaster_pred,MutationTaster_score,PROVEAN_converted_rankscore,PROVEAN_pred,PROVEAN_score,Polyphen2_HDIV_pred,Polyphen2_HDIV_rankscore,Polyphen2_HDIV_score,Polyphen2_HVAR_pred,Polyphen2_HVAR_rankscore,Polyphen2_HVAR_score,REVEL_score,SIFT4G_converted_rankscore,SIFT4G_pred,SIFT4G_score,SIFT_converted_rankscore,SIFT_pred,SIFT_score,TSL,Uniprot_acc,Uniprot_entry,VEP_canonical,VEST4_rankscore,VEST4_score,aaalt,aapos,aaref,cds_strand,codonpos,genename,phastCons100way_vertebrate,phastCons100way_vertebrate_rankscore,phyloP100way_vertebrate,phyloP100way_vertebrate_rankscore,refcodon,rs_dbSNP,Interpro_domain,ExAC_AF,ESP6500_EA_AF,1000Gp3_AF,1000Gp3_AC,ExAC_AC,gnomad_genomes_nhomalt_popmax,gnomad_genomes_AC_popmax,gnomad_genomes_AN_popmax,gnomad_exomes_AN_popmax,gnomad_exomes_AF_popmax,gnomad_exomes_nhomalt_popmax" -db',
 
     parametros = 'DbNsfp -f "MPC_score,BayesDel_addAF_pred,BayesDel_addAF_score,BayesDel_noAF_pred,BayesDel_noAF_score,CADD_phred,CADD_raw,CADD_raw_rankscore,DANN_rankscore,DANN_score,Ensembl_geneid,Ensembl_proteinid,Ensembl_transcriptid,FATHMM_converted_rankscore,FATHMM_pred,FATHMM_score,GENCODE_basic,GERP++_RS,GERP++_RS_rankscore,HGVSc_ANNOVAR,HGVSc_VEP,HGVSc_snpEff,HGVSp_ANNOVAR,HGVSp_VEP,HGVSp_snpEff,LRT_converted_rankscore,LRT_pred,LRT_score,M-CAP_pred,M-CAP_rankscore,M-CAP_score,MetaSVM_score,MutationTaster_converted_rankscore,MutationTaster_pred,MutationTaster_score,PROVEAN_converted_rankscore,PROVEAN_pred,PROVEAN_score,Polyphen2_HDIV_pred,Polyphen2_HDIV_rankscore,Polyphen2_HDIV_score,Polyphen2_HVAR_pred,Polyphen2_HVAR_rankscore,Polyphen2_HVAR_score,REVEL_score,SIFT4G_converted_rankscore,SIFT4G_pred,SIFT4G_score,SIFT_converted_rankscore,SIFT_pred,SIFT_score,TSL,Uniprot_acc,Uniprot_entry,VEP_canonical,VEST4_rankscore,VEST4_score,aaalt,aapos,aaref,cds_strand,codonpos,genename,phastCons100way_vertebrate,phastCons100way_vertebrate_rankscore,phyloP100way_vertebrate,phyloP100way_vertebrate_rankscore,refcodon,rs_dbSNP,Interpro_domain,ExAC_AF,ESP6500_EA_AF,1000Gp3_AF,1000Gp3_AC,ExAC_AC" -db',
-    input_vcf = vcfanno_dbNSFP.out_vcf, # step_2_bptools_variant_annotation.bptools_out, #step6_Snpsift_GWASCat.salida_Snpsift,
+    input_vcf = step_2_bptools_variant_annotation.bptools_out, #step6_Snpsift_GWASCat.salida_Snpsift,
     toolpath = toolpath,
     java_heap_memory_initial = java_heap_memory_initial,
     nombre_step = "step3_dbNSFP"
