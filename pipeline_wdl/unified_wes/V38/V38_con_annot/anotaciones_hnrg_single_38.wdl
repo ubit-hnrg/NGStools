@@ -267,6 +267,41 @@ File exon_dist = "${sample_name}.exon_distance.tsv"
 
 }
 
+task vcfanno_dbNSFP {
+    File input_vcf
+    String samplename1
+    String toolpath
+    String nombre_step
+    File base_de_datos = "/data/new_dbs/annot/dbNSFP/dbNSFP4.5a.txt.gz"
+
+    command <<<
+    #cat << EOF > config_vcfanno.tom 
+    #[[annotation]]
+    #file="\${base_de_datos}"
+    #fields = ["MPC_score", "BayesDel_addAF_pred", "BayesDel_addAF_score", "BayesDel_noAF_pred", "BayesDel_noAF_score", "CADD_phred", "CADD_raw", "CADD_raw_rankscore", "DANN_rankscore", "DANN_score", "GERP++_RS", "GERP++_RS_rankscore", "HGVSp_snpEff", "LRT_converted_rankscore", "M-CAP_rankscore", "MutationTaster_score", "MutationTaster_pred", "PROVEAN_converted_rankscore", "PROVEAN_pred", "PROVEAN_score", "Polyphen2_HDIV_pred", "Polyphen2_HDIV_rankscore", "Polyphen2_HDIV_score", "Polyphen2_HVAR_pred", "Polyphen2_HVAR_rankscore", "Polyphen2_HVAR_score", "REVEL_score", "SIFT4G_converted_rankscore", "SIFT4G_pred", "SIFT4G_score", "SIFT_converted_rankscore", "SIFT_pred", "SIFT_score", "gnomad_exomes_nhomalt_popmax", "gnomad_exomes_AF_popmax", "gnomad_exomes_AN_popmax", "gnomad_genomes_AN_popmax", "gnomad_genomes_AC_popmax", "gnomad_genomes_nhomalt_popmax", "ExAC_AC", "1000Gp3_AC", "1000Gp3_AF", "ESP6500_EA_AF", "ExAC_AF", "Interpro_domain", "Ensembl_geneid", "Ensembl_proteinid", "Ensembl_transcriptid", "FATHMM_converted_rankscore", "FATHMM_pred", "FATHMM_score", "GENCODE_basic", "rs_dbSNP", "refcodon", "HGVSc_ANNOVAR", "HGVSc_VEP", "phyloP100way_vertebrate_rankscore", "phyloP100way_vertebrate", "phastCons100way_vertebrate_rankscore", "phastCons100way_vertebrate", "MutationTaster_converted_rankscore", "genename", "codonpos", "cds_strand", "aaref", "aapos","aaalt", "HGVSc_snpEff", "HGVSp_ANNOVAR", "HGVSp_VEP", "LRT_pred", "LRT_score", "M-CAP_pred", "M-CAP_score", "MetaSVM_score", "TSL", "Uniprot_acc", "VEST4_score", "VEST4_rankscore", "VEP_canonical", "Uniprot_entry"]
+    #names = ["MPC_score", "BayesDel_addAF_pred", "BayesDel_addAF_score", "BayesDel_noAF_pred", "BayesDel_noAF_score", "CADD_phred", "CADD_raw", "CADD_raw_rankscore", "DANN_rankscore", "DANN_score", "GERP++_RS", "GERP++_RS_rankscore", "HGVSp_snpEff", "LRT_converted_rankscore", "M-CAP_rankscore", "MutationTaster_score", "MutationTaster_pred", "PROVEAN_converted_rankscore", "PROVEAN_pred", "PROVEAN_score", "Polyphen2_HDIV_pred", "Polyphen2_HDIV_rankscore", "Polyphen2_HDIV_score", "Polyphen2_HVAR_pred", "Polyphen2_HVAR_rankscore", "Polyphen2_HVAR_score", "REVEL_score", "SIFT4G_converted_rankscore", "SIFT4G_pred", "SIFT4G_score", "SIFT_converted_rankscore", "SIFT_pred", "SIFT_score", "gnomad_exomes_nhomalt_popmax", "gnomad_exomes_AF_popmax", "gnomad_exomes_AN_popmax", "gnomad_genomes_AN_popmax", "gnomad_genomes_AC_popmax", "gnomad_genomes_nhomalt_popmax", "ExAC_AC", "1000Gp3_AC", "1000Gp3_AF", "ESP6500_EA_AF", "ExAC_AF", "Interpro_domain", "Ensembl_geneid", "Ensembl_proteinid", "Ensembl_transcriptid", "FATHMM_converted_rankscore", "FATHMM_pred", "FATHMM_score", "GENCODE_basic", "rs_dbSNP", "refcodon", "HGVSc_ANNOVAR", "HGVSc_VEP", "phyloP100way_vertebrate_rankscore", "phyloP100way_vertebrate", "phastCons100way_vertebrate_rankscore", "phastCons100way_vertebrate", "MutationTaster_converted_rankscore", "genename", "codonpos", "cds_strand", "aaref", "aapos","aaalt", "HGVSc_snpEff", "HGVSp_ANNOVAR", "HGVSp_VEP", "LRT_pred", "LRT_score", "M-CAP_pred", "M-CAP_score", "MetaSVM_score", "TSL", "Uniprot_acc", "VEST4_score", "VEST4_rankscore", "VEP_canonical", "Uniprot_entry"]
+    #ops=["self", "self", "self", "self", "self", "self", "self", "self", "self", "self", "self", "self", "self", "self", "self", "self","self", "self", "self", "self", "self", "self", "self", "self", "self", "self", "self", "self", "self", "self", "self", "self","self", "self", "self", "self", "self", "self", "self", "self", "self", "self", "self", "self", "self", "self", "self", "self","self", "self", "self", "self", "self", "self", "self", "self", "self", "self", "self", "self", "self", "self", "self", "self","self", "self", "self", "self", "self", "self", "self", "self", "self", "self", "self", "self", "self", "self", "self", "self","self", "self", "self", "self", "self", "self", "self"]
+    #EOF
+
+    echo "[[annotation]]" > test.tom && \
+    echo "file=\"/data/new_dbs/annot/dbNSFP/dbNSFP4.5a.txt.gz\"" >> test.tom && \
+    #echo 'fields = ["MPC_score", "BayesDel_addAF_pred", "BayesDel_addAF_score", "BayesDel_noAF_pred", "BayesDel_noAF_score", "CADD_phred", "CADD_raw", "CADD_raw_rankscore", "DANN_rankscore", "DANN_score", "GERP++_RS", "GERP++_RS_rankscore", "HGVSp_snpEff", "LRT_converted_rankscore", "M-CAP_rankscore", "MutationTaster_score", "MutationTaster_pred", "PROVEAN_converted_rankscore", "PROVEAN_pred", "PROVEAN_score", "Polyphen2_HDIV_pred", "Polyphen2_HDIV_rankscore", "Polyphen2_HDIV_score", "Polyphen2_HVAR_pred", "Polyphen2_HVAR_rankscore", "Polyphen2_HVAR_score", "REVEL_score", "SIFT4G_converted_rankscore", "SIFT4G_pred", "SIFT4G_score", "SIFT_converted_rankscore", "SIFT_pred", "SIFT_score", "gnomad_exomes_nhomalt_popmax", "gnomad_exomes_AF_popmax", "gnomad_exomes_AN_popmax", "gnomad_genomes_AN_popmax", "gnomad_genomes_AC_popmax", "gnomad_genomes_nhomalt_popmax", "ExAC_AC", "1000Gp3_AC", "1000Gp3_AF", "ESP6500_EA_AF", "ExAC_AF", "Interpro_domain", "Ensembl_geneid", "Ensembl_proteinid", "Ensembl_transcriptid", "FATHMM_converted_rankscore", "FATHMM_pred", "FATHMM_score", "GENCODE_basic", "rs_dbSNP", "refcodon", "HGVSc_ANNOVAR", "HGVSc_VEP", "phyloP100way_vertebrate_rankscore", "phyloP100way_vertebrate", "phastCons100way_vertebrate_rankscore", "phastCons100way_vertebrate", "MutationTaster_converted_rankscore", "genename", "codonpos", "cds_strand", "aaref", "aapos","aaalt", "HGVSc_snpEff", "HGVSp_ANNOVAR", "HGVSp_VEP", "LRT_pred", "LRT_score", "M-CAP_pred", "M-CAP_score", "MetaSVM_score", "TSL", "Uniprot_acc", "VEST4_score", "VEST4_rankscore", "VEP_canonical", "Uniprot_entry"]' >> test.tom && \
+    echo 'fields = ["gnomad_exomes_nhomalt_popmax", "gnomad_exomes_AF_popmax", "gnomad_exomes_AN_popmax", "gnomad_genomes_AN_popmax", "gnomad_genomes_AC_popmax", "gnomad_genomes_nhomalt_popmax"]' >> test.tom && \
+    #echo 'names = ["MPC_score", "BayesDel_addAF_pred", "BayesDel_addAF_score", "BayesDel_noAF_pred", "BayesDel_noAF_score", "CADD_phred", "CADD_raw", "CADD_raw_rankscore", "DANN_rankscore", "DANN_score", "GERP++_RS", "GERP++_RS_rankscore", "HGVSp_snpEff", "LRT_converted_rankscore", "M-CAP_rankscore", "MutationTaster_score", "MutationTaster_pred", "PROVEAN_converted_rankscore", "PROVEAN_pred", "PROVEAN_score", "Polyphen2_HDIV_pred", "Polyphen2_HDIV_rankscore", "Polyphen2_HDIV_score", "Polyphen2_HVAR_pred", "Polyphen2_HVAR_rankscore", "Polyphen2_HVAR_score", "REVEL_score", "SIFT4G_converted_rankscore", "SIFT4G_pred", "SIFT4G_score", "SIFT_converted_rankscore", "SIFT_pred", "SIFT_score", "gnomad_exomes_nhomalt_popmax", "gnomad_exomes_AF_popmax", "gnomad_exomes_AN_popmax", "gnomad_genomes_AN_popmax", "gnomad_genomes_AC_popmax", "gnomad_genomes_nhomalt_popmax", "ExAC_AC", "1000Gp3_AC", "1000Gp3_AF", "ESP6500_EA_AF", "ExAC_AF", "Interpro_domain", "Ensembl_geneid", "Ensembl_proteinid", "Ensembl_transcriptid", "FATHMM_converted_rankscore", "FATHMM_pred", "FATHMM_score", "GENCODE_basic", "rs_dbSNP", "refcodon", "HGVSc_ANNOVAR", "HGVSc_VEP", "phyloP100way_vertebrate_rankscore", "phyloP100way_vertebrate", "phastCons100way_vertebrate_rankscore", "phastCons100way_vertebrate", "MutationTaster_converted_rankscore", "genename", "codonpos", "cds_strand", "aaref", "aapos","aaalt", "HGVSc_snpEff", "HGVSp_ANNOVAR", "HGVSp_VEP", "LRT_pred", "LRT_score", "M-CAP_pred", "M-CAP_score", "MetaSVM_score", "TSL", "Uniprot_acc", "VEST4_score", "VEST4_rankscore", "VEP_canonical", "Uniprot_entry"]' >> test.tom && \
+    echo 'names = ["gnomad_exomes_nhomalt_popmax", "gnomad_exomes_AF_popmax", "gnomad_exomes_AN_popmax", "gnomad_genomes_AN_popmax", "gnomad_genomes_AC_popmax", "gnomad_genomes_nhomalt_popmax"]' >> test.tom && \
+    #echo 'ops=["self", "self", "self", "self", "self", "self", "self", "self", "self", "self", "self", "self", "self", "self", "self", "self","self", "self", "self", "self", "self", "self", "self", "self", "self", "self", "self", "self", "self", "self", "self", "self","self", "self", "self", "self", "self", "self", "self", "self", "self", "self", "self", "self", "self", "self", "self", "self","self", "self", "self", "self", "self", "self", "self", "self", "self", "self", "self", "self", "self", "self", "self", "self","self", "self", "self", "self", "self", "self", "self", "self", "self", "self", "self", "self", "self", "self", "self", "self","self", "self", "self", "self", "self", "self", "self"]' >> test.tom
+
+    echo 'ops=["self", "self", "self", "self", "self", "self"]' >> test.tom
+
+
+    ${toolpath}vcfanno_linux64 -p 4 config_vcfanno.tom ${input_vcf} > ${samplename1}".${nombre_step}.vcf"    
+    >>>
+    output {
+    File out_vcf = "${samplename1}.${nombre_step}.vcf"
+    }
+
+}
+
 
 
 
@@ -322,6 +357,16 @@ call bptools as step_2_bptools_variant_annotation {
 
 }
 
+
+
+call vcfanno_dbNSFP {
+    input:
+    input_vcf = step_2_bptools_variant_annotation.bptools_out,
+     samplename1 = samplename1,
+     toolpath = toolpath, 
+     nombre_step = "step3_dbNSFP_freq",
+     base_de_datos = base_de_datos
+}
 call Snpsift as step3_dbNSFP{
 input:
     samplename1 = samplename1,
@@ -329,13 +374,17 @@ input:
     #parametros = 'DbNsfp -v -f "pos(1-based),ref,alt,aaref,aaalt,rs_dbSNP150,hg19_chr,hg19_pos(1-based),hg18_chr,hg18_pos(1-based),genename,cds_strand,refcodon,codonpos,codon_degeneracy,Ancestral_allele,AltaiNeandertal,Denisova,Ensembl_geneid,Ensembl_transcriptid,Ensembl_proteinid,aapos,SIFT_score,SIFT_converted_rankscore,SIFT_pred,Uniprot_acc_Polyphen2,Uniprot_id_Polyphen2,Uniprot_aapos_Polyphen2,Polyphen2_HDIV_score,Polyphen2_HDIV_rankscore,Polyphen2_HDIV_pred,Polyphen2_HVAR_score,Polyphen2_HVAR_rankscore,Polyphen2_HVAR_pred,LRT_score,LRT_converted_rankscore,LRT_pred,LRT_Omega,MutationTaster_score,MutationTaster_converted_rankscore,MutationTaster_pred,MutationTaster_model,MutationTaster_AAE,MutationAssessor_UniprotID,MutationAssessor_variant,MutationAssessor_score,MutationAssessor_score_rankscore,MutationAssessor_pred,FATHMM_score,FATHMM_converted_rankscore,FATHMM_pred,PROVEAN_score,PROVEAN_converted_rankscore,PROVEAN_pred,Transcript_id_VEST3,Transcript_var_VEST3,VEST3_score,VEST3_rankscore,MetaSVM_score,MetaSVM_rankscore,MetaSVM_pred,MetaLR_score,MetaLR_rankscore,MetaLR_pred,Reliability_index,M-CAP_score,M-CAP_rankscore,M-CAP_pred,REVEL_score,REVEL_rankscore,MutPred_score,MutPred_rankscore,MutPred_protID,MutPred_AAchange,MutPred_Top5features,CADD_raw,CADD_raw_rankscore,CADD_phred,DANN_score,DANN_rankscore,fathmm-MKL_coding_score,fathmm-MKL_coding_rankscore,fathmm-MKL_coding_pred,fathmm-MKL_coding_group,Eigen_coding_or_noncoding,Eigen-raw,Eigen-phred,Eigen-PC-raw,Eigen-PC-phred,Eigen-PC-raw_rankscore,GenoCanyon_score,GenoCanyon_score_rankscore,integrated_fitCons_score,integrated_fitCons_score_rankscore,integrated_confidence_value,GM12878_fitCons_score,GM12878_fitCons_score_rankscore,GM12878_confidence_value,H1-hESC_fitCons_score,H1-hESC_fitCons_score_rankscore,H1-hESC_confidence_value,HUVEC_fitCons_score,HUVEC_fitCons_score_rankscore,HUVEC_confidence_value,GERP++_NR,GERP++_RS,GERP++_RS_rankscore,phyloP100way_vertebrate,phyloP100way_vertebrate_rankscore,phyloP20way_mammalian,phyloP20way_mammalian_rankscore,phastCons100way_vertebrate,phastCons100way_vertebrate_rankscore,phastCons20way_mammalian,phastCons20way_mammalian_rankscore,SiPhy_29way_pi,SiPhy_29way_logOdds,SiPhy_29way_logOdds_rankscore,1000Gp3_AC,1000Gp3_AF,1000Gp3_AFR_AC,1000Gp3_AFR_AF,1000Gp3_EUR_AC,1000Gp3_EUR_AF,1000Gp3_AMR_AC,1000Gp3_AMR_AF,1000Gp3_EAS_AC,1000Gp3_EAS_AF,1000Gp3_SAS_AC,1000Gp3_SAS_AF,TWINSUK_AC,TWINSUK_AF,ALSPAC_AC,ALSPAC_AF,ESP6500_AA_AC,ESP6500_AA_AF,ESP6500_EA_AC,ESP6500_EA_AF,ExAC_AC,ExAC_AF,ExAC_Adj_AC,ExAC_Adj_AF,ExAC_AFR_AC,ExAC_AFR_AF,ExAC_AMR_AC,ExAC_AMR_AF,ExAC_EAS_AC,ExAC_EAS_AF,ExAC_FIN_AC,ExAC_FIN_AF,ExAC_NFE_AC,ExAC_NFE_AF,ExAC_SAS_AC,ExAC_SAS_AF,ExAC_nonTCGA_AC,ExAC_nonTCGA_AF,ExAC_nonTCGA_Adj_AC,ExAC_nonTCGA_Adj_AF,ExAC_nonTCGA_AFR_AC,ExAC_nonTCGA_AFR_AF,ExAC_nonTCGA_AMR_AC,ExAC_nonTCGA_AMR_AF,ExAC_nonTCGA_EAS_AC,ExAC_nonTCGA_EAS_AF,ExAC_nonTCGA_FIN_AC,ExAC_nonTCGA_FIN_AF,ExAC_nonTCGA_NFE_AC,ExAC_nonTCGA_NFE_AF,ExAC_nonTCGA_SAS_AC,ExAC_nonTCGA_SAS_AF,ExAC_nonpsych_AC,ExAC_nonpsych_AF,ExAC_nonpsych_Adj_AC,ExAC_nonpsych_Adj_AF,ExAC_nonpsych_AFR_AC,ExAC_nonpsych_AFR_AF,ExAC_nonpsych_AMR_AC,ExAC_nonpsych_AMR_AF,ExAC_nonpsych_EAS_AC,ExAC_nonpsych_EAS_AF,ExAC_nonpsych_FIN_AC,ExAC_nonpsych_FIN_AF,ExAC_nonpsych_NFE_AC,ExAC_nonpsych_NFE_AF,ExAC_nonpsych_SAS_AC,ExAC_nonpsych_SAS_AF,gnomAD_exomes_AC,gnomAD_exomes_AN,gnomAD_exomes_AF,gnomAD_exomes_AFR_AC,gnomAD_exomes_AFR_AN,gnomAD_exomes_AFR_AF,gnomAD_exomes_AMR_AC,gnomAD_exomes_AMR_AN,gnomAD_exomes_AMR_AF,gnomAD_exomes_ASJ_AC,gnomAD_exomes_ASJ_AN,gnomAD_exomes_ASJ_AF,gnomAD_exomes_EAS_AC,gnomAD_exomes_EAS_AN,gnomAD_exomes_EAS_AF,gnomAD_exomes_FIN_AC,gnomAD_exomes_FIN_AN,gnomAD_exomes_FIN_AF,gnomAD_exomes_NFE_AC,gnomAD_exomes_NFE_AN,gnomAD_exomes_NFE_AF,gnomAD_exomes_SAS_AC,gnomAD_exomes_SAS_AN,gnomAD_exomes_SAS_AF,gnomAD_exomes_OTH_AC,gnomAD_exomes_OTH_AN,gnomAD_exomes_OTH_AF,gnomAD_genomes_AC,gnomAD_genomes_AN,gnomAD_genomes_AF,gnomAD_genomes_AFR_AC,gnomAD_genomes_AFR_AN,gnomAD_genomes_AFR_AF,gnomAD_genomes_AMR_AC,gnomAD_genomes_AMR_AN,gnomAD_genomes_AMR_AF,gnomAD_genomes_ASJ_AC,gnomAD_genomes_ASJ_AN,gnomAD_genomes_ASJ_AF,gnomAD_genomes_EAS_AC,gnomAD_genomes_EAS_AN,gnomAD_genomes_EAS_AF,gnomAD_genomes_FIN_AC,gnomAD_genomes_FIN_AN,gnomAD_genomes_FIN_AF,gnomAD_genomes_NFE_AC,gnomAD_genomes_NFE_AN,gnomAD_genomes_NFE_AF,gnomAD_genomes_OTH_AC,gnomAD_genomes_OTH_AN,gnomAD_genomes_OTH_AF,clinvar_rs,clinvar_clnsig,clinvar_trait,clinvar_golden_stars,Interpro_domain,GTEx_V6p_gene,GTEx_V6p_tissue" -db',
     #parametros = 'DbNsfp -v -f "MPC_score,BayesDel_addAF_pred,BayesDel_addAF_score,BayesDel_noAF_pred,BayesDel_noAF_score,CADD_phred,CADD_raw,CADD_raw_rankscore,DANN_rankscore,DANN_score,Ensembl_geneid,Ensembl_proteinid,Ensembl_transcriptid,FATHMM_converted_rankscore,FATHMM_pred,FATHMM_score,GENCODE_basic,GERP++_RS,GERP++_RS_rankscore,HGVSc_ANNOVAR,HGVSc_VEP,HGVSc_snpEff,HGVSp_ANNOVAR,HGVSp_VEP,HGVSp_snpEff,LRT_converted_rankscore,LRT_pred,LRT_score,M-CAP_pred,M-CAP_rankscore,M-CAP_score,MetaSVM_score,MutationTaster_converted_rankscore,MutationTaster_pred,MutationTaster_score,PROVEAN_converted_rankscore,PROVEAN_pred,PROVEAN_score,Polyphen2_HDIV_pred,Polyphen2_HDIV_rankscore,Polyphen2_HDIV_score,Polyphen2_HVAR_pred,Polyphen2_HVAR_rankscore,Polyphen2_HVAR_score,REVEL_score,SIFT4G_converted_rankscore,SIFT4G_pred,SIFT4G_score,SIFT_converted_rankscore,SIFT_pred,SIFT_score,TSL,Uniprot_acc,Uniprot_entry,VEP_canonical,VEST4_rankscore,VEST4_score,aaalt,aapos,aaref,cds_strand,codonpos,genename,phastCons100way_vertebrate,phastCons100way_vertebrate_rankscore,phyloP100way_vertebrate,phyloP100way_vertebrate_rankscore,refcodon,rs_dbSNP,Interpro_domain,ExAC_AF,ESP6500_EA_AF,1000Gp3_AF,1000Gp3_AC,ExAC_AC" -db',
     #parametros = "annotate",
-    parametros = 'DbNsfp -f "MPC_score,BayesDel_addAF_pred,BayesDel_addAF_score,BayesDel_noAF_pred,BayesDel_noAF_score,CADD_phred,CADD_raw,CADD_raw_rankscore,DANN_rankscore,DANN_score,Ensembl_geneid,Ensembl_proteinid,Ensembl_transcriptid,FATHMM_converted_rankscore,FATHMM_pred,FATHMM_score,GENCODE_basic,GERP++_RS,GERP++_RS_rankscore,HGVSc_ANNOVAR,HGVSc_VEP,HGVSc_snpEff,HGVSp_ANNOVAR,HGVSp_VEP,HGVSp_snpEff,LRT_converted_rankscore,LRT_pred,LRT_score,M-CAP_pred,M-CAP_rankscore,M-CAP_score,MetaSVM_score,MutationTaster_converted_rankscore,MutationTaster_pred,MutationTaster_score,PROVEAN_converted_rankscore,PROVEAN_pred,PROVEAN_score,Polyphen2_HDIV_pred,Polyphen2_HDIV_rankscore,Polyphen2_HDIV_score,Polyphen2_HVAR_pred,Polyphen2_HVAR_rankscore,Polyphen2_HVAR_score,REVEL_score,SIFT4G_converted_rankscore,SIFT4G_pred,SIFT4G_score,SIFT_converted_rankscore,SIFT_pred,SIFT_score,TSL,Uniprot_acc,Uniprot_entry,VEP_canonical,VEST4_rankscore,VEST4_score,aaalt,aapos,aaref,cds_strand,codonpos,genename,phastCons100way_vertebrate,phastCons100way_vertebrate_rankscore,phyloP100way_vertebrate,phyloP100way_vertebrate_rankscore,refcodon,rs_dbSNP,Interpro_domain,ExAC_AF,ESP6500_EA_AF,1000Gp3_AF,1000Gp3_AC,ExAC_AC,gnomad_genomes_nhomalt_popmax,gnomad_genomes_AC_popmax,gnomad_genomes_AN_popmax,gnomad_exomes_AN_popmax,gnomad_exomes_AF_popmax,gnomad_exomes_nhomalt_popmax" -db',
-    input_vcf = step_2_bptools_variant_annotation.bptools_out, #step6_Snpsift_GWASCat.salida_Snpsift,
+    
+    # este va, saque lo de popomax .. parametros = 'DbNsfp -f "MPC_score,BayesDel_addAF_pred,BayesDel_addAF_score,BayesDel_noAF_pred,BayesDel_noAF_score,CADD_phred,CADD_raw,CADD_raw_rankscore,DANN_rankscore,DANN_score,Ensembl_geneid,Ensembl_proteinid,Ensembl_transcriptid,FATHMM_converted_rankscore,FATHMM_pred,FATHMM_score,GENCODE_basic,GERP++_RS,GERP++_RS_rankscore,HGVSc_ANNOVAR,HGVSc_VEP,HGVSc_snpEff,HGVSp_ANNOVAR,HGVSp_VEP,HGVSp_snpEff,LRT_converted_rankscore,LRT_pred,LRT_score,M-CAP_pred,M-CAP_rankscore,M-CAP_score,MetaSVM_score,MutationTaster_converted_rankscore,MutationTaster_pred,MutationTaster_score,PROVEAN_converted_rankscore,PROVEAN_pred,PROVEAN_score,Polyphen2_HDIV_pred,Polyphen2_HDIV_rankscore,Polyphen2_HDIV_score,Polyphen2_HVAR_pred,Polyphen2_HVAR_rankscore,Polyphen2_HVAR_score,REVEL_score,SIFT4G_converted_rankscore,SIFT4G_pred,SIFT4G_score,SIFT_converted_rankscore,SIFT_pred,SIFT_score,TSL,Uniprot_acc,Uniprot_entry,VEP_canonical,VEST4_rankscore,VEST4_score,aaalt,aapos,aaref,cds_strand,codonpos,genename,phastCons100way_vertebrate,phastCons100way_vertebrate_rankscore,phyloP100way_vertebrate,phyloP100way_vertebrate_rankscore,refcodon,rs_dbSNP,Interpro_domain,ExAC_AF,ESP6500_EA_AF,1000Gp3_AF,1000Gp3_AC,ExAC_AC,gnomad_genomes_nhomalt_popmax,gnomad_genomes_AC_popmax,gnomad_genomes_AN_popmax,gnomad_exomes_AN_popmax,gnomad_exomes_AF_popmax,gnomad_exomes_nhomalt_popmax" -db',
+
+    parametros = 'DbNsfp -f "MPC_score,BayesDel_addAF_pred,BayesDel_addAF_score,BayesDel_noAF_pred,BayesDel_noAF_score,CADD_phred,CADD_raw,CADD_raw_rankscore,DANN_rankscore,DANN_score,Ensembl_geneid,Ensembl_proteinid,Ensembl_transcriptid,FATHMM_converted_rankscore,FATHMM_pred,FATHMM_score,GENCODE_basic,GERP++_RS,GERP++_RS_rankscore,HGVSc_ANNOVAR,HGVSc_VEP,HGVSc_snpEff,HGVSp_ANNOVAR,HGVSp_VEP,HGVSp_snpEff,LRT_converted_rankscore,LRT_pred,LRT_score,M-CAP_pred,M-CAP_rankscore,M-CAP_score,MetaSVM_score,MutationTaster_converted_rankscore,MutationTaster_pred,MutationTaster_score,PROVEAN_converted_rankscore,PROVEAN_pred,PROVEAN_score,Polyphen2_HDIV_pred,Polyphen2_HDIV_rankscore,Polyphen2_HDIV_score,Polyphen2_HVAR_pred,Polyphen2_HVAR_rankscore,Polyphen2_HVAR_score,REVEL_score,SIFT4G_converted_rankscore,SIFT4G_pred,SIFT4G_score,SIFT_converted_rankscore,SIFT_pred,SIFT_score,TSL,Uniprot_acc,Uniprot_entry,VEP_canonical,VEST4_rankscore,VEST4_score,aaalt,aapos,aaref,cds_strand,codonpos,genename,phastCons100way_vertebrate,phastCons100way_vertebrate_rankscore,phyloP100way_vertebrate,phyloP100way_vertebrate_rankscore,refcodon,rs_dbSNP,Interpro_domain,ExAC_AF,ESP6500_EA_AF,1000Gp3_AF,1000Gp3_AC,ExAC_AC" -db',
+    input_vcf = vcfanno_dbNSFP.out_vcf, # step_2_bptools_variant_annotation.bptools_out, #step6_Snpsift_GWASCat.salida_Snpsift,
     toolpath = toolpath,
     java_heap_memory_initial = java_heap_memory_initial,
     nombre_step = "step3_dbNSFP"
 #
 }
+
 #Step 3: Annotate with dbSNP156"
 call Snpsift as step4_dbSNP {
 input:
@@ -406,7 +455,7 @@ call Snpsift as step_alphamissense {
 input:
     samplename1 = samplename1,
   
-    parametros = 'Annotate -info UNIPROT_ID,TRANSCRIPT_ID,PROTEIN_VARIANT,AM_PATHOGENICITY,AM_CLASS -db',
+    parametros = 'Annotate',
     input_vcf = step5_Snpsift_GWASCat.salida_Snpsift,
     toolpath = toolpath,
     java_heap_memory_initial = java_heap_memory_initial,
@@ -414,11 +463,38 @@ input:
 #
 }
 
-#####step8  annovar
+#Step 8: Annotate with gnomad_exome
+call Snpsift as step_gnomad_exome {
+input:
+    samplename1 = samplename1,
+  
+    parametros = 'Annotate',
+    input_vcf = step_alphamissense.salida_Snpsift,
+    toolpath = toolpath,
+    java_heap_memory_initial = java_heap_memory_initial,
+    nombre_step = "step_gnomad_exome"
+#
+}
+#Step 8: Annotate with gnomad_genome
+#call Snpsift as step_gnomad_genome {
+#input:
+#    samplename1 = samplename1,
+#  
+#    parametros = 'Annotate',
+#    input_vcf = step_gnomad_exome.salida_Snpsift,
+#    toolpath = toolpath,
+#    java_heap_memory_initial = java_heap_memory_initial,
+#    nombre_step = "step_gnomad_genome"
+#
+#}
+
+
+
+#####  annovar
 call annovar {
 input:
 #vcf_in = step6_Snpsift_GWASCat.salida_Snpsift,
-vcf_in = step_alphamissense.salida_Snpsift,
+vcf_in = step_gnomad_exome.salida_Snpsift, #step_alphamissense.salida_Snpsift,
 out_prefix = samplename1,
 #File out_prefix
 toolpath = toolpath

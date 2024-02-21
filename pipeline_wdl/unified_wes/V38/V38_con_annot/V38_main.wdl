@@ -303,7 +303,7 @@ workflow main_workflow {
 
   ##annovar
   ###############agregar path a la 38
-  String db_annovar = "/home/hnrg/HNRG-pipeline-V0.1/dbs/hg19_annovar/" #path annovar 
+  String db_annovar = "/data/new_dbs/annovar/hg38/humandb" #path annovar 
     
     
     ###esto creo q vuela
