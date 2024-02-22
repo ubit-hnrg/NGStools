@@ -35,9 +35,10 @@ task cobertura {
         String path_save
         String pipeline_version
         String? sorted 
+        File chromosome_length
     
     
-    command {   
+    command <<<   
         #!/bin/bash
         set -e
         set -o pipefail
@@ -55,7 +56,7 @@ task cobertura {
         ${toolpath}samtool1.19/samtools/samtools stats bam_nodups.bam -t intervalo_sorted.bed > ${sample_name}_samtools_nodup_${pipeline_version}.stats ##samtools stat task
 
         ####global_hist for no dups_bams 
-       ${toolpath}bedtools-2.31.1/bedtools2/bin/coverageBed -a intervalo_sorted.bed -b bam_nodups.bam -hist ${sorted} > ${sample_name}_nodup.hist.aux
+       ${toolpath}bedtools-2.31.1/bedtools2/bin/coverageBed -a intervalo_sorted.bed -b bam_nodups.bam -hist ${sorted} -g ${chromosome_length} > ${sample_name}_nodup.hist.aux
         ##${toolpath}bedtools2/bin/coverageBed -a ${intervalo_captura} -b ${input_bam} -sorted -hist > ${sample_name}.hist.aux
         echo -e 'chr\tstart\tend\tgene\tDP\tBPs\tIntervalLength\tfrequency' > header_nodup.txt
         cat header_nodup.txt ${sample_name}_nodup.hist.aux > ${sample_name}_nodup.hist 
@@ -77,7 +78,7 @@ task cobertura {
         #histograma restringido a cada exon de ensembl que está en la librería de captura
         
         ##${toolpath}bedtools2/bin/sort ${input_bam} -m 1G |  
-        ${toolpath}bedtools-2.31.1/bedtools2/bin/coverageBed -a ${ensembl2intervalo_captura} -b ${input_bam} -hist ${sorted} > ${sample_name}.ENS_${pipeline_version}.hist.aux1
+        ${toolpath}bedtools-2.31.1/bedtools2/bin/coverageBed -a ${ensembl2intervalo_captura} -b ${input_bam} -hist ${sorted} -g ${chromosome_length} > ${sample_name}.ENS_${pipeline_version}.hist.aux1
         echo -e 'chr\tstart\tend\ttranscriptID\tgene\texonNumber\tstrand\tDP\tBPs\tIntervalLength\tfrequency' > header.txt
         grep -v '^all' ${sample_name}.ENS_${pipeline_version}.hist.aux1 > ${sample_name}.ENS_${pipeline_version}.hist.aux2
         cat header.txt ${sample_name}.ENS_${pipeline_version}.hist.aux2 > ${sample_name}.ENS_${pipeline_version}.hist
@@ -97,7 +98,7 @@ task cobertura {
         cp -L ${sample_name}.no_cubierto_intervalo_${pipeline_version}.tsv ${path_save}
     
            
-    }
+    >>>
     #${sample_name}_${pipeline_version}.txt
 
     output {
@@ -265,6 +266,7 @@ String pipeline_v
 String experiment_name
 File exon_coords
 File intervalo_captura
+File chromosome_length
 #Array[String] bams_N_reads
 
 ####inputs from bam2gvcf.reporte_final
@@ -295,6 +297,7 @@ scatter (fastp in fastp_json_files){
       ensembl2intervalo_captura = exon_coords,
       toolpath = toolpath,
       ngs_toolpath = ngs_toolpath,
+      chromosome_length = chromosome_length,
       path_save = path_save[idx]
     }
  

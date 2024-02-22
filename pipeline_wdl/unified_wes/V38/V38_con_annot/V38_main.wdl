@@ -578,6 +578,7 @@ call qual_control.qual_control {
    intervalo_captura = intervalo_captura,
    pipeline_v= pipeline_version,
    experiment_name = basename(tabulatedSampleFilePaths, ".txt"),
+   chromosome_length = chromosome_length,
    exon_coords = coord_generator.exon_restricted, #### ensembl vs intervalo_captura
    experiment_path = path_softlink
   }
