@@ -44,8 +44,8 @@ task cobertura {
         set -o pipefail
 
         #sort del intervalo de caputura para que funcione bien el coverageBED.
-        sort -k1,1V -k2,2n ${intervalo_captura} > intervalo_sorted.bed
-        
+        #sort -k1,1V -k2,2n ${intervalo_captura} > intervalo_sorted.bed
+        ${toolpath}bedtools-2.31.1/bedtools2/bin/sortBed -i ${intervalo_captura} -g ${chromosome_length} > intervalo_sorted.bed
 
   
         ###sex prediction
