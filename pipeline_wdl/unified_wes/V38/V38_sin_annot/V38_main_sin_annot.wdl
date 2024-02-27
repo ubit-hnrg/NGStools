@@ -179,7 +179,7 @@ String pipeline_version
 
 command {
 
- ${ngs_toolpath}/python_scripts/join_annovar_exon_dist.py -d ${exon_dist} -a ${annovar_variants} -o ${name}.anno_variants.tsv
+ ${ngs_toolpath}/python_scripts/join_annovar_exon_dist_38_sin_annot.py -d ${exon_dist} -a ${annovar_variants} -o ${name}.anno_variants.tsv
   
  }
 
