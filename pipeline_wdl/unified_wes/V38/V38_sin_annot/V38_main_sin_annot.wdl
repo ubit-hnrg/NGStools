@@ -371,7 +371,6 @@ workflow main_workflow {
     call ubam2bwa.ubamtobwa {
         input:
         array_unmapped_bams = ConvertPairedFastQsToUnmappedBamWf.output_ubams,
-        ref_name = ref_name,
         compression_level = compression_level,
         java_heap_memory_initial = java_heap_memory_initial,
         bwa_commandline = bwa_commandline,
@@ -567,7 +566,8 @@ call qual_control.qual_control {
    pipeline_v= pipeline_version,
    experiment_name = basename(tabulatedSampleFilePaths, ".txt"),
    exon_coords = coord_generator.exon_restricted, #### ensembl vs intervalo_captura
-   experiment_path = path_softlink
+   experiment_path = path_softlink,
+   chromosome_length = chromosome_length
   }
 
 

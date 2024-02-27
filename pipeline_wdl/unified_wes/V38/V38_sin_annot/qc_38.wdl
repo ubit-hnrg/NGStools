@@ -266,6 +266,7 @@ String pipeline_v
 String experiment_name
 File exon_coords
 File intervalo_captura
+File chromosome_length
 #Array[String] bams_N_reads
 
 ####inputs from bam2gvcf.reporte_final
@@ -296,7 +297,8 @@ scatter (fastp in fastp_json_files){
       ensembl2intervalo_captura = exon_coords,
       toolpath = toolpath,
       ngs_toolpath = ngs_toolpath,
-      path_save = path_save[idx]
+      path_save = path_save[idx],
+      chromosome_length = chromosome_length
     }
  
        
