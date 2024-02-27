@@ -121,7 +121,7 @@ task coord_generator {
      
     ${toolpath}bedtools2/bin/mergeBed -i ${library_name}_padded_${padding}.bed -d ${merge_tolerance} > ${library_name}_padded_${padding}_merged_${merge_tolerance}.bed
 
-    java -jar ${toolpath}${gatk_jar} BedToIntervalList -I=${library_name}_padded_${padding}_merged_${merge_tolerance}.bed -O=${library_name}_padded_${padding}_merged_${merge_tolerance}_preprocessing.interval_list -SD=${ref_dict}
+    #java -jar ${toolpath}${gatk_jar} BedToIntervalList -I=${library_name}_padded_${padding}_merged_${merge_tolerance}.bed -O=${library_name}_padded_${padding}_merged_${merge_tolerance}_preprocessing.interval_list -SD=${ref_dict}
 
     java -jar ${toolpath}${gatk_jar} BedToIntervalList -I=${library_name}_padded_${padding}.bed -O=${library_name}_padded_${padding}.interval_list -SD=${ref_dict}
      
@@ -129,7 +129,7 @@ task coord_generator {
     cp -L ${intervalo_captura} ${path_save}
     cp -L ${library_name}_padded_${padding}.bed ${path_save}
 
-    cp -L ${library_name}_padded_${padding}_merged_${merge_tolerance}_preprocessing.interval_list ${path_save}
+    #cp -L ${library_name}_padded_${padding}_merged_${merge_tolerance}_preprocessing.interval_list ${path_save}
     cp -L ${library_name}_padded_${padding}.interval_list ${path_save}
     cp -L exon_restricted2_${library_name}.bed ${path_save}
   >>>
@@ -138,7 +138,7 @@ task coord_generator {
     File padded_coord = "${library_name}_padded_${padding}.bed"
     File exon_restricted = "exon_restricted2_${library_name}.bed" ##for quality_control
 
-    File interval_list = "${library_name}_padded_${padding}_merged_${merge_tolerance}_preprocessing.interval_list"
+    #File interval_list = "${library_name}_padded_${padding}_merged_${merge_tolerance}_preprocessing.interval_list"
     File eval_interval_list = "${library_name}_padded_${padding}.interval_list"
   }
 
@@ -157,7 +157,7 @@ task build_excell_report{
     
     command{
 
-       ${ngs_toolpath}/pipeline_wdl/qualityControl/make_excel_report.py ${annovar_tsv}:Variants ${exon_coverage_report}:ExonCoverage ${plof}:GnomAD_PLOF ${no_cubierto}:no_cubierto  ${samplename2}_variants_${pipeline_version}.xlsx
+       python3 ${ngs_toolpath}/pipeline_wdl/qualityControl/make_excel_report_opt2.py ${annovar_tsv}:Variants ${exon_coverage_report}:ExonCoverage ${plof}:GnomAD_PLOF ${no_cubierto}:no_cubierto  ${samplename2}_variants_${pipeline_version}.xlsx
    
    }    
 
@@ -229,7 +229,7 @@ workflow main_workflow {
   
   File tabulatedSampleFilePaths ##samples
 
-  String? pipeline_version = "V2" ###no me lo toma el input como default
+  String? pipeline_version = "V38.1" ###no me lo toma el input como default
 
 
   ####metadata
@@ -240,10 +240,9 @@ workflow main_workflow {
   String sequencing_center =  "UIT-HNRG" 
   String readlenght 
   String ubam_list_name = "ubamfiles"
-  String ref_name = ".hg38"
 
   ###GATK
-  String gatk_jar = "gatk-package-4.0.8.1-local.jar"
+  String gatk_jar = "gatk-package-4.5.0.0-local.jar"
   String toolpath = "/home/hnrg/HNRG-pipeline-V0.1/tools/"
   String ngs_toolpath = "/home/hnrg/NGStools"
 
@@ -446,6 +445,7 @@ workflow main_workflow {
       gatk_jar = gatk_jar,
       toolpath = toolpath,
       ngs_toolpath = ngs_toolpath,
+      haplotype_database_file = haplotype_database_file,
 
       smith_waterman_implementation = smith_waterman_implementation,
       contamination = contamination,
@@ -457,7 +457,6 @@ workflow main_workflow {
     ######single_genotype
     call single_genotypeGVCF.singleGenotypeGVCFs {
         input:
-        #num_gvcfs= cantidad_gvcf,
         eval_interval_list   = coord_generator.eval_interval_list,
         array_path_save = mkdir_samplename.path_out_softlink,
         dbSNP_vcf = dbSNP_vcf,
@@ -484,59 +483,9 @@ workflow main_workflow {
     }
 
 
-
-    #call anotacionesSingle.FuncionalAnnotationSingle {
-    #    input:
-    #    input_vcf = singleGenotypeGVCFs.restricted_vcf, #sin annovar del genotipado , 
-    #    ##input_vcf = singleGenotypeGVCFs.individual_vcfs_annovar,# . 
-    #    path_save = mkdir_samplename.path_out_softlink,
-    #    toolpath = toolpath,
-    #    samplename1 = sample_name,
-    #    java_heap_memory_initial = "12g",
-    #    pipeline_version = pipeline_version,
-    #    exon_coordinates = generic_exon_coords,#coord_generator.interval_restricted,
-    #    #exon_coordinates_to_lib =  coord_generator.exon_restricted,
-    #    reference_version = reference_version
-        
-
-    #  }
-      ####################### anotacion minimal. test
-      #call minimal_annot.FuncionalAnnotationMinimal{
-      #  input:
-      #  input_vcf = singleGenotypeGVCFs.restricted_vcf, #sin annovar del genotipado , 
-      #  ##input_vcf = singleGenotypeGVCFs.individual_vcfs_annovar,# . 
-      #  path_save = mkdir_samplename.path_out_softlink,
-      #  toolpath = toolpath,
-      #  samplename1 = sample_name,
-      #  java_heap_memory_initial = "12g",
-      #  pipeline_version = pipeline_version,
-      #  exon_coordinates = generic_exon_coords,#coord_generator.interval_restricted,
-        #exon_coordinates_to_lib =  coord_generator.exon_restricted,
-       # reference_version = reference_version
-        
-
-      #}
-
-
-
    } ###fin scatter gvcf
 
-#####creo aca va lo nuevo con todas las N_bases del fastq. Creo...
-   #Array[Int] N_reads_bams = bam2gvcf.N_reads_bam
-   #Array[String] N_reads_bams = bam2gvcf.N_reads_bam
 
-
-
-  ### intervalo para quality control -> coord_generator.interval_restricted
-
-#  Array[File] archivos_a_borrar3 = bam2gvcf.borrar_SortandFix #,"${}"]
-
-#   scatter (archivos in archivos_a_borrar3){
-#     call borrado as borrado_Sort_and_Fix {
-#     input:
-#       archivo_borrar = archivos
-#     }
-#   } 
 
  Array[String] uniquesample_name =read_lines(ConvertPairedFastQsToUnmappedBamWf.samplesnames)
 
