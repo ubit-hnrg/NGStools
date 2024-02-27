@@ -470,6 +470,7 @@ workflow main_workflow {
         toolpath = toolpath,
         sample_name = sample_name,
         region_padded_bed = coord_generator.padded_coord,
+        exon_coordinates = generic_exon_coords,
 
         ####input del anterior jointgenotyping
         input_gvcf = bam2gvcf.output_gvcf,

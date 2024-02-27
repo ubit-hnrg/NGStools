@@ -26,6 +26,7 @@ workflow singleGenotypeGVCFs {
   File dbSNP_vcf
   File dbSNP_vcf_index
   File region_padded_bed
+  File exon_coordinates
 
 # for annovar prouposes
     String db_annovar
