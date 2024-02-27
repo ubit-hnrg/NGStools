@@ -109,7 +109,7 @@ call exon_distance {
     vcf_ok = restrict_vcf.VCF_restricted, #step12_clinVar.salida_Snpsift, #final_annot.salida_Snpsift,
     exon_coord = exon_coordinates,
     #exon_coordinates_to_lib = exon_coordinates_to_lib,
-    sample_name = samplename1,
+    sample_name = sample_name,
     path_save = path_save
 }
 #   call filtro_no_calls {
