@@ -35,6 +35,7 @@ task cobertura {
         String path_save
         String pipeline_version
         String? sorted 
+        File chromosome_length
     
     
     command {   
@@ -43,7 +44,7 @@ task cobertura {
         set -o pipefail
 
         #sort del intervalo de caputura para que funcione bien el coverageBED.
-        sort -k1,1V -k2,2n ${intervalo_captura} > intervalo_sorted.bed
+        ${toolpath}bedtools-2.31.1/bedtools2/bin/sortBed -i ${intervalo_captura} -g ${chromosome_length} > intervalo_sorted.bed
         
 
   
@@ -55,17 +56,17 @@ task cobertura {
         ${toolpath}samtool1.19/samtools/samtools stats bam_nodups.bam -t intervalo_sorted.bed > ${sample_name}_samtools_nodup_${pipeline_version}.stats ##samtools stat task
 
         ####global_hist for no dups_bams 
-       ${toolpath}bedtools-2.31.1/bedtools2/bin/coverageBed -a intervalo_sorted.bed -b bam_nodups.bam -hist ${sorted} > ${sample_name}_nodup.hist.aux
+       ${toolpath}bedtools-2.31.1/bedtools2/bin/coverageBed -a intervalo_sorted.bed -b bam_nodups.bam -hist ${sorted} -g ${chromosome_length} > ${sample_name}_nodup.hist.aux
         ##${toolpath}bedtools2/bin/coverageBed -a ${intervalo_captura} -b ${input_bam} -sorted -hist > ${sample_name}.hist.aux
-        echo -e 'chr\tstart\tend\tgene\tDP\tBPs\tIntervalLength\tfrequency' > header_nodup.txt
-        cat header_nodup.txt ${sample_name}_nodup.hist.aux > ${sample_name}_nodup.hist 
+        #echo -e 'chr\tstart\tend\tgene\tDP\tBPs\tIntervalLength\tfrequency' > header_nodup.txt
+        #cat header_nodup.txt ${sample_name}_nodup.hist.aux > ${sample_name}_nodup.hist 
         rm bam_nodups.bam
 
         #histograma global del bam nodup restringido a toda la librería ####for report tsv
         grep '^all' ${sample_name}_nodup.hist.aux > global_nodup.hist
         echo -e 'chr\tDP\tBPs\tIntervalLength\tfrequency' > global_nodup.header.txt
         cat global_nodup.header.txt global_nodup.hist > ${sample_name}_global_nodup.hist
-        rm global_nodup.header.txt global_nodup.hist ${sample_name}_nodup.hist.aux header_nodup.txt
+        rm global_nodup.header.txt global_nodup.hist ${sample_name}_nodup.hist.aux 
 
         
          ####samtools stat ###pestaña alineamiento excel calidad.
@@ -77,7 +78,7 @@ task cobertura {
         #histograma restringido a cada exon de ensembl que está en la librería de captura
         
         ##${toolpath}bedtools2/bin/sort ${input_bam} -m 1G |  
-        ${toolpath}bedtools-2.31.1/bedtools2/bin/coverageBed -a ${ensembl2intervalo_captura} -b ${input_bam} -hist ${sorted} > ${sample_name}.ENS_${pipeline_version}.hist.aux1
+        ${toolpath}bedtools-2.31.1/bedtools2/bin/coverageBed -a ${ensembl2intervalo_captura} -b ${input_bam} -hist ${sorted} -g ${chromosome_length} > ${sample_name}.ENS_${pipeline_version}.hist.aux1
         echo -e 'chr\tstart\tend\ttranscriptID\tgene\texonNumber\tstrand\tDP\tBPs\tIntervalLength\tfrequency' > header.txt
         grep -v '^all' ${sample_name}.ENS_${pipeline_version}.hist.aux1 > ${sample_name}.ENS_${pipeline_version}.hist.aux2
         cat header.txt ${sample_name}.ENS_${pipeline_version}.hist.aux2 > ${sample_name}.ENS_${pipeline_version}.hist

@@ -58,15 +58,15 @@ task cobertura {
         ####global_hist for no dups_bams 
        ${toolpath}bedtools-2.31.1/bedtools2/bin/coverageBed -a intervalo_sorted.bed -b bam_nodups.bam -hist ${sorted} -g ${chromosome_length} > ${sample_name}_nodup.hist.aux
         ##${toolpath}bedtools2/bin/coverageBed -a ${intervalo_captura} -b ${input_bam} -sorted -hist > ${sample_name}.hist.aux
-        echo -e 'chr\tstart\tend\tgene\tDP\tBPs\tIntervalLength\tfrequency' > header_nodup.txt
-        cat header_nodup.txt ${sample_name}_nodup.hist.aux > ${sample_name}_nodup.hist 
+        #echo -e 'chr\tstart\tend\tgene\tDP\tBPs\tIntervalLength\tfrequency' > header_nodup.txt
+        #cat header_nodup.txt ${sample_name}_nodup.hist.aux > ${sample_name}_nodup.hist 
         rm bam_nodups.bam
 
         #histograma global del bam nodup restringido a toda la librería ####for report tsv
         grep '^all' ${sample_name}_nodup.hist.aux > global_nodup.hist
         echo -e 'chr\tDP\tBPs\tIntervalLength\tfrequency' > global_nodup.header.txt
         cat global_nodup.header.txt global_nodup.hist > ${sample_name}_global_nodup.hist
-        rm global_nodup.header.txt global_nodup.hist ${sample_name}_nodup.hist.aux header_nodup.txt
+        rm global_nodup.header.txt global_nodup.hist ${sample_name}_nodup.hist.aux 
 
         
          ####samtools stat ###pestaña alineamiento excel calidad.
