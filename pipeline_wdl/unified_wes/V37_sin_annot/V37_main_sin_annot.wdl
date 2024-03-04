@@ -111,10 +111,11 @@ task coord_generator {
     set -e
     set -o pipefail
     
-    ${toolpath}bedtools-2.31.1/bedtools2/bin/slopBed -i ${intervalo_captura} -g ${chromosome_length} -b ${padding} | ${toolpath}bedtools-2.31.1/bedtools2/bin/sortBed -i - -g ${chromosome_length} > ${library_name}_padded_${padding}.bed 
+    ${toolpath}bedtools-2.31.1/bedtools2/bin/slopBed -i ${intervalo_captura} -g ${chromosome_length} -b ${padding} | ${toolpath}bedtools-2.31.1/bedtools2/bin/sortBed -g ${chromosome_length} > ${library_name}_padded_${padding}.bed 
 
      ####Exon_restricted interval for quality_control  ${library_name}_padded_${padding}.bed | sort -k1,1 -k2,2n -V 
-    ${toolpath}bedtools-2.31.1/bedtools2/bin/intersectBed -a ${generic_exon_coords} -b ${intervalo_captura}| ${toolpath}bedtools-2.31.1/bedtools2/bin/sortBed -i -g ${chromosome_length} - > exon_restricted2_${library_name}.bed
+    ${toolpath}bedtools-2.31.1/bedtools2/bin/intersectBed -a ${generic_exon_coords} -b ${intervalo_captura}| ${toolpath}bedtools-2.31.1/bedtools2/bin/sortBed
+     -g ${chromosome_length} - > exon_restricted2_${library_name}.bed
 
     
     ###merged
