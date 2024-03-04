@@ -49,7 +49,7 @@ task cobertura {
 
   
         ###sex prediction
-        ${ngs_toolpath}/python_scripts/bam_sex_xy_chr.py -b ${input_bam} > ${sample_name}_sex_${pipeline_version}.txt
+        ${ngs_toolpath}/python_scripts/bam_sex_xy.py -b ${input_bam} > ${sample_name}_sex_${pipeline_version}.txt
 
         ###septiembre,20: se agrega eliminar duplicados.
         ${toolpath}samtool1.19/samtools/samtools view -F1024 -u ${input_bam} -b > bam_nodups.bam

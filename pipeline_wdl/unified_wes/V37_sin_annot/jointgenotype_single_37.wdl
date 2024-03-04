@@ -606,15 +606,15 @@ task annovar{
     #perl ${toolpath}annovar/2024/annovar/table_annovar.pl ${one_sample_vcf} ${db_annovar} -vcfinput -buildver hg38 -thread 4 -remove -out ${sample} -protocol refGene,intervar_20180118,esp6500siv2_all,1000g2015aug_all,exac03,gnomad40_exome,gnomad40_genome,clinvar_20221231,dbscsnv11,rmsk,cytoBand,wgRna,genomicSuperDups,dgvMerged,gwasCatalog,ensGene,knownGene -operation g,f,f,f,f,f,f,f,f,r,r,r,r,r,r,g,g -nastring . --otherinfo -polish -intronhgvs 30
 
     command<<<
-        perl ${toolpath}annovar/2024/annovar/table_annovar.pl ${one_sample_vcf} ${db_annovar} -vcfinput -buildver hg37 -thread 4 -remove -out ${sample} -protocol refGene,intervar_20180118,ensGene,knownGene -operation g,f,g,g -nastring . --otherinfo -polish -intronhgvs 30
+        perl ${toolpath}annovar/2024/annovar/table_annovar.pl ${one_sample_vcf} ${db_annovar} -vcfinput -buildver hg19 -thread 4 -remove -out ${sample} -protocol refGene,intervar_20180118,ensGene,knownGene -operation g,f,g,g -nastring . --otherinfo -polish -intronhgvs 30
         #refGene,intervar_20180118,esp6500siv2_all,1000g2015aug_all,exac03,gnomad40_exome,gnomad40_genome,clinvar_20221231,dbscsnv11,rmsk,tfbsConsSites,cytoBand,wgRna,targetScanS,genomicSuperDups,dgvMerged,gwasCatalog,ensGene,knownGene -operation  g,f,f,f,f,f,f,f,f,r,r,r,r,r,r,r,r,g,g -nastring . -otherinfo --slicing_threshold 30 -polish -intronhgvs
 
     ###dbnsfp con q anoto? con snpsift?
     >>>
 
     output {
-        File annovar_vcf = '${sample}.hg37_multianno.vcf'
-        File annovar_txt = '${sample}.hg37_multianno.txt'
+        File annovar_vcf = '${sample}.hg19_multianno.vcf'
+        File annovar_txt = '${sample}.hg19_multianno.txt'
     }
 
 }
@@ -673,8 +673,8 @@ task get_tsv_from_annovar {
 # Convierte los números de columna en un rango para 'cut'
 cut_range=$(echo $otherinfo_cols | sed 's/,/,/g')
 
-head -n1 ${annovar_txt} | cut -f$cut_range --complement >  ${sample}.hg37_multianno.tsv
-tail -n+2 ${annovar_txt} | cut -f$cut_range --complement >>  ${sample}.hg37_multianno.tsv
+head -n1 ${annovar_txt} | cut -f$cut_range --complement >  ${sample}.hg19_multianno.tsv
+tail -n+2 ${annovar_txt} | cut -f$cut_range --complement >>  ${sample}.hg19_multianno.tsv
 
 vcf_header=$(grep '#CH' ${annovar_vcf});
 otherinfo_index=4
@@ -688,7 +688,7 @@ for (( ; otherinfo_index<=13 && vcf_col_index<=total_vcf_fields; otherinfo_index
     vcf_field=$(echo $vcf_header | awk -v col=$vcf_col_index '{print $col}')
 
     # Reemplaza "OtherinfoX" con el campo correspondiente del VCF
-    sed -i "s/Otherinfo$otherinfo_index/$vcf_field/" ${sample}.hg37_multianno.tsv
+    sed -i "s/Otherinfo$otherinfo_index/$vcf_field/" ${sample}.hg19_multianno.tsv
 done
 #####fin agu 
 
@@ -696,7 +696,7 @@ done
     #sed -i "s/Otherinfo/$vcf_header/g" ${sample}.hg38_multianno.tsv;
 
     #join one multianno tsv file AND joint genotyped vcf. This script (join_vcf.py) also postprocess Intervar columns.
-    python ${joinPY} --multianno_tsv=${sample}.hg37_multianno.tsv --vcf_multisample=${restrictedVCF} --output=${sample}.multianno_restrict.tsv
+    python ${joinPY} --multianno_tsv=${sample}.hg19_multianno.tsv --vcf_multisample=${restrictedVCF} --output=${sample}.multianno_restrict.tsv
     #change dots by tabs.
     sed -i -e "s|\.	|	|g" ${sample}.multianno_restrict.tsv
     
