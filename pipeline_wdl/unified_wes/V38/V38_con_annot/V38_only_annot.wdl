@@ -5,6 +5,18 @@
 import './only_annot_hnrg_38.wdl' as anotaciones_only #5
 
 
+task link_path {
+    File input_vcf
+    
+    command <<<
+       dirname ${input_vcf} > path_out
+
+    >>>
+    output {
+      String path = path_out 
+    }
+}
+
 ########MAIN
 
 workflow main_workflow {
@@ -46,10 +58,17 @@ workflow main_workflow {
  Array[File] input_vcfs =read_lines(vcf_paths)
 
  scatter (sample in input_vcfs) {
+
+  call link_path {
+
+    input: 
+    input_vcf = sample
+  }
+
    call anotaciones_only.FuncionalAnnotationSingle {
         input:
         input_vcf = sample, 
-        path_save = dirname(sample),
+        path_save = link_path.path,
         toolpath = toolpath,
         samplename1 = basename(sample, ".V38_restricted.vcf"),
         java_heap_memory_initial = "1g",
