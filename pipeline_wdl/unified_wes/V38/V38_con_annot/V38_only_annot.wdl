@@ -9,11 +9,12 @@ task link_path {
     File input_vcf
     
     command <<<
+    set -o pipefail
        dirname ${input_vcf} > path_out
 
     >>>
     output {
-      String path = read_lines(${path_out}) 
+      String path = read_lines(path_out) 
     }
 }
 
