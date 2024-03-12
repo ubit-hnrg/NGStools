@@ -51,7 +51,7 @@ workflow main_workflow {
         input_vcf = sample, 
         path_save = dirname(sample),
         toolpath = toolpath,
-        samplename1 = basename(input_vcf, ".V38_restricted.vcf"),
+        samplename1 = basename(sample, ".V38_restricted.vcf"),
         java_heap_memory_initial = "1g",
         pipeline_version = pipeline_version,
         reference_version = reference_version
