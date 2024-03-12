@@ -12,17 +12,7 @@ workflow main_workflow {
   ###inputs for fastq2ubam workflows
   
 
-  String? pipeline_version = "V2" ###no me lo toma el input como default
-
-
-  ####metadata
-  String run_date                   
-  String library_name 
-  String platform_name = "Illumina"
-  String platformmodel = "NextSeq-500"
-  String sequencing_center =  "UIT-HNRG" 
-  String readlenght 
-  String ubam_list_name = "ubamfiles"
+  String? pipeline_version = "V38" ###no me lo toma el input como default
 
   ###GATK
   String gatk_jar = "gatk-package-4.5.0.0-local.jar"
@@ -34,7 +24,7 @@ workflow main_workflow {
   String path_softlink
 
   String sample_name = basename(input_vcf, ".V38_restricted.vcf")
-  String path = dirname(input_vcf)
+  #String path = dirname(input_vcf)
   
   String java_heap_memory_initial = "128m"
 
@@ -46,25 +36,27 @@ workflow main_workflow {
   ##annovar
   ###############agregar path a la 38
   String db_annovar = "/data/new_dbs/annovar/hg38/humandb" #path annovar 
-  File input_vcf 
+  File vcf_paths 
 
     
     ###esto creo q vuela
     File annovar_table_pl #/home/hnrg/HNRG-pipeline-V0.1/tools/annovar/table_annovar.pl
     File joinPY #/home/hnrg/NGStools/pipeline_wdl/process_vcf/join_vcfs.py
 
-    call anotaciones_only.FuncionalAnnotationSingle {
+ Array[File] input_vcfs =read_lines(vcf_paths)
+
+ scatter (sample in input_vcfs) {
+   call anotaciones_only.FuncionalAnnotationSingle {
         input:
-        input_vcf = input_vcf, #sin annovar del genotipado , 
-        path_save = path_softlink,
+        input_vcf = sample, 
+        path_save = dirname(sample)
         toolpath = toolpath,
-        samplename1 = sample_name,
+        samplename1 = basename(input_vcf, ".V38_restricted.vcf"),
         java_heap_memory_initial = "1g",
         pipeline_version = pipeline_version,
         reference_version = reference_version
         
       }
-     
+  }
 
-
-   } 
+} 
