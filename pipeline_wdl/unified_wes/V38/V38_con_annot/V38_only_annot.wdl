@@ -23,7 +23,7 @@ workflow main_workflow {
   ###save location
   String path_softlink
 
-  String sample_name = basename(input_vcf, ".V38_restricted.vcf")
+  #String sample_name = basename(input_vcf, ".V38_restricted.vcf")
   #String path = dirname(input_vcf)
   
   String java_heap_memory_initial = "128m"
