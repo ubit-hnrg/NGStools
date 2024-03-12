@@ -49,7 +49,7 @@ workflow main_workflow {
    call anotaciones_only.FuncionalAnnotationSingle {
         input:
         input_vcf = sample, 
-        path_save = dirname(sample)
+        path_save = dirname(sample),
         toolpath = toolpath,
         samplename1 = basename(input_vcf, ".V38_restricted.vcf"),
         java_heap_memory_initial = "1g",
