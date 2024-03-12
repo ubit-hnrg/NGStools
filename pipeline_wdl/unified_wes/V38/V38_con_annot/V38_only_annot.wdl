@@ -13,7 +13,7 @@ task link_path {
 
     >>>
     output {
-      String path = read_lines($path_out) 
+      String path = read_lines(${path_out}) 
     }
 }
 
