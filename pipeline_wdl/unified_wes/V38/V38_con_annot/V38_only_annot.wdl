@@ -55,6 +55,7 @@ workflow main_workflow {
     File annovar_table_pl #/home/hnrg/HNRG-pipeline-V0.1/tools/annovar/table_annovar.pl
     File joinPY #/home/hnrg/NGStools/pipeline_wdl/process_vcf/join_vcfs.py
 
+File vcf_paths
  Array[File] input_vcfs =read_lines(vcf_paths)
 
  scatter (sample in input_vcfs) {
