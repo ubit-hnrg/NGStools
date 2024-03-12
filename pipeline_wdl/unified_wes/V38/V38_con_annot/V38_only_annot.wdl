@@ -13,7 +13,7 @@ task link_path {
 
     >>>
     output {
-      String path = path_out 
+      String path = "${path_out}" 
     }
 }
 
