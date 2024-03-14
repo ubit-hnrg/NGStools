@@ -195,7 +195,8 @@ task symlink_important_files {
 
        cp -L ${output_to_save} ${path_save}
        aux_name=$(basename ${output_to_save})
-       gzip -c ${output_to_save} > ${path_save}'/'$aux_name'.gz'
+       bgzip -c ${output_to_save} > ${path_save}'/'$aux_name'.gz'
+       tabix -p vcf ${path_save}'/'$aux_name'.gz'
     }
 }
 
