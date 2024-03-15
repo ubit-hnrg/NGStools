@@ -60,16 +60,16 @@ File vcf_paths
 
  scatter (sample in input_vcfs) {
 
-  call link_path {
+  #call link_path {
 
-    input: 
-    input_vcf = sample
-  }
+    #input: 
+    #input_vcf = sample
+  #}
 
    call anotaciones_only.FuncionalAnnotationSingle {
         input:
         input_vcf = sample, 
-        path_save = link_path.path,
+        path_save = path_softlink, #link_path.path,
         toolpath = toolpath,
         samplename1 = basename(sample, ".V38_restricted.vcf"),
         java_heap_memory_initial = "1g",

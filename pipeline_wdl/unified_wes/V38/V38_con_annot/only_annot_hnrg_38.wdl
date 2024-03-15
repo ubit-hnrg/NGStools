@@ -189,14 +189,15 @@ output {
 
 task symlink_important_files {
     File output_to_save
+    String samplename1
     #File output_to_save2
     String path_save
     command{
 
-       cp -L ${output_to_save} ${path_save}
+       cp -L ${output_to_save} ${path_save}'/'${samplename1}'/'
        aux_name=$(basename ${output_to_save})
-       bgzip -c ${output_to_save} > ${path_save}'/'$aux_name'.gz'
-       tabix -p vcf ${path_save}'/'$aux_name'.gz'
+       bgzip -c ${output_to_save} > ${path_save}'/'${samplename1}'/'$aux_name'.gz'
+       tabix -p vcf ${path_save}'/'${samplename1}'/'$aux_name'.gz'
     }
 }
 
@@ -627,6 +628,7 @@ input:
 
  call symlink_important_files {
          input:
+        samplename1 = samplename1,
         output_to_save = step11_clinVar_final_annot.salida_Snpsift,#final_annot.salida_Snpsift,
         path_save = path_save
     }
