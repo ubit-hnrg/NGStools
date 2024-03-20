@@ -560,16 +560,16 @@ input:
 
 #Step 11: Annotate with CADD (Combined Annotation Dependent Depletion) - 1000 Genome variants
 
-#call Snpsift as step10_dbscSNV{
-#input:
-#    samplename1 = samplename1,
-#    parametros = "Annotate -info RefSeq,Ensembl,RefSeq_region,RefSeq_gene,RefSeq_functional_consequence,RefSeq_id_c.change_p.change,Ensembl_region,Ensembl_gene,Ensembl_functional_consequence,Ensembl_id_c.change_p.change,ada_score,rf_score",
-#    input_vcf = step9_PhastCons.salida_Snpsift,
-#    toolpath = toolpath,
-#    java_heap_memory_initial = java_heap_memory_initial,
-#    nombre_step = "step10_dbscSNV"
+call Snpsift as step10_dbscSNV{
+input:
+    samplename1 = samplename1,
+    parametros = "Annotate -info RefSeq,Ensembl,RefSeq_region,RefSeq_gene,RefSeq_functional_consequence,RefSeq_id_c.change_p.change,Ensembl_region,Ensembl_gene,Ensembl_functional_consequence,Ensembl_id_c.change_p.change,ada_score,rf_score",
+    input_vcf = step9_PhastCons.salida_Snpsift,
+    toolpath = toolpath,
+    java_heap_memory_initial = java_heap_memory_initial,
+    nombre_step = "step10_dbscSNV"
 
-#}
+}
 
 ##step 11 bis, new dbnsfp 
 #call Snpsift as step11_dbNSFP{
@@ -624,7 +624,7 @@ input:
 
 call acmg_bayesian_class {
     input:
-    input_vcf = step9_PhastCons.salida_Snpsift, #step10_dbscSNV.salida_Snpsift,
+    input_vcf =  step10_dbscSNV.salida_Snpsift, #step9_PhastCons.salida_Snpsift,
     samplename1 = samplename1,
     toolpath = toolpath,
     nombre_step = "step11_acmg"
