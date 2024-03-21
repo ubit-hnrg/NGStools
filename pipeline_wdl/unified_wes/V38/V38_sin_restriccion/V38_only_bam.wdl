@@ -7,8 +7,8 @@
 import './fastq2ubam_38.wdl' as fastq2ubam #1
 import './ubam2bwa_38.wdl' as ubam2bwa #2
 import './bam2gvcf_38.wdl' as bamtogvcf #3
-import './jointgenotype_single_38.wdl' as single_genotypeGVCF #4
-import './qc_38.wdl' as qual_control #5
+#import './jointgenotype_single_38.wdl' as single_genotypeGVCF #4
+#import './qc_38.wdl' as qual_control #5
 
 
 
@@ -456,82 +456,82 @@ workflow main_workflow {
       } 
 
     ######single_genotype
-    call single_genotypeGVCF.singleGenotypeGVCFs {
-        input:
-        eval_interval_list   = coord_generator.eval_interval_list,
-        array_path_save = mkdir_samplename.path_out_softlink,
-        dbSNP_vcf = dbSNP_vcf,
-        dbSNP_vcf_index = dbSNP_vcf_index,
-        callset_name = sample_name, ##basename(tabulatedSampleFilePaths, ".txt"), ###cambio el nombre, antes anotaba con nombre de TSO.
-        ref_fasta = ref_fasta,
-        ref_fasta_index =ref_fasta_index,
-        ref_dict = ref_dict,
-        gatk_jar = gatk_jar,
-        toolpath = toolpath,
-        sample_name = sample_name,
-        region_padded_bed = coord_generator.padded_coord,
-        exon_coordinates = generic_exon_coords,
+    # call single_genotypeGVCF.singleGenotypeGVCFs {
+    #     input:
+    #     eval_interval_list   = coord_generator.eval_interval_list,
+    #     array_path_save = mkdir_samplename.path_out_softlink,
+    #     dbSNP_vcf = dbSNP_vcf,
+    #     dbSNP_vcf_index = dbSNP_vcf_index,
+    #     callset_name = sample_name, ##basename(tabulatedSampleFilePaths, ".txt"), ###cambio el nombre, antes anotaba con nombre de TSO.
+    #     ref_fasta = ref_fasta,
+    #     ref_fasta_index =ref_fasta_index,
+    #     ref_dict = ref_dict,
+    #     gatk_jar = gatk_jar,
+    #     toolpath = toolpath,
+    #     sample_name = sample_name,
+    #     region_padded_bed = coord_generator.padded_coord,
+    #     exon_coordinates = generic_exon_coords,
 
-        ####input del anterior jointgenotyping
-        input_gvcf = bam2gvcf.output_gvcf,
-        input_gvcf_index = bam2gvcf.output_gvcf_index,
-        pipeline_version = pipeline_version,
+    #     ####input del anterior jointgenotyping
+    #     input_gvcf = bam2gvcf.output_gvcf,
+    #     input_gvcf_index = bam2gvcf.output_gvcf_index,
+    #     pipeline_version = pipeline_version,
 
-        ####annovar
-        db_annovar = db_annovar,#path annovar
-        annovar_table_pl = annovar_table_pl, #/home/hnrg/HNRG-pipeline-V0.1/tools/annovar/table_annovar.pl
-        joinPY = joinPY
+    #     ####annovar
+    #     db_annovar = db_annovar,#path annovar
+    #     annovar_table_pl = annovar_table_pl, #/home/hnrg/HNRG-pipeline-V0.1/tools/annovar/table_annovar.pl
+    #     joinPY = joinPY
         
-    }
+    # }
 
 
    } ###fin scatter gvcf
 
 
 
- Array[String] uniquesample_name =read_lines(ConvertPairedFastQsToUnmappedBamWf.samplesnames)
+#  Array[String] uniquesample_name =read_lines(ConvertPairedFastQsToUnmappedBamWf.samplesnames)
 
-Array[File] salidas_json = ConvertPairedFastQsToUnmappedBamWf.fastp_json_reports
- Array[String] array_path_save_json = mkdir_samplename.path_out_softlink
- Array[Pair[String,File]] samples_x_files_json = zip (array_path_save_json, salidas_json)
- scatter (pairs in samples_x_files_json) {
-     call symlink_important_files {
-       input:
-        output_to_save = pairs.right,
-        path_save = pairs.left
-      }
-  }
-
-
-call qual_control.qual_control {
-   input: 
-   #stat_alineamiento = bam2gvcf.reporte_final,
-   fastp_json_files = ConvertPairedFastQsToUnmappedBamWf.fastp_json_reports,
-   path_save = mkdir_samplename.path_out_softlink,
-   #bams_N_reads = N_reads_bams,#bam2gvcf.bams_N_reads,
-   analysis_readybam = bam2gvcf.analysis_ready_bam,
-   analysis_readybam_index = bam2gvcf.analysis_ready_bam_index,
-   toolpath = toolpath,
-   ngs_toolpath = ngs_toolpath,
-   intervalo_captura = intervalo_captura,
-   pipeline_v= pipeline_version,
-   experiment_name = basename(tabulatedSampleFilePaths, ".txt"),
-   exon_coords = coord_generator.exon_restricted, #### ensembl vs intervalo_captura
-   experiment_path = path_softlink,
-   chromosome_length = chromosome_length
-  }
+# Array[File] salidas_json = ConvertPairedFastQsToUnmappedBamWf.fastp_json_reports
+#  Array[String] array_path_save_json = mkdir_samplename.path_out_softlink
+#  Array[Pair[String,File]] samples_x_files_json = zip (array_path_save_json, salidas_json)
+#  scatter (pairs in samples_x_files_json) {
+#      call symlink_important_files {
+#        input:
+#         output_to_save = pairs.right,
+#         path_save = pairs.left
+#       }
+#   }
 
 
-Array[File] exon_tsv = qual_control.tsv_exon
- Array[String] array_path_save_byexon = mkdir_samplename.path_out_softlink
- Array[Pair[String,File]] samples_by_exon = zip (array_path_save_byexon, exon_tsv)
-  scatter (pairs in samples_by_exon) {
-    call symlink_important_files as byexon{
-        input:
-        output_to_save = pairs.right,
-        path_save = pairs.left
-    }
-  }
+# call qual_control.qual_control {
+#    input: 
+#    #stat_alineamiento = bam2gvcf.reporte_final,
+#    fastp_json_files = ConvertPairedFastQsToUnmappedBamWf.fastp_json_reports,
+#    path_save = mkdir_samplename.path_out_softlink,
+#    #bams_N_reads = N_reads_bams,#bam2gvcf.bams_N_reads,
+#    analysis_readybam = bam2gvcf.analysis_ready_bam,
+#    analysis_readybam_index = bam2gvcf.analysis_ready_bam_index,
+#    toolpath = toolpath,
+#    ngs_toolpath = ngs_toolpath,
+#    intervalo_captura = intervalo_captura,
+#    pipeline_v= pipeline_version,
+#    experiment_name = basename(tabulatedSampleFilePaths, ".txt"),
+#    exon_coords = coord_generator.exon_restricted, #### ensembl vs intervalo_captura
+#    experiment_path = path_softlink,
+#    chromosome_length = chromosome_length
+#   }
+
+
+# Array[File] exon_tsv = qual_control.tsv_exon
+#  Array[String] array_path_save_byexon = mkdir_samplename.path_out_softlink
+#  Array[Pair[String,File]] samples_by_exon = zip (array_path_save_byexon, exon_tsv)
+#   scatter (pairs in samples_by_exon) {
+#     call symlink_important_files as byexon{
+#         input:
+#         output_to_save = pairs.right,
+#         path_save = pairs.left
+#     }
+#   }
 
 
  
@@ -550,122 +550,122 @@ Array[File] exon_tsv = qual_control.tsv_exon
 
 
 ####for pdf purpose 
-  Array[File] alineamiento_rep = qual_control.reporte_final_alineamiento#bam2gvcf.reporte_final ### archivo para mergear... estadistica en la libreria del experimento
-  Array[File] global = qual_control.depth_global_cov_stats 
-  Array[Pair[String,File]] global_report = zip (array_path_save_byexon, global)
-  scatter (pairs in global_report) {
-    call symlink_important_files as global_hist {
-        input:
-        output_to_save = pairs.right,
-        path_save = pairs.left
-    }
-  }
+  # Array[File] alineamiento_rep = qual_control.reporte_final_alineamiento#bam2gvcf.reporte_final ### archivo para mergear... estadistica en la libreria del experimento
+  # Array[File] global = qual_control.depth_global_cov_stats 
+  # Array[Pair[String,File]] global_report = zip (array_path_save_byexon, global)
+  # scatter (pairs in global_report) {
+  #   call symlink_important_files as global_hist {
+  #       input:
+  #       output_to_save = pairs.right,
+  #       path_save = pairs.left
+  #   }
+  # }
 
 
   
   ####meter en pdf
-  Array[File] plot_dist = qual_control.plot_distribution
-  Array[Pair[String,File]] plot_hist_save = zip (array_path_save_byexon, plot_dist)
-  scatter (pairs in plot_hist_save) {
-    call symlink_important_files as save_plot_distrib {
-        input:
-        output_to_save = pairs.right,
-        path_save = pairs.left
-    }
-  }
+  # Array[File] plot_dist = qual_control.plot_distribution
+  # Array[Pair[String,File]] plot_hist_save = zip (array_path_save_byexon, plot_dist)
+  # scatter (pairs in plot_hist_save) {
+  #   call symlink_important_files as save_plot_distrib {
+  #       input:
+  #       output_to_save = pairs.right,
+  #       path_save = pairs.left
+  #   }
+  # }
 
  ###samtools_stat
-  Array[File] samtools_stat_report_from_reduced_bam = qual_control.samtools_stat_report_from_reduced_bam
-   Array[Pair[String,File]] samtools_stat_out = zip (array_path_save_byexon, samtools_stat_report_from_reduced_bam)
-  scatter (pairs in samtools_stat_out) {
-    call symlink_important_files as save_samtools {
-        input:
-        output_to_save = pairs.right,
-        path_save = pairs.left
-    }
-  }
+#   Array[File] samtools_stat_report_from_reduced_bam = qual_control.samtools_stat_report_from_reduced_bam
+#    Array[Pair[String,File]] samtools_stat_out = zip (array_path_save_byexon, samtools_stat_report_from_reduced_bam)
+#   scatter (pairs in samtools_stat_out) {
+#     call symlink_important_files as save_samtools {
+#         input:
+#         output_to_save = pairs.right,
+#         path_save = pairs.left
+#     }
+#   }
 
- Array[File] tsv_global = qual_control.bams_stat_depth_global_coverage_stats
-  Array[Pair[String,File]] qual_tsv = zip (array_path_save_byexon, tsv_global)
-  scatter (pairs in qual_tsv) {
-    call symlink_important_files as qual_tsv_save {
-        input:
-        output_to_save = pairs.right,
-        path_save = pairs.left
-    }
-  }
+#  Array[File] tsv_global = qual_control.bams_stat_depth_global_coverage_stats
+#   Array[Pair[String,File]] qual_tsv = zip (array_path_save_byexon, tsv_global)
+#   scatter (pairs in qual_tsv) {
+#     call symlink_important_files as qual_tsv_save {
+#         input:
+#         output_to_save = pairs.right,
+#         path_save = pairs.left
+#     }
+#   }
 
 
 
   #Array[File] fastp_qual = quality_control_V2.fastp_rep_out
-  Array[File] sex_pred= qual_control.bams_sex_prediction
-  Array[File] gene_list = singleGenotypeGVCFs.annovar_gene_list 
-  Array[File] plof = singleGenotypeGVCFs.gene_plof_file 
-  Array[File] exon_distances = singleGenotypeGVCFs.vcf_exon_distance
-  Array[File] no_cubierto = qual_control.nocubierto
+  # Array[File] sex_pred= qual_control.bams_sex_prediction
+  # Array[File] gene_list = singleGenotypeGVCFs.annovar_gene_list 
+  # Array[File] plof = singleGenotypeGVCFs.gene_plof_file 
+  # Array[File] exon_distances = singleGenotypeGVCFs.vcf_exon_distance
+  # Array[File] no_cubierto = qual_control.nocubierto
 
 
 
  ####excel_report
 
-    Array[File] Tsv_annovar = singleGenotypeGVCFs.annovar_tsv_out
-    scatter (idx in range(length(Tsv_annovar))){
+    # Array[File] Tsv_annovar = singleGenotypeGVCFs.annovar_tsv_out
+    # scatter (idx in range(length(Tsv_annovar))){
        
-       String sample = basename(Tsv_annovar[idx],"multianno_restrict.tsv")
-       String samplename2 = basename(exon_tsv[idx],"_ENS_local_report.tsv")
+    #    String sample = basename(Tsv_annovar[idx],"multianno_restrict.tsv")
+    #    String samplename2 = basename(exon_tsv[idx],"_ENS_local_report.tsv")
        
-       #if(sample==samplename2){
-         #mergear tsv_annovar con distancias_exones
+    #    #if(sample==samplename2){
+    #      #mergear tsv_annovar con distancias_exones
         
-      call join_annovar_exon_dist {
-          input:
-            name = samplename2,
-              annovar_variants = Tsv_annovar[idx],
-              exon_dist = exon_distances[idx],
-              ngs_toolpath = ngs_toolpath,
-              pipeline_version = pipeline_version
-         }
+    #   call join_annovar_exon_dist {
+    #       input:
+    #         name = samplename2,
+    #           annovar_variants = Tsv_annovar[idx],
+    #           exon_dist = exon_distances[idx],
+    #           ngs_toolpath = ngs_toolpath,
+    #           pipeline_version = pipeline_version
+    #      }
 
-       call build_excell_report {
-            input:
-            annovar_tsv = join_annovar_exon_dist.anno_dist,
-            plof = plof[idx],
-            samplename2 = samplename2,
-            exon_coverage_report = exon_tsv[idx],
-            ngs_toolpath = ngs_toolpath,
-            no_cubierto = no_cubierto[idx],
-            pipeline_version = pipeline_version
+    #    call build_excell_report {
+    #         input:
+    #         annovar_tsv = join_annovar_exon_dist.anno_dist,
+    #         plof = plof[idx],
+    #         samplename2 = samplename2,
+    #         exon_coverage_report = exon_tsv[idx],
+    #         ngs_toolpath = ngs_toolpath,
+    #         no_cubierto = no_cubierto[idx],
+    #         pipeline_version = pipeline_version
             
-           }
-        call pdf_report {
-            input:
-            alineamiento = alineamiento_rep[idx], ##ok
-            name = samplename2,
-            glob_rep =tsv_global[idx], ##ok
-            sex = sex_pred[idx],
-            #fastp_rep = fastp_qual[idx],
-            fastp_rep = qual_control.fastp_rep_out[idx],
-            tso = basename(tabulatedSampleFilePaths, ".txt"),
-            date = run_date,
-            path = array_path_save_json[idx],
-            ngs_toolpath = ngs_toolpath,
-            pipeline_version = pipeline_version
+    #        }
+    #     call pdf_report {
+    #         input:
+    #         alineamiento = alineamiento_rep[idx], ##ok
+    #         name = samplename2,
+    #         glob_rep =tsv_global[idx], ##ok
+    #         sex = sex_pred[idx],
+    #         #fastp_rep = fastp_qual[idx],
+    #         fastp_rep = qual_control.fastp_rep_out[idx],
+    #         tso = basename(tabulatedSampleFilePaths, ".txt"),
+    #         date = run_date,
+    #         path = array_path_save_json[idx],
+    #         ngs_toolpath = ngs_toolpath,
+    #         pipeline_version = pipeline_version
             
-           }  
-        #}
+    #        }  
+    #     #}
 
-    }
+    # }
 
-Array[File?] reporte_variantes = build_excell_report.excell_report
-#Array[String] array_path_save_byexon = mkdir_samplename.path_out_softlink
- Array[Pair[String,File?]] samples_by_variant = zip (array_path_save_byexon, reporte_variantes)
-  scatter (pairs in samples_by_variant) {
-    call symlink_important_files as build_excell_reportbyvariants {
-        input:
-        output_to_save = pairs.right,
-        path_save = pairs.left
-    }
-  }
+# Array[File?] reporte_variantes = build_excell_report.excell_report
+# #Array[String] array_path_save_byexon = mkdir_samplename.path_out_softlink
+#  Array[Pair[String,File?]] samples_by_variant = zip (array_path_save_byexon, reporte_variantes)
+#   scatter (pairs in samples_by_variant) {
+#     call symlink_important_files as build_excell_reportbyvariants {
+#         input:
+#         output_to_save = pairs.right,
+#         path_save = pairs.left
+#     }
+#   }
 
 
 

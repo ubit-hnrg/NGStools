@@ -860,15 +860,15 @@ workflow bam2gvcf {
 
 
 ##########esto lo tengo que checkear
-  call reduce_bam {
-    input:
-    input_bam = MarkDuplicates.output_bam, 
-    #input_bam = bam_markdup,
-    toolpath = toolpath,
-    output_bam_basename = base_file_name, 
-    lib_restricted = lib_restricted #intervalo_captura
+  #call reduce_bam {
+  #  input:
+  #  input_bam = MarkDuplicates.output_bam, 
+  #  #input_bam = bam_markdup,
+  #  toolpath = toolpath,
+  #  output_bam_basename = base_file_name, 
+  #  lib_restricted = lib_restricted #intervalo_captura
     #./TruSight_One_v1_padded_100_GRCh37.bed 
-  }
+  #}
   
 
 
@@ -877,8 +877,8 @@ workflow bam2gvcf {
   ############### hay una version de wdl en la web que usa SamtoolsSort as SortSampleBam
   call SortAndFixTags {
     input:
-    #input_bam = MarkDuplicates.output_bam,
-    input_bam = reduce_bam.output_reduced_bam,
+    input_bam = MarkDuplicates.output_bam,
+    #input_bam = reduce_bam.output_reduced_bam,
     output_bam_basename = base_file_name + ".aligned.duplicate_marked.sorted",
     ref_dict = ref_dict,
     ref_fasta = ref_fasta,

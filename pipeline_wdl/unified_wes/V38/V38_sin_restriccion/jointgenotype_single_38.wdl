@@ -97,16 +97,16 @@ workflow singleGenotypeGVCFs {
   }
   
 
-  call restrict_vcf {
-    input:
-    VCF  = FinalGatherVcf.output_vcf,
-    region_padded_bed = region_padded_bed,
-    toolpath = toolpath
-  }
+  #call restrict_vcf {
+  #  input:
+  #  VCF  = FinalGatherVcf.output_vcf,
+  #  region_padded_bed = region_padded_bed,
+  #  toolpath = toolpath
+  #}
 
 call exon_distance {
     input:
-    vcf_ok = restrict_vcf.VCF_restricted, #step12_clinVar.salida_Snpsift, #final_annot.salida_Snpsift,
+    vcf_ok = FinalGatherVcf.output_vcf, #restrict_vcf.VCF_restricted, #step12_clinVar.salida_Snpsift, #final_annot.salida_Snpsift,
     exon_coord = exon_coordinates,
     #exon_coordinates_to_lib = exon_coordinates_to_lib,
     sample_name = sample_name
@@ -127,7 +127,7 @@ call exon_distance {
 
   call annovar {
             input:
-            one_sample_vcf =  restrict_vcf.VCF_restricted, #filtro_no_calls.one_sample_vcf,,#get_individual_vcf.one_sample_vcf,
+            one_sample_vcf =  FinalGatherVcf.output_vcf, #restrict_vcf.VCF_restricted, #filtro_no_calls.one_sample_vcf,,#get_individual_vcf.one_sample_vcf,
             sample = sample_name,#idsample.idsample,
             annovar_table_pl = annovar_table_pl,
             toolpath = toolpath,
@@ -142,7 +142,7 @@ call exon_distance {
             gnomad_plof = gnomad_plof_db,
             annovar_txt = annovar.annovar_txt,
             annovar_vcf = annovar.annovar_vcf,
-            restrictedVCF = restrict_vcf.VCF_restricted,#rename_samples.multisample_vcf_restricted_renamed,
+            restrictedVCF = FinalGatherVcf.output_vcf,# restrict_vcf.VCF_restricted,#rename_samples.multisample_vcf_restricted_renamed,
             sample = sample_name,#idsample.idsample,
             #sample1 = sample,
             joinPY = joinPY
@@ -155,7 +155,7 @@ call exon_distance {
     input:
     final_gath = FinalGatherVcf.output_vcf,
     final_gath_idx = FinalGatherVcf.output_vcf_index,
-    restricted_vcf = restrict_vcf.VCF_restricted,
+    #restricted_vcf = restrict_vcf.VCF_restricted,
 
     metrica1 = CollectMetricsOnFullVcf.detail_metrics_file,
     metrica2 = CollectMetricsOnFullVcf.summary_metrics_file,
@@ -177,7 +177,7 @@ call symlink_important_files2 {
 
 
 
-   File? restricted_vcf = restrict_vcf.VCF_restricted
+   #File? restricted_vcf = restrict_vcf.VCF_restricted
    File? outputvcf = FinalGatherVcf.output_vcf
    File? outputvcfindex =  FinalGatherVcf.output_vcf_index
    File? metrica1 =  CollectMetricsOnFullVcf.detail_metrics_file
@@ -201,7 +201,7 @@ call symlink_important_files2 {
 task symlink_important_files {
     File final_gath
     File final_gath_idx
-    File restricted_vcf
+    #File restricted_vcf
     
     File metrica1
     File metrica2
@@ -211,7 +211,6 @@ task symlink_important_files {
        cp -L ${final_gath_idx} ${path_save}
        cp -L ${metrica1} ${path_save}
        cp -L ${metrica2} ${path_save}
-       cp -L ${restricted_vcf} ${path_save}
     
     }
 }

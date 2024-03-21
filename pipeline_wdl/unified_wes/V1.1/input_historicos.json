@@ -1,6 +1,0 @@
-{
-  "FuncionalAnnotation.list_of_vcf": "File",
-  "FuncionalAnnotation.toolpath": "String",
-  "FuncionalAnnotation.config_file_vcfanno": "File",
-  "FuncionalAnnotation.funcion_lua": "File"
-}
