@@ -531,7 +531,7 @@ task restrict_vcf{
     
     command{
 
-        zless ${VCF} | java -jar ${toolpath}/SnpSift.jar intervals ${region_padded_bed} > ${base}_restricted.vcf
+        zcat ${VCF} | java -jar ${toolpath}/SnpSift.jar intervals ${region_padded_bed} > ${base}_restricted.vcf
     }
 
     output {
@@ -695,18 +695,18 @@ done
     #sed -i "s/Otherinfo/$vcf_header/g" ${sample}.hg38_multianno.tsv;
 
     #join one multianno tsv file AND joint genotyped vcf. This script (join_vcf.py) also postprocess Intervar columns.
-    python ${joinPY} --multianno_tsv=${sample}.hg38_multianno.tsv --vcf_multisample=${restrictedVCF} --output=${sample}.multianno_restrict.tsv
+    python ${joinPY} --multianno_tsv=${sample}.hg38_multianno.tsv --vcf_multisample=${restrictedVCF} --output=${sample}.multianno.tsv
     #change dots by tabs.
-    sed -i -e "s|\.	|	|g" ${sample}.multianno_restrict.tsv
+    sed -i -e "s|\.	|	|g" ${sample}.multianno.tsv
     
     ####agrego un awk para buscar los genes de annovar y hacer un archivo con la tabla gnomad_plof para esos genes.
-    cat ${sample}.multianno_restrict.tsv | cut -f20 | uniq > ${sample}.gene_list_for_plof.list
+    cat ${sample}.multianno.tsv | cut -f20 | uniq > ${sample}.gene_list_for_plof.list
     head -n1 ${gnomad_plof} > ${sample}_plof.tsv
     awk 'NR == FNR {gene_list[$1];next} ($1 in gene_list)' ${sample}.gene_list_for_plof.list ${gnomad_plof} >> ${sample}_plof.tsv
  
     >>>
     output{
-        File annovar_tsv =  '${sample}.multianno_restrict.tsv'
+        File annovar_tsv =  '${sample}.multianno.tsv'
         File gene_list = '${sample}.gene_list_for_plof.list'
         File gene_plof = '${sample}_plof.tsv'
     }
