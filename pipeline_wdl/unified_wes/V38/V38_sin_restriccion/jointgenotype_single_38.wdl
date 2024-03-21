@@ -705,8 +705,8 @@ done
     head -n1 ${gnomad_plof} > ${sample}_plof.tsv
     awk 'NR == FNR {gene_list[$1];next} ($1 in gene_list)' ${sample}.gene_list_for_plof.list ${gnomad_plof} >> ${sample}_plof.tsv
  
-    rm aux
-    
+    rm vcf
+
     >>>
     output{
         File annovar_tsv =  '${sample}.multianno.tsv'
