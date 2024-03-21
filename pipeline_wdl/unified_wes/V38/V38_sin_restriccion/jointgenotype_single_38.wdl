@@ -735,8 +735,8 @@ command{
     #!/bin/bash
     set -e
 
-    grep "^#" ${vcf_ok} > head_vcf.vcf
-    grep -v "#" ${vcf_ok}| sort -k1,1 -k2,2n >> head_vcf.vcf
+    zgrep "^#" ${vcf_ok} > head_vcf.vcf
+    zgrep -v "#" ${vcf_ok}| sort -k1,1 -k2,2n >> head_vcf.vcf
     
     ##test
     ##sort -k1,1V -k2,2n ${exon_coord} >> sorted_exon_bed.bed
