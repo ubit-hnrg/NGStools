@@ -694,8 +694,9 @@ done
     #remplazo el header
     #sed -i "s/Otherinfo/$vcf_header/g" ${sample}.hg38_multianno.tsv;
 
+    zcat ${restrictedVCF} > aux.vcf
     #join one multianno tsv file AND joint genotyped vcf. This script (join_vcf.py) also postprocess Intervar columns.
-    python ${joinPY} --multianno_tsv=${sample}.hg38_multianno.tsv --vcf_multisample=${restrictedVCF} --output=${sample}.multianno.tsv
+    python ${joinPY} --multianno_tsv=${sample}.hg38_multianno.tsv --vcf_multisample=$aux.vcf --output=${sample}.multianno.tsv
     #change dots by tabs.
     sed -i -e "s|\.	|	|g" ${sample}.multianno.tsv
     
@@ -704,6 +705,7 @@ done
     head -n1 ${gnomad_plof} > ${sample}_plof.tsv
     awk 'NR == FNR {gene_list[$1];next} ($1 in gene_list)' ${sample}.gene_list_for_plof.list ${gnomad_plof} >> ${sample}_plof.tsv
  
+    rm aux.vcf
     >>>
     output{
         File annovar_tsv =  '${sample}.multianno.tsv'
