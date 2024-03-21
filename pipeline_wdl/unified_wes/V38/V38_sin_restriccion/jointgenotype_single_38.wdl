@@ -696,7 +696,7 @@ done
 
     zcat ${restrictedVCF} > aux.vcf
     #join one multianno tsv file AND joint genotyped vcf. This script (join_vcf.py) also postprocess Intervar columns.
-    python ${joinPY} --multianno_tsv=${sample}.hg38_multianno.tsv --vcf_multisample=$aux.vcf --output=${sample}.multianno.tsv
+    python ${joinPY} --multianno_tsv=${sample}.hg38_multianno.tsv --vcf_multisample= aux.vcf --output=${sample}.multianno.tsv
     #change dots by tabs.
     sed -i -e "s|\.	|	|g" ${sample}.multianno.tsv
     
