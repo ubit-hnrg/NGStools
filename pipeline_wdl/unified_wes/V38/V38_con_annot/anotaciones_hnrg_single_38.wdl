@@ -22,14 +22,14 @@ command {
 set -o pipefail
 
 
-java -Xms${java_heap_memory_initial} -Xmx9g -jar ${toolpath}/bptools/bptools.jar ${parametros} ${input_vcf} ${samplename1}.${nombre_step}.vcf
+java -Xms${java_heap_memory_initial} -Xmx9g -jar ${toolpath}/bptools/bptools.jar ${parametros} ${input_vcf} ${samplename1}_${nombre_step}.vcf
 
 }
 
 
 output {
     
-    File bptools_out = "${samplename1}.${nombre_step}.vcf"
+    File bptools_out = "${samplename1}_${nombre_step}.vcf"
     }
 
 }
@@ -77,12 +77,12 @@ String parametros
 command {
 set -o pipefail
 java -Xms${java_heap_memory_initial} -Xmx9g -jar ${toolpath}SnpEff/snpEff/SnpSift.jar ${parametros} ${database} \
-${input_vcf} > ${samplename1}.${nombre_step}.vcf
+${input_vcf} > ${samplename1}_${nombre_step}.vcf
 
 }
 
 output {
-    File salida_Snpsift = "${samplename1}.${nombre_step}.vcf"
+    File salida_Snpsift = "${samplename1}_${nombre_step}.vcf"
 }
 
 }
@@ -154,12 +154,12 @@ File database
 command {
 set -o pipefail
 java -Xms${java_heap_memory_initial} -Xmx12g -jar ${toolpath}SnpEff/snpEff/SnpSift.jar ${parametros} ${database} \
-${input_vcf} > ${samplename1}.${nombre_step}.vcf
+${input_vcf} > ${samplename1}_${nombre_step}.vcf
 
 }
 
 output {
-    File salida_Snpsift = "${samplename1}.${nombre_step}.vcf"
+    File salida_Snpsift = "${samplename1}_${nombre_step}.vcf"
 }
 
 }
@@ -176,12 +176,12 @@ String parametros
 command {
 set -o pipefail
 java -Xms${java_heap_memory_initial} -Xmx12g -jar ${toolpath}SnpEff/snpEff/SnpSift.jar ${parametros} \
-${input_vcf} > ${samplename1}.${nombre_step}.vcf
+${input_vcf} > ${samplename1}_${nombre_step}.vcf
 
 }
 
 output {
-    File salida_Snpsift = "${samplename1}.${nombre_step}.vcf"
+    File salida_Snpsift = "${samplename1}_${nombre_step}.vcf"
 }
 
 }
@@ -218,11 +218,11 @@ task hnrg_freq {
     
 
     command {
-        ${toolpath}vcfanno_linux64 -p 4 ${config_file_vcfanno} ${input_vcf} > ${samplename1}.${nombre_step}.vcf
+        ${toolpath}vcfanno_linux64 -p 4 ${config_file_vcfanno} ${input_vcf} > ${samplename1}_${nombre_step}.vcf
 
     }
 output {
-    File out_vcfanno = "${samplename1}.${nombre_step}.vcf"
+    File out_vcfanno = "${samplename1}_${nombre_step}.vcf"
 }
 
 }
@@ -262,11 +262,11 @@ File exon_dist = "${sample_name}.exon_distance.tsv"
     String toolpath
     String nombre_step
     command {
-    python3  ${toolpath}python_tools/acmg_bayesian_classificator.py ${input_vcf} ${samplename1}.${nombre_step}.vcf
+    python3  ${toolpath}python_tools/acmg_bayesian_classificator.py ${input_vcf} ${samplename1}_${nombre_step}.vcf
     }
 
     output {
-    File out_vcf = "${samplename1}.${nombre_step}.vcf"
+    File out_vcf = "${samplename1}_${nombre_step}.vcf"
     }
 
 }
@@ -298,10 +298,10 @@ task vcfanno_dbNSFP {
     echo 'ops=["self", "self", "self", "self", "self", "self"]' >> test.tom
 
 
-    ${toolpath}vcfanno_linux64 -p 4 config_vcfanno.tom ${input_vcf} > ${samplename1}".${nombre_step}.vcf"    
+    ${toolpath}vcfanno_linux64 -p 4 config_vcfanno.tom ${input_vcf} > ${samplename1}"_${nombre_step}.vcf"    
     >>>
     output {
-    File out_vcf = "${samplename1}.${nombre_step}.vcf"
+    File out_vcf = "${samplename1}_${nombre_step}.vcf"
     }
 
 }
