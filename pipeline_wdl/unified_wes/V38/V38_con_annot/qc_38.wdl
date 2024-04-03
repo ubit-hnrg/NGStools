@@ -77,7 +77,7 @@ task cobertura {
          #${toolpath}samtool1.19/samtools/samtools stats ${input_bam} -t ${intervalo_captura} > ${sample_name}_samtools_${pipeline_version}.stats
         samtools stats ${input_bam} -t ${intervalo_captura} > ${sample_name}_samtools_${pipeline_version}.stats
 
-         /usr/local/bin/plot-bamstats ${sample_name}_samtools_${pipeline_version}.stats -p ${path_save}samtools_plots/${sample_name}
+         #/usr/local/bin/plot-bamstats ${sample_name}_samtools_${pipeline_version}.stats -p ${path_save}samtools_plots/${sample_name}
 
          #### COBERTURA  ##################################
         #### EXONES     ##################################
