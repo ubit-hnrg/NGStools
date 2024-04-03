@@ -45,7 +45,7 @@ task cobertura {
 
         #sort del intervalo de caputura para que funcione bien el coverageBED.
         #sort -k1,1V -k2,2n ${intervalo_captura} > intervalo_sorted.bed
-        ${toolpath}bedtools-2.31.1/bedtools2/bin/sortBed -i ${intervalo_captura} -g ${chromosome_length} > intervalo_sorted.bed
+        ${toolpath}bedtools2/bin/sortBed -i ${intervalo_captura} -g ${chromosome_length} > intervalo_sorted.bed
 
   
         ###sex prediction
@@ -56,7 +56,7 @@ task cobertura {
         ${toolpath}samtool1.19/samtools/samtools stats bam_nodups.bam -t intervalo_sorted.bed > ${sample_name}_samtools_nodup_${pipeline_version}.stats ##samtools stat task
 
         ####global_hist for no dups_bams 
-       ${toolpath}bedtools-2.31.1/bedtools2/bin/coverageBed -a intervalo_sorted.bed -b bam_nodups.bam -hist ${sorted} -g ${chromosome_length} > ${sample_name}_nodup.hist.aux
+       ${toolpath}bedtools2/bin/coverageBed -a intervalo_sorted.bed -b bam_nodups.bam -hist ${sorted} -g ${chromosome_length} > ${sample_name}_nodup.hist.aux
         ##${toolpath}bedtools2/bin/coverageBed -a ${intervalo_captura} -b ${input_bam} -sorted -hist > ${sample_name}.hist.aux
         #echo -e 'chr\tstart\tend\tgene\tDP\tBPs\tIntervalLength\tfrequency' > header_nodup.txt
         #cat header_nodup.txt ${sample_name}_nodup.hist.aux > ${sample_name}_nodup.hist 
@@ -78,7 +78,7 @@ task cobertura {
         #histograma restringido a cada exon de ensembl que está en la librería de captura
         
         ##${toolpath}bedtools2/bin/sort ${input_bam} -m 1G |  
-        ${toolpath}bedtools-2.31.1/bedtools2/bin/coverageBed -a ${ensembl2intervalo_captura} -b ${input_bam} -hist ${sorted} -g ${chromosome_length} > ${sample_name}.ENS_${pipeline_version}.hist.aux1
+        ${toolpath}bedtools2/bin/coverageBed -a ${ensembl2intervalo_captura} -b ${input_bam} -hist ${sorted} -g ${chromosome_length} > ${sample_name}.ENS_${pipeline_version}.hist.aux1
         echo -e 'chr\tstart\tend\ttranscriptID\tgene\texonNumber\tstrand\tDP\tBPs\tIntervalLength\tfrequency' > header.txt
         grep -v '^all' ${sample_name}.ENS_${pipeline_version}.hist.aux1 > ${sample_name}.ENS_${pipeline_version}.hist.aux2
         cat header.txt ${sample_name}.ENS_${pipeline_version}.hist.aux2 > ${sample_name}.ENS_${pipeline_version}.hist
@@ -86,7 +86,7 @@ task cobertura {
         ##
         ##regiones no cubiertas en el intervalo de captura. -bga reporta la profunidad in bedgraph format. reporta las regiones con 0 cobertura. 
         ## por lo que dps se puede filtrar lo no cubierto.-
-        ${toolpath}bedtools-2.31.1/bedtools2/bin/genomeCoverageBed -ibam ${input_bam} -bga | awk '$4==0'| ${toolpath}bedtools-2.31.1/bedtools2/bin/intersectBed -a intervalo_sorted.bed -b - > ${sample_name}.no_cubierto_intervalo_${pipeline_version}.tsv
+        ${toolpath}bedtools2/bin/genomeCoverageBed -ibam ${input_bam} -bga | awk '$4==0'| ${toolpath}bedtools2/bin/intersectBed -a intervalo_sorted.bed -b - > ${sample_name}.no_cubierto_intervalo_${pipeline_version}.tsv
 
         
         cp -L ${sample_name}_samtools_nodup_${pipeline_version}.stats ${path_save}

@@ -112,15 +112,15 @@ task coord_generator {
     set -e
     set -o pipefail
     
-    ${toolpath}bedtools-2.31.1/bedtools2/bin/slopBed -i ${intervalo_captura} -g ${chromosome_length} -b ${padding} | sort -k1,1 -k2,2n -V > ${library_name}_padded_${padding}.bed 
+    ${toolpath}bedtools2/bin/slopBed -i ${intervalo_captura} -g ${chromosome_length} -b ${padding} | sort -k1,1 -k2,2n -V > ${library_name}_padded_${padding}.bed 
 
      ####Exon_restricted interval for quality_control  ${library_name}_padded_${padding}.bed | sort -k1,1 -k2,2n -V 
-    ${toolpath}bedtools-2.31.1/bedtools2/bin/intersectBed -a ${generic_exon_coords} -b ${intervalo_captura}|sort -k1,1V -k2,2n - > exon_restricted2_${library_name}.bed
+    ${toolpath}bedtools2/bin/intersectBed -a ${generic_exon_coords} -b ${intervalo_captura}|sort -k1,1V -k2,2n - > exon_restricted2_${library_name}.bed
 
     
     ###merged
      
-    ${toolpath}bedtools-2.31.1/bedtools2/bin/mergeBed -i ${library_name}_padded_${padding}.bed -d ${merge_tolerance} > ${library_name}_padded_${padding}_merged_${merge_tolerance}.bed
+    ${toolpath}bedtools2/bin/mergeBed -i ${library_name}_padded_${padding}.bed -d ${merge_tolerance} > ${library_name}_padded_${padding}_merged_${merge_tolerance}.bed
 
     #java -jar ${toolpath}${gatk_jar} BedToIntervalList -I ${library_name}_padded_${padding}_merged_${merge_tolerance}.bed -O ${library_name}_padded_${padding}_merged_${merge_tolerance}_preprocessing.interval_list -SD ${ref_dict}
 
