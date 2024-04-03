@@ -16,9 +16,9 @@ merged_report = []
 
 reports = pd.read_csv(reports,header=None).values.flatten()
 for rep in reports:
-    print rep
+    #print rep
     sample = os.path.basename(rep).split('_')[0]
-    print sample
+    #print sample
     df = pd.read_csv(rep,index_col=[0],header=None, sep="\t")
     df.columns=[sample]
     merged_report.append(df)
