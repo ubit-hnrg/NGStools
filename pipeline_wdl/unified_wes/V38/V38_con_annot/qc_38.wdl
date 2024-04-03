@@ -164,7 +164,7 @@ task make_tsv_reports {
         set -e
 
         # make global_nodups tsv report
-        python ${ngs_toolpath}/pipeline_wdl/qualityControl/global_coverage_report_inLibrary.py -i=${global_cov_nodups} -o ${sample_name}_experiment_nodups_global_report.tsv -op ${sample_name}_nodups_distributions.eps -s ${sample_name}
+        python3 ${ngs_toolpath}/pipeline_wdl/qualityControl/global_coverage_report_inLibrary.py -i=${global_cov_nodups} -o ${sample_name}_experiment_nodups_global_report.tsv -op ${sample_name}_nodups_distributions.eps -s ${sample_name}
 
         # make tsv coverage report by exon
         #python ${ngs_toolpath}/pipeline_wdl/qualityControl/local_coverage_report_ENS_intersect_Library.py -i=${by_exon_cov} -o ${sample_name}_ENS_local_report.tsv -s=${sample_name}

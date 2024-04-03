@@ -236,7 +236,7 @@ task ImportGVCFs {
     set -e
     set -o pipefail
     
-    python << CODE
+    python3 << CODE
     gvcf = ['${sep="','" input_gvcf}']
     sample_name = ['${sep="','" sample_name}']
 
@@ -458,7 +458,7 @@ task DynamicallyCombineIntervals {
 
 
   command {
-    python << CODE
+    python3 << CODE
     def parse_interval(interval):
         colon_split = interval.split(":")
         chromosome = colon_split[0]
@@ -684,7 +684,7 @@ done
     #sed -i "s/Otherinfo/$vcf_header/g" ${sample}.hg38_multianno.tsv;
 
     #join one multianno tsv file AND joint genotyped vcf. This script (join_vcf.py) also postprocess Intervar columns.
-    python ${joinPY} --multianno_tsv=${sample}.hg38_multianno.tsv --vcf_multisample=${restrictedVCF} --output=${sample}.multianno_restrict.tsv
+    python3 ${joinPY} --multianno_tsv=${sample}.hg38_multianno.tsv --vcf_multisample=${restrictedVCF} --output=${sample}.multianno_restrict.tsv
     #change dots by tabs.
     sed -i -e "s|\.	|	|g" ${sample}.multianno_restrict.tsv
     

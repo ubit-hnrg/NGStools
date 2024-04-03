@@ -212,7 +212,7 @@ task check_mkdir {
   File unique_samples_id 
 
   command<<<
-    python <<CODE
+    python3 <<CODE
     # -*- coding: utf-8 -*-
     import os
 

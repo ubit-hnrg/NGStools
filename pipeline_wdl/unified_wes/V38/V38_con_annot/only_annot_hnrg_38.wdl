@@ -124,7 +124,7 @@ task intervar_postprocessing {
     vcfDB='intervar_sample_BD.vcf'
 
     # multianno to vcf db file
-    python ${srcpath}/create_InterVarDB_38.py -i=${multianno_txt} -o $vcfDB
+    python3 ${srcpath}/create_InterVarDB_38.py -i=${multianno_txt} -o $vcfDB
 
     # index
     bgzip $vcfDB
