@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 from __future__ import division
 
 from statsmodels.stats.weightstats import DescrStatsW
