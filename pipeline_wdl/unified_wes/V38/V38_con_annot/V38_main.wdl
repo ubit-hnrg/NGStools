@@ -230,7 +230,7 @@ workflow main_workflow {
   
   File tabulatedSampleFilePaths ##samples
 
-  String? pipeline_version = "V2" ###no me lo toma el input como default
+  String? pipeline_version = "V38" ###no me lo toma el input como default
 
 
   ####metadata
@@ -244,12 +244,12 @@ workflow main_workflow {
 
   ###GATK
   String gatk_jar = "gatk-package-4.5.0.0-local.jar"
-  String toolpath = "/home/hnrg/HNRG-pipeline-V0.1/tools/"
-  String ngs_toolpath = "/home/hnrg/NGStools"
+  String toolpath #= "/home/hnrg/HNRG-pipeline-V0.1/tools/"
+  String ngs_toolpath #= "/home/hnrg/NGStools"
 
 
   ###coordenadas exonicas (usamos ENSEMBL)
-  File generic_exon_coords = "/home/hnrg/HNRG-pipeline-V0.1/libraries/intervalos/transcriptos_canonicos_ensmbl_104_38.tsv"
+  File generic_exon_coords #= "/home/hnrg/HNRG-pipeline-V0.1/libraries/intervalos/transcriptos_canonicos_ensmbl_104_38.tsv"
   
   ###save location
   String path_softlink
@@ -259,21 +259,21 @@ workflow main_workflow {
   String bwa_commandline = "bwa mem -K 100000000 -p -v 3 -t 4 -Y"
   
   ########## referencia
-  File ref_fasta = "/data/new_dbs/grch38/GRCh38_alignment.fa.ann"
-  File ref_fasta_index = "/data/new_dbs/grch38/GRCh38_alignment.fa.fai"
-  File ref_dict = "/data/new_dbs/grch38/GRCh38_alignment.dict"
-  File ref_amb = "/data/new_dbs/grch38/GRCh38_alignment.fa.amb"
-  File ref_ann = "/data/new_dbs/grch38/GRCh38_alignment.fa.ann"
-  File ref_bwt = "/data/new_dbs/grch38/GRCh38_alignment.fa.bwt"
-  File ref_pac = "/data/new_dbs/grch38/GRCh38_alignment.fa.pac"
-  File ref_sa = "/data/new_dbs/grch38/GRCh38_alignment.fa.sa"
+  File ref_fasta #= "/data/new_dbs/grch38/GRCh38_alignment.fa.ann"
+  File ref_fasta_index #= "/data/new_dbs/grch38/GRCh38_alignment.fa.fai"
+  File ref_dict #= "/data/new_dbs/grch38/GRCh38_alignment.dict"
+  File ref_amb #= "/data/new_dbs/grch38/GRCh38_alignment.fa.amb"
+  File ref_ann #= "/data/new_dbs/grch38/GRCh38_alignment.fa.ann"
+  File ref_bwt #= "/data/new_dbs/grch38/GRCh38_alignment.fa.bwt"
+  File ref_pac #= "/data/new_dbs/grch38/GRCh38_alignment.fa.pac"
+  File ref_sa #= "/data/new_dbs/grch38/GRCh38_alignment.fa.sa"
     
   
-  File dbSNP_vcf = "/data/new_dbs/grch38/dbSNP/dbSNP156_GRCh38.vcf.gz"
-  File dbSNP_vcf_index = "/data/new_dbs/grch38/dbSNP/dbSNP156_GRCh38.vcf.gz.tbi"
+  File dbSNP_vcf #= "/data/new_dbs/grch38/dbSNP/dbSNP156_GRCh38.vcf.gz"
+  File dbSNP_vcf_index #= "/data/new_dbs/grch38/dbSNP/dbSNP156_GRCh38.vcf.gz.tbi"
   ###bam2gvcf input
-  Array[File] known_indels_sites_VCFs = ["/data/new_dbs/grch38/bundle_gatk_hg38/Mills_and_1000G_gold_standard.indels.hg38.vcf.gz","/data/new_dbs/grch38/bundle_gatk_hg38/Homo_sapiens_assembly38.known_indels.vcf.gz"]
-  Array[File] known_indels_sites_indices = ["/data/new_dbs/grch38/bundle_gatk_hg38/Mills_and_1000G_gold_standard.indels.hg38.vcf.gz.tbi","/data/new_dbs/grch38/bundle_gatk_hg38/Homo_sapiens_assembly38.known_indels.vcf.gz.tbi"]
+  Array[File] known_indels_sites_VCFs #= ["/data/new_dbs/grch38/bundle_gatk_hg38/Mills_and_1000G_gold_standard.indels.hg38.vcf.gz","/data/new_dbs/grch38/bundle_gatk_hg38/Homo_sapiens_assembly38.known_indels.vcf.gz"]
+  Array[File] known_indels_sites_indices #= ["/data/new_dbs/grch38/bundle_gatk_hg38/Mills_and_1000G_gold_standard.indels.hg38.vcf.gz.tbi","/data/new_dbs/grch38/bundle_gatk_hg38/Homo_sapiens_assembly38.known_indels.vcf.gz.tbi"]
   File haplotype_database_file
 
   ##### parametros trimmeado fastp
@@ -303,7 +303,7 @@ workflow main_workflow {
 
   ##annovar
   ###############agregar path a la 38
-  String db_annovar = "/data/new_dbs/annovar/hg38/humandb" #path annovar 
+  String db_annovar # "/data/new_dbs/annovar/hg38/humandb" #path annovar 
     
     
     ###esto creo q vuela
@@ -313,7 +313,7 @@ workflow main_workflow {
 
   ###################### inputs para crear intervalo
   File intervalo_captura
-  File chromosome_length = "/data/new_dbs/grch38/hg38_broad/chromosome_lenght_hg38_broad.txt" #"/home/hnrg/HNRG-pipeline-V0.1/libraries/GRCh37/chromosome_lengths_hg19.txt"
+  File chromosome_length  #"/home/hnrg/HNRG-pipeline-V0.1/libraries/GRCh37/chromosome_lengths_hg19.txt"
   Int padding = "100"
   Int merge_tolerance = "200"
 
