@@ -345,7 +345,7 @@ task Create_inputs_for_preprocesing {
 
 
   command <<<  
-  python <<CODE 
+  python3 <<CODE 
 
   with open("${bams_sample_names}", "r") as sf:
       samples = sf.readlines()
