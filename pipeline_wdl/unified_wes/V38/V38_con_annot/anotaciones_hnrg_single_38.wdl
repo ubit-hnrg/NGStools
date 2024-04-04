@@ -469,17 +469,17 @@ input:
 }
 
 #Step 8: Annotate with gnomad_exome
-call Snpsift as step_gnomad_exome {
-input:
-    samplename1 = samplename1,
-  
-    parametros = 'Annotate',
-    input_vcf = step_alphamissense.salida_Snpsift,
-    toolpath = toolpath,
-    java_heap_memory_initial = java_heap_memory_initial,
-    nombre_step = "step_gnomad_exome"
+#call Snpsift as step_gnomad_exome {
+#input:
+#    samplename1 = samplename1,
+#  
+#    parametros = 'Annotate',
+#    input_vcf = step_alphamissense.salida_Snpsift,
+#    toolpath = toolpath,
+#    java_heap_memory_initial = java_heap_memory_initial,
+#    nombre_step = "step_gnomad_exome"
 #
-}
+#}
 #Step 8: Annotate with gnomad_genome
 #call Snpsift as step_gnomad_genome {
 #input:
@@ -499,7 +499,7 @@ input:
 call annovar {
 input:
 #vcf_in = step6_Snpsift_GWASCat.salida_Snpsift,
-vcf_in = step_gnomad_exome.salida_Snpsift, #step_alphamissense.salida_Snpsift,
+vcf_in = step_alphamissense.salida_Snpsift, #step_gnomad_exome.salida_Snpsift, #step_alphamissense.salida_Snpsift,
 out_prefix = samplename1,
 #File out_prefix
 toolpath = toolpath
