@@ -136,7 +136,7 @@ task samtools_reports_file {
   String pipeline_version
 
   command {
-  ${ngs_toolpath}/pipeline_wdl/qualityControl/samtools_stats_report_V2.py -N=${N_total_reads} -l=${samtools_library_report} -d ${samtools_dup} -ba ${N_bases_after} -bb ${N_bases_before} -o=${sampleID}_samtools_report.tsv
+  ${ngs_toolpath}/pipeline_wdl/qualityControl/samtools_stats_report_V2_38.py -N=${N_total_reads} -l=${samtools_library_report} -d ${samtools_dup} -ba ${N_bases_after} -bb ${N_bases_before} -o=${sampleID}_samtools_report.tsv
   
   cp -L ${sampleID}_samtools_report.tsv ${path_save}
 
