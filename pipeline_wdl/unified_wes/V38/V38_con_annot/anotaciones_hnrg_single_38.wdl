@@ -428,16 +428,16 @@ input:
 
 
 #Step 6: Annotate with GWASCat (with extra fields)
-call Snpsift_GWASCat as step5_Snpsift_GWASCat{
-input:
-    samplename1 = samplename1,
-    parametros = "gwasCat -db",
-    input_vcf = step4_hapmap.salida_Snpsift,
-    toolpath = toolpath,
-    java_heap_memory_initial = java_heap_memory_initial,
-    nombre_step = "step5_Snpsift_GWASCat"
+#call Snpsift_GWASCat as step5_Snpsift_GWASCat{
+#input:
+#    samplename1 = samplename1,
+#     parametros = "gwasCat -db",
+#     input_vcf = step4_hapmap.salida_Snpsift,
+#     toolpath = toolpath,
+#     java_heap_memory_initial = java_heap_memory_initial,
+#     nombre_step = "step5_Snpsift_GWASCat"
 
-}
+# }
 
 #Step 7: Annotate with dbNSFP
 #call Snpsift_nodb as step7_dbNSFP{
@@ -461,7 +461,7 @@ input:
     samplename1 = samplename1,
   
     parametros = 'Annotate',
-    input_vcf = step5_Snpsift_GWASCat.salida_Snpsift,
+    input_vcf = step4_dbSNP.salida_Snpsift, #step5_Snpsift_GWASCat.salida_Snpsift,
     toolpath = toolpath,
     java_heap_memory_initial = java_heap_memory_initial,
     nombre_step = "step_alphamissense"
