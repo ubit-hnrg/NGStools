@@ -238,7 +238,7 @@ task make_excel {
     String pipeline_version
     ##${tabla3}:${pestana3}
     command{
-    ${ngs_toolpath}/pipeline_wdl/qualityControl/make_excel_report.py ${tabla1}:${pestana1} ${tabla2}:${pestana2} ${tabla3}:${pestana3} ${experiment_name}_qual_report_${pipeline_version}.xlsx
+    ${ngs_toolpath}/pipeline_wdl/qualityControl/make_excel_report_V38.py ${tabla1}:${pestana1} ${tabla2}:${pestana2} ${tabla3}:${pestana3} ${experiment_name}_qual_report_${pipeline_version}.xlsx
  
   }
 
