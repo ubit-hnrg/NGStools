@@ -59,7 +59,7 @@ percents_tso_parts = [
         'bases_before': bases_before / 1e9,
         'bases_after': bases_after / 1e9,
         'Gbases without dup mapped': round(bases_on_library_nodup / 1e9, 6),
-        'efficienciy': efficienciy,
+        'efficienciy': efficiency,
         'filtering_ratio': filtering_ratio,
         'on_target_ratio': on_target_ratio,
         'unduplicated_ratio': duplicated_ratio,
