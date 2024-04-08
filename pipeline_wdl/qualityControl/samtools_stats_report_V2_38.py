@@ -14,17 +14,27 @@ parser.add_argument('-d', '--samtools_library_report_without_duplicates', help='
 parser.add_argument('-o', '--output_file')
 args = parser.parse_args()
 
+
+args = parser.parse_args()
+totalreads = args.total_reads
+bases_after = args.total_bases_after
+bases_before = args.total_bases_before
+samtools_kit_report_file = args.samtools_library_report
+samtools_kit_report_file_without_duplicates = args.samtools_library_report_without_duplicates # ARI 19/09
+output = args.output_file
+
 # Función para parsear los reportes de samtools
 def parse_samtools_report_SN(samtools_stat_file):
-    order = []
     sn = {}
     with open(samtools_stat_file, "r") as stats:
         for line in stats:
-            if re.match("^SN", line):
+            if line.startswith("SN"):
                 parts = line.split('\t')
-                sn[parts[1].strip(':')] = float(parts[2].strip())
-                order.append(parts[1].strip(':'))
-    return pd.Series(sn).fillna(0.0)
+                key = parts[1].strip(':')
+                value = parts[2].strip()
+                sn[key] = value
+    samtools_report = pd.Series(sn).astype(float).fillna(0.0)
+    return samtools_report
 
 # Procesamiento de los reportes
 samtools_kit_report = parse_samtools_report_SN(args.samtools_library_report)
@@ -39,46 +49,42 @@ filtering_ratio = args.total_bases_after / args.total_bases_before
 on_target_ratio = bases_on_library / args.total_bases_after
 duplicated_ratio = bases_on_library_nodup / bases_on_library
 
-# Construcción de reporte de porcentajes
-percents_tso = pd.concat([
-    samtools_kit_report[['reads properly paired', 'reads duplicated', 'reads MQ0']] / args.total_reads * 100,
+# Preparación de la serie percents_tso con pd.concat
+percents_tso_parts = [
+    100 * samtools_kit_report[['reads properly paired', 'reads duplicated', 'reads MQ0']] / totalreads,
+    samtools_kit_report[['maximum length']],
+    samtools_kit_report[['error rate']] * 100,
+    samtools_kit_report[['bases mapped (cigar)']] / 1e9,
     pd.Series({
-        'maximum length': samtools_kit_report['maximum length'],
-        'error rate': samtools_kit_report['error rate'] * 100,
-        'bases mapped (cigar)': samtools_kit_report['bases mapped (cigar)'] / (10**9),
-        'bases_before': args.total_bases_before / (10**9),
-        'bases_after': args.total_bases_after / (10**9),
-        'Gbases without dup mapped': bases_on_library_nodup / (10**9),
-        'efficiency': efficiency,
+        'bases_before': bases_before / 1e9,
+        'bases_after': bases_after / 1e9,
+        'Gbases without dup mapped': round(bases_on_library_nodup / 1e9, 6),
+        'efficienciy': efficienciy,
         'filtering_ratio': filtering_ratio,
         'on_target_ratio': on_target_ratio,
         'unduplicated_ratio': duplicated_ratio,
-        'bases inside the target': samtools_kit_report.get('bases inside the target', 0) / (10**9),
-        'Number of reads properly paired': args.total_reads
+        'Number of reads properly paired': totalreads
     })
-])
+]
 
-percents_tso.index = percents_tso.index + ' in Library'
-percents_tso.rename(index={
+percents_tso = pd.concat(percents_tso_parts)
+percents_tso.index += ' in Library'
+
+# Cambio de nombres de índices
+index_renames = {
     'Number of reads properly paired in Library': 'Number of reads properly paired',
     'reads properly paired in Library': 'Percent of reads properly paired in Library',
     'bases inside the target in Library': 'Target size (GBPs)',
-    'bases mapped (cigar) in Library': 'Gbases mapped (cigar) in Library'
-}, inplace=True)
-
-percents_tso.index = percents_tso.index.str.replace(' ', '-')
-
-# Renombre de índices para claridad
-percents_tso.rename(index={
+    'bases mapped (cigar) in Library': 'Gbases mapped (cigar) in Library',
     'On-target[%]-in-Library': 'Bases-On-target[%]',
     'On-target_raw[%]-in-Library': 'Bases-On-target_raw[%]',
     'bases_before-in-Library': 'GBases_before_trimm',
     'bases_after-in-Library': 'GBases_after_trimm',
     'filtering_ratio-in-Library': 'filtering_ratio'
-}, inplace=True)
+}
+percents_tso.index = percents_tso.index.str.replace(' ', '-')
+percents_tso.rename(index=index_renames, inplace=True)
 
-# Selección de reporte final y formateo
-report = percents_tso.loc[[...]] # Aquí deberías incluir los índices exactos que deseas incluir en tu reporte final
+report = percents_tso.apply(lambda x: '{:.4f}'.format(x) if isinstance(x, float) else x)
 
-# Formateo y guardado del reporte
-report.to_csv(args.output_file, sep='\t')
+report.to_csv(output, sep='\t')
