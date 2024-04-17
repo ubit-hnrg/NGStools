@@ -738,22 +738,22 @@ Array[File] exon_tsv = qual_control.tsv_exon
             pipeline_version = pipeline_version
             
            }
-        call pdf_report {
-            input:
-            alineamiento = alineamiento_rep[idx], ##ok
-            name = samplename2,
-            glob_rep =tsv_global[idx], ##ok
-            sex = sex_pred[idx],
-            #fastp_rep = fastp_qual[idx],
-            fastp_rep = qual_control.fastp_rep_out[idx],
-            tso = basename(tabulatedSampleFilePaths, ".txt"),
-            date = run_date,
-            path = array_path_save_json[idx],
-            ngs_toolpath = ngs_toolpath,
-            pipeline_version = pipeline_version
+        # call pdf_report {
+        #     input:
+        #     alineamiento = alineamiento_rep[idx], ##ok
+        #     name = samplename2,
+        #     glob_rep =tsv_global[idx], ##ok
+        #     sex = sex_pred[idx],
+        #     #fastp_rep = fastp_qual[idx],
+        #     fastp_rep = qual_control.fastp_rep_out[idx],
+        #     tso = basename(tabulatedSampleFilePaths, ".txt"),
+        #     date = run_date,
+        #     path = array_path_save_json[idx],
+        #     ngs_toolpath = ngs_toolpath,
+        #     pipeline_version = pipeline_version
             
-           }  
-        #}
+        #    }  
+        # #}
 
     }
 
