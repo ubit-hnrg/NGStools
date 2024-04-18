@@ -513,6 +513,7 @@ call intervar_postprocessing {
         vcfinput = annovar.multianno_vcf,
         multianno_txt = annovar.multianno_txt,
         toolpath = toolpath,
+        ngs_toolpath = ngs_toolpath,
         samplename1 = samplename1
 
 }
