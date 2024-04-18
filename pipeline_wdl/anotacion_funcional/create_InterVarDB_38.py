@@ -56,11 +56,16 @@ def main():
     body['INFO'] = body['INFO'].str.replace('.','-')
     body.drop(['InterVarVeredict','InterVarEvidence'],axis = 1,inplace = True)
     
-    with open(outfile,'wb') as f:
+   # with open(outfile,'wb') as f:
+   #     for x in header:
+   #         f.write('%s\n'%x)
+   #     f.close()
+   # body.to_csv(outfile,sep ='\t',mode='a',index = False)    
+   
+    with open(outfile, 'w') as f:  
         for x in header:
-            f.write('%s\n'%x)
-        f.close()
-    body.to_csv(outfile,sep ='\t',mode='a',index = False)    
+            f.write('%s\n' % x)
+    body.to_csv(outfile, sep='\t', mode='a', index=False)
 
 if __name__ == "__main__":
     main()
