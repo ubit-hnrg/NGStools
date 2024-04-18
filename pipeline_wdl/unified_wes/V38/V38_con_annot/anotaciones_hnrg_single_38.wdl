@@ -117,20 +117,20 @@ output {
 task intervar_postprocessing {
     File vcfinput
     File multianno_txt
-    String srcpath = '/home/hnrg/NGStools/pipeline_wdl/anotacion_funcional'
+    String ngs_toolpath #= '/home/hnrg/NGStools/pipeline_wdl/anotacion_funcional'
     String toolpath
     String samplename1
     command<<<
     vcfDB='intervar_sample_BD.vcf'
 
     # multianno to vcf db file
-    python ${srcpath}/create_InterVarDB_38.py -i=${multianno_txt} -o $vcfDB
+    python ${ngs_toolpath}/pipeline_wdl/anotacion_funcional/create_InterVarDB_38.py -i=${multianno_txt} -o $vcfDB
 
     # index
     bgzip $vcfDB
     tabix $vcfDB.gz
 
-    sed -e "s|__vcfDB__|$vcfDB.gz|g" ${srcpath}/intervar_vcfanno_template_fromVCF.tom > config_vcfanno.tom
+    sed -e "s|__vcfDB__|$vcfDB.gz|g" ${ngs_toolpath}/pipeline_wdl/anotacion_funcional/intervar_vcfanno_template_fromVCF.tom > config_vcfanno.tom
     ${toolpath}vcfanno_linux64 -p 4 config_vcfanno.tom ${vcfinput} > ${samplename1}_intervar.vcf
 
     >>>
@@ -321,6 +321,7 @@ String reference_version
 String path_save
 String pipeline_version
 File exon_coordinates
+String ngs_toolpath
 #File db_dbNSFP = "/data/new_dbs/annot/dbNSFP/dbNSFP4.5a.txt.gz"
 #File exon_coordinates_to_lib
 

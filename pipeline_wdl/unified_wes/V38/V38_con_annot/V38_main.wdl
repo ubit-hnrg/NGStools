@@ -494,6 +494,7 @@ workflow main_workflow {
         ##input_vcf = singleGenotypeGVCFs.individual_vcfs_annovar,# . 
         path_save = mkdir_samplename.path_out_softlink,
         toolpath = toolpath,
+        ngs_toolpath =ngs_toolpath,
         samplename1 = sample_name,
         java_heap_memory_initial = "1g",
         pipeline_version = pipeline_version,
