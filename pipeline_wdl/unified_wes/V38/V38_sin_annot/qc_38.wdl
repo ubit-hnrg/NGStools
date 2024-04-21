@@ -130,7 +130,7 @@ task samtools_reports_file {
   String pipeline_version
 
   command {
-  ${ngs_toolpath}/pipeline_wdl/qualityControl/samtools_stats_report_V2.py -N=${N_total_reads} -l=${samtools_library_report} -d ${samtools_dup} -ba ${N_bases_after} -bb ${N_bases_before} -o=${sampleID}_samtools_report.tsv
+  ${ngs_toolpath}/pipeline_wdl/qualityControl/samtools_stats_report_V2_38.py -N=${N_total_reads} -l=${samtools_library_report} -d ${samtools_dup} -ba ${N_bases_after} -bb ${N_bases_before} -o=${sampleID}_samtools_report.tsv
   
   cp -L ${sampleID}_samtools_report.tsv ${path_save}
 
@@ -164,7 +164,7 @@ task make_tsv_reports {
         set -e
 
         # make global_nodups tsv report
-        python ${ngs_toolpath}/pipeline_wdl/qualityControl/global_coverage_report_inLibrary.py -i=${global_cov_nodups} -o ${sample_name}_experiment_nodups_global_report.tsv -op ${sample_name}_nodups_distributions.eps -s ${sample_name}
+        python3 ${ngs_toolpath}/pipeline_wdl/qualityControl/global_coverage_report_inLibrary.py -i=${global_cov_nodups} -o ${sample_name}_experiment_nodups_global_report.tsv -op ${sample_name}_nodups_distributions.eps -s ${sample_name}
 
         # make tsv coverage report by exon
         #python ${ngs_toolpath}/pipeline_wdl/qualityControl/local_coverage_report_ENS_intersect_Library.py -i=${by_exon_cov} -o ${sample_name}_ENS_local_report.tsv -s=${sample_name}
