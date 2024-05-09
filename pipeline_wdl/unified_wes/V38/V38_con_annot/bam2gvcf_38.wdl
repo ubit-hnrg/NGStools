@@ -392,7 +392,7 @@ task HaplotypeCaller {
   #
   command <<<
       
-      java -XX:GCTimeLimit=20 -XX:GCHeapFreeLimit=10 -XX:+UseParallelGC -XX:ParallelGCThreads=2 \
+      java -XX:GCTimeLimit=20 -XX:GCHeapFreeLimit=10 -XX:+UseParallelGC -XX:ParallelGCThreads=4 \
       -Xloggc:gc_log.log -Xms3000m  -jar ${toolpath}${gatk_jar} \
       HaplotypeCaller \
       -R ${ref_fasta} \
@@ -410,6 +410,7 @@ task HaplotypeCaller {
       -GQB 10 -GQB 20 -GQB 30 -GQB 40 -GQB 50 -GQB 60 -GQB 70 -GQB 80 -GQB 90 \
       --standard-min-confidence-threshold-for-calling 20 \
       --bam-output ${gvcf_basename}_haplotype.bam 
+      --sample-name ${gvcf_basename}
        
     
       ##### test 
